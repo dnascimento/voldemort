@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: voldemort
+Version: 0.1.2
+Summary: Python Voldemort Client
+Home-page: http://project-voldemort.com
+Author: LinkedIn Corporation
+Author-email: UNKNOWN
+License: Apache 2.0
+Description: Pure python client for accessing Voldemort key/value stores. Supports both raw and JSON stores. Only supports the tcp protocol buffer interface with server-side routing.
+Platform: UNKNOWN

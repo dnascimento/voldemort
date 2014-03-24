@@ -39,6 +39,7 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
         super(errorMapper, storeRepository);
     }
 
+    @Override
     public StreamRequestHandler handleRequest(DataInputStream inputStream,
                                               DataOutputStream outputStream) throws IOException {
         VoldemortRequest.Builder request = ProtoUtils.readToBuilder(inputStream,
@@ -92,6 +93,7 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
         return response.build();
     }
 
+    @Override
     public boolean isCompleteRequest(ByteBuffer buffer) {
         if(buffer.remaining() < 4)
             return false;
@@ -103,8 +105,10 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
     private VProto.GetResponse handleGet(VProto.GetRequest request,
                                          Store<ByteArray, byte[], byte[]> store) {
         VProto.GetResponse.Builder response = VProto.GetResponse.newBuilder();
+        System.out.println("DARIO GET RID:" + request.getRid());
+        ByteArray key = ProtoUtils.decodeBytes(request.getKey());
         try {
-            List<Versioned<byte[]>> values = store.get(ProtoUtils.decodeBytes(request.getKey()),
+            List<Versioned<byte[]>> values = store.get(key,
                                                        request.hasTransforms() ? ProtoUtils.decodeBytes(request.getTransforms())
                                                                                            .get()
                                                                               : null);
@@ -151,9 +155,9 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
     private VProto.PutResponse handlePut(VProto.PutRequest request,
                                          Store<ByteArray, byte[], byte[]> store) {
         VProto.PutResponse.Builder response = VProto.PutResponse.newBuilder();
+        System.out.println("DARIO: PUT RID:" + request.getRid());
+        ByteArray key = ProtoUtils.decodeBytes(request.getKey());
         try {
-            ByteArray key = ProtoUtils.decodeBytes(request.getKey());
-
             Versioned<byte[]> value = ProtoUtils.decodeVersioned(request.getVersioned());
 
             store.put(key,

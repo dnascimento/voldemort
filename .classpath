@@ -41,8 +41,7 @@
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/jline-0.9.94.jar"/>
 	<classpathentry kind="lib" path="lib/commons-pool-1.5.2.jar"/>
-	<classpathentry kind="lib" path="lib/protobuf-java-2.3.0.jar"/>
-	<classpathentry kind="lib" path="contrib/ec2-testing/lib/typica.jar"/>
+	<classpathentry kind="lib" path="contrib/ec2-testing/lib/typica.jar" sourcepath="/Users/darionascimento/.m2/repository/com/google/code/typica/typica/1.7/typica-1.7-sources.jar"/>
 	<classpathentry kind="lib" path="lib/je-5.0.88.jar"/>
 	<classpathentry kind="lib" path="lib/paranamer-2.1.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-core-asl-1.4.0.jar"/>
@@ -65,7 +64,9 @@
 	<classpathentry kind="lib" path="contrib/restclient/lib/r2-1.5.10.jar"/>
 	<classpathentry kind="lib" path="lib/guava-14.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/gson-2.2.4.jar"/>
-	<classpathentry kind="lib" path="lib/tusk-0.0.1-SNAPSHOT.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/hadoop-auth-2.0.5-alpha.jar"/>
+	<classpathentry kind="lib" path="lib/tusk-0.0.2.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/google/protobuf/protobuf-java/2.5.0/protobuf-java-2.5.0.jar" sourcepath="M2_REPO/com/google/protobuf/protobuf-java/2.5.0/protobuf-java-2.5.0-sources.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

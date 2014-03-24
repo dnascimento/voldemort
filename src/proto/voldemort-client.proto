@@ -37,6 +37,7 @@ message KeyedVersions {
 message GetRequest {
   optional bytes key = 1;
   optional bytes transforms = 2;
+  optional string rid = 3;
 }
 
 message GetResponse {
@@ -68,6 +69,7 @@ message PutRequest {
   required bytes key = 1;
   required Versioned versioned = 2;
   optional bytes transforms = 3;
+  optional string rid = 4;
 }
 
 message PutResponse {
@@ -77,6 +79,7 @@ message PutResponse {
 message DeleteRequest {
   required bytes key = 1;
   required VectorClock version = 2;
+  optional string rid = 4;
 }
 
 message DeleteResponse {
