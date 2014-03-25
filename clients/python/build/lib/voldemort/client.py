@@ -350,7 +350,6 @@ class StoreClient:
         req.type = protocol.GET
         req.get.key = key
         if rid is not None:
-            print "RID: "+rid
             req.get.rid = rid
 
         # send request
@@ -428,7 +427,6 @@ class StoreClient:
         req.type = protocol.PUT
         req.put.key = key
         if rid is not None:
-            print "RID: "+rid
             req.put.rid = rid
             
         req.put.versioned.value = value
@@ -466,12 +464,14 @@ class StoreClient:
         except:
             return None
 
-    def _delete(self, key, version):
+    def _delete(self, key, version,rid = None):
         req = protocol.VoldemortRequest()
         req.should_route = True
         req.store = self.store_name
         req.type = protocol.DELETE
         req.delete.key = key
+        if rid is not None:
+            req.delete.rid = rid
         req.delete.version.MergeFrom(version)
 
         # send request
@@ -486,7 +486,7 @@ class StoreClient:
         return resp.success
 
 
-    def delete(self, key, version = None):
+    def delete(self, key, version = None,rid = None):
         """Execute a delete request, deleting all keys up to and including the given version.
            If no version is given a get(key) request will be done to find the latest version."""
 
@@ -495,7 +495,7 @@ class StoreClient:
         # if we don't have a version, fetch one
         if version == None:
             version = self._fetch_version(key)
-        return self._execute_request(self._delete, [raw_key, version])
+        return self._execute_request(self._delete, [raw_key, version,rid])
 
 
     def close(self):

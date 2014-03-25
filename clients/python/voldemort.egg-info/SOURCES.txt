@@ -9,6 +9,7 @@ voldemort.egg-info/dependency_links.txt
 voldemort.egg-info/requires.txt
 voldemort.egg-info/top_level.txt
 voldemort/protocol/__init__.py
+voldemort/protocol/dbNode_undo_pb2.py
 voldemort/protocol/slop_pb2.py
 voldemort/protocol/voldemort_admin_pb2.py
 voldemort/protocol/voldemort_client_pb2.py

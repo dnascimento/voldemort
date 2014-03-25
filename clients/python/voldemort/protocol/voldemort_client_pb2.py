@@ -14,7 +14,7 @@ from google.protobuf import descriptor_pb2
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='voldemort-client.proto',
   package='voldemort',
-  serialized_pb='\n\x16voldemort-client.proto\x12\tvoldemort\".\n\nClockEntry\x12\x0f\n\x07node_id\x18\x01 \x02(\x05\x12\x0f\n\x07version\x18\x02 \x02(\x03\"H\n\x0bVectorClock\x12&\n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x15.voldemort.ClockEntry\x12\x11\n\ttimestamp\x18\x02 \x01(\x03\"C\n\tVersioned\x12\r\n\x05value\x18\x01 \x02(\x0c\x12\'\n\x07version\x18\x02 \x02(\x0b\x32\x16.voldemort.VectorClock\"2\n\x05\x45rror\x12\x12\n\nerror_code\x18\x01 \x02(\x05\x12\x15\n\rerror_message\x18\x02 \x02(\t\"D\n\rKeyedVersions\x12\x0b\n\x03key\x18\x01 \x02(\x0c\x12&\n\x08versions\x18\x02 \x03(\x0b\x32\x14.voldemort.Versioned\":\n\nGetRequest\x12\x0b\n\x03key\x18\x01 \x01(\x0c\x12\x12\n\ntransforms\x18\x02 \x01(\x0c\x12\x0b\n\x03rid\x18\x03 \x01(\t\"W\n\x0bGetResponse\x12\'\n\tversioned\x18\x01 \x03(\x0b\x32\x14.voldemort.Versioned\x12\x1f\n\x05\x65rror\x18\x02 \x01(\x0b\x32\x10.voldemort.Error\"_\n\x12GetVersionResponse\x12(\n\x08versions\x18\x01 \x03(\x0b\x32\x16.voldemort.VectorClock\x12\x1f\n\x05\x65rror\x18\x02 \x01(\x0b\x32\x10.voldemort.Error\"\x8e\x01\n\rGetAllRequest\x12\x0c\n\x04keys\x18\x01 \x03(\x0c\x12<\n\ntransforms\x18\x02 \x03(\x0b\x32(.voldemort.GetAllRequest.GetAllTransform\x1a\x31\n\x0fGetAllTransform\x12\x0b\n\x03key\x18\x01 \x02(\x0c\x12\x11\n\ttransform\x18\x02 \x02(\x0c\"[\n\x0eGetAllResponse\x12(\n\x06values\x18\x01 \x03(\x0b\x32\x18.voldemort.KeyedVersions\x12\x1f\n\x05\x65rror\x18\x02 \x01(\x0b\x32\x10.voldemort.Error\"c\n\nPutRequest\x12\x0b\n\x03key\x18\x01 \x02(\x0c\x12\'\n\tversioned\x18\x02 \x02(\x0b\x32\x14.voldemort.Versioned\x12\x12\n\ntransforms\x18\x03 \x01(\x0c\x12\x0b\n\x03rid\x18\x04 \x01(\t\".\n\x0bPutResponse\x12\x1f\n\x05\x65rror\x18\x01 \x01(\x0b\x32\x10.voldemort.Error\"R\n\rDeleteRequest\x12\x0b\n\x03key\x18\x01 \x02(\x0c\x12\'\n\x07version\x18\x02 \x02(\x0b\x32\x16.voldemort.VectorClock\x12\x0b\n\x03rid\x18\x04 \x01(\t\"B\n\x0e\x44\x65leteResponse\x12\x0f\n\x07success\x18\x01 \x02(\x08\x12\x1f\n\x05\x65rror\x18\x02 \x01(\x0b\x32\x10.voldemort.Error\"\x9a\x02\n\x10VoldemortRequest\x12$\n\x04type\x18\x01 \x02(\x0e\x32\x16.voldemort.RequestType\x12\x1b\n\x0cshould_route\x18\x02 \x02(\x08:\x05\x66\x61lse\x12\r\n\x05store\x18\x03 \x02(\t\x12\"\n\x03get\x18\x04 \x01(\x0b\x32\x15.voldemort.GetRequest\x12(\n\x06getAll\x18\x05 \x01(\x0b\x32\x18.voldemort.GetAllRequest\x12\"\n\x03put\x18\x06 \x01(\x0b\x32\x15.voldemort.PutRequest\x12(\n\x06\x64\x65lete\x18\x07 \x01(\x0b\x32\x18.voldemort.DeleteRequest\x12\x18\n\x10requestRouteType\x18\x08 \x01(\x05*I\n\x0bRequestType\x12\x07\n\x03GET\x10\x00\x12\x0b\n\x07GET_ALL\x10\x01\x12\x07\n\x03PUT\x10\x02\x12\n\n\x06\x44\x45LETE\x10\x03\x12\x0f\n\x0bGET_VERSION\x10\x04\x42(\n\x1cvoldemort.client.protocol.pbB\x06VProtoH\x01')
+  serialized_pb='\n\x16voldemort-client.proto\x12\tvoldemort\".\n\nClockEntry\x12\x0f\n\x07node_id\x18\x01 \x02(\x05\x12\x0f\n\x07version\x18\x02 \x02(\x03\"H\n\x0bVectorClock\x12&\n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x15.voldemort.ClockEntry\x12\x11\n\ttimestamp\x18\x02 \x01(\x03\"C\n\tVersioned\x12\r\n\x05value\x18\x01 \x02(\x0c\x12\'\n\x07version\x18\x02 \x02(\x0b\x32\x16.voldemort.VectorClock\"2\n\x05\x45rror\x12\x12\n\nerror_code\x18\x01 \x02(\x05\x12\x15\n\rerror_message\x18\x02 \x02(\t\"Q\n\rKeyedVersions\x12\x0b\n\x03key\x18\x01 \x02(\x0c\x12&\n\x08versions\x18\x02 \x03(\x0b\x32\x14.voldemort.Versioned\x12\x0b\n\x03rid\x18\x03 \x01(\x03\":\n\nGetRequest\x12\x0b\n\x03key\x18\x01 \x01(\x0c\x12\x12\n\ntransforms\x18\x02 \x01(\x0c\x12\x0b\n\x03rid\x18\x03 \x01(\x03\"d\n\x0bGetResponse\x12\'\n\tversioned\x18\x01 \x03(\x0b\x32\x14.voldemort.Versioned\x12\x1f\n\x05\x65rror\x18\x02 \x01(\x0b\x32\x10.voldemort.Error\x12\x0b\n\x03rid\x18\x03 \x01(\x03\"l\n\x12GetVersionResponse\x12(\n\x08versions\x18\x01 \x03(\x0b\x32\x16.voldemort.VectorClock\x12\x1f\n\x05\x65rror\x18\x02 \x01(\x0b\x32\x10.voldemort.Error\x12\x0b\n\x03rid\x18\x03 \x01(\x03\"\x9b\x01\n\rGetAllRequest\x12\x0c\n\x04keys\x18\x01 \x03(\x0c\x12<\n\ntransforms\x18\x02 \x03(\x0b\x32(.voldemort.GetAllRequest.GetAllTransform\x12\x0b\n\x03rid\x18\x03 \x01(\x03\x1a\x31\n\x0fGetAllTransform\x12\x0b\n\x03key\x18\x01 \x02(\x0c\x12\x11\n\ttransform\x18\x02 \x02(\x0c\"[\n\x0eGetAllResponse\x12(\n\x06values\x18\x01 \x03(\x0b\x32\x18.voldemort.KeyedVersions\x12\x1f\n\x05\x65rror\x18\x02 \x01(\x0b\x32\x10.voldemort.Error\"c\n\nPutRequest\x12\x0b\n\x03key\x18\x01 \x02(\x0c\x12\'\n\tversioned\x18\x02 \x02(\x0b\x32\x14.voldemort.Versioned\x12\x12\n\ntransforms\x18\x03 \x01(\x0c\x12\x0b\n\x03rid\x18\x04 \x01(\x03\".\n\x0bPutResponse\x12\x1f\n\x05\x65rror\x18\x01 \x01(\x0b\x32\x10.voldemort.Error\"R\n\rDeleteRequest\x12\x0b\n\x03key\x18\x01 \x02(\x0c\x12\'\n\x07version\x18\x02 \x02(\x0b\x32\x16.voldemort.VectorClock\x12\x0b\n\x03rid\x18\x03 \x01(\x03\"B\n\x0e\x44\x65leteResponse\x12\x0f\n\x07success\x18\x01 \x02(\x08\x12\x1f\n\x05\x65rror\x18\x02 \x01(\x0b\x32\x10.voldemort.Error\"\x9a\x02\n\x10VoldemortRequest\x12$\n\x04type\x18\x01 \x02(\x0e\x32\x16.voldemort.RequestType\x12\x1b\n\x0cshould_route\x18\x02 \x02(\x08:\x05\x66\x61lse\x12\r\n\x05store\x18\x03 \x02(\t\x12\"\n\x03get\x18\x04 \x01(\x0b\x32\x15.voldemort.GetRequest\x12(\n\x06getAll\x18\x05 \x01(\x0b\x32\x18.voldemort.GetAllRequest\x12\"\n\x03put\x18\x06 \x01(\x0b\x32\x15.voldemort.PutRequest\x12(\n\x06\x64\x65lete\x18\x07 \x01(\x0b\x32\x18.voldemort.DeleteRequest\x12\x18\n\x10requestRouteType\x18\x08 \x01(\x05*I\n\x0bRequestType\x12\x07\n\x03GET\x10\x00\x12\x0b\n\x07GET_ALL\x10\x01\x12\x07\n\x03PUT\x10\x02\x12\n\n\x06\x44\x45LETE\x10\x03\x12\x0f\n\x0bGET_VERSION\x10\x04\x42(\n\x1cvoldemort.client.protocol.pbB\x06VProtoH\x01')
 
 _REQUESTTYPE = _descriptor.EnumDescriptor(
   name='RequestType',
@@ -45,8 +45,8 @@ _REQUESTTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=1420,
-  serialized_end=1493,
+  serialized_start=1472,
+  serialized_end=1545,
 )
 
 RequestType = enum_type_wrapper.EnumTypeWrapper(_REQUESTTYPE)
@@ -219,6 +219,13 @@ _KEYEDVERSIONS = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='rid', full_name='voldemort.KeyedVersions.rid', index=2,
+      number=3, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -229,7 +236,7 @@ _KEYEDVERSIONS = _descriptor.Descriptor(
   is_extendable=False,
   extension_ranges=[],
   serialized_start=280,
-  serialized_end=348,
+  serialized_end=361,
 )
 
 
@@ -256,8 +263,8 @@ _GETREQUEST = _descriptor.Descriptor(
       options=None),
     _descriptor.FieldDescriptor(
       name='rid', full_name='voldemort.GetRequest.rid', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=unicode("", "utf-8"),
+      number=3, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -270,8 +277,8 @@ _GETREQUEST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=350,
-  serialized_end=408,
+  serialized_start=363,
+  serialized_end=421,
 )
 
 
@@ -296,6 +303,13 @@ _GETRESPONSE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='rid', full_name='voldemort.GetResponse.rid', index=2,
+      number=3, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -305,8 +319,8 @@ _GETRESPONSE = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=410,
-  serialized_end=497,
+  serialized_start=423,
+  serialized_end=523,
 )
 
 
@@ -331,6 +345,13 @@ _GETVERSIONRESPONSE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='rid', full_name='voldemort.GetVersionResponse.rid', index=2,
+      number=3, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -340,8 +361,8 @@ _GETVERSIONRESPONSE = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=499,
-  serialized_end=594,
+  serialized_start=525,
+  serialized_end=633,
 )
 
 
@@ -375,8 +396,8 @@ _GETALLREQUEST_GETALLTRANSFORM = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=690,
-  serialized_end=739,
+  serialized_start=742,
+  serialized_end=791,
 )
 
 _GETALLREQUEST = _descriptor.Descriptor(
@@ -400,6 +421,13 @@ _GETALLREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='rid', full_name='voldemort.GetAllRequest.rid', index=2,
+      number=3, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -409,8 +437,8 @@ _GETALLREQUEST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=597,
-  serialized_end=739,
+  serialized_start=636,
+  serialized_end=791,
 )
 
 
@@ -444,8 +472,8 @@ _GETALLRESPONSE = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=741,
-  serialized_end=832,
+  serialized_start=793,
+  serialized_end=884,
 )
 
 
@@ -479,8 +507,8 @@ _PUTREQUEST = _descriptor.Descriptor(
       options=None),
     _descriptor.FieldDescriptor(
       name='rid', full_name='voldemort.PutRequest.rid', index=3,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=unicode("", "utf-8"),
+      number=4, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -493,8 +521,8 @@ _PUTREQUEST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=834,
-  serialized_end=933,
+  serialized_start=886,
+  serialized_end=985,
 )
 
 
@@ -521,8 +549,8 @@ _PUTRESPONSE = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=935,
-  serialized_end=981,
+  serialized_start=987,
+  serialized_end=1033,
 )
 
 
@@ -549,8 +577,8 @@ _DELETEREQUEST = _descriptor.Descriptor(
       options=None),
     _descriptor.FieldDescriptor(
       name='rid', full_name='voldemort.DeleteRequest.rid', index=2,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=unicode("", "utf-8"),
+      number=3, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -563,8 +591,8 @@ _DELETEREQUEST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=983,
-  serialized_end=1065,
+  serialized_start=1035,
+  serialized_end=1117,
 )
 
 
@@ -598,8 +626,8 @@ _DELETERESPONSE = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1067,
-  serialized_end=1133,
+  serialized_start=1119,
+  serialized_end=1185,
 )
 
 
@@ -675,8 +703,8 @@ _VOLDEMORTREQUEST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=1136,
-  serialized_end=1418,
+  serialized_start=1188,
+  serialized_end=1470,
 )
 
 _VECTORCLOCK.fields_by_name['entries'].message_type = _CLOCKENTRY

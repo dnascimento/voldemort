@@ -2600,6 +2600,16 @@ public final class VProto {
      */
     voldemort.client.protocol.pb.VProto.VersionedOrBuilder getVersionsOrBuilder(
         int index);
+
+    // optional int64 rid = 3;
+    /**
+     * <code>optional int64 rid = 3;</code>
+     */
+    boolean hasRid();
+    /**
+     * <code>optional int64 rid = 3;</code>
+     */
+    long getRid();
   }
   /**
    * Protobuf type {@code voldemort.KeyedVersions}
@@ -2663,6 +2673,11 @@ public final class VProto {
                 mutable_bitField0_ |= 0x00000002;
               }
               versions_.add(input.readMessage(voldemort.client.protocol.pb.VProto.Versioned.PARSER, extensionRegistry));
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000002;
+              rid_ = input.readInt64();
               break;
             }
           }
@@ -2760,9 +2775,26 @@ public final class VProto {
       return versions_.get(index);
     }
 
+    // optional int64 rid = 3;
+    public static final int RID_FIELD_NUMBER = 3;
+    private long rid_;
+    /**
+     * <code>optional int64 rid = 3;</code>
+     */
+    public boolean hasRid() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional int64 rid = 3;</code>
+     */
+    public long getRid() {
+      return rid_;
+    }
+
     private void initFields() {
       key_ = com.google.protobuf.ByteString.EMPTY;
       versions_ = java.util.Collections.emptyList();
+      rid_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -2792,6 +2824,9 @@ public final class VProto {
       for (int i = 0; i < versions_.size(); i++) {
         output.writeMessage(2, versions_.get(i));
       }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt64(3, rid_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -2808,6 +2843,10 @@ public final class VProto {
       for (int i = 0; i < versions_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, versions_.get(i));
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(3, rid_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -2934,6 +2973,8 @@ public final class VProto {
         } else {
           versionsBuilder_.clear();
         }
+        rid_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -2975,6 +3016,10 @@ public final class VProto {
         } else {
           result.versions_ = versionsBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.rid_ = rid_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -3019,6 +3064,9 @@ public final class VProto {
               versionsBuilder_.addAllMessages(other.versions_);
             }
           }
+        }
+        if (other.hasRid()) {
+          setRid(other.getRid());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -3333,6 +3381,39 @@ public final class VProto {
         return versionsBuilder_;
       }
 
+      // optional int64 rid = 3;
+      private long rid_ ;
+      /**
+       * <code>optional int64 rid = 3;</code>
+       */
+      public boolean hasRid() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional int64 rid = 3;</code>
+       */
+      public long getRid() {
+        return rid_;
+      }
+      /**
+       * <code>optional int64 rid = 3;</code>
+       */
+      public Builder setRid(long value) {
+        bitField0_ |= 0x00000004;
+        rid_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 rid = 3;</code>
+       */
+      public Builder clearRid() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        rid_ = 0L;
+        onChanged();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:voldemort.KeyedVersions)
     }
 
@@ -3367,20 +3448,15 @@ public final class VProto {
      */
     com.google.protobuf.ByteString getTransforms();
 
-    // optional string rid = 3;
+    // optional int64 rid = 3;
     /**
-     * <code>optional string rid = 3;</code>
+     * <code>optional int64 rid = 3;</code>
      */
     boolean hasRid();
     /**
-     * <code>optional string rid = 3;</code>
+     * <code>optional int64 rid = 3;</code>
      */
-    java.lang.String getRid();
-    /**
-     * <code>optional string rid = 3;</code>
-     */
-    com.google.protobuf.ByteString
-        getRidBytes();
+    long getRid();
   }
   /**
    * Protobuf type {@code voldemort.GetRequest}
@@ -3443,9 +3519,9 @@ public final class VProto {
               transforms_ = input.readBytes();
               break;
             }
-            case 26: {
+            case 24: {
               bitField0_ |= 0x00000004;
-              rid_ = input.readBytes();
+              rid_ = input.readInt64();
               break;
             }
           }
@@ -3520,53 +3596,26 @@ public final class VProto {
       return transforms_;
     }
 
-    // optional string rid = 3;
+    // optional int64 rid = 3;
     public static final int RID_FIELD_NUMBER = 3;
-    private java.lang.Object rid_;
+    private long rid_;
     /**
-     * <code>optional string rid = 3;</code>
+     * <code>optional int64 rid = 3;</code>
      */
     public boolean hasRid() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>optional string rid = 3;</code>
+     * <code>optional int64 rid = 3;</code>
      */
-    public java.lang.String getRid() {
-      java.lang.Object ref = rid_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          rid_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string rid = 3;</code>
-     */
-    public com.google.protobuf.ByteString
-        getRidBytes() {
-      java.lang.Object ref = rid_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        rid_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public long getRid() {
+      return rid_;
     }
 
     private void initFields() {
       key_ = com.google.protobuf.ByteString.EMPTY;
       transforms_ = com.google.protobuf.ByteString.EMPTY;
-      rid_ = "";
+      rid_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -3587,7 +3636,7 @@ public final class VProto {
         output.writeBytes(2, transforms_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeBytes(3, getRidBytes());
+        output.writeInt64(3, rid_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -3608,7 +3657,7 @@ public final class VProto {
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(3, getRidBytes());
+          .computeInt64Size(3, rid_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -3730,7 +3779,7 @@ public final class VProto {
         bitField0_ = (bitField0_ & ~0x00000001);
         transforms_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000002);
-        rid_ = "";
+        rid_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
@@ -3795,9 +3844,7 @@ public final class VProto {
           setTransforms(other.getTransforms());
         }
         if (other.hasRid()) {
-          bitField0_ |= 0x00000004;
-          rid_ = other.rid_;
-          onChanged();
+          setRid(other.getRid());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -3898,76 +3945,35 @@ public final class VProto {
         return this;
       }
 
-      // optional string rid = 3;
-      private java.lang.Object rid_ = "";
+      // optional int64 rid = 3;
+      private long rid_ ;
       /**
-       * <code>optional string rid = 3;</code>
+       * <code>optional int64 rid = 3;</code>
        */
       public boolean hasRid() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>optional string rid = 3;</code>
+       * <code>optional int64 rid = 3;</code>
        */
-      public java.lang.String getRid() {
-        java.lang.Object ref = rid_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          rid_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
+      public long getRid() {
+        return rid_;
       }
       /**
-       * <code>optional string rid = 3;</code>
+       * <code>optional int64 rid = 3;</code>
        */
-      public com.google.protobuf.ByteString
-          getRidBytes() {
-        java.lang.Object ref = rid_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          rid_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string rid = 3;</code>
-       */
-      public Builder setRid(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
+      public Builder setRid(long value) {
+        bitField0_ |= 0x00000004;
         rid_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string rid = 3;</code>
+       * <code>optional int64 rid = 3;</code>
        */
       public Builder clearRid() {
         bitField0_ = (bitField0_ & ~0x00000004);
-        rid_ = getDefaultInstance().getRid();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string rid = 3;</code>
-       */
-      public Builder setRidBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
-        rid_ = value;
+        rid_ = 0L;
         onChanged();
         return this;
       }
@@ -4024,6 +4030,16 @@ public final class VProto {
      * <code>optional .voldemort.Error error = 2;</code>
      */
     voldemort.client.protocol.pb.VProto.ErrorOrBuilder getErrorOrBuilder();
+
+    // optional int64 rid = 3;
+    /**
+     * <code>optional int64 rid = 3;</code>
+     */
+    boolean hasRid();
+    /**
+     * <code>optional int64 rid = 3;</code>
+     */
+    long getRid();
   }
   /**
    * Protobuf type {@code voldemort.GetResponse}
@@ -4095,6 +4111,11 @@ public final class VProto {
                 error_ = subBuilder.buildPartial();
               }
               bitField0_ |= 0x00000001;
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000002;
+              rid_ = input.readInt64();
               break;
             }
           }
@@ -4198,9 +4219,26 @@ public final class VProto {
       return error_;
     }
 
+    // optional int64 rid = 3;
+    public static final int RID_FIELD_NUMBER = 3;
+    private long rid_;
+    /**
+     * <code>optional int64 rid = 3;</code>
+     */
+    public boolean hasRid() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional int64 rid = 3;</code>
+     */
+    public long getRid() {
+      return rid_;
+    }
+
     private void initFields() {
       versioned_ = java.util.Collections.emptyList();
       error_ = voldemort.client.protocol.pb.VProto.Error.getDefaultInstance();
+      rid_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -4232,6 +4270,9 @@ public final class VProto {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeMessage(2, error_);
       }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt64(3, rid_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -4248,6 +4289,10 @@ public final class VProto {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, error_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(3, rid_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -4379,6 +4424,8 @@ public final class VProto {
           errorBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000002);
+        rid_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -4424,6 +4471,10 @@ public final class VProto {
         } else {
           result.error_ = errorBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.rid_ = rid_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -4468,6 +4519,9 @@ public final class VProto {
         }
         if (other.hasError()) {
           mergeError(other.getError());
+        }
+        if (other.hasRid()) {
+          setRid(other.getRid());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -4865,6 +4919,39 @@ public final class VProto {
         return errorBuilder_;
       }
 
+      // optional int64 rid = 3;
+      private long rid_ ;
+      /**
+       * <code>optional int64 rid = 3;</code>
+       */
+      public boolean hasRid() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional int64 rid = 3;</code>
+       */
+      public long getRid() {
+        return rid_;
+      }
+      /**
+       * <code>optional int64 rid = 3;</code>
+       */
+      public Builder setRid(long value) {
+        bitField0_ |= 0x00000004;
+        rid_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 rid = 3;</code>
+       */
+      public Builder clearRid() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        rid_ = 0L;
+        onChanged();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:voldemort.GetResponse)
     }
 
@@ -4917,6 +5004,16 @@ public final class VProto {
      * <code>optional .voldemort.Error error = 2;</code>
      */
     voldemort.client.protocol.pb.VProto.ErrorOrBuilder getErrorOrBuilder();
+
+    // optional int64 rid = 3;
+    /**
+     * <code>optional int64 rid = 3;</code>
+     */
+    boolean hasRid();
+    /**
+     * <code>optional int64 rid = 3;</code>
+     */
+    long getRid();
   }
   /**
    * Protobuf type {@code voldemort.GetVersionResponse}
@@ -4988,6 +5085,11 @@ public final class VProto {
                 error_ = subBuilder.buildPartial();
               }
               bitField0_ |= 0x00000001;
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000002;
+              rid_ = input.readInt64();
               break;
             }
           }
@@ -5091,9 +5193,26 @@ public final class VProto {
       return error_;
     }
 
+    // optional int64 rid = 3;
+    public static final int RID_FIELD_NUMBER = 3;
+    private long rid_;
+    /**
+     * <code>optional int64 rid = 3;</code>
+     */
+    public boolean hasRid() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional int64 rid = 3;</code>
+     */
+    public long getRid() {
+      return rid_;
+    }
+
     private void initFields() {
       versions_ = java.util.Collections.emptyList();
       error_ = voldemort.client.protocol.pb.VProto.Error.getDefaultInstance();
+      rid_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -5125,6 +5244,9 @@ public final class VProto {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeMessage(2, error_);
       }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt64(3, rid_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -5141,6 +5263,10 @@ public final class VProto {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, error_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(3, rid_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -5272,6 +5398,8 @@ public final class VProto {
           errorBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000002);
+        rid_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -5317,6 +5445,10 @@ public final class VProto {
         } else {
           result.error_ = errorBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.rid_ = rid_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -5361,6 +5493,9 @@ public final class VProto {
         }
         if (other.hasError()) {
           mergeError(other.getError());
+        }
+        if (other.hasRid()) {
+          setRid(other.getRid());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -5758,6 +5893,39 @@ public final class VProto {
         return errorBuilder_;
       }
 
+      // optional int64 rid = 3;
+      private long rid_ ;
+      /**
+       * <code>optional int64 rid = 3;</code>
+       */
+      public boolean hasRid() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional int64 rid = 3;</code>
+       */
+      public long getRid() {
+        return rid_;
+      }
+      /**
+       * <code>optional int64 rid = 3;</code>
+       */
+      public Builder setRid(long value) {
+        bitField0_ |= 0x00000004;
+        rid_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 rid = 3;</code>
+       */
+      public Builder clearRid() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        rid_ = 0L;
+        onChanged();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:voldemort.GetVersionResponse)
     }
 
@@ -5810,6 +5978,16 @@ public final class VProto {
      */
     voldemort.client.protocol.pb.VProto.GetAllRequest.GetAllTransformOrBuilder getTransformsOrBuilder(
         int index);
+
+    // optional int64 rid = 3;
+    /**
+     * <code>optional int64 rid = 3;</code>
+     */
+    boolean hasRid();
+    /**
+     * <code>optional int64 rid = 3;</code>
+     */
+    long getRid();
   }
   /**
    * Protobuf type {@code voldemort.GetAllRequest}
@@ -5876,6 +6054,11 @@ public final class VProto {
                 mutable_bitField0_ |= 0x00000002;
               }
               transforms_.add(input.readMessage(voldemort.client.protocol.pb.VProto.GetAllRequest.GetAllTransform.PARSER, extensionRegistry));
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000001;
+              rid_ = input.readInt64();
               break;
             }
           }
@@ -6422,6 +6605,7 @@ public final class VProto {
       // @@protoc_insertion_point(class_scope:voldemort.GetAllRequest.GetAllTransform)
     }
 
+    private int bitField0_;
     // repeated bytes keys = 1;
     public static final int KEYS_FIELD_NUMBER = 1;
     private java.util.List<com.google.protobuf.ByteString> keys_;
@@ -6481,9 +6665,26 @@ public final class VProto {
       return transforms_.get(index);
     }
 
+    // optional int64 rid = 3;
+    public static final int RID_FIELD_NUMBER = 3;
+    private long rid_;
+    /**
+     * <code>optional int64 rid = 3;</code>
+     */
+    public boolean hasRid() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>optional int64 rid = 3;</code>
+     */
+    public long getRid() {
+      return rid_;
+    }
+
     private void initFields() {
       keys_ = java.util.Collections.emptyList();
       transforms_ = java.util.Collections.emptyList();
+      rid_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -6509,6 +6710,9 @@ public final class VProto {
       for (int i = 0; i < transforms_.size(); i++) {
         output.writeMessage(2, transforms_.get(i));
       }
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeInt64(3, rid_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -6530,6 +6734,10 @@ public final class VProto {
       for (int i = 0; i < transforms_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, transforms_.get(i));
+      }
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(3, rid_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -6656,6 +6864,8 @@ public final class VProto {
         } else {
           transformsBuilder_.clear();
         }
+        rid_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -6683,6 +6893,7 @@ public final class VProto {
       public voldemort.client.protocol.pb.VProto.GetAllRequest buildPartial() {
         voldemort.client.protocol.pb.VProto.GetAllRequest result = new voldemort.client.protocol.pb.VProto.GetAllRequest(this);
         int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
           keys_ = java.util.Collections.unmodifiableList(keys_);
           bitField0_ = (bitField0_ & ~0x00000001);
@@ -6697,6 +6908,11 @@ public final class VProto {
         } else {
           result.transforms_ = transformsBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.rid_ = rid_;
+        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
@@ -6747,6 +6963,9 @@ public final class VProto {
               transformsBuilder_.addAllMessages(other.transforms_);
             }
           }
+        }
+        if (other.hasRid()) {
+          setRid(other.getRid());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -7091,6 +7310,39 @@ public final class VProto {
           transforms_ = null;
         }
         return transformsBuilder_;
+      }
+
+      // optional int64 rid = 3;
+      private long rid_ ;
+      /**
+       * <code>optional int64 rid = 3;</code>
+       */
+      public boolean hasRid() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional int64 rid = 3;</code>
+       */
+      public long getRid() {
+        return rid_;
+      }
+      /**
+       * <code>optional int64 rid = 3;</code>
+       */
+      public Builder setRid(long value) {
+        bitField0_ |= 0x00000004;
+        rid_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 rid = 3;</code>
+       */
+      public Builder clearRid() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        rid_ = 0L;
+        onChanged();
+        return this;
       }
 
       // @@protoc_insertion_point(builder_scope:voldemort.GetAllRequest)
@@ -8034,20 +8286,15 @@ public final class VProto {
      */
     com.google.protobuf.ByteString getTransforms();
 
-    // optional string rid = 4;
+    // optional int64 rid = 4;
     /**
-     * <code>optional string rid = 4;</code>
+     * <code>optional int64 rid = 4;</code>
      */
     boolean hasRid();
     /**
-     * <code>optional string rid = 4;</code>
+     * <code>optional int64 rid = 4;</code>
      */
-    java.lang.String getRid();
-    /**
-     * <code>optional string rid = 4;</code>
-     */
-    com.google.protobuf.ByteString
-        getRidBytes();
+    long getRid();
   }
   /**
    * Protobuf type {@code voldemort.PutRequest}
@@ -8123,9 +8370,9 @@ public final class VProto {
               transforms_ = input.readBytes();
               break;
             }
-            case 34: {
+            case 32: {
               bitField0_ |= 0x00000008;
-              rid_ = input.readBytes();
+              rid_ = input.readInt64();
               break;
             }
           }
@@ -8222,54 +8469,27 @@ public final class VProto {
       return transforms_;
     }
 
-    // optional string rid = 4;
+    // optional int64 rid = 4;
     public static final int RID_FIELD_NUMBER = 4;
-    private java.lang.Object rid_;
+    private long rid_;
     /**
-     * <code>optional string rid = 4;</code>
+     * <code>optional int64 rid = 4;</code>
      */
     public boolean hasRid() {
       return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
-     * <code>optional string rid = 4;</code>
+     * <code>optional int64 rid = 4;</code>
      */
-    public java.lang.String getRid() {
-      java.lang.Object ref = rid_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          rid_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string rid = 4;</code>
-     */
-    public com.google.protobuf.ByteString
-        getRidBytes() {
-      java.lang.Object ref = rid_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        rid_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public long getRid() {
+      return rid_;
     }
 
     private void initFields() {
       key_ = com.google.protobuf.ByteString.EMPTY;
       versioned_ = voldemort.client.protocol.pb.VProto.Versioned.getDefaultInstance();
       transforms_ = com.google.protobuf.ByteString.EMPTY;
-      rid_ = "";
+      rid_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -8305,7 +8525,7 @@ public final class VProto {
         output.writeBytes(3, transforms_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeBytes(4, getRidBytes());
+        output.writeInt64(4, rid_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -8330,7 +8550,7 @@ public final class VProto {
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(4, getRidBytes());
+          .computeInt64Size(4, rid_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -8459,7 +8679,7 @@ public final class VProto {
         bitField0_ = (bitField0_ & ~0x00000002);
         transforms_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000004);
-        rid_ = "";
+        rid_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
@@ -8535,9 +8755,7 @@ public final class VProto {
           setTransforms(other.getTransforms());
         }
         if (other.hasRid()) {
-          bitField0_ |= 0x00000008;
-          rid_ = other.rid_;
-          onChanged();
+          setRid(other.getRid());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -8767,76 +8985,35 @@ public final class VProto {
         return this;
       }
 
-      // optional string rid = 4;
-      private java.lang.Object rid_ = "";
+      // optional int64 rid = 4;
+      private long rid_ ;
       /**
-       * <code>optional string rid = 4;</code>
+       * <code>optional int64 rid = 4;</code>
        */
       public boolean hasRid() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
-       * <code>optional string rid = 4;</code>
+       * <code>optional int64 rid = 4;</code>
        */
-      public java.lang.String getRid() {
-        java.lang.Object ref = rid_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          rid_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
+      public long getRid() {
+        return rid_;
       }
       /**
-       * <code>optional string rid = 4;</code>
+       * <code>optional int64 rid = 4;</code>
        */
-      public com.google.protobuf.ByteString
-          getRidBytes() {
-        java.lang.Object ref = rid_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          rid_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string rid = 4;</code>
-       */
-      public Builder setRid(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000008;
+      public Builder setRid(long value) {
+        bitField0_ |= 0x00000008;
         rid_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string rid = 4;</code>
+       * <code>optional int64 rid = 4;</code>
        */
       public Builder clearRid() {
         bitField0_ = (bitField0_ & ~0x00000008);
-        rid_ = getDefaultInstance().getRid();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string rid = 4;</code>
-       */
-      public Builder setRidBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000008;
-        rid_ = value;
+        rid_ = 0L;
         onChanged();
         return this;
       }
@@ -9398,20 +9575,15 @@ public final class VProto {
      */
     voldemort.client.protocol.pb.VProto.VectorClockOrBuilder getVersionOrBuilder();
 
-    // optional string rid = 4;
+    // optional int64 rid = 3;
     /**
-     * <code>optional string rid = 4;</code>
+     * <code>optional int64 rid = 3;</code>
      */
     boolean hasRid();
     /**
-     * <code>optional string rid = 4;</code>
+     * <code>optional int64 rid = 3;</code>
      */
-    java.lang.String getRid();
-    /**
-     * <code>optional string rid = 4;</code>
-     */
-    com.google.protobuf.ByteString
-        getRidBytes();
+    long getRid();
   }
   /**
    * Protobuf type {@code voldemort.DeleteRequest}
@@ -9482,9 +9654,9 @@ public final class VProto {
               bitField0_ |= 0x00000002;
               break;
             }
-            case 34: {
+            case 24: {
               bitField0_ |= 0x00000004;
-              rid_ = input.readBytes();
+              rid_ = input.readInt64();
               break;
             }
           }
@@ -9565,53 +9737,26 @@ public final class VProto {
       return version_;
     }
 
-    // optional string rid = 4;
-    public static final int RID_FIELD_NUMBER = 4;
-    private java.lang.Object rid_;
+    // optional int64 rid = 3;
+    public static final int RID_FIELD_NUMBER = 3;
+    private long rid_;
     /**
-     * <code>optional string rid = 4;</code>
+     * <code>optional int64 rid = 3;</code>
      */
     public boolean hasRid() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>optional string rid = 4;</code>
+     * <code>optional int64 rid = 3;</code>
      */
-    public java.lang.String getRid() {
-      java.lang.Object ref = rid_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          rid_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string rid = 4;</code>
-     */
-    public com.google.protobuf.ByteString
-        getRidBytes() {
-      java.lang.Object ref = rid_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        rid_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public long getRid() {
+      return rid_;
     }
 
     private void initFields() {
       key_ = com.google.protobuf.ByteString.EMPTY;
       version_ = voldemort.client.protocol.pb.VProto.VectorClock.getDefaultInstance();
-      rid_ = "";
+      rid_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -9644,7 +9789,7 @@ public final class VProto {
         output.writeMessage(2, version_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeBytes(4, getRidBytes());
+        output.writeInt64(3, rid_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -9665,7 +9810,7 @@ public final class VProto {
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(4, getRidBytes());
+          .computeInt64Size(3, rid_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -9792,7 +9937,7 @@ public final class VProto {
           versionBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000002);
-        rid_ = "";
+        rid_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
@@ -9861,9 +10006,7 @@ public final class VProto {
           mergeVersion(other.getVersion());
         }
         if (other.hasRid()) {
-          bitField0_ |= 0x00000004;
-          rid_ = other.rid_;
-          onChanged();
+          setRid(other.getRid());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -10057,76 +10200,35 @@ public final class VProto {
         return versionBuilder_;
       }
 
-      // optional string rid = 4;
-      private java.lang.Object rid_ = "";
+      // optional int64 rid = 3;
+      private long rid_ ;
       /**
-       * <code>optional string rid = 4;</code>
+       * <code>optional int64 rid = 3;</code>
        */
       public boolean hasRid() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>optional string rid = 4;</code>
+       * <code>optional int64 rid = 3;</code>
        */
-      public java.lang.String getRid() {
-        java.lang.Object ref = rid_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          rid_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
+      public long getRid() {
+        return rid_;
       }
       /**
-       * <code>optional string rid = 4;</code>
+       * <code>optional int64 rid = 3;</code>
        */
-      public com.google.protobuf.ByteString
-          getRidBytes() {
-        java.lang.Object ref = rid_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          rid_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string rid = 4;</code>
-       */
-      public Builder setRid(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
+      public Builder setRid(long value) {
+        bitField0_ |= 0x00000004;
         rid_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string rid = 4;</code>
+       * <code>optional int64 rid = 3;</code>
        */
       public Builder clearRid() {
         bitField0_ = (bitField0_ & ~0x00000004);
-        rid_ = getDefaultInstance().getRid();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string rid = 4;</code>
-       */
-      public Builder setRidBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
-        rid_ = value;
+        rid_ = 0L;
         onChanged();
         return this;
       }
@@ -12396,39 +12498,40 @@ public final class VProto {
       "ldemort.ClockEntry\022\021\n\ttimestamp\030\002 \001(\003\"C\n" +
       "\tVersioned\022\r\n\005value\030\001 \002(\014\022\'\n\007version\030\002 \002" +
       "(\0132\026.voldemort.VectorClock\"2\n\005Error\022\022\n\ne" +
-      "rror_code\030\001 \002(\005\022\025\n\rerror_message\030\002 \002(\t\"D" +
+      "rror_code\030\001 \002(\005\022\025\n\rerror_message\030\002 \002(\t\"Q" +
       "\n\rKeyedVersions\022\013\n\003key\030\001 \002(\014\022&\n\010versions" +
-      "\030\002 \003(\0132\024.voldemort.Versioned\":\n\nGetReque" +
-      "st\022\013\n\003key\030\001 \001(\014\022\022\n\ntransforms\030\002 \001(\014\022\013\n\003r",
-      "id\030\003 \001(\t\"W\n\013GetResponse\022\'\n\tversioned\030\001 \003" +
-      "(\0132\024.voldemort.Versioned\022\037\n\005error\030\002 \001(\0132" +
-      "\020.voldemort.Error\"_\n\022GetVersionResponse\022" +
-      "(\n\010versions\030\001 \003(\0132\026.voldemort.VectorCloc" +
-      "k\022\037\n\005error\030\002 \001(\0132\020.voldemort.Error\"\216\001\n\rG" +
-      "etAllRequest\022\014\n\004keys\030\001 \003(\014\022<\n\ntransforms" +
-      "\030\002 \003(\0132(.voldemort.GetAllRequest.GetAllT" +
-      "ransform\0321\n\017GetAllTransform\022\013\n\003key\030\001 \002(\014" +
-      "\022\021\n\ttransform\030\002 \002(\014\"[\n\016GetAllResponse\022(\n" +
-      "\006values\030\001 \003(\0132\030.voldemort.KeyedVersions\022",
-      "\037\n\005error\030\002 \001(\0132\020.voldemort.Error\"c\n\nPutR" +
-      "equest\022\013\n\003key\030\001 \002(\014\022\'\n\tversioned\030\002 \002(\0132\024" +
-      ".voldemort.Versioned\022\022\n\ntransforms\030\003 \001(\014" +
-      "\022\013\n\003rid\030\004 \001(\t\".\n\013PutResponse\022\037\n\005error\030\001 " +
-      "\001(\0132\020.voldemort.Error\"R\n\rDeleteRequest\022\013" +
-      "\n\003key\030\001 \002(\014\022\'\n\007version\030\002 \002(\0132\026.voldemort" +
-      ".VectorClock\022\013\n\003rid\030\004 \001(\t\"B\n\016DeleteRespo" +
-      "nse\022\017\n\007success\030\001 \002(\010\022\037\n\005error\030\002 \001(\0132\020.vo" +
-      "ldemort.Error\"\232\002\n\020VoldemortRequest\022$\n\004ty" +
-      "pe\030\001 \002(\0162\026.voldemort.RequestType\022\033\n\014shou",
-      "ld_route\030\002 \002(\010:\005false\022\r\n\005store\030\003 \002(\t\022\"\n\003" +
-      "get\030\004 \001(\0132\025.voldemort.GetRequest\022(\n\006getA" +
-      "ll\030\005 \001(\0132\030.voldemort.GetAllRequest\022\"\n\003pu" +
-      "t\030\006 \001(\0132\025.voldemort.PutRequest\022(\n\006delete" +
-      "\030\007 \001(\0132\030.voldemort.DeleteRequest\022\030\n\020requ" +
-      "estRouteType\030\010 \001(\005*I\n\013RequestType\022\007\n\003GET" +
-      "\020\000\022\013\n\007GET_ALL\020\001\022\007\n\003PUT\020\002\022\n\n\006DELETE\020\003\022\017\n\013" +
-      "GET_VERSION\020\004B(\n\034voldemort.client.protoc" +
-      "ol.pbB\006VProtoH\001"
+      "\030\002 \003(\0132\024.voldemort.Versioned\022\013\n\003rid\030\003 \001(" +
+      "\003\":\n\nGetRequest\022\013\n\003key\030\001 \001(\014\022\022\n\ntransfor",
+      "ms\030\002 \001(\014\022\013\n\003rid\030\003 \001(\003\"d\n\013GetResponse\022\'\n\t" +
+      "versioned\030\001 \003(\0132\024.voldemort.Versioned\022\037\n" +
+      "\005error\030\002 \001(\0132\020.voldemort.Error\022\013\n\003rid\030\003 " +
+      "\001(\003\"l\n\022GetVersionResponse\022(\n\010versions\030\001 " +
+      "\003(\0132\026.voldemort.VectorClock\022\037\n\005error\030\002 \001" +
+      "(\0132\020.voldemort.Error\022\013\n\003rid\030\003 \001(\003\"\233\001\n\rGe" +
+      "tAllRequest\022\014\n\004keys\030\001 \003(\014\022<\n\ntransforms\030" +
+      "\002 \003(\0132(.voldemort.GetAllRequest.GetAllTr" +
+      "ansform\022\013\n\003rid\030\003 \001(\003\0321\n\017GetAllTransform\022" +
+      "\013\n\003key\030\001 \002(\014\022\021\n\ttransform\030\002 \002(\014\"[\n\016GetAl",
+      "lResponse\022(\n\006values\030\001 \003(\0132\030.voldemort.Ke" +
+      "yedVersions\022\037\n\005error\030\002 \001(\0132\020.voldemort.E" +
+      "rror\"c\n\nPutRequest\022\013\n\003key\030\001 \002(\014\022\'\n\tversi" +
+      "oned\030\002 \002(\0132\024.voldemort.Versioned\022\022\n\ntran" +
+      "sforms\030\003 \001(\014\022\013\n\003rid\030\004 \001(\003\".\n\013PutResponse" +
+      "\022\037\n\005error\030\001 \001(\0132\020.voldemort.Error\"R\n\rDel" +
+      "eteRequest\022\013\n\003key\030\001 \002(\014\022\'\n\007version\030\002 \002(\013" +
+      "2\026.voldemort.VectorClock\022\013\n\003rid\030\003 \001(\003\"B\n" +
+      "\016DeleteResponse\022\017\n\007success\030\001 \002(\010\022\037\n\005erro" +
+      "r\030\002 \001(\0132\020.voldemort.Error\"\232\002\n\020VoldemortR",
+      "equest\022$\n\004type\030\001 \002(\0162\026.voldemort.Request" +
+      "Type\022\033\n\014should_route\030\002 \002(\010:\005false\022\r\n\005sto" +
+      "re\030\003 \002(\t\022\"\n\003get\030\004 \001(\0132\025.voldemort.GetReq" +
+      "uest\022(\n\006getAll\030\005 \001(\0132\030.voldemort.GetAllR" +
+      "equest\022\"\n\003put\030\006 \001(\0132\025.voldemort.PutReque" +
+      "st\022(\n\006delete\030\007 \001(\0132\030.voldemort.DeleteReq" +
+      "uest\022\030\n\020requestRouteType\030\010 \001(\005*I\n\013Reques" +
+      "tType\022\007\n\003GET\020\000\022\013\n\007GET_ALL\020\001\022\007\n\003PUT\020\002\022\n\n\006" +
+      "DELETE\020\003\022\017\n\013GET_VERSION\020\004B(\n\034voldemort.c" +
+      "lient.protocol.pbB\006VProtoH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -12464,7 +12567,7 @@ public final class VProto {
           internal_static_voldemort_KeyedVersions_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_KeyedVersions_descriptor,
-              new java.lang.String[] { "Key", "Versions", });
+              new java.lang.String[] { "Key", "Versions", "Rid", });
           internal_static_voldemort_GetRequest_descriptor =
             getDescriptor().getMessageTypes().get(5);
           internal_static_voldemort_GetRequest_fieldAccessorTable = new
@@ -12476,19 +12579,19 @@ public final class VProto {
           internal_static_voldemort_GetResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_GetResponse_descriptor,
-              new java.lang.String[] { "Versioned", "Error", });
+              new java.lang.String[] { "Versioned", "Error", "Rid", });
           internal_static_voldemort_GetVersionResponse_descriptor =
             getDescriptor().getMessageTypes().get(7);
           internal_static_voldemort_GetVersionResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_GetVersionResponse_descriptor,
-              new java.lang.String[] { "Versions", "Error", });
+              new java.lang.String[] { "Versions", "Error", "Rid", });
           internal_static_voldemort_GetAllRequest_descriptor =
             getDescriptor().getMessageTypes().get(8);
           internal_static_voldemort_GetAllRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_GetAllRequest_descriptor,
-              new java.lang.String[] { "Keys", "Transforms", });
+              new java.lang.String[] { "Keys", "Transforms", "Rid", });
           internal_static_voldemort_GetAllRequest_GetAllTransform_descriptor =
             internal_static_voldemort_GetAllRequest_descriptor.getNestedTypes().get(0);
           internal_static_voldemort_GetAllRequest_GetAllTransform_fieldAccessorTable = new

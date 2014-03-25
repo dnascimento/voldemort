@@ -32,22 +32,25 @@ message Error {
 message KeyedVersions {
   required bytes key = 1;
   repeated Versioned versions = 2;
+  optional int64 rid = 3;
 }
 
 message GetRequest {
   optional bytes key = 1;
   optional bytes transforms = 2;
-  optional string rid = 3;
+  optional int64 rid = 3;
 }
 
 message GetResponse {
   repeated Versioned versioned = 1;
   optional Error error = 2;
+  optional int64 rid = 3;
 }
 
 message GetVersionResponse {
   repeated VectorClock versions = 1;
   optional Error error = 2;
+  optional int64 rid = 3;
 }
 
 message GetAllRequest {
@@ -58,6 +61,7 @@ message GetAllRequest {
     required bytes transform = 2;
   }
   repeated GetAllTransform transforms = 2;
+  optional int64 rid = 3;
 }
 
 message GetAllResponse {
@@ -69,7 +73,7 @@ message PutRequest {
   required bytes key = 1;
   required Versioned versioned = 2;
   optional bytes transforms = 3;
-  optional string rid = 4;
+  optional int64 rid = 4;
 }
 
 message PutResponse {
@@ -79,7 +83,7 @@ message PutResponse {
 message DeleteRequest {
   required bytes key = 1;
   required VectorClock version = 2;
-  optional string rid = 4;
+  optional int64 rid = 3;
 }
 
 message DeleteResponse {
