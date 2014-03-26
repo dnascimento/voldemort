@@ -6,10 +6,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import voldemort.VoldemortException;
 import voldemort.client.protocol.pb.ProtoUtils;
@@ -23,8 +21,7 @@ import voldemort.server.protocol.AbstractRequestHandler;
 import voldemort.server.protocol.StreamRequestHandler;
 import voldemort.store.ErrorCodeMapper;
 import voldemort.store.Store;
-import voldemort.undoTracker.Op;
-import voldemort.undoTracker.SendOpTrack;
+import voldemort.undoTracker.UndoStub;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
@@ -39,25 +36,11 @@ import com.google.protobuf.Message;
  */
 public class ProtoBuffRequestHandler extends AbstractRequestHandler {
 
-    // TODO Check threading
-    private static ConcurrentHashMap<ByteArray, LinkedList<Op>> trackLocalAccess = new ConcurrentHashMap<ByteArray, LinkedList<Op>>();
-
-    private void trackRequest(ByteArray key, Op.OpType type, long rid) {
-        if(rid == 0)
-            return;
-
-        LinkedList<Op> list = trackLocalAccess.get(key);
-        if(list == null) {
-            System.out.println("List is null");
-            list = new LinkedList<Op>();
-            trackLocalAccess.put(key, list);
-        }
-        list.addLast(new Op(rid, type));
-    }
+    UndoStub undoStub = new UndoStub();
 
     public ProtoBuffRequestHandler(ErrorCodeMapper errorMapper, StoreRepository storeRepository) {
         super(errorMapper, storeRepository);
-        SendOpTrack.init(trackLocalAccess);
+        undoStub = new UndoStub();
     }
 
     @Override
@@ -127,8 +110,8 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
                                          Store<ByteArray, byte[], byte[]> store) {
         VProto.GetResponse.Builder response = VProto.GetResponse.newBuilder();
         ByteArray key = ProtoUtils.decodeBytes(request.getKey());
-        trackRequest(key, Op.OpType.Read, request.getRid());
-        System.out.println("Get: " + request.getRid());
+
+        undoStub.get(key, request.getRid());
 
         try {
             List<Versioned<byte[]>> values = store.get(key,
@@ -145,6 +128,7 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
 
     private VProto.GetAllResponse handleGetAll(VProto.GetAllRequest request,
                                                Store<ByteArray, byte[], byte[]> store) {
+
         VProto.GetAllResponse.Builder response = VProto.GetAllResponse.newBuilder();
         try {
             List<ByteArray> keys = new ArrayList<ByteArray>(request.getKeysCount());
@@ -179,8 +163,8 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
                                          Store<ByteArray, byte[], byte[]> store) {
         VProto.PutResponse.Builder response = VProto.PutResponse.newBuilder();
         ByteArray key = ProtoUtils.decodeBytes(request.getKey());
-        trackRequest(key, Op.OpType.Delete, request.getRid());
-        System.out.println("Put: " + request.getRid());
+        undoStub.put(key, request.getRid());
+
         try {
             Versioned<byte[]> value = ProtoUtils.decodeVersioned(request.getVersioned());
 
@@ -198,7 +182,7 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
                                                Store<ByteArray, byte[], byte[]> store) {
         VProto.DeleteResponse.Builder response = VProto.DeleteResponse.newBuilder();
         ByteArray key = ProtoUtils.decodeBytes(request.getKey());
-        trackRequest(key, Op.OpType.Delete, request.getRid());
+        undoStub.delete(key, request.getRid());
 
         try {
             boolean success = store.delete(key, ProtoUtils.decodeClock(request.getVersion()));

@@ -20,3 +20,4 @@ voldsys$_*
 .project
 .settings
 .pydevproject
+/META-INF
