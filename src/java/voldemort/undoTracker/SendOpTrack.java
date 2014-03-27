@@ -33,7 +33,6 @@ public class SendOpTrack extends Thread {
     public void run() {
         while(true) {
             try {
-                System.out.println("Extracting operations");
                 extractOperations();
                 sleep(REFRESH_PERIOD);
             } catch(IOException e) {
