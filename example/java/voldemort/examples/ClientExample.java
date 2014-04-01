@@ -25,21 +25,20 @@ import voldemort.versioning.Versioned;
 public class ClientExample {
 
     public static void main(String[] args) {
-
         // In real life this stuff would get wired in
         String bootstrapUrl = "tcp://localhost:6666";
         StoreClientFactory factory = new SocketStoreClientFactory(new ClientConfig().setBootstrapUrls(bootstrapUrl));
-
-        StoreClient<String, String> client = factory.getStoreClient("my_store_name");
+        StoreClient<String, BananaMsg.Banana> client = factory.getStoreClient("test");
+        client.put("some_key",
+                   BananaMsg.Banana.newBuilder().setTipo("costa rica").setNome("chiquita").build());
 
         // get the value
-        Versioned<String> version = client.get("some_key");
-
+        Versioned<BananaMsg.Banana> version = client.get("some_key");
+        System.out.println(version.getValue());
         // modify the value
-        version.setObject("new_value");
+        // version.setObject("new_value");
 
         // update the value
-        client.put("some_key", version);
     }
 
 }

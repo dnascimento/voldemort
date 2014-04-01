@@ -12,12 +12,12 @@
     </key-serializer>
     <value-serializer>
       <type>protobuf</type>
-      <schema-info>java=pt.inesc.ask.proto.AskProto$Question</schema-info>
+   	  <schema-info>java=pt.inesc.ask.proto.AskProto$Question</schema-info>
     </value-serializer>
   </store>
 
-  <store>
-    <name>answerStore</name>
+    <store>
+    <name>questionStore</name>
     <persistence>bdb</persistence>
     <description>answerStore Store</description>
     <routing>server</routing>
@@ -29,11 +29,11 @@
     </key-serializer>
     <value-serializer>
       <type>protobuf</type>
-      <schema-info>java=pt.inesc.ask.proto.AskProto$Answer</schema-info>
+   	  <schema-info>java=pt.inesc.ask.proto.AskProto$Answer</schema-info>
     </value-serializer>
   </store>
 
-  <store>
+    <store>
     <name>commentStore</name>
     <persistence>bdb</persistence>
     <description>Comment Store</description>
@@ -46,41 +46,25 @@
     </key-serializer>
     <value-serializer>
       <type>protobuf</type>
-      <schema-info>java=pt.inesc.ask.proto.AskProto$Comment</schema-info>
+   	  <schema-info>java=pt.inesc.ask.proto.AskProto$Comment</schema-info>
     </value-serializer>
   </store>  
+
   <store>
-   <name>index</name>
-   <persistence>bdb</persistence>
-   <description>Index Store</description>
-   <routing>server</routing>
-   <replication-factor>1</replication-factor>
-   <required-reads>1</required-reads>
-   <required-writes>1</required-writes>
-   <key-serializer>
-    <type>string</type>
-  </key-serializer>
-  <value-serializer>
-    <type>protobuf</type>
-    <schema-info>java=pt.inesc.ask.proto.AskProto$Index</schema-info>
-  </value-serializer>
-</store>
-<store>
-  <name>test</name>
-  <persistence>bdb</persistence>
-  <description>Dario Store</description>
-  <owners>dfrnascimento@gmail.com</owners>
-  <routing>server</routing>
-  <replication-factor>1</replication-factor>
-  <required-reads>1</required-reads>
-  <required-writes>1</required-writes>
-  <key-serializer>
-    <type>string</type>
-  </key-serializer>
-  <value-serializer>
-    <type>string</type>
-  </value-serializer>
-</store>
+    <name>index</name>
+    <persistence>bdb</persistence>
+    <description>Index Store</description>
+    <routing>server</routing>
+    <replication-factor>1</replication-factor>
+    <required-reads>1</required-reads>
+    <required-writes>1</required-writes>
+    <key-serializer>
+      <type>string</type>
+    </key-serializer>
+   <value-serializer>
+      <type>string</type>
+    </value-serializer>
+  </store>
 </stores>
 
 

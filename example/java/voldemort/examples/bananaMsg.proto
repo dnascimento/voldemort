@@ -1,0 +1,6 @@
+package voldemort.examples;
+
+message Banana{
+	optional string nome = 1;
+	optional string tipo = 2;
+}
