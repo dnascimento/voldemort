@@ -365,14 +365,16 @@ public class AdminServiceBasicTest {
 
         // Retrieve list of read-only stores
         List<String> storeNames = Lists.newArrayList();
-        for (StoreDefinition storeDef: adminClient.metadataMgmtOps.getRemoteStoreDefList(0).getValue()) {
-            if (storeDef.getType().compareTo(ReadOnlyStorageConfiguration.TYPE_NAME) == 0) {
+        for(StoreDefinition storeDef: adminClient.metadataMgmtOps.getRemoteStoreDefList(0)
+                                                                 .getValue()) {
+            if(storeDef.getType().compareTo(ReadOnlyStorageConfiguration.TYPE_NAME) == 0) {
                 storeNames.add(storeDef.getName());
             }
         }
 
-        Map<String, String> storeToStorageFormat = adminClient.readonlyOps.getROStorageFormat(0, storeNames);
-        for (String storeName: storeToStorageFormat.keySet()) {
+        Map<String, String> storeToStorageFormat = adminClient.readonlyOps.getROStorageFormat(0,
+                                                                                              storeNames);
+        for(String storeName: storeToStorageFormat.keySet()) {
             assertEquals(storeToStorageFormat.get(storeName), "ro2");
         }
 
@@ -1173,13 +1175,15 @@ public class AdminServiceBasicTest {
         // delete the store
         assertEquals(adminClient.metadataMgmtOps.getRemoteStoreDefList(0)
                                                 .getValue()
-                                                .contains(definition), true);
+                                                .contains(definition),
+                     true);
         adminClient.storeMgmtOps.deleteStore("deleteTest");
         assertEquals(adminClient.metadataMgmtOps.getRemoteStoreDefList(0).getValue().size(),
                      numStores - 1);
         assertEquals(adminClient.metadataMgmtOps.getRemoteStoreDefList(0)
                                                 .getValue()
-                                                .contains(definition), false);
+                                                .contains(definition),
+                     false);
 
         // test with deleted store
         // (Turning off store client caching above will ensures the new client
@@ -1285,7 +1289,7 @@ public class AdminServiceBasicTest {
         // insert it into server-0 store
         Store<ByteArray, byte[], byte[]> store = getStore(0, testStoreName);
         for(Entry<ByteArray, byte[]> entry: entrySet.entrySet()) {
-            store.put(entry.getKey(), new Versioned<byte[]>(entry.getValue()), null);
+            store.put(entry.getKey(), new Versioned<byte[]>(entry.getValue()), null, 0L);
         }
 
         List<Integer> deletePartitionsList = Arrays.asList(0, 2);
@@ -1296,8 +1300,9 @@ public class AdminServiceBasicTest {
         store = getStore(0, testStoreName);
         for(Entry<ByteArray, byte[]> entry: entrySet.entrySet()) {
             if(isKeyPartition(entry.getKey(), 0, testStoreName, deletePartitionsList)) {
-                assertEquals("deleted partitions should be missing.", 0, store.get(entry.getKey(),
-                                                                                   null).size());
+                assertEquals("deleted partitions should be missing.",
+                             0,
+                             store.get(entry.getKey(), null, 0L).size());
             }
         }
     }
@@ -1312,7 +1317,7 @@ public class AdminServiceBasicTest {
         int fetchPartitionKeyCount = 0;
         Store<ByteArray, byte[], byte[]> store = getStore(0, testStoreName);
         for(Entry<ByteArray, byte[]> entry: entrySet.entrySet()) {
-            store.put(entry.getKey(), new Versioned<byte[]>(entry.getValue()), null);
+            store.put(entry.getKey(), new Versioned<byte[]>(entry.getValue()), null, 0L);
             if(isKeyPartition(entry.getKey(), 0, testStoreName, fetchPartitionsList)) {
                 fetchPartitionKeyCount++;
             }
@@ -1645,7 +1650,7 @@ public class AdminServiceBasicTest {
         // insert it into server-0 store
         Store<ByteArray, byte[], byte[]> store = getStore(0, testStoreName);
         for(Entry<ByteArray, byte[]> entry: entrySet.entrySet()) {
-            store.put(entry.getKey(), new Versioned<byte[]>(entry.getValue()), null);
+            store.put(entry.getKey(), new Versioned<byte[]>(entry.getValue()), null, 0L);
         }
 
         // do truncate request
@@ -1654,7 +1659,7 @@ public class AdminServiceBasicTest {
         store = getStore(0, testStoreName);
 
         for(Entry<ByteArray, byte[]> entry: entrySet.entrySet()) {
-            assertEquals("Deleted key should be missing.", 0, store.get(entry.getKey(), null)
+            assertEquals("Deleted key should be missing.", 0, store.get(entry.getKey(), null, 0L)
                                                                    .size());
         }
     }
@@ -1668,7 +1673,7 @@ public class AdminServiceBasicTest {
         int fetchPartitionKeyCount = 0;
         Store<ByteArray, byte[], byte[]> store = getStore(0, testStoreName);
         for(Entry<ByteArray, byte[]> entry: entrySet.entrySet()) {
-            store.put(entry.getKey(), new Versioned<byte[]>(entry.getValue()), null);
+            store.put(entry.getKey(), new Versioned<byte[]>(entry.getValue()), null, 0L);
             if(isKeyPartition(entry.getKey(), 0, testStoreName, fetchPartitionsList)) {
                 fetchPartitionKeyCount++;
             }
@@ -1733,17 +1738,17 @@ public class AdminServiceBasicTest {
             if(belongToAndInsideServer0.size() < 10) {
                 if(keyShouldBeInNode0) {
                     belongToAndInsideServer0.put(key, value);
-                    store0.put(key, new Versioned<byte[]>(value), null);
+                    store0.put(key, new Versioned<byte[]>(value), null, 0L);
                 }
             } else if(belongToAndInsideServer1.size() < 10) {
                 if(keyShouldBeInNode1) {
                     belongToAndInsideServer1.put(key, value);
-                    store1.put(key, new Versioned<byte[]>(value), null);
+                    store1.put(key, new Versioned<byte[]>(value), null, 0L);
                 }
             } else if(notBelongServer0ButInsideServer0.size() < 5) {
                 if(!keyShouldBeInNode0) {
                     notBelongServer0ButInsideServer0.put(key, value);
-                    store0.put(key, new Versioned<byte[]>(value), null);
+                    store0.put(key, new Versioned<byte[]>(value), null, 0L);
                 }
             } else if(belongToServer0ButOutsideBoth.size() < 5) {
                 if(keyShouldBeInNode0) {
@@ -1825,7 +1830,7 @@ public class AdminServiceBasicTest {
                    entry.getException() instanceof InvalidMetadataException);
 
         // test one key deleted
-        store0.delete(belongToAndInsideServer0Keys.get(4), null);
+        store0.delete(belongToAndInsideServer0Keys.get(4), null, 0L);
         queryKeys = new ArrayList<ByteArray>();
         queryKeys.add(belongToAndInsideServer0Keys.get(4));
         results = getAdminClient().streamingOps.queryKeys(0, testStoreName, queryKeys.iterator());
@@ -1878,9 +1883,8 @@ public class AdminServiceBasicTest {
             assertNotNull("This key should exist in the results: " + key, entries.get(key));
             assertEquals("Two byte[] should be equal for key: " + key,
                          0,
-                         ByteUtils.compare(belongToAndInsideServer1.get(key), entries.get(key)
-                                                                                     .get(0)
-                                                                                     .getValue()));
+                         ByteUtils.compare(belongToAndInsideServer1.get(key),
+                                           entries.get(key).get(0).getValue()));
         }
 
         // test multiple keys, mixed situation
@@ -1891,7 +1895,7 @@ public class AdminServiceBasicTest {
         // key 4: Same situation with key0
         // key 5: Deleted
         // key 6: Same situation with key2
-        store0.delete(belongToAndInsideServer0Keys.get(5), null);
+        store0.delete(belongToAndInsideServer0Keys.get(5), null, 0L);
         queryKeys = new ArrayList<ByteArray>();
         queryKeys.add(belongToAndInsideServer0Keys.get(2));
         queryKeys.add(notBelongServer0ButInsideServer0Keys.get(1));
@@ -1968,11 +1972,12 @@ public class AdminServiceBasicTest {
         // check updated values
         Store<ByteArray, byte[], byte[]> store = getStore(0, testStoreName);
         for(Entry<ByteArray, byte[]> entry: entrySet.entrySet()) {
-            assertNotSame("entry should be present at store", 0, store.get(entry.getKey(), null)
-                                                                      .size());
+            assertNotSame("entry should be present at store",
+                          0,
+                          store.get(entry.getKey(), null, 0L).size());
             assertEquals("entry value should match",
                          new String(entry.getValue()),
-                         new String(store.get(entry.getKey(), null).get(0).getValue()));
+                         new String(store.get(entry.getKey(), null, 0L).get(0).getValue()));
         }
     }
 
@@ -1998,11 +2003,11 @@ public class AdminServiceBasicTest {
                 Versioned<byte[]> v1 = new Versioned<byte[]>(val,
                                                              TestUtils.getClockWithTs(baseTimeMs - 1,
                                                                                       1));
-                nodeStore.put(key, v1, null);
+                nodeStore.put(key, v1, null, 0L);
                 Versioned<byte[]> v2 = new Versioned<byte[]>(val,
                                                              TestUtils.getClockWithTs(baseTimeMs + 1,
                                                                                       2));
-                nodeStore.put(key, v2, null);
+                nodeStore.put(key, v2, null, 0L);
             } else {
                 if(i % 2 == 0) {
                     // even keys : streaming write wins
@@ -2011,7 +2016,7 @@ public class AdminServiceBasicTest {
                     // odd keys : storage version wins
                     ts = baseTimeMs - i;
                 }
-                nodeStore.put(key, new Versioned<byte[]>(val, new VectorClock(ts)), null);
+                nodeStore.put(key, new Versioned<byte[]>(val, new VectorClock(ts)), null, 0L);
             }
         }
 
@@ -2056,7 +2061,7 @@ public class AdminServiceBasicTest {
         // check updated values
         for(int i = 0; i < keys.size(); i++) {
             ByteArray key = keys.get(i);
-            List<Versioned<byte[]>> vals = nodeStore.get(key, null);
+            List<Versioned<byte[]>> vals = nodeStore.get(key, null, 0L);
 
             if(i == 0) {
                 assertEquals("Must contain exactly two versions", 2, vals.size());
@@ -2102,13 +2107,14 @@ public class AdminServiceBasicTest {
             Store<ByteArray, byte[], byte[]> store = getStore(0, nextSlop.getStoreName());
 
             if(nextSlop.getOperation().equals(Slop.Operation.PUT)) {
-                assertNotSame("entry should be present at store", 0, store.get(nextSlop.getKey(),
-                                                                               null).size());
+                assertNotSame("entry should be present at store",
+                              0,
+                              store.get(nextSlop.getKey(), null, 0L).size());
                 assertEquals("entry value should match",
                              new String(nextSlop.getValue()),
-                             new String(store.get(nextSlop.getKey(), null).get(0).getValue()));
+                             new String(store.get(nextSlop.getKey(), null, 0L).get(0).getValue()));
             } else if(nextSlop.getOperation().equals(Slop.Operation.DELETE)) {
-                assertEquals("entry value should match", 0, store.get(nextSlop.getKey(), null)
+                assertEquals("entry value should match", 0, store.get(nextSlop.getKey(), null, 0L)
                                                                  .size());
             }
         }
@@ -2123,14 +2129,15 @@ public class AdminServiceBasicTest {
         // insert it into server-0 store
         Store<ByteArray, byte[], byte[]> store = getStore(0, testStoreName);
         for(Entry<ByteArray, byte[]> entry: entrySet.entrySet()) {
-            store.put(entry.getKey(), new Versioned<byte[]>(entry.getValue()), null);
+            store.put(entry.getKey(), new Versioned<byte[]>(entry.getValue()), null, 0L);
         }
 
         // assert server 1 is empty
         store = getStore(1, testStoreName);
         for(Entry<ByteArray, byte[]> entry: entrySet.entrySet()) {
-            assertSame("entry should NOT be present at store", 0, store.get(entry.getKey(), null)
-                                                                       .size());
+            assertSame("entry should NOT be present at store",
+                       0,
+                       store.get(entry.getKey(), null, 0L).size());
         }
 
         // recover all data
@@ -2140,11 +2147,12 @@ public class AdminServiceBasicTest {
         store = getStore(1, testStoreName);
         for(Entry<ByteArray, byte[]> entry: entrySet.entrySet()) {
             ByteArray key = entry.getKey();
-            assertSame("entry should be present for key " + key, 1, store.get(entry.getKey(), null)
-                                                                         .size());
+            assertSame("entry should be present for key " + key,
+                       1,
+                       store.get(entry.getKey(), null, 0L).size());
             assertEquals("entry value should match",
                          new String(entry.getValue()),
-                         new String(store.get(entry.getKey(), null).get(0).getValue()));
+                         new String(store.get(entry.getKey(), null, 0L).get(0).getValue()));
         }
     }
 
@@ -2170,7 +2178,7 @@ public class AdminServiceBasicTest {
         Store<ByteArray, byte[], byte[]> store0 = getStore(0, "test-recovery-data");
         Store<ByteArray, byte[], byte[]> store1 = getStore(1, "test-recovery-data");
         for(Entry<ByteArray, byte[]> entry: entrySet.entrySet()) {
-            store0.put(entry.getKey(), new Versioned<byte[]>(entry.getValue()), null);
+            store0.put(entry.getKey(), new Versioned<byte[]>(entry.getValue()), null, 0L);
             List<Integer> partitions = strategy.getPartitionList(entry.getKey().get());
             if(primaryMoved.contains(partitions.get(0))
                || (secondaryMoved.contains(partitions.get(0)) && cluster.getNodeById(0)
@@ -2182,8 +2190,9 @@ public class AdminServiceBasicTest {
 
         // Assert that server1 is empty.
         for(Entry<ByteArray, byte[]> entry: entrySet.entrySet())
-            assertEquals("server1 should be empty at start.", 0, store1.get(entry.getKey(), null)
-                                                                       .size());
+            assertEquals("server1 should be empty at start.",
+                         0,
+                         store1.get(entry.getKey(), null, 0L).size());
 
         // Set some other metadata, so as to pick the right up later
         getServer(0).getMetadataStore().put(MetadataStore.CLUSTER_KEY, targetCluster);
@@ -2202,10 +2211,10 @@ public class AdminServiceBasicTest {
         for(Entry<ByteArray, byte[]> entry: keysMovedWith0AsSecondary.entrySet()) {
             assertEquals("server1 store should contain fetchAndupdated partitions.",
                          1,
-                         store1.get(entry.getKey(), null).size());
+                         store1.get(entry.getKey(), null, 0L).size());
             assertEquals("entry value should match",
                          new String(entry.getValue()),
-                         new String(store1.get(entry.getKey(), null).get(0).getValue()));
+                         new String(store1.get(entry.getKey(), null, 0L).get(0).getValue()));
         }
 
     }

@@ -341,7 +341,7 @@ public class HintedHandoffFailureTest {
     public Set<Slop> getAllSlops(Iterable<ByteArray> slopKeys) {
         Set<Slop> registeredSlops = Sets.newHashSet();
         for(Store<ByteArray, Slop, byte[]> slopStore: slopStores.values()) {
-            Map<ByteArray, List<Versioned<Slop>>> res = slopStore.getAll(slopKeys, null);
+            Map<ByteArray, List<Versioned<Slop>>> res = slopStore.getAll(slopKeys, null, 0L);
             for(Map.Entry<ByteArray, List<Versioned<Slop>>> entry: res.entrySet()) {
                 Slop slop = entry.getValue().get(0).getValue();
                 registeredSlops.add(slop);
@@ -382,7 +382,7 @@ public class HintedHandoffFailureTest {
             fail("Error in setup.");
         }
 
-        this.store.put(keyByteArray, versionedVal, null);
+        this.store.put(keyByteArray, versionedVal, null, 0L);
 
         // Check the slop stores
         Set<ByteArray> failedKeys = Sets.newHashSet();
@@ -428,7 +428,7 @@ public class HintedHandoffFailureTest {
             fail("Error in setup.");
         }
 
-        this.store.put(keyByteArray, versionedVal, null);
+        this.store.put(keyByteArray, versionedVal, null, 0L);
 
         // Check the slop stores
         Set<ByteArray> failedKeys = Sets.newHashSet();
@@ -478,7 +478,7 @@ public class HintedHandoffFailureTest {
         // serial hint.
         delayBeforeHintedHandoff = 0;
 
-        this.store.put(keyByteArray, versionedVal, null);
+        this.store.put(keyByteArray, versionedVal, null, 0L);
 
         // Give enough time for the serial hint to work.
         try {
@@ -534,7 +534,7 @@ public class HintedHandoffFailureTest {
         // serial hint.
         delayBeforeHintedHandoff = 0;
 
-        this.store.put(keyByteArray, versionedVal, null);
+        this.store.put(keyByteArray, versionedVal, null, 0L);
 
         // Give enough time for the serial hint to work.
         try {
@@ -636,7 +636,7 @@ public class HintedHandoffFailureTest {
         @Override
         public void run() {
             try {
-                asyncPutStore.put(keyByteArray, versionedVal, null);
+                asyncPutStore.put(keyByteArray, versionedVal, null, 0L);
                 fail("A put with required writes 2 should've failed for this setup");
             } catch(VoldemortException ve) {
                 // This is expected. Nothing to do.

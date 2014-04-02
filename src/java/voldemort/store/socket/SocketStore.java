@@ -92,13 +92,15 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
     public void submitDeleteRequest(ByteArray key,
                                     Version version,
                                     NonblockingStoreCallback callback,
-                                    long timeoutMs) {
+                                    long timeoutMs,
+                                    long rid) {
         StoreUtils.assertValidKey(key);
         DeleteClientRequest clientRequest = new DeleteClientRequest(getName(),
                                                                     requestFormat,
                                                                     requestRoutingType,
                                                                     key,
-                                                                    version);
+                                                                    version,
+                                                                    rid);
         if(logger.isDebugEnabled())
             logger.debug("DELETE keyRef: " + System.identityHashCode(key) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -109,13 +111,15 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
     public void submitGetRequest(ByteArray key,
                                  byte[] transforms,
                                  NonblockingStoreCallback callback,
-                                 long timeoutMs) {
+                                 long timeoutMs,
+                                 long rid) {
         StoreUtils.assertValidKey(key);
         GetClientRequest clientRequest = new GetClientRequest(getName(),
                                                               requestFormat,
                                                               requestRoutingType,
                                                               key,
-                                                              transforms);
+                                                              transforms,
+                                                              rid);
         if(logger.isDebugEnabled())
             logger.debug("GET keyRef: " + System.identityHashCode(key) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -126,13 +130,15 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
     public void submitGetAllRequest(Iterable<ByteArray> keys,
                                     Map<ByteArray, byte[]> transforms,
                                     NonblockingStoreCallback callback,
-                                    long timeoutMs) {
+                                    long timeoutMs,
+                                    long rid) {
         StoreUtils.assertValidKeys(keys);
         GetAllClientRequest clientRequest = new GetAllClientRequest(getName(),
                                                                     requestFormat,
                                                                     requestRoutingType,
                                                                     keys,
-                                                                    transforms);
+                                                                    transforms,
+                                                                    rid);
         if(logger.isDebugEnabled())
             logger.debug("GETALL keyRef: " + System.identityHashCode(keys) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -142,12 +148,14 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
     @Override
     public void submitGetVersionsRequest(ByteArray key,
                                          NonblockingStoreCallback callback,
-                                         long timeoutMs) {
+                                         long timeoutMs,
+                                         long rid) {
         StoreUtils.assertValidKey(key);
         GetVersionsClientRequest clientRequest = new GetVersionsClientRequest(getName(),
                                                                               requestFormat,
                                                                               requestRoutingType,
-                                                                              key);
+                                                                              key,
+                                                                              rid);
         if(logger.isDebugEnabled())
             logger.debug("GETVERSIONS keyRef: " + System.identityHashCode(key) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -159,14 +167,16 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
                                  Versioned<byte[]> value,
                                  byte[] transforms,
                                  NonblockingStoreCallback callback,
-                                 long timeoutMs) {
+                                 long timeoutMs,
+                                 long rid) {
         StoreUtils.assertValidKey(key);
         PutClientRequest clientRequest = new PutClientRequest(getName(),
                                                               requestFormat,
                                                               requestRoutingType,
                                                               key,
                                                               value,
-                                                              transforms);
+                                                              transforms,
+                                                              rid);
         if(logger.isDebugEnabled())
             logger.debug("PUT keyRef: " + System.identityHashCode(key) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -174,13 +184,14 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
     }
 
     @Override
-    public boolean delete(ByteArray key, Version version) throws VoldemortException {
+    public boolean delete(ByteArray key, Version version, long rid) throws VoldemortException {
         StoreUtils.assertValidKey(key);
         DeleteClientRequest clientRequest = new DeleteClientRequest(getName(),
                                                                     requestFormat,
                                                                     requestRoutingType,
                                                                     key,
-                                                                    version);
+                                                                    version,
+                                                                    rid);
         if(logger.isDebugEnabled())
             logger.debug("DELETE keyRef: " + System.identityHashCode(key) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -188,13 +199,15 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms) throws VoldemortException {
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
+            throws VoldemortException {
         StoreUtils.assertValidKey(key);
         GetClientRequest clientRequest = new GetClientRequest(getName(),
                                                               requestFormat,
                                                               requestRoutingType,
                                                               key,
-                                                              transforms);
+                                                              transforms,
+                                                              rid);
         if(logger.isDebugEnabled())
             logger.debug("GET keyRef: " + System.identityHashCode(key) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -203,14 +216,15 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
 
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
-                                                          Map<ByteArray, byte[]> transforms)
-            throws VoldemortException {
+                                                          Map<ByteArray, byte[]> transforms,
+                                                          long rid) throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
         GetAllClientRequest clientRequest = new GetAllClientRequest(getName(),
                                                                     requestFormat,
                                                                     requestRoutingType,
                                                                     keys,
-                                                                    transforms);
+                                                                    transforms,
+                                                                    rid);
         if(logger.isDebugEnabled())
             logger.debug("GETALL keyRef: " + System.identityHashCode(keys) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -218,12 +232,13 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key) {
+    public List<Version> getVersions(ByteArray key, long rid) {
         StoreUtils.assertValidKey(key);
         GetVersionsClientRequest clientRequest = new GetVersionsClientRequest(getName(),
                                                                               requestFormat,
                                                                               requestRoutingType,
-                                                                              key);
+                                                                              key,
+                                                                              rid);
         if(logger.isDebugEnabled())
             logger.debug("GETVERSIONS keyRef: " + System.identityHashCode(key) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -231,7 +246,7 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> versioned, byte[] transforms)
+    public void put(ByteArray key, Versioned<byte[]> versioned, byte[] transforms, long rid)
             throws VoldemortException {
         StoreUtils.assertValidKey(key);
         PutClientRequest clientRequest = new PutClientRequest(getName(),
@@ -239,7 +254,8 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
                                                               requestRoutingType,
                                                               key,
                                                               versioned,
-                                                              transforms);
+                                                              transforms,
+                                                              rid);
         if(logger.isDebugEnabled())
             logger.debug("PUT keyRef: " + System.identityHashCode(key) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -320,7 +336,7 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
             }
             // Record operation time
             long opTimeNs = Utils.elapsedTimeNs(startTimeNs, System.nanoTime());
-            if (stats != null) {
+            if(stats != null) {
                 stats.recordSyncOpTimeNs(destination, opTimeNs);
             }
             if(logger.isDebugEnabled()) {

@@ -1020,7 +1020,8 @@ public abstract class AbstractZonedRebalanceTest extends AbstractRebalanceTest {
                     storeMap.get(nodeId)
                             .put(keyBytes,
                                  new Versioned<byte[]>(ByteUtils.getBytes(entry.getValue(), "UTF-8")),
-                                 null);
+                                 null,
+                                 0L);
                 } catch(ObsoleteVersionException e) {
                     logger.info("Why are we seeing this at all here ?? ");
                     e.printStackTrace();

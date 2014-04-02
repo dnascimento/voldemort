@@ -36,19 +36,26 @@ public class GetClientRequest extends AbstractStoreClientRequest<List<Versioned<
                             RequestFormat requestFormat,
                             RequestRoutingType requestRoutingType,
                             ByteArray key,
-                            byte[] transforms) {
-        super(storeName, requestFormat, requestRoutingType);
+                            byte[] transforms,
+                            long rid) {
+        super(storeName, requestFormat, requestRoutingType, rid);
         this.key = key;
         this.transforms = transforms;
     }
 
+    @Override
     public boolean isCompleteResponse(ByteBuffer buffer) {
         return requestFormat.isCompleteGetResponse(buffer);
     }
 
     @Override
     protected void formatRequestInternal(DataOutputStream outputStream) throws IOException {
-        requestFormat.writeGetRequest(outputStream, storeName, key, transforms, requestRoutingType);
+        requestFormat.writeGetRequest(outputStream,
+                                      storeName,
+                                      key,
+                                      transforms,
+                                      requestRoutingType,
+                                      rid);
     }
 
     @Override

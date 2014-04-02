@@ -252,7 +252,7 @@ public abstract class AbstractRebalanceTest {
             if(StoreRoutingPlan.checkKeyBelongsToPartition(partitions,
                                                            node.getPartitionIds(),
                                                            flattenedPresentTuples)) {
-                List<Versioned<byte[]>> values = store.get(keyBytes, null);
+                List<Versioned<byte[]>> values = store.get(keyBytes, null, 0L);
 
                 // expecting exactly one version
                 if(values.size() == 0) {

@@ -40,13 +40,15 @@ public class PutClientRequest extends AbstractStoreClientRequest<Void> {
                             RequestRoutingType requestRoutingType,
                             ByteArray key,
                             Versioned<byte[]> versioned,
-                            byte[] transforms) {
-        super(storeName, requestFormat, requestRoutingType);
+                            byte[] transforms,
+                            long rid) {
+        super(storeName, requestFormat, requestRoutingType, rid);
         this.key = key;
         this.versioned = versioned;
         this.transforms = transforms;
     }
 
+    @Override
     public boolean isCompleteResponse(ByteBuffer buffer) {
         return requestFormat.isCompletePutResponse(buffer);
     }
@@ -59,7 +61,8 @@ public class PutClientRequest extends AbstractStoreClientRequest<Void> {
                                       versioned.getValue(),
                                       transforms,
                                       (VectorClock) versioned.getVersion(),
-                                      requestRoutingType);
+                                      requestRoutingType,
+                                      rid);
     }
 
     @Override

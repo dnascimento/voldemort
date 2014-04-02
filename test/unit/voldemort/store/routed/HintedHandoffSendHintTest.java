@@ -339,7 +339,9 @@ public class HintedHandoffSendHintTest {
         Map<Integer, Map<ByteArray, byte[]>> nodeToSlopData = new HashMap<Integer, Map<ByteArray, byte[]>>();
         Set<ByteArray> slopKeys = makeSlopKeys(nodeToFailedKeysMap, Slop.Operation.PUT);
         for(Store<ByteArray, Slop, byte[]> slopStore: slopStores.values()) {
-            Map<ByteArray, List<Versioned<Slop>>> getAllResult = slopStore.getAll(slopKeys, null);
+            Map<ByteArray, List<Versioned<Slop>>> getAllResult = slopStore.getAll(slopKeys,
+                                                                                  null,
+                                                                                  0L);
             for(Map.Entry<ByteArray, List<Versioned<Slop>>> entry: getAllResult.entrySet()) {
                 Slop slop = entry.getValue().get(0).getValue();
                 Integer nodeId = slop.getNodeId();
@@ -453,7 +455,7 @@ public class HintedHandoffSendHintTest {
                 Versioned<byte[]> versioned = new Versioned<byte[]>(keyValues.get(key).get());
                 if(logger.isTraceEnabled())
                     logger.trace("PUT key [" + key + "] to store");
-                routedStore.put(key, versioned, null);
+                routedStore.put(key, versioned, null, 0L);
             } catch(Exception e) {
                 if(logger.isTraceEnabled())
                     logger.trace(e, e);

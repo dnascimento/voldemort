@@ -233,7 +233,8 @@ public class AdminServiceFailureTest extends TestCase {
             try {
                 failingStorageEngine.put(entry.getKey(),
                                          new Versioned<byte[]>(entry.getValue()),
-                                         null);
+                                         null,
+                                         0L);
             } catch(Exception e) {
                 // ignore
             }

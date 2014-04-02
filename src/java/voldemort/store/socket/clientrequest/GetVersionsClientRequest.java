@@ -34,18 +34,20 @@ public class GetVersionsClientRequest extends AbstractStoreClientRequest<List<Ve
     public GetVersionsClientRequest(String storeName,
                                     RequestFormat requestFormat,
                                     RequestRoutingType requestRoutingType,
-                                    ByteArray key) {
-        super(storeName, requestFormat, requestRoutingType);
+                                    ByteArray key,
+                                    long rid) {
+        super(storeName, requestFormat, requestRoutingType, rid);
         this.key = key;
     }
 
+    @Override
     public boolean isCompleteResponse(ByteBuffer buffer) {
         return requestFormat.isCompleteGetVersionResponse(buffer);
     }
 
     @Override
     protected void formatRequestInternal(DataOutputStream outputStream) throws IOException {
-        requestFormat.writeGetVersionRequest(outputStream, storeName, key, requestRoutingType);
+        requestFormat.writeGetVersionRequest(outputStream, storeName, key, requestRoutingType, rid);
     }
 
     @Override

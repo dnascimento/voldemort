@@ -49,8 +49,8 @@ public class CacheStorageEngineTest extends InMemoryStorageEngineTest {
         StorageEngine<ByteArray, byte[], byte[]> engine = getStorageEngine();
         byte[] bytes = "abc".getBytes();
         ByteArray key = new ByteArray(bytes);
-        engine.put(key, new Versioned<byte[]>(bytes), null);
-        List<Versioned<byte[]>> found = engine.get(key, null);
+        engine.put(key, new Versioned<byte[]>(bytes), null, 0L);
+        List<Versioned<byte[]>> found = engine.get(key, null, 0L);
         assertEquals(1, found.size());
     }
 
@@ -61,7 +61,8 @@ public class CacheStorageEngineTest extends InMemoryStorageEngineTest {
         for(int i = 0; i < NUM_OBJECTS; i++)
             engine.put(TestUtils.toByteArray(Integer.toString(i)),
                        new Versioned<byte[]>(TestUtils.randomBytes(objectSize)),
-                       null);
+                       null,
+                       0L);
     }
 
 }

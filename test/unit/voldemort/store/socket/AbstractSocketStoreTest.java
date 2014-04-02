@@ -109,9 +109,9 @@ public abstract class AbstractSocketStoreTest extends AbstractByteArrayStoreTest
         for(int i = 0; i < 10; i++) {
             rand.nextBytes(biggie);
             Versioned<byte[]> versioned = new Versioned<byte[]>(biggie);
-            store.put(key, versioned, null);
-            assertNotNull(store.get(key, null));
-            assertTrue(store.delete(key, versioned.getVersion()));
+            store.put(key, versioned, null, 0L);
+            assertNotNull(store.get(key, null, 0L));
+            assertTrue(store.delete(key, versioned.getVersion(), 0L));
         }
     }
 
@@ -128,7 +128,8 @@ public abstract class AbstractSocketStoreTest extends AbstractByteArrayStoreTest
                     store.put(TestUtils.toByteArray(TestUtils.randomString("abcdefghijklmnopqrs",
                                                                            10)),
                               new Versioned<byte[]>(TestUtils.randomBytes(8)),
-                              null);
+                              null,
+                              0L);
                     latch.countDown();
                 }
             });

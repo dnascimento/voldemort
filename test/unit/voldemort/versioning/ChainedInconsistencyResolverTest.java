@@ -111,7 +111,7 @@ public class ChainedInconsistencyResolverTest {
         defaultStoreClient.put(KEY, v2);
         Versioned<String> res = defaultStoreClient.get(KEY);
         defaultStoreClient.put(KEY, res);
-        List<Versioned<byte[]>> resList = socketStore.get(new ByteArray(KEY.getBytes()), null);
+        List<Versioned<byte[]>> resList = socketStore.get(new ByteArray(KEY.getBytes()), null, 0L);
         assertEquals(1, resList.size());
     }
 
@@ -120,7 +120,7 @@ public class ChainedInconsistencyResolverTest {
         defaultStoreClient.put(KEY, v1);
         defaultStoreClient.put(KEY, v2);
         defaultStoreClient.put(KEY, "my-value2");
-        List<Versioned<byte[]>> resList = socketStore.get(new ByteArray(KEY.getBytes()), null);
+        List<Versioned<byte[]>> resList = socketStore.get(new ByteArray(KEY.getBytes()), null, 0L);
         assertEquals(1, resList.size());
     }
 
@@ -132,11 +132,11 @@ public class ChainedInconsistencyResolverTest {
         defaultStoreClient.put(KEY, conflict4);
         defaultStoreClient.put(KEY, conflict5);
         defaultStoreClient.put(KEY, conflict6);
-        List<Versioned<byte[]>> resList = socketStore.get(new ByteArray(KEY.getBytes()), null);
+        List<Versioned<byte[]>> resList = socketStore.get(new ByteArray(KEY.getBytes()), null, 0L);
         assertEquals(6, resList.size());
         Versioned<String> res = defaultStoreClient.get(KEY);
         defaultStoreClient.put(KEY, res);
-        resList = socketStore.get(new ByteArray(KEY.getBytes()), null);
+        resList = socketStore.get(new ByteArray(KEY.getBytes()), null, 0L);
         assertEquals(1, resList.size());
     }
 }

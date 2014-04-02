@@ -557,7 +557,7 @@ public abstract class AbstractStoreClientFactory implements StoreClientFactory {
                                                                     new StringSerializer("UTF-8"),
                                                                     new StringSerializer("UTF-8"),
                                                                     new IdentitySerializer());
-        return store.get(key, null);
+        return store.get(key, null, 0L);
     }
 
     public URI[] validateUrls(String[] urls) {

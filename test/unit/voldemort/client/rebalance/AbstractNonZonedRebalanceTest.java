@@ -325,63 +325,70 @@ public abstract class AbstractNonZonedRebalanceTest extends AbstractRebalanceTes
         logger.info("Starting testRORebalanceWithReplication");
         try {
             Cluster currentCluster = ServerTestUtils.getLocalCluster(3, new int[][] {
-                    { 0, 2, 4, 6 }, { 1, 3, 5, 7 },{}});
-            /*  pre-rebalance partitioning
-                0 -> 0, 2, 4, 6
-                1 -> 1, 3, 5, 7
-                pre-rebalance routing:
-                partition -> nodes (ordered)
-                0 -> 0, 1
-                1 -> 1, 0
-                2 -> 0, 1
-                3 -> 1, 0
-                4 -> 0, 1
-                5 -> 1, 0
-                6 -> 0, 1
-                7 -> 1, 0
-            */
+                    { 0, 2, 4, 6 }, { 1, 3, 5, 7 }, {} });
+            /*
+             * pre-rebalance partitioning
+             * 0 -> 0, 2, 4, 6
+             * 1 -> 1, 3, 5, 7
+             * pre-rebalance routing:
+             * partition -> nodes (ordered)
+             * 0 -> 0, 1
+             * 1 -> 1, 0
+             * 2 -> 0, 1
+             * 3 -> 1, 0
+             * 4 -> 0, 1
+             * 5 -> 1, 0
+             * 6 -> 0, 1
+             * 7 -> 1, 0
+             */
 
             Cluster finalCluster = currentCluster;
-            finalCluster = UpdateClusterUtils.createUpdatedCluster(finalCluster, 0, Lists.newArrayList(0, 2, 4, 7));
-            finalCluster = UpdateClusterUtils.createUpdatedCluster(finalCluster, 1, Lists.newArrayList(1, 3, 5, 6));
-            finalCluster = UpdateClusterUtils.createUpdatedCluster(finalCluster, 2, Lists.newArrayList(2, 3));
+            finalCluster = UpdateClusterUtils.createUpdatedCluster(finalCluster,
+                                                                   0,
+                                                                   Lists.newArrayList(0, 2, 4, 7));
+            finalCluster = UpdateClusterUtils.createUpdatedCluster(finalCluster,
+                                                                   1,
+                                                                   Lists.newArrayList(1, 3, 5, 6));
+            finalCluster = UpdateClusterUtils.createUpdatedCluster(finalCluster,
+                                                                   2,
+                                                                   Lists.newArrayList(2, 3));
             /*
-            post-rebalance partitioning:
-                nodes -> partitions
-                0 -> 0, 4, 7
-                1 -> 1, 5, 6
-                2 -> 2, 3
-            post-rebalance routing:
-                partition -> nodes (ordered)
-                0 -> 0, 1
-                1 -> 1, 2  (changed from 1, 0)
-                2 -> 2, 0  (changed from 0, 1)
-                3 -> 2, 0  (changed from 1, 0)
-                4 -> 0, 1
-                5 -> 1, 0
-                6 -> 1, 0  (changed from 0, 1)
-                7 -> 0, 1  (changed from 1, 0)
-            supposed non-optimized moves:
-                partition: node(reptype) -> node(reptype)
-                1: 0(second) -> 2(second)
-                2: 0(first)  -> 2(first)
-                2: 1(second) -> 0(second)
-                3: 1(first)  -> 2(first)
-                6: 0(first)  -> 1(first)
-                6: 1(second) -> 0(second)
-                7: 1(first)  -> 0(first)
-                7: 0(second) -> 1(second)
-            supposed optimized moves:
-                partition: node(reptype) -> node(reptype)
-                1: 0(second) -> 2(second)
-                2: 0(first)  -> 0(second)  * optimized, no cross-node data copy
-                2: 1(second) -> 2(first)   * optimized
-                3: 1(first)  -> 2(first)
-                6: 0(first)  -> 0(second)  * optimized, no cross-node data copy
-                6: 1(second) -> 1(first)   * optimized, no cross-node data copy
-                7: 0(second) -> 0(first)   * optimized, no cross-node data copy
-                7: 1(first)  -> 1(second)  * optimized, no cross-node data copy
-            */
+             * post-rebalance partitioning:
+             * nodes -> partitions
+             * 0 -> 0, 4, 7
+             * 1 -> 1, 5, 6
+             * 2 -> 2, 3
+             * post-rebalance routing:
+             * partition -> nodes (ordered)
+             * 0 -> 0, 1
+             * 1 -> 1, 2 (changed from 1, 0)
+             * 2 -> 2, 0 (changed from 0, 1)
+             * 3 -> 2, 0 (changed from 1, 0)
+             * 4 -> 0, 1
+             * 5 -> 1, 0
+             * 6 -> 1, 0 (changed from 0, 1)
+             * 7 -> 0, 1 (changed from 1, 0)
+             * supposed non-optimized moves:
+             * partition: node(reptype) -> node(reptype)
+             * 1: 0(second) -> 2(second)
+             * 2: 0(first) -> 2(first)
+             * 2: 1(second) -> 0(second)
+             * 3: 1(first) -> 2(first)
+             * 6: 0(first) -> 1(first)
+             * 6: 1(second) -> 0(second)
+             * 7: 1(first) -> 0(first)
+             * 7: 0(second) -> 1(second)
+             * supposed optimized moves:
+             * partition: node(reptype) -> node(reptype)
+             * 1: 0(second) -> 2(second)
+             * 2: 0(first) -> 0(second) * optimized, no cross-node data copy
+             * 2: 1(second) -> 2(first) * optimized
+             * 3: 1(first) -> 2(first)
+             * 6: 0(first) -> 0(second) * optimized, no cross-node data copy
+             * 6: 1(second) -> 1(first) * optimized, no cross-node data copy
+             * 7: 0(second) -> 0(first) * optimized, no cross-node data copy
+             * 7: 1(first) -> 1(second) * optimized, no cross-node data copy
+             */
 
             // start servers 0 , 1, 2 only
             List<Integer> serverList = Arrays.asList(0, 1, 2);
@@ -414,7 +421,9 @@ public abstract class AbstractNonZonedRebalanceTest extends AbstractRebalanceTes
                              rebalanceKit.controller.getAdminClient(),
                              true);
 
-                rebalanceAndCheck(rebalanceKit.plan, rebalanceKit.controller, Arrays.asList(0, 1, 2));
+                rebalanceAndCheck(rebalanceKit.plan,
+                                  rebalanceKit.controller,
+                                  Arrays.asList(0, 1, 2));
                 checkConsistentMetadata(finalCluster, serverList);
             } finally {
                 // stop servers
@@ -1148,7 +1157,8 @@ public abstract class AbstractNonZonedRebalanceTest extends AbstractRebalanceTes
                             try {
                                 List<Versioned<byte[]>> values = serverSideRoutingStoreRW.get(new ByteArray(ByteUtils.getBytes(keys.get(index),
                                                                                                                                "UTF-8")),
-                                                                                              null);
+                                                                                              null,
+                                                                                              0L);
 
                                 assertEquals("serverSideRoutingStore should return value.",
                                              1,
@@ -1161,7 +1171,8 @@ public abstract class AbstractNonZonedRebalanceTest extends AbstractRebalanceTes
                                                                    values.get(0).getVersion()));
                                 values = serverSideRoutingStoreRO.get(new ByteArray(ByteUtils.getBytes(keys.get(index),
                                                                                                        "UTF-8")),
-                                                                      null);
+                                                                      null,
+                                                                      0L);
 
                                 assertEquals("serverSideRoutingStore should return value.",
                                              1,
@@ -1262,7 +1273,8 @@ public abstract class AbstractNonZonedRebalanceTest extends AbstractRebalanceTes
                                 .put(keyBytes,
                                      new Versioned<byte[]>(ByteUtils.getBytes(entry.getValue(),
                                                                               "UTF-8")),
-                                     null);
+                                     null,
+                                     0L);
                     } catch(ObsoleteVersionException e) {
                         logger.info("Why are we seeing this at all here ?? ");
                         e.printStackTrace();

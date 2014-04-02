@@ -42,7 +42,8 @@ public interface RequestFormat {
                                 String storeName,
                                 ByteArray key,
                                 byte[] transforms,
-                                RequestRoutingType routingType) throws IOException;
+                                RequestRoutingType routingType,
+                                long rid) throws IOException;
 
     public boolean isCompleteGetResponse(ByteBuffer buffer);
 
@@ -51,7 +52,8 @@ public interface RequestFormat {
     public void writeGetVersionRequest(DataOutputStream output,
                                        String storeName,
                                        ByteArray key,
-                                       RequestRoutingType routingType) throws IOException;
+                                       RequestRoutingType routingType,
+                                       long rid) throws IOException;
 
     public boolean isCompleteGetVersionResponse(ByteBuffer buffer);
 
@@ -61,7 +63,8 @@ public interface RequestFormat {
                                    String storeName,
                                    Iterable<ByteArray> key,
                                    Map<ByteArray, byte[]> transforms,
-                                   RequestRoutingType routingType) throws IOException;
+                                   RequestRoutingType routingType,
+                                   long rid) throws IOException;
 
     public boolean isCompleteGetAllResponse(ByteBuffer buffer);
 
@@ -74,7 +77,8 @@ public interface RequestFormat {
                                 byte[] value,
                                 byte[] transforms,
                                 VectorClock version,
-                                RequestRoutingType routingType) throws IOException;
+                                RequestRoutingType routingType,
+                                long rid) throws IOException;
 
     public boolean isCompletePutResponse(ByteBuffer buffer);
 
@@ -84,7 +88,8 @@ public interface RequestFormat {
                                    String storeName,
                                    ByteArray key,
                                    VectorClock version,
-                                   RequestRoutingType routingType) throws IOException;
+                                   RequestRoutingType routingType,
+                                   long rid) throws IOException;
 
     public boolean isCompleteDeleteResponse(ByteBuffer buffer);
 

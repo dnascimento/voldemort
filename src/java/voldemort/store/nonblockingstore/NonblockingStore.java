@@ -66,27 +66,32 @@ public interface NonblockingStore {
     public void submitGetRequest(ByteArray key,
                                  byte[] transforms,
                                  NonblockingStoreCallback callback,
-                                 long timeoutMs);
+                                 long timeoutMs,
+                                 long rid);
 
     public void submitGetAllRequest(Iterable<ByteArray> keys,
                                     Map<ByteArray, byte[]> transforms,
                                     NonblockingStoreCallback callback,
-                                    long timeoutMs);
+                                    long timeoutMs,
+                                    long rid);
 
     public void submitGetVersionsRequest(ByteArray key,
                                          NonblockingStoreCallback callback,
-                                         long timeoutMs);
+                                         long timeoutMs,
+                                         long rid);
 
     public void submitPutRequest(ByteArray key,
                                  Versioned<byte[]> value,
                                  byte[] transforms,
                                  NonblockingStoreCallback callback,
-                                 long timeoutMs);
+                                 long timeoutMs,
+                                 long rid);
 
     public void submitDeleteRequest(ByteArray key,
                                     Version version,
                                     NonblockingStoreCallback callback,
-                                    long timeoutMs);
+                                    long timeoutMs,
+                                    long rid);
 
     public void close() throws VoldemortException;
 

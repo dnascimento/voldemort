@@ -38,12 +38,14 @@ public class GetAllClientRequest extends
                                RequestFormat requestFormat,
                                RequestRoutingType requestRoutingType,
                                Iterable<ByteArray> keys,
-                               Map<ByteArray, byte[]> transforms) {
-        super(storeName, requestFormat, requestRoutingType);
+                               Map<ByteArray, byte[]> transforms,
+                               long rid) {
+        super(storeName, requestFormat, requestRoutingType, rid);
         this.keys = keys;
         this.transforms = transforms;
     }
 
+    @Override
     public boolean isCompleteResponse(ByteBuffer buffer) {
         return requestFormat.isCompleteGetAllResponse(buffer);
     }
@@ -54,7 +56,8 @@ public class GetAllClientRequest extends
                                          storeName,
                                          keys,
                                          transforms,
-                                         requestRoutingType);
+                                         requestRoutingType,
+                                         rid);
     }
 
     @Override

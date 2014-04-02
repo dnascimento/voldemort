@@ -17,21 +17,21 @@ public abstract class AbstractStore<K, V, T> implements Store<K, V, T> {
     }
 
     @Override
-    public List<Versioned<V>> get(K key, T transforms) throws VoldemortException {
+    public List<Versioned<V>> get(K key, T transforms, long rid) throws VoldemortException {
         return null;
     }
 
     @Override
-    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms)
+    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, long rid)
             throws VoldemortException {
         return null;
     }
 
     @Override
-    public void put(K key, Versioned<V> value, T transforms) throws VoldemortException {}
+    public void put(K key, Versioned<V> value, T transforms, long rid) throws VoldemortException {}
 
     @Override
-    public boolean delete(K key, Version version) throws VoldemortException {
+    public boolean delete(K key, Version version, long rid) throws VoldemortException {
         return false;
     }
 
@@ -49,12 +49,13 @@ public abstract class AbstractStore<K, V, T> implements Store<K, V, T> {
     }
 
     @Override
-    public List<Version> getVersions(K key) {
+    public List<Version> getVersions(K key, long rid) {
         return null;
     }
 
     @Override
-    public List<Versioned<V>> get(CompositeVoldemortRequest<K, V> request) throws VoldemortException {
+    public List<Versioned<V>> get(CompositeVoldemortRequest<K, V> request)
+            throws VoldemortException {
         return null;
     }
 

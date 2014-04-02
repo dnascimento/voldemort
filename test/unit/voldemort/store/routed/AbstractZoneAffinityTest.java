@@ -1,8 +1,5 @@
 package voldemort.store.routed;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,11 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -27,7 +22,6 @@ import voldemort.cluster.Cluster;
 import voldemort.cluster.Node;
 import voldemort.server.VoldemortConfig;
 import voldemort.server.VoldemortServer;
-import voldemort.store.InsufficientOperationalNodesException;
 import voldemort.store.Store;
 import voldemort.store.StoreDefinition;
 import voldemort.store.socket.SocketStoreFactory;
@@ -49,7 +43,9 @@ public abstract class AbstractZoneAffinityTest {
     protected final Cluster cluster;
     protected final Integer clientZoneId;
 
-    public AbstractZoneAffinityTest(Integer clientZoneId, Cluster cluster, List<StoreDefinition> storeDefs) {
+    public AbstractZoneAffinityTest(Integer clientZoneId,
+                                    Cluster cluster,
+                                    List<StoreDefinition> storeDefs) {
         this.clientZoneId = clientZoneId;
         this.cluster = cluster;
         this.stores = storeDefs;
@@ -59,11 +55,16 @@ public abstract class AbstractZoneAffinityTest {
     @Parameterized.Parameters
     public static Collection<Object[]> configs() {
         return Arrays.asList(new Object[][] {
-                { 0, ClusterTestUtils.getZZZCluster(),ClusterTestUtils.getZZZ322StoreDefs("memory") },
-                { 1, ClusterTestUtils.getZZZCluster(),ClusterTestUtils.getZZZ322StoreDefs("memory") },
-                { 2, ClusterTestUtils.getZZZCluster(),ClusterTestUtils.getZZZ322StoreDefs("memory") },
-                { 1, ClusterTestUtils.getZ1Z3ClusterWithNonContiguousNodeIds(),ClusterTestUtils.getZ1Z3322StoreDefs("memory") },
-                { 3, ClusterTestUtils.getZ1Z3ClusterWithNonContiguousNodeIds(),ClusterTestUtils.getZ1Z3322StoreDefs("memory") } });
+                { 0, ClusterTestUtils.getZZZCluster(),
+                        ClusterTestUtils.getZZZ322StoreDefs("memory") },
+                { 1, ClusterTestUtils.getZZZCluster(),
+                        ClusterTestUtils.getZZZ322StoreDefs("memory") },
+                { 2, ClusterTestUtils.getZZZCluster(),
+                        ClusterTestUtils.getZZZ322StoreDefs("memory") },
+                { 1, ClusterTestUtils.getZ1Z3ClusterWithNonContiguousNodeIds(),
+                        ClusterTestUtils.getZ1Z3322StoreDefs("memory") },
+                { 3, ClusterTestUtils.getZ1Z3ClusterWithNonContiguousNodeIds(),
+                        ClusterTestUtils.getZ1Z3322StoreDefs("memory") } });
     }
 
     public abstract void setupZoneAffinitySettings();
@@ -76,7 +77,11 @@ public abstract class AbstractZoneAffinityTest {
         byte[] k2_bytes = { (byte) 'K', (byte) '2' };
         byte[] k3_bytes = { (byte) 'K', (byte) '3' };
         clientConfig = new ClientConfig();
-        clientConfig.setBootstrapUrls(cluster.getNodes().iterator().next().getSocketUrl().toString());
+        clientConfig.setBootstrapUrls(cluster.getNodes()
+                                             .iterator()
+                                             .next()
+                                             .getSocketUrl()
+                                             .toString());
         clientConfig.setClientZoneId(clientZoneId);
         setupZoneAffinitySettings();
         SocketStoreClientFactory socketStoreClientFactory = new SocketStoreClientFactory(clientConfig);
@@ -88,7 +93,7 @@ public abstract class AbstractZoneAffinityTest {
             VoldemortConfig config = ServerTestUtils.createServerConfigWithDefs(true,
                                                                                 nodeId,
                                                                                 TestUtils.createTempDir()
-                                                                                        .getAbsolutePath(),
+                                                                                         .getAbsolutePath(),
                                                                                 cluster,
                                                                                 stores,
                                                                                 new Properties());
@@ -98,7 +103,7 @@ public abstract class AbstractZoneAffinityTest {
             vservers.put(nodeId, vs);
             socketStoreFactories.put(nodeId, socketStoreFactory);
             Store<ByteArray, byte[], byte[]> store = vs.getStoreRepository()
-                    .getLocalStore(storeDef.getName());
+                                                       .getLocalStore(storeDef.getName());
             Node node = cluster.getNodeById(nodeId);
 
             VectorClock version1 = new VectorClock();
@@ -107,13 +112,28 @@ public abstract class AbstractZoneAffinityTest {
 
             if(node.getZoneId() == clientZoneId) {
                 // local zone
-                store.put(new ByteArray(k1_bytes), new Versioned<byte[]>(v1_bytes, version1), null);
-                store.put(new ByteArray(k2_bytes), new Versioned<byte[]>(v1_bytes, version1), null);
+                store.put(new ByteArray(k1_bytes),
+                          new Versioned<byte[]>(v1_bytes, version1),
+                          null,
+                          0L);
+                store.put(new ByteArray(k2_bytes),
+                          new Versioned<byte[]>(v1_bytes, version1),
+                          null,
+                          0L);
             } else {
                 // remote zone
-                store.put(new ByteArray(k1_bytes), new Versioned<byte[]>(v2_bytes, version2), null);
-                store.put(new ByteArray(k2_bytes), new Versioned<byte[]>(v1_bytes, version1), null);
-                store.put(new ByteArray(k3_bytes), new Versioned<byte[]>(v1_bytes, version1), null);
+                store.put(new ByteArray(k1_bytes),
+                          new Versioned<byte[]>(v2_bytes, version2),
+                          null,
+                          0L);
+                store.put(new ByteArray(k2_bytes),
+                          new Versioned<byte[]>(v1_bytes, version1),
+                          null,
+                          0L);
+                store.put(new ByteArray(k3_bytes),
+                          new Versioned<byte[]>(v1_bytes, version1),
+                          null,
+                          0L);
             }
         }
 

@@ -154,7 +154,9 @@ public class AdminRebalanceTest {
                                                                tempStoreXml.getAbsolutePath(),
                                                                new Properties());
 
-        finalCluster = UpdateClusterUtils.createUpdatedCluster(currentCluster, 2, Lists.newArrayList(0));
+        finalCluster = UpdateClusterUtils.createUpdatedCluster(currentCluster,
+                                                               2,
+                                                               Lists.newArrayList(0));
 
         RebalanceBatchPlan plan = new RebalanceBatchPlan(currentCluster,
                                                          finalCluster,
@@ -195,7 +197,9 @@ public class AdminRebalanceTest {
                                                                tempStoreXml.getAbsolutePath(),
                                                                new Properties());
 
-        finalCluster = UpdateClusterUtils.createUpdatedCluster(currentCluster, 3, Lists.newArrayList(0));
+        finalCluster = UpdateClusterUtils.createUpdatedCluster(currentCluster,
+                                                               3,
+                                                               Lists.newArrayList(0));
         RebalanceBatchPlan plan = new RebalanceBatchPlan(currentCluster,
                                                          finalCluster,
                                                          Lists.newArrayList(storeDef1, storeDef2));
@@ -245,7 +249,9 @@ public class AdminRebalanceTest {
                                                                tempStoreXml.getAbsolutePath(),
                                                                new Properties());
 
-        finalCluster = UpdateClusterUtils.createUpdatedCluster(currentCluster, 3, Lists.newArrayList(0));
+        finalCluster = UpdateClusterUtils.createUpdatedCluster(currentCluster,
+                                                               3,
+                                                               Lists.newArrayList(0));
         RebalanceBatchPlan plan = new RebalanceBatchPlan(currentCluster,
                                                          finalCluster,
                                                          Lists.newArrayList(storeDef1, storeDef2));
@@ -303,15 +309,7 @@ public class AdminRebalanceTest {
 
         int numServers = 4;
         servers = new VoldemortServer[numServers];
-        int partitionMap[][] = {
-                {
-                        0, 1, 2, 3
-        }, {
-                4, 5, 6, 7
-        }, {
-                8, 9, 10, 11
-        }, {}
-        };
+        int partitionMap[][] = { { 0, 1, 2, 3 }, { 4, 5, 6, 7 }, { 8, 9, 10, 11 }, {} };
         currentCluster = ServerTestUtils.startVoldemortCluster(numServers,
                                                                servers,
                                                                partitionMap,
@@ -321,7 +319,9 @@ public class AdminRebalanceTest {
                                                                tempStoreXml.getAbsolutePath(),
                                                                new Properties());
 
-        finalCluster = UpdateClusterUtils.createUpdatedCluster(currentCluster, 3, Lists.newArrayList(0));
+        finalCluster = UpdateClusterUtils.createUpdatedCluster(currentCluster,
+                                                               3,
+                                                               Lists.newArrayList(0));
         // Make plan only with RO stores
         RebalanceBatchPlan plan = new RebalanceBatchPlan(currentCluster,
                                                          finalCluster,
@@ -494,28 +494,30 @@ public class AdminRebalanceTest {
 
             // Primary is on Node 0 and not on Node 1
             for(Entry<ByteArray, byte[]> entry: primaryEntriesMoved.entrySet()) {
-                assertSame("entry should be present at store", 1, storeTest0.get(entry.getKey(),
-                                                                                 null).size());
+                assertSame("entry should be present at store",
+                           1,
+                           storeTest0.get(entry.getKey(), null, 0L).size());
                 assertEquals("entry value should match",
                              new String(entry.getValue()),
-                             new String(storeTest0.get(entry.getKey(), null).get(0).getValue()));
+                             new String(storeTest0.get(entry.getKey(), null, 0L).get(0).getValue()));
 
                 // Check in other store
                 assertSame("entry should be present in store test2 ",
                            1,
-                           storeTest20.get(entry.getKey(), null).size());
+                           storeTest20.get(entry.getKey(), null, 0L).size());
                 assertEquals("entry value should match",
                              new String(entry.getValue()),
-                             new String(storeTest20.get(entry.getKey(), null).get(0).getValue()));
+                             new String(storeTest20.get(entry.getKey(), null, 0L).get(0).getValue()));
             }
 
             // Secondary is on Node 2 and not on Node 0
             for(Entry<ByteArray, byte[]> entry: secondaryEntriesMoved.entrySet()) {
-                assertSame("entry should be present at store", 1, storeTest2.get(entry.getKey(),
-                                                                                 null).size());
+                assertSame("entry should be present at store",
+                           1,
+                           storeTest2.get(entry.getKey(), null, 0L).size());
                 assertEquals("entry value should match",
                              new String(entry.getValue()),
-                             new String(storeTest2.get(entry.getKey(), null).get(0).getValue()));
+                             new String(storeTest2.get(entry.getKey(), null, 0L).get(0).getValue()));
             }
 
             // All servers should be back to normal state
@@ -622,40 +624,45 @@ public class AdminRebalanceTest {
 
                 // Test 2
                 // Present on Node 0
-                assertSame("entry should be present at store", 1, storeTest0.get(entry.getKey(),
-                                                                                 null).size());
+                assertSame("entry should be present at store",
+                           1,
+                           storeTest0.get(entry.getKey(), null, 0L).size());
                 assertEquals("entry value should match",
                              new String(entry.getValue()),
-                             new String(storeTest0.get(entry.getKey(), null).get(0).getValue()));
+                             new String(storeTest0.get(entry.getKey(), null, 0L).get(0).getValue()));
 
                 // Present on Node 1
-                assertSame("entry should be present at store", 1, storeTest1.get(entry.getKey(),
-                                                                                 null).size());
+                assertSame("entry should be present at store",
+                           1,
+                           storeTest1.get(entry.getKey(), null, 0L).size());
                 assertEquals("entry value should match",
                              new String(entry.getValue()),
-                             new String(storeTest1.get(entry.getKey(), null).get(0).getValue()));
+                             new String(storeTest1.get(entry.getKey(), null, 0L).get(0).getValue()));
 
                 // Present on Node 3
-                assertSame("entry should be present at store", 1, storeTest3.get(entry.getKey(),
-                                                                                 null).size());
+                assertSame("entry should be present at store",
+                           1,
+                           storeTest3.get(entry.getKey(), null, 0L).size());
                 assertEquals("entry value should match",
                              new String(entry.getValue()),
-                             new String(storeTest3.get(entry.getKey(), null).get(0).getValue()));
+                             new String(storeTest3.get(entry.getKey(), null, 0L).get(0).getValue()));
 
                 // Test
                 // Present on Node 0
-                assertSame("entry should be present at store", 1, storeTest00.get(entry.getKey(),
-                                                                                  null).size());
+                assertSame("entry should be present at store",
+                           1,
+                           storeTest00.get(entry.getKey(), null, 0L).size());
                 assertEquals("entry value should match",
                              new String(entry.getValue()),
-                             new String(storeTest00.get(entry.getKey(), null).get(0).getValue()));
+                             new String(storeTest00.get(entry.getKey(), null, 0L).get(0).getValue()));
 
                 // Present on Node 3
-                assertSame("entry should be present at store", 1, storeTest30.get(entry.getKey(),
-                                                                                  null).size());
+                assertSame("entry should be present at store",
+                           1,
+                           storeTest30.get(entry.getKey(), null, 0L).size());
                 assertEquals("entry value should match",
                              new String(entry.getValue()),
-                             new String(storeTest30.get(entry.getKey(), null).get(0).getValue()));
+                             new String(storeTest30.get(entry.getKey(), null, 0L).get(0).getValue()));
 
             }
 
@@ -664,26 +671,29 @@ public class AdminRebalanceTest {
 
                 // Test 2
                 // Present on Node 0
-                assertSame("entry should be present at store", 1, storeTest0.get(entry.getKey(),
-                                                                                 null).size());
+                assertSame("entry should be present at store",
+                           1,
+                           storeTest0.get(entry.getKey(), null, 0L).size());
                 assertEquals("entry value should match",
                              new String(entry.getValue()),
-                             new String(storeTest0.get(entry.getKey(), null).get(0).getValue()));
+                             new String(storeTest0.get(entry.getKey(), null, 0L).get(0).getValue()));
 
                 // Present on Node 3
-                assertSame("entry should be present at store", 1, storeTest3.get(entry.getKey(),
-                                                                                 null).size());
+                assertSame("entry should be present at store",
+                           1,
+                           storeTest3.get(entry.getKey(), null, 0L).size());
                 assertEquals("entry value should match",
                              new String(entry.getValue()),
-                             new String(storeTest3.get(entry.getKey(), null).get(0).getValue()));
+                             new String(storeTest3.get(entry.getKey(), null, 0L).get(0).getValue()));
 
                 // Test
                 // Present on Node 3
-                assertSame("entry should be present at store", 1, storeTest30.get(entry.getKey(),
-                                                                                  null).size());
+                assertSame("entry should be present at store",
+                           1,
+                           storeTest30.get(entry.getKey(), null, 0L).size());
                 assertEquals("entry value should match",
                              new String(entry.getValue()),
-                             new String(storeTest30.get(entry.getKey(), null).get(0).getValue()));
+                             new String(storeTest30.get(entry.getKey(), null, 0L).get(0).getValue()));
 
             }
 
@@ -692,11 +702,12 @@ public class AdminRebalanceTest {
 
                 // Test 2
                 // Present on Node 3
-                assertSame("entry should be present at store", 1, storeTest3.get(entry.getKey(),
-                                                                                 null).size());
+                assertSame("entry should be present at store",
+                           1,
+                           storeTest3.get(entry.getKey(), null, 0L).size());
                 assertEquals("entry value should match",
                              new String(entry.getValue()),
-                             new String(storeTest3.get(entry.getKey(), null).get(0).getValue()));
+                             new String(storeTest3.get(entry.getKey(), null, 0L).get(0).getValue()));
             }
 
             // All servers should be back to normal state
@@ -757,10 +768,10 @@ public class AdminRebalanceTest {
             }
 
             // Check if files have been copied
-            for (StoreDefinition storeDef: Lists.newArrayList(storeDef1, storeDef2)) {
+            for(StoreDefinition storeDef: Lists.newArrayList(storeDef1, storeDef2)) {
                 String storeName = storeDef.getName();
-                
-                for (RebalanceTaskInfo currentPlan: plans) {
+
+                for(RebalanceTaskInfo currentPlan: plans) {
                     MetadataStore metadataStore = getServer(currentPlan.getStealerId()).getMetadataStore();
                     int nodeId = metadataStore.getNodeId();
                     int zoneId = metadataStore.getCluster().getNodeById(nodeId).getZoneId();
@@ -768,24 +779,27 @@ public class AdminRebalanceTest {
                                                                              storeDef);
                     File currentDir = new File(((ReadOnlyStorageEngine) getStore(currentPlan.getStealerId(),
                                                                                  storeName)).getCurrentDirPath());
-                    if (currentPlan.getPartitionStores().contains(storeDef.getName())) {
-                        for (Integer partitionId: currentPlan.getStoreToPartitionIds().get(storeName)) {
+                    if(currentPlan.getPartitionStores().contains(storeDef.getName())) {
+                        for(Integer partitionId: currentPlan.getStoreToPartitionIds()
+                                                            .get(storeName)) {
                             int zoneNary = -1;
-                            // If computing zoneNary for a partition throws an exception
-                            // it means we don't want to consider that partition.
+                            // If computing zoneNary for a partition throws an
+                            // exception
+                            // it means we don't want to consider that
+                            // partition.
                             try {
                                 zoneNary = storeRoutingPlan.getZoneNaryForNodesPartition(zoneId,
                                                                                          nodeId,
                                                                                          partitionId);
-                            } catch (VoldemortException ve) {
+                            } catch(VoldemortException ve) {
                                 continue;
                             }
-                            if (zoneNary < storeDef.getReplicationFactor()) {
-                                for (int chunkId = 0; chunkId < numChunks; chunkId++) {
-                                    assertTrue(new File(currentDir, partitionId + "_" + zoneNary + "_"
-                                                                    + chunkId + ".data").exists());
-                                    assertTrue(new File(currentDir, partitionId + "_" + zoneNary + "_"
-                                                                    + chunkId + ".index").exists());
+                            if(zoneNary < storeDef.getReplicationFactor()) {
+                                for(int chunkId = 0; chunkId < numChunks; chunkId++) {
+                                    assertTrue(new File(currentDir, partitionId + "_" + zoneNary
+                                                                    + "_" + chunkId + ".data").exists());
+                                    assertTrue(new File(currentDir, partitionId + "_" + zoneNary
+                                                                    + "_" + chunkId + ".index").exists());
                                 }
                             }
                         }
@@ -807,8 +821,7 @@ public class AdminRebalanceTest {
                       .put(MetadataStore.STORES_KEY,
                            Lists.newArrayList(storeDef1,
                                               storeDef2,
-                                              new StoreDefinitionBuilder()
-                                                                          .setName("test3")
+                                              new StoreDefinitionBuilder().setName("test3")
                                                                           .setType(ReadOnlyStorageConfiguration.TYPE_NAME)
                                                                           .setKeySerializer(new SerializerDefinition("string"))
                                                                           .setValueSerializer(new SerializerDefinition("string"))
@@ -1077,8 +1090,8 @@ public class AdminRebalanceTest {
     private void checkRO(Cluster cluster) {
         for(StoreDefinition storeDef: Lists.newArrayList(storeDef1, storeDef2)) {
             Map<Integer, Set<Pair<Integer, Integer>>> nodeToPartitions = ROTestUtils.getNodeIdToAllPartitions(cluster,
-                                                                                                                 storeDef,
-                                                                                                                 true);
+                                                                                                              storeDef,
+                                                                                                              true);
 
             for(Map.Entry<Integer, Set<Pair<Integer, Integer>>> entry: nodeToPartitions.entrySet()) {
                 int nodeId = entry.getKey();

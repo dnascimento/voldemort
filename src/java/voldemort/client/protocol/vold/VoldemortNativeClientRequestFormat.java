@@ -58,11 +58,13 @@ public class VoldemortNativeClientRequestFormat implements RequestFormat {
         this.protocolVersion = protocolVersion;
     }
 
+    @Override
     public void writeDeleteRequest(DataOutputStream outputStream,
                                    String storeName,
                                    ByteArray key,
                                    VectorClock version,
-                                   RequestRoutingType routingType) throws IOException {
+                                   RequestRoutingType routingType,
+                                   long rid) throws IOException {
         StoreUtils.assertValidKey(key);
         outputStream.writeByte(VoldemortOpCode.DELETE_OP_CODE);
         outputStream.writeUTF(storeName);
@@ -77,20 +79,24 @@ public class VoldemortNativeClientRequestFormat implements RequestFormat {
         outputStream.write(clock.toBytes());
     }
 
+    @Override
     public boolean isCompleteDeleteResponse(ByteBuffer buffer) {
         return isCompleteResponse(buffer, VoldemortOpCode.DELETE_OP_CODE);
     }
 
+    @Override
     public boolean readDeleteResponse(DataInputStream inputStream) throws IOException {
         checkException(inputStream);
         return inputStream.readBoolean();
     }
 
+    @Override
     public void writeGetRequest(DataOutputStream outputStream,
                                 String storeName,
                                 ByteArray key,
                                 byte[] transforms,
-                                RequestRoutingType routingType) throws IOException {
+                                RequestRoutingType routingType,
+                                long rid) throws IOException {
         StoreUtils.assertValidKey(key);
         outputStream.writeByte(VoldemortOpCode.GET_OP_CODE);
         outputStream.writeUTF(storeName);
@@ -110,11 +116,13 @@ public class VoldemortNativeClientRequestFormat implements RequestFormat {
         }
     }
 
+    @Override
     public List<Versioned<byte[]>> readGetResponse(DataInputStream inputStream) throws IOException {
         checkException(inputStream);
         return readResults(inputStream);
     }
 
+    @Override
     public boolean isCompleteGetResponse(ByteBuffer buffer) {
         return isCompleteResponse(buffer, VoldemortOpCode.GET_OP_CODE);
     }
@@ -134,11 +142,13 @@ public class VoldemortNativeClientRequestFormat implements RequestFormat {
         return results;
     }
 
+    @Override
     public void writeGetAllRequest(DataOutputStream output,
                                    String storeName,
                                    Iterable<ByteArray> keys,
                                    Map<ByteArray, byte[]> transforms,
-                                   RequestRoutingType routingType) throws IOException {
+                                   RequestRoutingType routingType,
+                                   long rid) throws IOException {
         StoreUtils.assertValidKeys(keys);
         output.writeByte(VoldemortOpCode.GET_ALL_OP_CODE);
         output.writeUTF(storeName);
@@ -173,10 +183,12 @@ public class VoldemortNativeClientRequestFormat implements RequestFormat {
         }
     }
 
+    @Override
     public boolean isCompleteGetAllResponse(ByteBuffer buffer) {
         return isCompleteResponse(buffer, VoldemortOpCode.GET_ALL_OP_CODE);
     }
 
+    @Override
     public Map<ByteArray, List<Versioned<byte[]>>> readGetAllResponse(DataInputStream stream)
             throws IOException {
         checkException(stream);
@@ -191,13 +203,15 @@ public class VoldemortNativeClientRequestFormat implements RequestFormat {
         return results;
     }
 
+    @Override
     public void writePutRequest(DataOutputStream outputStream,
                                 String storeName,
                                 ByteArray key,
                                 byte[] value,
                                 byte[] transforms,
                                 VectorClock version,
-                                RequestRoutingType routingType) throws IOException {
+                                RequestRoutingType routingType,
+                                long rid) throws IOException {
         StoreUtils.assertValidKey(key);
         outputStream.writeByte(VoldemortOpCode.PUT_OP_CODE);
         outputStream.writeUTF(storeName);
@@ -220,10 +234,12 @@ public class VoldemortNativeClientRequestFormat implements RequestFormat {
         }
     }
 
+    @Override
     public boolean isCompletePutResponse(ByteBuffer buffer) {
         return isCompleteResponse(buffer, VoldemortOpCode.PUT_OP_CODE);
     }
 
+    @Override
     public void readPutResponse(DataInputStream inputStream) throws IOException {
         checkException(inputStream);
     }
@@ -239,10 +255,12 @@ public class VoldemortNativeClientRequestFormat implements RequestFormat {
         }
     }
 
+    @Override
     public boolean isCompleteGetVersionResponse(ByteBuffer buffer) {
         return isCompleteResponse(buffer, VoldemortOpCode.GET_VERSION_OP_CODE);
     }
 
+    @Override
     public List<Version> readGetVersionResponse(DataInputStream stream) throws IOException {
         checkException(stream);
         int resultSize = stream.readInt();
@@ -257,10 +275,12 @@ public class VoldemortNativeClientRequestFormat implements RequestFormat {
         return results;
     }
 
+    @Override
     public void writeGetVersionRequest(DataOutputStream output,
                                        String storeName,
                                        ByteArray key,
-                                       RequestRoutingType routingType) throws IOException {
+                                       RequestRoutingType routingType,
+                                       long rid) throws IOException {
         StoreUtils.assertValidKey(key);
         output.writeByte(VoldemortOpCode.GET_VERSION_OP_CODE);
         output.writeUTF(storeName);

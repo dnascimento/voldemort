@@ -106,7 +106,7 @@ public abstract class AbstractReadRepair<K, V, PD extends PipelineData<K, V>> ex
                                      + v.getVersion() + ".");
 
                     NonblockingStore store = nonblockingStores.get(v.getNodeId());
-                    store.submitPutRequest(v.getKey(), v.getVersioned(), null, null, timeoutMs);
+                    store.submitPutRequest(v.getKey(), v.getVersioned(), null, null, timeoutMs, 0L);
                 } catch(VoldemortApplicationException e) {
                     if(logger.isDebugEnabled())
                         logger.debug("Read repair cancelled due to application level exception on node "

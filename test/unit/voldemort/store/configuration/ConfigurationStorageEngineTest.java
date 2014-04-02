@@ -77,20 +77,20 @@ public class ConfigurationStorageEngineTest extends AbstractStoreTest<String, St
         String value = getValue();
 
         // can't delete something that isn't there
-        assertTrue(!store.delete(key, c1));
+        assertTrue(!store.delete(key, c1, 0L));
 
-        store.put(key, new Versioned<String>(value, c1), null);
-        assertEquals(1, store.get(key, null).size());
+        store.put(key, new Versioned<String>(value, c1), null, 0L);
+        assertEquals(1, store.get(key, null, 0L).size());
 
         // now delete that version too
-        assertTrue("Delete failed!", store.delete(key, c1));
-        assertEquals(0, store.get(key, null).size());
+        assertTrue("Delete failed!", store.delete(key, c1, 0L));
+        assertEquals(0, store.get(key, null, 0L).size());
     }
 
     @Override
     public void testGetAndDeleteNonExistentKey() {
         try {
-            assertEquals("Size should be 0", 0, getStore().get("unknown_key", null).size());
+            assertEquals("Size should be 0", 0, getStore().get("unknown_key", null, 0L).size());
         } catch(Exception e) {
             fail();
         }
@@ -100,7 +100,7 @@ public class ConfigurationStorageEngineTest extends AbstractStoreTest<String, St
     public void testNullKeys() {
         // insert of null keys should not be allowed
         try {
-            getStore().put("test.key", new Versioned<String>(null), null);
+            getStore().put("test.key", new Versioned<String>(null), null, 0L);
             fail();
         } catch(Exception e) {
             // expected
@@ -116,9 +116,10 @@ public class ConfigurationStorageEngineTest extends AbstractStoreTest<String, St
         Store<String, String, String> store = getStore();
         String keyName = "testkey.xml";
 
-        store.put(keyName, new Versioned<String>("testValue"), null);
-        assertEquals("Only one file of name key should be present.", 1, store.get(keyName, null)
-                                                                             .size());
+        store.put(keyName, new Versioned<String>("testValue"), null, 0L);
+        assertEquals("Only one file of name key should be present.",
+                     1,
+                     store.get(keyName, null, 0L).size());
 
         // Now create a emacs style temp file
         new File(tempDir, keyName + "#").createNewFile();
@@ -126,22 +127,25 @@ public class ConfigurationStorageEngineTest extends AbstractStoreTest<String, St
         new File(tempDir, keyName + "~").createNewFile();
         new File(tempDir, "." + keyName + "~").createNewFile();
 
-        assertEquals("Only one file of name key should be present.", 1, store.get(keyName, null)
-                                                                             .size());
+        assertEquals("Only one file of name key should be present.",
+                     1,
+                     store.get(keyName, null, 0L).size());
 
         // do a new put
-        VectorClock clock = (VectorClock) store.get(keyName, null).get(0).getVersion();
-        store.put(keyName, new Versioned<String>("testValue1", clock.incremented(0, 1)), null);
-        assertEquals("Only one file of name key should be present.", 1, store.get(keyName, null)
-                                                                             .size());
-        assertEquals("Value should match.", "testValue1", store.get(keyName, null)
+        VectorClock clock = (VectorClock) store.get(keyName, null, 0L).get(0).getVersion();
+        store.put(keyName, new Versioned<String>("testValue1", clock.incremented(0, 1)), null, 0L);
+        assertEquals("Only one file of name key should be present.",
+                     1,
+                     store.get(keyName, null, 0L).size());
+        assertEquals("Value should match.", "testValue1", store.get(keyName, null, 0L)
                                                                .get(0)
                                                                .getValue());
 
         // try getAll
         Map<String, List<Versioned<String>>> map = store.getAll(Arrays.asList(keyName),
                                                                 Collections.<String, String> singletonMap(keyName,
-                                                                                                          null));
+                                                                                                          null),
+                                                                0L);
         assertEquals("Only one file of name key should be present.", 1, map.get(keyName).size());
         assertEquals("Value should match.", "testValue1", map.get(keyName).get(0).getValue());
     }

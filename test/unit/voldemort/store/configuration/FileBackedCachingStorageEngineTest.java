@@ -109,14 +109,14 @@ public class FileBackedCachingStorageEngineTest extends
         byte[] value = getValue();
 
         // can't delete something that isn't there
-        assertTrue(!store.delete(key, c1));
+        assertTrue(!store.delete(key, c1, 0L));
 
-        store.put(key, new Versioned<byte[]>(value, c1), null);
-        assertEquals(1, store.get(key, null).size());
+        store.put(key, new Versioned<byte[]>(value, c1), null, 0L);
+        assertEquals(1, store.get(key, null, 0L).size());
 
         // now delete that version too
-        assertTrue("Delete failed!", store.delete(key, c1));
-        assertEquals(0, store.get(key, null).size());
+        assertTrue("Delete failed!", store.delete(key, c1, 0L));
+        assertEquals(0, store.get(key, null, 0L).size());
     }
 
     @Override
@@ -129,14 +129,14 @@ public class FileBackedCachingStorageEngineTest extends
         assertEquals(putCount, values.size());
         VectorClock clock = new VectorClock();
         for(int i = 0; i < putCount; i++) {
-            store.put(keys.get(i), new Versioned<byte[]>(values.get(i), clock), null);
+            store.put(keys.get(i), new Versioned<byte[]>(values.get(i), clock), null, 0L);
             clock = clock.incremented(0, System.currentTimeMillis());
         }
 
         int countForGet = putCount / 2;
         List<ByteArray> keysForGet = keys.subList(0, countForGet);
         List<byte[]> valuesForGet = values.subList(0, countForGet);
-        Map<ByteArray, List<Versioned<byte[]>>> result = store.getAll(keysForGet, null);
+        Map<ByteArray, List<Versioned<byte[]>>> result = store.getAll(keysForGet, null, 0L);
         assertEquals(countForGet, result.size());
         for(int i = 0; i < keysForGet.size(); ++i) {
             ByteArray key = keysForGet.get(i);
@@ -157,9 +157,9 @@ public class FileBackedCachingStorageEngineTest extends
         // put two conflicting versions, then delete one
         Versioned<byte[]> v1 = new Versioned<byte[]>(value, c1);
         Versioned<byte[]> v2 = new Versioned<byte[]>(value, c2);
-        store.put(key, v1, null);
+        store.put(key, v1, null, 0L);
         try {
-            store.put(key, v2, null);
+            store.put(key, v2, null, 0L);
             fail("Concurrent write succeeded in FileBackedCachingStorageEngine. Should not be allowed.");
         } catch(VoldemortException ve) {
             // This is OK

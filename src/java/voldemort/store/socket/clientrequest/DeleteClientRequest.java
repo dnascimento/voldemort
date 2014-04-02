@@ -37,8 +37,9 @@ public class DeleteClientRequest extends AbstractStoreClientRequest<Boolean> {
                                RequestFormat requestFormat,
                                RequestRoutingType requestRoutingType,
                                ByteArray key,
-                               Version version) {
-        super(storeName, requestFormat, requestRoutingType);
+                               Version version,
+                               long rid) {
+        super(storeName, requestFormat, requestRoutingType, rid);
         this.key = key;
         this.version = version;
     }
@@ -53,7 +54,8 @@ public class DeleteClientRequest extends AbstractStoreClientRequest<Boolean> {
                                          storeName,
                                          key,
                                          (VectorClock) version,
-                                         requestRoutingType);
+                                         requestRoutingType,
+                                         rid);
     }
 
     @Override

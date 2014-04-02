@@ -98,7 +98,8 @@ public abstract class AbstractRequestFormatTest extends TestCase {
                                                   storeName,
                                                   key,
                                                   transforms,
-                                                  RequestRoutingType.NORMAL);
+                                                  RequestRoutingType.NORMAL,
+                                                  0L);
             ByteArrayOutputStream getResponse = new ByteArrayOutputStream();
             this.serverWireFormat.handleRequest(inputStream(getRequest),
                                                 new DataOutputStream(getResponse));
@@ -136,9 +137,11 @@ public abstract class AbstractRequestFormatTest extends TestCase {
                           new boolean[] { true });
 
         testGetAllRequest(new ByteArray[] { TestUtils.toByteArray("hello"),
-                TestUtils.toByteArray("holly") }, new byte[][] { "world".getBytes(),
-                "cow".getBytes() }, null, new VectorClock[] { TestUtils.getClock(1, 1),
-                TestUtils.getClock(1, 2) }, new boolean[] { true, false });
+                                  TestUtils.toByteArray("holly") },
+                          new byte[][] { "world".getBytes(), "cow".getBytes() },
+                          null,
+                          new VectorClock[] { TestUtils.getClock(1, 1), TestUtils.getClock(1, 2) },
+                          new boolean[] { true, false });
     }
 
     public void testGetAllRequest(ByteArray[] keys,
@@ -156,7 +159,8 @@ public abstract class AbstractRequestFormatTest extends TestCase {
                                                      storeName,
                                                      Arrays.asList(keys),
                                                      transforms,
-                                                     RequestRoutingType.NORMAL);
+                                                     RequestRoutingType.NORMAL,
+                                                     0L);
             ByteArrayOutputStream getAllResponse = new ByteArrayOutputStream();
             this.serverWireFormat.handleRequest(inputStream(getAllRequest),
                                                 new DataOutputStream(getAllResponse));
@@ -210,7 +214,8 @@ public abstract class AbstractRequestFormatTest extends TestCase {
                                                   value,
                                                   transforms,
                                                   version,
-                                                  RequestRoutingType.NORMAL);
+                                                  RequestRoutingType.NORMAL,
+                                                  0L);
             ByteArrayOutputStream putResponse = new ByteArrayOutputStream();
             this.serverWireFormat.handleRequest(inputStream(putRequest),
                                                 new DataOutputStream(putResponse));
@@ -252,7 +257,8 @@ public abstract class AbstractRequestFormatTest extends TestCase {
                                                      storeName,
                                                      key,
                                                      version,
-                                                     RequestRoutingType.NORMAL);
+                                                     RequestRoutingType.NORMAL,
+                                                     0L);
             ByteArrayOutputStream delResponse = new ByteArrayOutputStream();
             this.serverWireFormat.handleRequest(inputStream(delRequest),
                                                 new DataOutputStream(delResponse));

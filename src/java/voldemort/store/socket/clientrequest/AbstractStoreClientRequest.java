@@ -27,12 +27,16 @@ public abstract class AbstractStoreClientRequest<T> extends AbstractClientReques
 
     protected final RequestRoutingType requestRoutingType;
 
+    protected final long rid;
+
     public AbstractStoreClientRequest(String storeName,
                                       RequestFormat requestFormat,
-                                      RequestRoutingType requestRoutingType) {
+                                      RequestRoutingType requestRoutingType,
+                                      long rid) {
         this.storeName = storeName;
         this.requestFormat = requestFormat;
         this.requestRoutingType = requestRoutingType;
+        this.rid = rid;
     }
 
 }

@@ -51,9 +51,9 @@ public class CacheStorageEnginePerformanceTest {
                     byte[] bytes = Integer.toString(index % valueRange).getBytes();
                     ByteArray key = new ByteArray(bytes);
                     if(index % mod < readMax)
-                        store.get(key, null);
+                        store.get(key, null, 0L);
                     else
-                        store.put(key, new Versioned<byte[]>(bytes), null);
+                        store.put(key, new Versioned<byte[]>(bytes), null, 0L);
                 } catch(ObsoleteVersionException e) {
                     obsoletes.incrementAndGet();
                 }

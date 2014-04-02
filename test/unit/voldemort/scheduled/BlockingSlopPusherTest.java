@@ -92,7 +92,7 @@ public class BlockingSlopPusherTest extends TestCase {
     private void pushSlop(Versioned<Slop>... slops) {
         // put all the slop in the slop store
         for(Versioned<Slop> s: slops)
-            repo.getSlopStore().asSlopStore().put(s.getValue().makeKey(), s, null);
+            repo.getSlopStore().asSlopStore().put(s.getValue().makeKey(), s, null, 0L);
 
         // run the pusher
         pusher.run();
@@ -109,7 +109,7 @@ public class BlockingSlopPusherTest extends TestCase {
             Slop slop = vs.getValue();
             assertEquals("Slop remains.", 0, repo.getSlopStore().get(slop.makeKey(), null).size());
             assertTrue(bytesEqual(slop.getValue(), repo.getNodeStore(STORE_NAME, slop.getNodeId())
-                                                       .get(slop.getKey(), null)
+                                                       .get(slop.getKey(), null, 0L)
                                                        .get(0)
                                                        .getValue()));
         }
