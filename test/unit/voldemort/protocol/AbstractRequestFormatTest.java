@@ -92,7 +92,7 @@ public abstract class AbstractRequestFormatTest extends TestCase {
                                boolean isPresent) throws Exception {
         try {
             if(isPresent)
-                store.put(key, Versioned.value(value, version), null);
+                store.put(key, Versioned.value(value, version), null, 0L);
             ByteArrayOutputStream getRequest = new ByteArrayOutputStream();
             this.clientWireFormat.writeGetRequest(new DataOutputStream(getRequest),
                                                   storeName,
@@ -152,7 +152,7 @@ public abstract class AbstractRequestFormatTest extends TestCase {
         try {
             for(int i = 0; i < keys.length; i++) {
                 if(isFound[i])
-                    store.put(keys[i], Versioned.value(values[i], versions[i]), null);
+                    store.put(keys[i], Versioned.value(values[i], versions[i]), null, 0L);
             }
             ByteArrayOutputStream getAllRequest = new ByteArrayOutputStream();
             this.clientWireFormat.writeGetAllRequest(new DataOutputStream(getAllRequest),
@@ -193,7 +193,8 @@ public abstract class AbstractRequestFormatTest extends TestCase {
         // test obsolete exception
         this.store.put(TestUtils.toByteArray("hello"),
                        new Versioned<byte[]>("world".getBytes(), new VectorClock()),
-                       null);
+                       null,
+                       0L);
         testPutRequest(TestUtils.toByteArray("hello"),
                        "world".getBytes(),
                        null,
@@ -251,7 +252,7 @@ public abstract class AbstractRequestFormatTest extends TestCase {
                                   boolean isDeleted) throws Exception {
         try {
             if(existingValue != null)
-                this.store.put(key, existingValue, null);
+                this.store.put(key, existingValue, null, 0L);
             ByteArrayOutputStream delRequest = new ByteArrayOutputStream();
             this.clientWireFormat.writeDeleteRequest(new DataOutputStream(delRequest),
                                                      storeName,

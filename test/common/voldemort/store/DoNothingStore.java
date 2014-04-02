@@ -31,7 +31,7 @@ public class DoNothingStore<K, V, T> extends AbstractStore<K, V, T> {
     }
 
     @Override
-    public boolean delete(K key, Version value) throws VoldemortException {
+    public boolean delete(K key, Version value, long rid) throws VoldemortException {
         // Do nothing
         return true;
     }

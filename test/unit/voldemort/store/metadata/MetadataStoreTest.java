@@ -48,6 +48,7 @@ import voldemort.xml.StoreDefinitionsMapper;
 import com.google.common.collect.Maps;
 
 public class MetadataStoreTest {
+
     private Logger logger = Logger.getLogger(MetadataStore.class);
 
     private static int TEST_RUNS = 100;
@@ -110,12 +111,12 @@ public class MetadataStoreTest {
     public void testSimpleGetAndPut() {
         for(int i = 0; i <= TEST_RUNS; i++) {
             ByteArray key = getValidKey();
-            VectorClock clock = (VectorClock) metadataStore.get(key, null).get(0).getVersion();
+            VectorClock clock = (VectorClock) metadataStore.get(key, null, 0L).get(0).getVersion();
             Versioned<byte[]> value = new Versioned<byte[]>(getValidValue(key),
                                                             clock.incremented(0, 1));
 
-            metadataStore.put(key, value, null);
-            checkValues(value, metadataStore.get(key, null), key);
+            metadataStore.put(key, value, null, 0L);
+            checkValues(value, metadataStore.get(key, null, 0L), key);
         }
     }
 
@@ -125,12 +126,14 @@ public class MetadataStoreTest {
             for(int j = 0; j <= 5; j++) {
                 ByteArray key = getValidKey();
 
-                VectorClock clock = (VectorClock) metadataStore.get(key, null).get(0).getVersion();
+                VectorClock clock = (VectorClock) metadataStore.get(key, null, 0L)
+                                                               .get(0)
+                                                               .getVersion();
                 Versioned<byte[]> value = new Versioned<byte[]>(getValidValue(key),
                                                                 clock.incremented(0, 1));
 
-                metadataStore.put(key, value, null);
-                checkValues(value, metadataStore.get(key, null), key);
+                metadataStore.put(key, value, null, 0L);
+                checkValues(value, metadataStore.get(key, null, 0L), key);
             }
         }
     }
@@ -139,14 +142,14 @@ public class MetadataStoreTest {
     public void testObsoletePut() {
         for(int i = 0; i <= TEST_RUNS; i++) {
             ByteArray key = getValidKey();
-            VectorClock clock = (VectorClock) metadataStore.get(key, null).get(0).getVersion();
+            VectorClock clock = (VectorClock) metadataStore.get(key, null, 0L).get(0).getVersion();
             Versioned<byte[]> value = new Versioned<byte[]>(getValidValue(key),
                                                             clock.incremented(0, 1));
 
             try {
-                metadataStore.put(key, value, null);
+                metadataStore.put(key, value, null, 0L);
                 assertTrue(true);
-                metadataStore.put(key, value, null);
+                metadataStore.put(key, value, null, 0L);
                 fail();
             } catch(ObsoleteVersionException e) {
                 // expected ObsoleteVersionException
@@ -158,19 +161,20 @@ public class MetadataStoreTest {
     public void testSynchronousPut() {
         for(int i = 0; i <= TEST_RUNS; i++) {
             ByteArray key = getValidKey();
-            VectorClock clock = (VectorClock) metadataStore.get(key, null).get(0).getVersion();
+            VectorClock clock = (VectorClock) metadataStore.get(key, null, 0L).get(0).getVersion();
 
             Versioned<byte[]> value1 = new Versioned<byte[]>(getValidValue(key),
                                                              clock.incremented(1, 1));
             Versioned<byte[]> value2 = new Versioned<byte[]>(getValidValue(key),
                                                              clock.incremented(2, 1));
 
-            metadataStore.put(key, value1, null);
-            metadataStore.put(key, value2, null);
+            metadataStore.put(key, value1, null, 0L);
+            metadataStore.put(key, value2, null, 0L);
 
-            assertEquals("Only one metadata value should return", 1, metadataStore.get(key, null)
-                                                                                  .size());
-            checkValues(value2, metadataStore.get(key, null), key);
+            assertEquals("Only one metadata value should return",
+                         1,
+                         metadataStore.get(key, null, 0L).size());
+            checkValues(value2, metadataStore.get(key, null, 0L), key);
         }
     }
 
@@ -201,14 +205,15 @@ public class MetadataStoreTest {
         assertTrue("Should be null", null == metadataStore.getRebalancingSourceCluster());
 
         Cluster dummyCluster = ServerTestUtils.getLocalCluster(2);
-        metadataStore.put(MetadataStore.REBALANCING_SOURCE_CLUSTER_XML, dummyCluster);
+        metadataStore.put(MetadataStore.REBALANCING_SOURCE_CLUSTER_XML, dummyCluster, 0L);
         assertEquals("Should be equal", dummyCluster, metadataStore.getRebalancingSourceCluster());
 
-        metadataStore.put(MetadataStore.REBALANCING_SOURCE_CLUSTER_XML, (Object) null);
+        metadataStore.put(MetadataStore.REBALANCING_SOURCE_CLUSTER_XML, (Object) null, 0L);
         assertTrue("Should be null", null == metadataStore.getRebalancingSourceCluster());
 
         List<Versioned<byte[]>> sourceClusterVersions = metadataStore.get(MetadataStore.REBALANCING_SOURCE_CLUSTER_XML,
-                                                                          null);
+                                                                          null,
+                                                                          0L);
         assertTrue("Just one version expected", 1 == sourceClusterVersions.size());
         assertEquals("Empty string should map to null",
                      "",
@@ -217,36 +222,38 @@ public class MetadataStoreTest {
     }
 
     /**
-     * Test update stores.xml with incompatible avro versions. Should reject and throw exceptions
+     * Test update stores.xml with incompatible avro versions. Should reject and
+     * throw exceptions
      */
     @Test
     public void testUpdateStoresXmlWithIncompatibleAvroSchema() {
-        String storesXml = "<stores>\n" +
-        "  <store>\n" +
-        "    <name>test</name>\n" +
-        "    <persistence>bdb</persistence>\n" +
-        "    <description>Test store</description>\n" +
-        "    <owners>harry@hogwarts.edu, hermoine@hogwarts.edu</owners>\n" +
-        "    <routing-strategy>consistent-routing</routing-strategy>\n" +
-        "    <routing>client</routing>\n" +
-        "    <replication-factor>1</replication-factor>\n" +
-        "    <required-reads>1</required-reads>\n" +
-        "    <required-writes>1</required-writes>\n" +
-        "      <key-serializer>\n" +
-        "          <type>avro-generic-versioned</type>\n" +
-        "          <schema-info version=\"0\">\"int32\"</schema-info>\n" +
-        "      </key-serializer>\n" +
-        "      <value-serializer>\n" +
-        "          <type>avro-generic-versioned</type>\n" +
-        "          <schema-info version=\"0\">\"int\"</schema-info>\n" +
-        "          <schema-info version=\"1\">\"string\"</schema-info>\n" +
-        "      </value-serializer>\n" +
-        "    <hinted-handoff-strategy>consistent-handoff</hinted-handoff-strategy>\n" +
-        "  </store>\n" +
-        "</stores>";
-        try{
+        String storesXml = "<stores>\n"
+                           + "  <store>\n"
+                           + "    <name>test</name>\n"
+                           + "    <persistence>bdb</persistence>\n"
+                           + "    <description>Test store</description>\n"
+                           + "    <owners>harry@hogwarts.edu, hermoine@hogwarts.edu</owners>\n"
+                           + "    <routing-strategy>consistent-routing</routing-strategy>\n"
+                           + "    <routing>client</routing>\n"
+                           + "    <replication-factor>1</replication-factor>\n"
+                           + "    <required-reads>1</required-reads>\n"
+                           + "    <required-writes>1</required-writes>\n"
+                           + "      <key-serializer>\n"
+                           + "          <type>avro-generic-versioned</type>\n"
+                           + "          <schema-info version=\"0\">\"int32\"</schema-info>\n"
+                           + "      </key-serializer>\n"
+                           + "      <value-serializer>\n"
+                           + "          <type>avro-generic-versioned</type>\n"
+                           + "          <schema-info version=\"0\">\"int\"</schema-info>\n"
+                           + "          <schema-info version=\"1\">\"string\"</schema-info>\n"
+                           + "      </value-serializer>\n"
+                           + "    <hinted-handoff-strategy>consistent-handoff</hinted-handoff-strategy>\n"
+                           + "  </store>\n" + "</stores>";
+        try {
             logger.info("Now inserting stores with non backward compatible schema. Should see exception");
-            metadataStore.put(MetadataStore.STORES_KEY, new StoreDefinitionsMapper().readStoreList(new StringReader(storesXml)));
+            metadataStore.put(MetadataStore.STORES_KEY,
+                              new StoreDefinitionsMapper().readStoreList(new StringReader(storesXml)),
+                              0L);
             Assert.fail("Did not throw exception");
         } catch(VoldemortException e) {
 
@@ -259,7 +266,7 @@ public class MetadataStoreTest {
         assertEquals("should return the last saved version", value.getVersion(), list.get(0)
                                                                                      .getVersion());
         assertEquals("should return the last saved value (key:"
-                     + ByteUtils.getString(key.get(), "UTF-8") + ")",
+                             + ByteUtils.getString(key.get(), "UTF-8") + ")",
                      new String(value.getValue()),
                      new String(list.get(0).getValue()));
     }
@@ -272,7 +279,7 @@ public class MetadataStoreTest {
      */
     private void incrementVersionAndPut(MetadataStore metadataStore, String keyString, Object value) {
         ByteArray key = new ByteArray(ByteUtils.getBytes(keyString, "UTF-8"));
-        VectorClock current = (VectorClock) metadataStore.getVersions(key).get(0);
+        VectorClock current = (VectorClock) metadataStore.getVersions(key, 0L).get(0);
 
         metadataStore.put(keyString,
                           new Versioned<Object>(value,

@@ -168,7 +168,7 @@ public class R2Store extends AbstractStore<ByteArray, byte[], byte[]> {
     }
 
     @Override
-    public boolean delete(ByteArray key, Version version) throws VoldemortException {
+    public boolean delete(ByteArray key, Version version, long rid) throws VoldemortException {
         try {
             // Create the REST request with this byte array
             String base64Key = RestUtils.encodeVoldemortKey(key.get());
@@ -262,7 +262,8 @@ public class R2Store extends AbstractStore<ByteArray, byte[], byte[]> {
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms) throws VoldemortException {
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
+            throws VoldemortException {
         List<Versioned<byte[]>> resultList = new ArrayList<Versioned<byte[]>>();
         String base64Key = RestUtils.encodeVoldemortKey(key.get());
         RestRequestBuilder rb = null;
@@ -398,7 +399,7 @@ public class R2Store extends AbstractStore<ByteArray, byte[], byte[]> {
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transform)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transform, long rid)
             throws VoldemortException {
         RestResponse response = null;
 
@@ -499,8 +500,8 @@ public class R2Store extends AbstractStore<ByteArray, byte[], byte[]> {
 
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
-                                                          Map<ByteArray, byte[]> transforms)
-            throws VoldemortException {
+                                                          Map<ByteArray, byte[]> transforms,
+                                                          long rid) throws VoldemortException {
 
         Map<ByteArray, List<Versioned<byte[]>>> resultMap = new HashMap<ByteArray, List<Versioned<byte[]>>>();
         int numberOfKeys = 0;
@@ -533,7 +534,7 @@ public class R2Store extends AbstractStore<ByteArray, byte[], byte[]> {
                 if(transforms != null) {
                     singleKeyTransforms = transforms.get(key);
                 }
-                resultList = this.get(key, singleKeyTransforms);
+                resultList = this.get(key, singleKeyTransforms, rid);
                 resultMap.put(key, resultList);
             } else {
 
@@ -685,7 +686,7 @@ public class R2Store extends AbstractStore<ByteArray, byte[], byte[]> {
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key) {
+    public List<Version> getVersions(ByteArray key, long rid) {
         List<Version> resultList = new ArrayList<Version>();
         String base64Key = RestUtils.encodeVoldemortKey(key.get());
         RestRequestBuilder rb = null;

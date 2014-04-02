@@ -44,9 +44,9 @@ public class PausableStorageEngine<K, V, T> extends AbstractStorageEngine<K, V, 
     }
 
     @Override
-    public boolean delete(K key, Version version) {
+    public boolean delete(K key, Version version, long rid) {
         blockIfNecessary();
-        return inner.delete(key);
+        return inner.delete(key, rid);
     }
 
     private void blockIfNecessary() {
@@ -62,27 +62,27 @@ public class PausableStorageEngine<K, V, T> extends AbstractStorageEngine<K, V, 
     }
 
     @Override
-    public List<Versioned<V>> get(K key, T transforms) {
+    public List<Versioned<V>> get(K key, T transforms, long rid) {
         blockIfNecessary();
-        return inner.get(key, transforms);
+        return inner.get(key, transforms, rid);
     }
 
     @Override
-    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms) {
+    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, long rid) {
         blockIfNecessary();
-        return inner.getAll(keys, transforms);
+        return inner.getAll(keys, transforms, rid);
     }
 
     @Override
-    public void put(K key, Versioned<V> value, T transforms) {
+    public void put(K key, Versioned<V> value, T transforms, long rid) {
         blockIfNecessary();
-        inner.put(key, value, transforms);
+        inner.put(key, value, transforms, rid);
     }
 
     @Override
-    public List<Versioned<V>> multiVersionPut(K key, final List<Versioned<V>> values) {
+    public List<Versioned<V>> multiVersionPut(K key, final List<Versioned<V>> values, long rid) {
         blockIfNecessary();
-        return inner.multiVersionPut(key, values);
+        return inner.multiVersionPut(key, values, rid);
     }
 
     @Override
@@ -116,9 +116,9 @@ public class PausableStorageEngine<K, V, T> extends AbstractStorageEngine<K, V, 
     }
 
     @Override
-    public List<Version> getVersions(K key) {
+    public List<Version> getVersions(K key, long rid) {
         blockIfNecessary();
-        return inner.getVersions(key);
+        return inner.getVersions(key, rid);
     }
 
     @Override

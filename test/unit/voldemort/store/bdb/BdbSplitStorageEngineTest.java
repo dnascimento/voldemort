@@ -103,23 +103,29 @@ public class BdbSplitStorageEngineTest {
 
         storeA.put(TestUtils.toByteArray("testKey1"),
                    new Versioned<byte[]>("value".getBytes()),
-                   null);
+                   null,
+                   0L);
         storeA.put(TestUtils.toByteArray("testKey2"),
                    new Versioned<byte[]>("value".getBytes()),
-                   null);
+                   null,
+                   0L);
         storeA.put(TestUtils.toByteArray("testKey3"),
                    new Versioned<byte[]>("value".getBytes()),
-                   null);
+                   null,
+                   0L);
 
         storeB.put(TestUtils.toByteArray("testKey1"),
                    new Versioned<byte[]>("value".getBytes()),
-                   null);
+                   null,
+                   0L);
         storeB.put(TestUtils.toByteArray("testKey2"),
                    new Versioned<byte[]>("value".getBytes()),
-                   null);
+                   null,
+                   0L);
         storeB.put(TestUtils.toByteArray("testKey3"),
                    new Versioned<byte[]>("value".getBytes()),
-                   null);
+                   null,
+                   0L);
 
         storeA.close();
         storeB.close();
@@ -152,23 +158,29 @@ public class BdbSplitStorageEngineTest {
 
         storeA.put(TestUtils.toByteArray("testKey1"),
                    new Versioned<byte[]>("value".getBytes()),
-                   null);
+                   null,
+                   0L);
         storeA.put(TestUtils.toByteArray("testKey2"),
                    new Versioned<byte[]>("value".getBytes()),
-                   null);
+                   null,
+                   0L);
         storeA.put(TestUtils.toByteArray("testKey3"),
                    new Versioned<byte[]>("value".getBytes()),
-                   null);
+                   null,
+                   0L);
 
         storeB.put(TestUtils.toByteArray("testKey1"),
                    new Versioned<byte[]>("value".getBytes()),
-                   null);
+                   null,
+                   0L);
         storeB.put(TestUtils.toByteArray("testKey2"),
                    new Versioned<byte[]>("value".getBytes()),
-                   null);
+                   null,
+                   0L);
         storeB.put(TestUtils.toByteArray("testKey3"),
                    new Versioned<byte[]>("value".getBytes()),
-                   null);
+                   null,
+                   0L);
 
         storeA.close();
         storeB.close();
@@ -252,11 +264,11 @@ public class BdbSplitStorageEngineTest {
 
             byte[] value = new byte[(int) (CACHE_SIZE / 10000)];
             // try to push values in cache
-            storeA.put(TestUtils.toByteArray(i + "A"), new Versioned<byte[]>(value), null);
-            storeA.get(TestUtils.toByteArray(i + "A"), null);
+            storeA.put(TestUtils.toByteArray(i + "A"), new Versioned<byte[]>(value), null, 0L);
+            storeA.get(TestUtils.toByteArray(i + "A"), null, 0L);
 
-            storeB.put(TestUtils.toByteArray(i + "B"), new Versioned<byte[]>(value), null);
-            storeB.get(TestUtils.toByteArray(i + "B"), null);
+            storeB.put(TestUtils.toByteArray(i + "B"), new Versioned<byte[]>(value), null, 0L);
+            storeB.get(TestUtils.toByteArray(i + "B"), null, 0L);
 
             EnvironmentStats statsA = environmentA.getStats(new StatsConfig());
             EnvironmentStats statsB = environmentB.getStats(new StatsConfig());

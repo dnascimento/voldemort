@@ -685,7 +685,7 @@ public abstract class AbstractZonedRebalanceTest extends AbstractRebalanceTest {
 
                                 // should get a valid value
                                 try {
-                                    Versioned<String> value = storeClientRW.get(keys.get(index));
+                                    Versioned<String> value = storeClientRW.get(keys.get(index), 0L);
                                     assertNotSame("StoreClient get() should not return null.",
                                                   null,
                                                   value);
@@ -870,7 +870,8 @@ public abstract class AbstractZonedRebalanceTest extends AbstractRebalanceTest {
                                 VoldemortServer server = serverIterator.next();
                                 if(ByteUtils.getString(server.getMetadataStore()
                                                              .get(MetadataStore.SERVER_STATE_KEY,
-                                                                  null)
+                                                                  null,
+                                                                  0L)
                                                              .get(0)
                                                              .getValue(),
                                                        "UTF-8")
@@ -905,7 +906,7 @@ public abstract class AbstractZonedRebalanceTest extends AbstractRebalanceTest {
                                 try {
                                     String keyStr = ByteUtils.getString(movingKey.get(), "UTF-8");
                                     String valStr = "proxy_write";
-                                    storeClientRW.put(keyStr, valStr);
+                                    storeClientRW.put(keyStr, valStr, 0L);
                                     baselineTuples.put(keyStr, valStr);
                                     // all these keys will have [5:1] vector
                                     // clock is node 5 is the new pseudo master

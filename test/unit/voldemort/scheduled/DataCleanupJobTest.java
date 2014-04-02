@@ -269,15 +269,15 @@ public class DataCleanupJobTest {
                                                                     onlineDeletes,
                                                                     time);
         // do a bunch of puts
-        store.put(new ByteArray("k1".getBytes()), new Versioned<byte[]>("v1".getBytes()), null);
-        store.put(new ByteArray("k2".getBytes()), new Versioned<byte[]>("v2".getBytes()), null);
+        store.put(new ByteArray("k1".getBytes()), new Versioned<byte[]>("v1".getBytes()), null, 0L);
+        store.put(new ByteArray("k2".getBytes()), new Versioned<byte[]>("v2".getBytes()), null, 0L);
         long writeMs = System.currentTimeMillis();
 
         // wait for a bit and then do more puts
         Thread.sleep(2000);
 
-        store.put(new ByteArray("k3".getBytes()), new Versioned<byte[]>("v3".getBytes()), null);
-        store.put(new ByteArray("k4".getBytes()), new Versioned<byte[]>("v4".getBytes()), null);
+        store.put(new ByteArray("k3".getBytes()), new Versioned<byte[]>("v3".getBytes()), null, 0L);
+        store.put(new ByteArray("k4".getBytes()), new Versioned<byte[]>("v4".getBytes()), null, 0L);
 
         // move time forward just enough such that some keys will have expired.
         time.setTime(writeMs + retentionStoreDef.getRetentionDays() * Time.MS_PER_DAY + 1);

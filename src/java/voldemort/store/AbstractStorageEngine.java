@@ -56,7 +56,7 @@ public class AbstractStorageEngine<K, V, T> extends AbstractStore<K, V, T> imple
     }
 
     @Override
-    public List<Versioned<V>> multiVersionPut(K key, List<Versioned<V>> values) {
+    public List<Versioned<V>> multiVersionPut(K key, List<Versioned<V>> values, long rid) {
         KeyLockHandle<V> handle = null;
         try {
             handle = getAndLock(key);

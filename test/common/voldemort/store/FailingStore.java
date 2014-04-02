@@ -47,28 +47,28 @@ public class FailingStore<K, V, T> extends AbstractStore<K, V, T> {
     }
 
     @Override
-    public List<Versioned<V>> get(K key, T transforms) throws VoldemortException {
+    public List<Versioned<V>> get(K key, T transforms, long rid) throws VoldemortException {
         throw exception;
     }
 
     @Override
-    public boolean delete(K key, Version value) throws VoldemortException {
+    public boolean delete(K key, Version value, long rid) throws VoldemortException {
         throw exception;
     }
 
     @Override
-    public void put(K key, Versioned<V> value, T transforms) throws VoldemortException {
+    public void put(K key, Versioned<V> value, T transforms, long rid) throws VoldemortException {
         throw exception;
     }
 
     @Override
-    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms)
+    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, long rid)
             throws VoldemortException {
         throw exception;
     }
 
     @Override
-    public java.util.List<Version> getVersions(K key) {
+    public java.util.List<Version> getVersions(K key, long rid) {
         throw exception;
     }
 }

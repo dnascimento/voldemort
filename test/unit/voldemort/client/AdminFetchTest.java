@@ -79,7 +79,7 @@ public class AdminFetchTest {
     public AdminFetchTest(boolean useNio, boolean usePIDScan) {
         this.useNio = useNio;
         properties = new Properties();
-        if (usePIDScan) {
+        if(usePIDScan) {
             properties.put("bdb.prefix.keys.with.partitionid", "true");
         } else {
             properties.put("bdb.prefix.keys.with.partitionid", "false");
@@ -89,7 +89,7 @@ public class AdminFetchTest {
     @Parameters
     public static Collection<Object[]> configs() {
         return Arrays.asList(new Object[][] { { true, true }, { true, false }, { false, true },
-                                              { false, false } });
+                { false, false } });
     }
 
     @Before
@@ -117,8 +117,8 @@ public class AdminFetchTest {
 
         List<StoreDefinition> storeDefs = new StoreDefinitionsMapper().readStoreList(new File(storesXmlfile));
 
-        for (StoreDefinition storeDef : storeDefs)
-            if (storeDef.getName().equals(testStoreName))
+        for(StoreDefinition storeDef: storeDefs)
+            if(storeDef.getName().equals(testStoreName))
                 testStoreDef = storeDef;
 
         routingStrategy = new RoutingStrategyFactory().updateRoutingStrategy(testStoreDef, cluster);
@@ -134,27 +134,27 @@ public class AdminFetchTest {
 
         // create a client that executes operations on a single store
         StoreClient<String, String> voldClient = factory.getStoreClient("users");
-        for (int i = 0; i < TEST_STREAM_KEYS_SIZE; i++) {
+        for(int i = 0; i < TEST_STREAM_KEYS_SIZE; i++) {
             String key = "key" + i;
             byte[] bkey = key.getBytes("UTF-8");
             int partition = routingStrategy.getPartitionList(bkey).get(0);
-            if (!partitionToKeysMap.containsKey(partition))
+            if(!partitionToKeysMap.containsKey(partition))
                 partitionToKeysMap.put(partition, new HashSet<String>());
             partitionToKeysMap.get(partition).add(key);
-            voldClient.put(key, "value" + i);
+            voldClient.put(key, "value" + i, 0L);
         }
     }
 
     @After
     public void tearDown() throws IOException {
-        for (VoldemortServer server : servers) {
+        for(VoldemortServer server: servers) {
             ServerTestUtils.stopVoldemortServer(server);
         }
     }
 
     private Set<String> getEntries(Iterator<Pair<ByteArray, Versioned<byte[]>>> itr) {
         HashSet<String> keySet = new HashSet<String>();
-        while (itr.hasNext()) {
+        while(itr.hasNext()) {
             Pair<ByteArray, Versioned<byte[]>> entry = itr.next();
             keySet.add(new String(entry.getFirst().get()));
         }
@@ -235,7 +235,7 @@ public class AdminFetchTest {
 
     private Set<String> getKeys(Iterator<ByteArray> itr) {
         HashSet<String> keySet = new HashSet<String>();
-        while (itr.hasNext()) {
+        while(itr.hasNext()) {
             keySet.add(new String(itr.next().get()));
         }
         return keySet;
@@ -308,7 +308,7 @@ public class AdminFetchTest {
         int numPartition3Keys = partition3Keys.size();
         partition3Keys.removeAll(fetchedKeys);
         assertEquals("Remainder in partition 3 should be two less.",
-                     numPartition3Keys - 2, 
+                     numPartition3Keys - 2,
                      partition3Keys.size());
 
         assertEquals("Total of four keys fetched.", 4, fetchedKeys.size());

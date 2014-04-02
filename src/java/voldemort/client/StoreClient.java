@@ -44,7 +44,7 @@ public interface StoreClient<K, V> {
      * 
      * @param key The key
      */
-    public V getValue(K key);
+    public V getValue(K key, long rid);
 
     /**
      * Get the value associated with the given key or defaultValue if there is
@@ -57,7 +57,7 @@ public interface StoreClient<K, V> {
      *        with this key
      * @return Either the value stored for the key or the default value.
      */
-    public V getValue(K key, V defaultValue);
+    public V getValue(K key, V defaultValue, long rid);
 
     /**
      * Get the versioned value associated with the given key or null if no value
@@ -66,7 +66,7 @@ public interface StoreClient<K, V> {
      * @param key The key for which to fetch the value.
      * @return The versioned value, or null if no value is stored for this key.
      */
-    public Versioned<V> get(K key);
+    public Versioned<V> get(K key, long rid);
 
     /**
      * Get the versioned value associated with the given key and apply the given
@@ -79,7 +79,7 @@ public interface StoreClient<K, V> {
      * @return the transformed versioned value, or null if no value is stored
      *         for this key
      */
-    public Versioned<V> get(K key, Object transforms);
+    public Versioned<V> get(K key, Object transforms, long rid);
 
     /**
      * Gets the versioned values associated with the given keys and returns them
@@ -90,7 +90,7 @@ public interface StoreClient<K, V> {
      * @param keys The keys for which to fetch the values.
      * @return A Map of keys to versioned values.
      */
-    public Map<K, Versioned<V>> getAll(Iterable<K> keys);
+    public Map<K, Versioned<V>> getAll(Iterable<K> keys, long rid);
 
     /**
      * Like {@link voldemort.client.StoreClient#getAll(Iterable) getAll}, except
@@ -102,7 +102,7 @@ public interface StoreClient<K, V> {
      *        applied to the value for each key
      * @return A map of keys to transformed versioned values
      */
-    public Map<K, Versioned<V>> getAll(Iterable<K> keys, Map<K, Object> transforms);
+    public Map<K, Versioned<V>> getAll(Iterable<K> keys, Map<K, Object> transforms, long rid);
 
     /**
      * Get the versioned value associated with the given key or the defaultValue
@@ -112,7 +112,7 @@ public interface StoreClient<K, V> {
      * @return The versioned value, or the defaultValue if no value is stored
      *         for this key.
      */
-    public Versioned<V> get(K key, Versioned<V> defaultValue);
+    public Versioned<V> get(K key, Versioned<V> defaultValue, long rid);
 
     /**
      * Associated the given value to the key, clobbering any existing values
@@ -122,7 +122,7 @@ public interface StoreClient<K, V> {
      * @param value The value
      * @return version The version of the object
      */
-    public Version put(K key, V value);
+    public Version put(K key, V value, long rid);
 
     /**
      * Like {@link voldemort.client.StoreClient #put(Object, Object)}, except
@@ -134,7 +134,7 @@ public interface StoreClient<K, V> {
      * @param transforms the transforms to be applied on the value
      * @return version The version of the object
      */
-    public Version put(K key, V value, Object transforms);
+    public Version put(K key, V value, Object transforms, long rid);
 
     /**
      * Put the given Versioned value into the store for the given key if the
@@ -145,7 +145,7 @@ public interface StoreClient<K, V> {
      * @param versioned The value and its versioned
      * @throws ObsoleteVersionException
      */
-    public Version put(K key, Versioned<V> versioned) throws ObsoleteVersionException;
+    public Version put(K key, Versioned<V> versioned, long rid) throws ObsoleteVersionException;
 
     /**
      * Put the versioned value to the key, ignoring any ObsoleteVersionException
@@ -155,7 +155,7 @@ public interface StoreClient<K, V> {
      * @param versioned The versioned value
      * @return true if the put succeeded
      */
-    public boolean putIfNotObsolete(K key, Versioned<V> versioned);
+    public boolean putIfNotObsolete(K key, Versioned<V> versioned, long rid);
 
     /**
      * Apply the given action repeatedly until no ObsoleteVersionException is
@@ -188,7 +188,7 @@ public interface StoreClient<K, V> {
      * @param key The key
      * @return true if anything is deleted
      */
-    public boolean delete(K key);
+    public boolean delete(K key, long rid);
 
     /**
      * Delete the specified version and any prior versions of the given key
@@ -197,7 +197,7 @@ public interface StoreClient<K, V> {
      * @param version The version of the key
      * @return true if anything is deleted
      */
-    public boolean delete(K key, Version version);
+    public boolean delete(K key, Version version, long rid);
 
     /**
      * Returns the list of nodes which should have this key.

@@ -47,28 +47,28 @@ public class DelegatingStore<K, V, T> extends AbstractStore<K, V, T> {
     }
 
     @Override
-    public boolean delete(K key, Version version) throws VoldemortException {
+    public boolean delete(K key, Version version, long rid) throws VoldemortException {
         StoreUtils.assertValidKey(key);
-        return innerStore.delete(key, version);
+        return innerStore.delete(key, version, rid);
     }
 
     @Override
-    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms)
+    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, long rid)
             throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
-        return innerStore.getAll(keys, transforms);
+        return innerStore.getAll(keys, transforms, rid);
     }
 
     @Override
-    public List<Versioned<V>> get(K key, T transform) throws VoldemortException {
+    public List<Versioned<V>> get(K key, T transform, long rid) throws VoldemortException {
         StoreUtils.assertValidKey(key);
-        return innerStore.get(key, transform);
+        return innerStore.get(key, transform, rid);
     }
 
     @Override
-    public void put(K key, Versioned<V> value, T transform) throws VoldemortException {
+    public void put(K key, Versioned<V> value, T transform, long rid) throws VoldemortException {
         StoreUtils.assertValidKey(key);
-        innerStore.put(key, value, transform);
+        innerStore.put(key, value, transform, rid);
     }
 
     public Store<K, V, T> getInnerStore() {
@@ -86,12 +86,13 @@ public class DelegatingStore<K, V, T> extends AbstractStore<K, V, T> {
     }
 
     @Override
-    public List<Version> getVersions(K key) {
-        return innerStore.getVersions(key);
+    public List<Version> getVersions(K key, long rid) {
+        return innerStore.getVersions(key, rid);
     }
 
     @Override
-    public List<Versioned<V>> get(CompositeVoldemortRequest<K, V> request) throws VoldemortException {
+    public List<Versioned<V>> get(CompositeVoldemortRequest<K, V> request)
+            throws VoldemortException {
         StoreUtils.assertValidKey(request.getKey());
         return innerStore.get(request);
     }

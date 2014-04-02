@@ -83,7 +83,7 @@ public class BdbCachePartitioningTest {
     }
 
     private long getAndCheckCacheSize(BdbStorageEngine engine, StoreDefinition storeDef, String key) {
-        engine.get(TestUtils.toByteArray(key), null);
+        engine.get(TestUtils.toByteArray(key), null, 0L);
         return getStats(bdbStorage.getEnvironment(storeDef)).getCacheTotalBytes();
     }
 
@@ -151,9 +151,18 @@ public class BdbCachePartitioningTest {
             // Data won't fit in memory
             byte[] value = new byte[ByteUtils.BYTES_PER_MB];
             for(int i = 0; i < numRecords; i++) {
-                storeA.put(TestUtils.toByteArray("testKey" + i), new Versioned<byte[]>(value), null);
-                storeB.put(TestUtils.toByteArray("testKey" + i), new Versioned<byte[]>(value), null);
-                storeC.put(TestUtils.toByteArray("testKey" + i), new Versioned<byte[]>(value), null);
+                storeA.put(TestUtils.toByteArray("testKey" + i),
+                           new Versioned<byte[]>(value),
+                           null,
+                           0L);
+                storeB.put(TestUtils.toByteArray("testKey" + i),
+                           new Versioned<byte[]>(value),
+                           null,
+                           0L);
+                storeC.put(TestUtils.toByteArray("testKey" + i),
+                           new Versioned<byte[]>(value),
+                           null,
+                           0L);
             }
 
             // we will bring all of that data into the cache, by doing a
@@ -309,8 +318,8 @@ public class BdbCachePartitioningTest {
         // Data won't fit in memory
         byte[] value = new byte[ByteUtils.BYTES_PER_MB];
         for(int i = 0; i < numRecords; i++) {
-            storeA.put(TestUtils.toByteArray("testKey" + i), new Versioned<byte[]>(value), null);
-            storeB.put(TestUtils.toByteArray("testKey" + i), new Versioned<byte[]>(value), null);
+            storeA.put(TestUtils.toByteArray("testKey" + i), new Versioned<byte[]>(value), null, 0L);
+            storeB.put(TestUtils.toByteArray("testKey" + i), new Versioned<byte[]>(value), null, 0L);
         }
 
         // 1. start with 10MB reserved cache for A and the rest 10MB for B

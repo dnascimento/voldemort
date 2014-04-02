@@ -142,16 +142,16 @@ public class InvalidMetadataCheckingStoreTest extends TestCase {
                 i++; // increment count
                 switch(i % 4) {
                     case 0:
-                        store.get(key, null);
+                        store.get(key, null, 0L);
                         break;
                     case 1:
-                        store.delete(key, null);
+                        store.delete(key, null, 0L);
                         break;
                     case 2:
-                        store.put(key, new Versioned<byte[]>(value), null);
+                        store.put(key, new Versioned<byte[]>(value), null, 0L);
                         break;
                     case 3:
-                        store.getAll(ImmutableList.of(key), null);
+                        store.getAll(ImmutableList.of(key), null, 0L);
                         break;
                 }
             }

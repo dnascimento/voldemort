@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 LinkedIn, Inc
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- *
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -42,7 +42,7 @@ public class ForceFailStore<K, V, T> extends DelegatingStore<K, V, T> {
     }
 
     @Override
-    public void put(K key, Versioned<V> value, T transform) throws VoldemortException {
+    public void put(K key, Versioned<V> value, T transform, long rid) throws VoldemortException {
         if(fail) {
             if(logger.isDebugEnabled()) {
                 logger.debug("PUT key " + key + " was forced to fail");
@@ -50,11 +50,11 @@ public class ForceFailStore<K, V, T> extends DelegatingStore<K, V, T> {
             throw e;
         }
 
-        getInnerStore().put(key, value, transform);
+        getInnerStore().put(key, value, transform, rid);
     }
 
     @Override
-    public boolean delete(K key, Version version) throws VoldemortException {
+    public boolean delete(K key, Version version, long rid) throws VoldemortException {
         if(fail) {
             if(logger.isDebugEnabled()) {
                 logger.debug("DELETE key " + key + " was forced to fail");
@@ -62,11 +62,11 @@ public class ForceFailStore<K, V, T> extends DelegatingStore<K, V, T> {
             throw e;
         }
 
-        return getInnerStore().delete(key, version);
+        return getInnerStore().delete(key, version, rid);
     }
 
     @Override
-    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms)
+    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, long rid)
             throws VoldemortException {
         if(fail) {
             if(logger.isDebugEnabled()) {
@@ -75,11 +75,11 @@ public class ForceFailStore<K, V, T> extends DelegatingStore<K, V, T> {
             throw e;
         }
 
-        return getInnerStore().getAll(keys, transforms);
+        return getInnerStore().getAll(keys, transforms, rid);
     }
 
     @Override
-    public List<Versioned<V>> get(K key, T transform) throws VoldemortException {
+    public List<Versioned<V>> get(K key, T transform, long rid) throws VoldemortException {
         if(fail) {
             if(logger.isDebugEnabled()) {
                 logger.debug("GET key " + key + " was forced to fail");
@@ -87,6 +87,6 @@ public class ForceFailStore<K, V, T> extends DelegatingStore<K, V, T> {
             throw e;
         }
 
-        return getInnerStore().get(key, transform);
+        return getInnerStore().get(key, transform, rid);
     }
 }

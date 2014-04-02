@@ -161,7 +161,7 @@ public abstract class AbstractStorageEngineTest extends AbstractByteArrayStoreTe
             vals.add(TestUtils.getVersioned("val1".getBytes(), 1));
             vals.add(TestUtils.getVersioned("val2".getBytes(), 2));
             vals.add(TestUtils.getVersioned("val3".getBytes(), 3));
-            List<Versioned<byte[]>> obsoletes = store.multiVersionPut(key, vals);
+            List<Versioned<byte[]>> obsoletes = store.multiVersionPut(key, vals, 0L);
             assertTrue("Should not be any rejected versions..", obsoletes.size() == 0);
             assertEquals("Should have all 3 versions stored", 3, store.get(key, null, 0L).size());
             assertTrue("All concurrent versions expected",
@@ -174,7 +174,7 @@ public abstract class AbstractStorageEngineTest extends AbstractByteArrayStoreTe
             vals.add(TestUtils.getVersioned("val1".getBytes(), 1));
             vals.add(TestUtils.getVersioned("val2".getBytes(), 2));
             vals.add(TestUtils.getVersioned("val3".getBytes(), 1, 1));
-            obsoletes = store.multiVersionPut(key, vals);
+            obsoletes = store.multiVersionPut(key, vals, 0L);
             assertTrue("Should not be any obsolete versions..", obsoletes.size() == 0);
             assertEquals("Should have 2 versions stored, with 1:2 superceding 1:1",
                          2,
@@ -189,7 +189,7 @@ public abstract class AbstractStorageEngineTest extends AbstractByteArrayStoreTe
             vals.add(TestUtils.getVersioned("val4".getBytes(), 4));
             vals.add(TestUtils.getVersioned("val5".getBytes(), 5));
             vals.add(TestUtils.getVersioned("val6".getBytes(), 6));
-            obsoletes = store.multiVersionPut(key, vals);
+            obsoletes = store.multiVersionPut(key, vals, 0L);
             assertTrue("Should not be any rejected versions..", obsoletes.size() == 0);
             assertEquals("Should have all 6 versions stored", 6, store.get(key, null, 0L).size());
             vals.addAll(saveVals);
@@ -206,7 +206,7 @@ public abstract class AbstractStorageEngineTest extends AbstractByteArrayStoreTe
             vals.add(obsoleteVersion);
             // one new concurrent version
             vals.add(TestUtils.getVersioned("val7".getBytes(), 7));
-            obsoletes = store.multiVersionPut(key, vals);
+            obsoletes = store.multiVersionPut(key, vals, 0L);
             assertTrue("Should be one version rejected..", obsoletes.size() == 1);
             assertEquals("Obsolete's version should be 4:1", obsoleteVersion, obsoletes.get(0));
             assertEquals("Should have all 7 versions stored", 7, store.get(key, null, 0L).size());
@@ -219,7 +219,7 @@ public abstract class AbstractStorageEngineTest extends AbstractByteArrayStoreTe
             key = new ByteArray("mvpKey1".getBytes());
             vals = new ArrayList<Versioned<byte[]>>();
             vals.add(TestUtils.getVersioned("val1234567".getBytes(), 1, 2, 3, 4, 5, 6, 7));
-            obsoletes = store.multiVersionPut(key, vals);
+            obsoletes = store.multiVersionPut(key, vals, 0L);
             assertTrue("Should not be any rejected versions..", obsoletes.size() == 0);
             assertEquals("Exactly one version to be stored", 1, store.get(key, null, 0L).size());
             assertTrue("Exactly one version to be stored",

@@ -100,20 +100,21 @@ public class PartitionPrefixedBdbStorageEngine extends BdbStorageEngine {
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms)
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
             throws PersistenceFailureException {
-        return super.get(validateAndConstructKey(key), transforms);
+        return super.get(validateAndConstructKey(key), transforms, rid);
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, long rid)
             throws PersistenceFailureException {
-        super.put(validateAndConstructKey(key), value, transforms);
+        super.put(validateAndConstructKey(key), value, transforms, rid);
     }
 
     @Override
-    public boolean delete(ByteArray key, Version version) throws PersistenceFailureException {
-        return super.delete(validateAndConstructKey(key), version);
+    public boolean delete(ByteArray key, Version version, long rid)
+            throws PersistenceFailureException {
+        return super.delete(validateAndConstructKey(key), version, rid);
     }
 
     @Override

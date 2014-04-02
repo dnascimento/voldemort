@@ -86,7 +86,10 @@ public class BdbPartitionListIteratorTest {
             if(!partitionEntries.containsKey(p))
                 partitionEntries.put(p, new HashSet<String>());
 
-            store.put(new ByteArray(key.getBytes()), new Versioned<byte[]>(key.getBytes()), null);
+            store.put(new ByteArray(key.getBytes()),
+                      new Versioned<byte[]>(key.getBytes()),
+                      null,
+                      0L);
             partitionEntries.get(p).add(key);
         }
     }

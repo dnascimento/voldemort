@@ -93,17 +93,18 @@ public class HttpStoreTest extends AbstractByteArrayStoreTest {
         try {
             badUrlHttpStore.put(key,
                                 new Versioned<byte[]>("value".getBytes(), new VectorClock()),
-                                null);
+                                null,
+                                0L);
         } catch(Exception e) {
             assertTrue(e.getClass().equals(expected));
         }
         try {
-            badUrlHttpStore.get(key, null);
+            badUrlHttpStore.get(key, null, 0L);
         } catch(Exception e) {
             assertTrue(e.getClass().equals(expected));
         }
         try {
-            badUrlHttpStore.delete(key, new VectorClock());
+            badUrlHttpStore.delete(key, new VectorClock(), 0L);
         } catch(Exception e) {
             assertTrue(e.getClass().equals(expected));
         }

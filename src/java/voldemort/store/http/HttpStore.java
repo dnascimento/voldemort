@@ -68,7 +68,7 @@ public class HttpStore extends AbstractStore<ByteArray, byte[], byte[]> {
     }
 
     @Override
-    public boolean delete(ByteArray key, Version version) throws VoldemortException {
+    public boolean delete(ByteArray key, Version version, long rid) throws VoldemortException {
         StoreUtils.assertValidKey(key);
         DataInputStream input = null;
         try {
@@ -78,7 +78,8 @@ public class HttpStore extends AbstractStore<ByteArray, byte[], byte[]> {
                                              getName(),
                                              key,
                                              (VectorClock) version,
-                                             reroute);
+                                             reroute,
+                                             rid);
             input = executeRequest(method, outputBytes);
             return requestFormat.readDeleteResponse(input);
         } catch(IOException e) {
@@ -90,7 +91,8 @@ public class HttpStore extends AbstractStore<ByteArray, byte[], byte[]> {
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms) throws VoldemortException {
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
+            throws VoldemortException {
         StoreUtils.assertValidKey(key);
         DataInputStream input = null;
         try {
@@ -100,7 +102,8 @@ public class HttpStore extends AbstractStore<ByteArray, byte[], byte[]> {
                                           getName(),
                                           key,
                                           transforms,
-                                          reroute);
+                                          reroute,
+                                          rid);
             input = executeRequest(method, outputBytes);
             return requestFormat.readGetResponse(input);
         } catch(IOException e) {
@@ -113,8 +116,8 @@ public class HttpStore extends AbstractStore<ByteArray, byte[], byte[]> {
 
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
-                                                          Map<ByteArray, byte[]> transforms)
-            throws VoldemortException {
+                                                          Map<ByteArray, byte[]> transforms,
+                                                          long rid) throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
         DataInputStream input = null;
         try {
@@ -124,7 +127,8 @@ public class HttpStore extends AbstractStore<ByteArray, byte[], byte[]> {
                                              getName(),
                                              keys,
                                              transforms,
-                                             reroute);
+                                             reroute,
+                                             rid);
             input = executeRequest(method, outputBytes);
             return requestFormat.readGetAllResponse(input);
         } catch(IOException e) {
@@ -136,7 +140,7 @@ public class HttpStore extends AbstractStore<ByteArray, byte[], byte[]> {
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> versioned, byte[] transforms)
+    public void put(ByteArray key, Versioned<byte[]> versioned, byte[] transforms, long rid)
             throws VoldemortException {
         StoreUtils.assertValidKey(key);
         DataInputStream input = null;
@@ -149,7 +153,8 @@ public class HttpStore extends AbstractStore<ByteArray, byte[], byte[]> {
                                           versioned.getValue(),
                                           transforms,
                                           (VectorClock) versioned.getVersion(),
-                                          reroute);
+                                          reroute,
+                                          rid);
             input = executeRequest(method, outputBytes);
             requestFormat.readPutResponse(input);
         } catch(IOException e) {
@@ -182,7 +187,7 @@ public class HttpStore extends AbstractStore<ByteArray, byte[], byte[]> {
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key) {
+    public List<Version> getVersions(ByteArray key, long rid) {
         StoreUtils.assertValidKey(key);
         DataInputStream input = null;
         try {
@@ -191,7 +196,8 @@ public class HttpStore extends AbstractStore<ByteArray, byte[], byte[]> {
             requestFormat.writeGetVersionRequest(new DataOutputStream(outputBytes),
                                                  getName(),
                                                  key,
-                                                 reroute);
+                                                 reroute,
+                                                 rid);
             input = executeRequest(method, outputBytes);
             return requestFormat.readGetVersionResponse(input);
         } catch(IOException e) {

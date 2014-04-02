@@ -18,28 +18,28 @@ public class FailingReadsStore<K, V, T> extends AbstractStore<K, V, T> {
     }
 
     @Override
-    public boolean delete(K key, Version version) throws VoldemortException {
-        return engine.delete(key, version);
+    public boolean delete(K key, Version version, long rid) throws VoldemortException {
+        return engine.delete(key, version, rid);
     }
 
     @Override
-    public List<Versioned<V>> get(K key, T transforms) throws VoldemortException {
+    public List<Versioned<V>> get(K key, T transforms, long rid) throws VoldemortException {
         throw new VoldemortException("Operation failed");
     }
 
     @Override
-    public java.util.List<Version> getVersions(K key) {
+    public java.util.List<Version> getVersions(K key, long rid) {
         throw new VoldemortException("Operation failed");
     }
 
     @Override
-    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms)
+    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, long rid)
             throws VoldemortException {
         throw new VoldemortException("Operation failed");
     }
 
     @Override
-    public void put(K key, Versioned<V> value, T transforms) throws VoldemortException {
-        engine.put(key, value, transforms);
+    public void put(K key, Versioned<V> value, T transforms, long rid) throws VoldemortException {
+        engine.put(key, value, transforms, rid);
     }
 }

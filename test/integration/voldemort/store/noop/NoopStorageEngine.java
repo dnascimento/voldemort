@@ -63,24 +63,25 @@ public class NoopStorageEngine extends AbstractStorageEngine<ByteArray, byte[], 
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms) throws VoldemortException {
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
+            throws VoldemortException {
         return dataList;
     }
 
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
-                                                          Map<ByteArray, byte[]> transforms)
-            throws VoldemortException {
+                                                          Map<ByteArray, byte[]> transforms,
+                                                          long rid) throws VoldemortException {
         return dataMap;
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key) {
-        return StoreUtils.getVersions(get(key, null));
+    public List<Version> getVersions(ByteArray key, long rid) {
+        return StoreUtils.getVersions(get(key, null, rid));
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, long rid)
             throws VoldemortException {
 
         if(dataReflect) {
@@ -90,7 +91,7 @@ public class NoopStorageEngine extends AbstractStorageEngine<ByteArray, byte[], 
     }
 
     @Override
-    public boolean delete(ByteArray key, Version version) throws VoldemortException {
+    public boolean delete(ByteArray key, Version version, long rid) throws VoldemortException {
         return true;
     }
 

@@ -63,8 +63,8 @@ public class CompressingStore extends AbstractStore<ByteArray, byte[], byte[]> {
 
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
-                                                          Map<ByteArray, byte[]> transforms)
-            throws VoldemortException {
+                                                          Map<ByteArray, byte[]> transforms,
+                                                          long rid) throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
         Iterable<ByteArray> processedKeys = keys;
         List<ByteArray> deflatedKeys = Lists.newArrayList();
@@ -82,7 +82,8 @@ public class CompressingStore extends AbstractStore<ByteArray, byte[], byte[]> {
             }
         }
         Map<ByteArray, List<Versioned<byte[]>>> deflatedResult = innerStore.getAll(processedKeys,
-                                                                                   newTransforms);
+                                                                                   newTransforms,
+                                                                                   rid);
         Map<ByteArray, List<Versioned<byte[]>>> result = Maps.newHashMapWithExpectedSize(deflatedResult.size());
         for(Map.Entry<ByteArray, List<Versioned<byte[]>>> mapEntry: deflatedResult.entrySet())
             result.put(inflateKey(mapEntry.getKey()), inflateValues(mapEntry.getValue()));
@@ -134,14 +135,15 @@ public class CompressingStore extends AbstractStore<ByteArray, byte[], byte[]> {
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms) throws VoldemortException {
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
+            throws VoldemortException {
         StoreUtils.assertValidKey(key);
-        return inflateValues(innerStore.get(deflateKey(key), transforms));
+        return inflateValues(innerStore.get(deflateKey(key), transforms, rid));
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key) {
-        return innerStore.getVersions(deflateKey(key));
+    public List<Version> getVersions(ByteArray key, long rid) {
+        return innerStore.getVersions(deflateKey(key), rid);
     }
 
     private List<Versioned<byte[]>> inflateValues(List<Versioned<byte[]>> result) {
@@ -153,10 +155,10 @@ public class CompressingStore extends AbstractStore<ByteArray, byte[], byte[]> {
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, long rid)
             throws VoldemortException {
         StoreUtils.assertValidKey(key);
-        innerStore.put(deflateKey(key), deflateValue(value), transforms);
+        innerStore.put(deflateKey(key), deflateValue(value), transforms, rid);
     }
 
     @Override
@@ -170,8 +172,8 @@ public class CompressingStore extends AbstractStore<ByteArray, byte[], byte[]> {
     }
 
     @Override
-    public boolean delete(ByteArray key, Version version) throws VoldemortException {
+    public boolean delete(ByteArray key, Version version, long rid) throws VoldemortException {
         StoreUtils.assertValidKey(key);
-        return innerStore.delete(deflateKey(key), version);
+        return innerStore.delete(deflateKey(key), version, rid);
     }
 }

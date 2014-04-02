@@ -142,7 +142,7 @@ public class ReadOnlyStorageEngineTest {
                 for(Node node: testData.routeRequest(entry.getKey())) {
                     Store<String, String, String> store = testData.getNodeStores()
                                                                   .get(node.getId());
-                    List<Versioned<String>> found = store.get(entry.getKey(), null);
+                    List<Versioned<String>> found = store.get(entry.getKey(), null, 0L);
                     assertEquals("Lookup failure for '" + entry.getKey() + "' on iteration " + i
                                  + " for node " + node.getId() + ".", 1, found.size());
                     Versioned<String> obj = found.get(0);
@@ -170,7 +170,7 @@ public class ReadOnlyStorageEngineTest {
                 for(Node node: testData.routeRequest(entry.getKey())) {
                     Store<String, String, String> store = testData.getNodeStores()
                                                                   .get(node.getId());
-                    List<Versioned<String>> found = store.get(entry.getKey(), null);
+                    List<Versioned<String>> found = store.get(entry.getKey(), null, 0L);
                     assertEquals("Lookup failure for '" + entry.getKey() + "' on iteration " + i
                                  + " for node " + node.getId() + ".", 1, found.size());
                     Versioned<String> obj = found.get(0);
@@ -198,7 +198,7 @@ public class ReadOnlyStorageEngineTest {
                 for(Node node: testData.routeRequest(entry.getKey())) {
                     Store<String, String, String> store = testData.getNodeStores()
                                                                   .get(node.getId());
-                    List<Versioned<String>> found = store.get(entry.getKey(), null);
+                    List<Versioned<String>> found = store.get(entry.getKey(), null, 0L);
                     assertEquals("Lookup failure for '" + entry.getKey() + "' on iteration " + i
                                  + " for node " + node.getId() + ".", 1, found.size());
                     Versioned<String> obj = found.get(0);
@@ -231,7 +231,7 @@ public class ReadOnlyStorageEngineTest {
                     for(int k = 0; k < testData.getNodeStores().size(); k++)
                         assertEquals("Found key in store where it should not be.",
                                      0,
-                                     testData.getNodeStores().get(k).get(key, null).size());
+                                     testData.getNodeStores().get(k).get(key, null, 0L).size());
                 }
             }
         }
@@ -257,7 +257,9 @@ public class ReadOnlyStorageEngineTest {
                 for(Node node: testData.routeRequest(key))
                     if(Integer.valueOf(node.getId()).equals(entry.getKey()))
                         queryKeys.add(key);
-            Map<String, List<Versioned<String>>> values = entry.getValue().getAll(queryKeys, null);
+            Map<String, List<Versioned<String>>> values = entry.getValue().getAll(queryKeys,
+                                                                                  null,
+                                                                                  0L);
             assertEquals("Returned fewer keys than expected.", queryKeys.size(), values.size());
             for(Map.Entry<String, List<Versioned<String>>> returned: values.entrySet()) {
                 assertTrue(queryKeys.contains(returned.getKey()));
@@ -362,13 +364,13 @@ public class ReadOnlyStorageEngineTest {
         createStoreFiles(versionDir, this.indexEntrySize * 5, 4 * 5 * 10, this.node, 2);
 
         ReadOnlyStorageEngine engine = new ReadOnlyStorageEngine("test",
-                                                                strategy,
-                                                                routingStrategy,
-                                                                1,
-                                                                dir,
-                                                                2);
+                                                                 strategy,
+                                                                 routingStrategy,
+                                                                 1,
+                                                                 dir,
+                                                                 2);
         // should not have exceptions
-        engine.get(new ByteArray("ab".getBytes()), null);
+        engine.get(new ByteArray("ab".getBytes()), null, 0L);
     }
 
     @Test

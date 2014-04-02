@@ -51,7 +51,8 @@ public class MultithreadedStressTest {
         for(int i = 0; i < numberOfValues; i++)
             this.store.put(Integer.toString(i).getBytes(),
                            new Versioned<byte[]>(Integer.toString(i).getBytes()),
-                           null);
+                           null,
+                           0L);
     }
 
     public void testGetAndPut() throws Exception {
@@ -66,7 +67,7 @@ public class MultithreadedStressTest {
                     while(!done) {
                         try {
                             byte[] key = Integer.toString(index).getBytes();
-                            List<Versioned<byte[]>> found = store.get(key, null);
+                            List<Versioned<byte[]>> found = store.get(key, null, 0L);
                             if(found.size() > 1) {
                                 throw new RuntimeException("Found multiple versions: " + found);
                             } else if(found.size() == 1) {
@@ -74,7 +75,7 @@ public class MultithreadedStressTest {
                                 byte[] valueBytes = Integer.toString(MultithreadedStressTest.this.value.getAndIncrement())
                                                            .getBytes();
                                 versioned.setObject(valueBytes);
-                                store.put(key, versioned, null);
+                                store.put(key, versioned, null, 0L);
                                 done = true;
                             } else if(found.size() == 0) {
                                 throw new RuntimeException("No values found!");

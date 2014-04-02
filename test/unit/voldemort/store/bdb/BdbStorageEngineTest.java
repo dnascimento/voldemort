@@ -149,7 +149,8 @@ public class BdbStorageEngineTest extends AbstractStorageEngineTest {
     public void testPersistence() throws Exception {
         this.store.put(new ByteArray("abc".getBytes()),
                        new Versioned<byte[]>("cdef".getBytes()),
-                       null);
+                       null,
+                       0L);
         this.store.close();
         this.environment.close();
         this.environment = new Environment(this.tempDir, envConfig);
@@ -159,7 +160,7 @@ public class BdbStorageEngineTest extends AbstractStorageEngineTest {
                                           this.database,
                                           runtimeConfig,
                                           this.prefixPartitionId);
-        List<Versioned<byte[]>> vals = store.get(new ByteArray("abc".getBytes()), null);
+        List<Versioned<byte[]>> vals = store.get(new ByteArray("abc".getBytes()), null, 0L);
         assertEquals(1, vals.size());
         TestUtils.bytesEqual("cdef".getBytes(), vals.get(0).getValue());
     }
@@ -208,7 +209,7 @@ public class BdbStorageEngineTest extends AbstractStorageEngineTest {
         final AtomicBoolean returnedEmpty = new AtomicBoolean(false);
         final byte[] keyBytes = "foo".getBytes();
         final byte[] valueBytes = "bar".getBytes();
-        store.put(new ByteArray(keyBytes), new Versioned<byte[]>(valueBytes), null);
+        store.put(new ByteArray(keyBytes), new Versioned<byte[]>(valueBytes), null, 0L);
 
         for(int i = 0; i < 10; i++) {
             executor.submit(new Runnable() {
@@ -216,7 +217,9 @@ public class BdbStorageEngineTest extends AbstractStorageEngineTest {
                 public void run() {
                     try {
                         for(int j = 0; j < 1000 && !returnedEmpty.get(); j++) {
-                            List<Versioned<byte[]>> vals = store.get(new ByteArray(keyBytes), null);
+                            List<Versioned<byte[]>> vals = store.get(new ByteArray(keyBytes),
+                                                                     null,
+                                                                     0L);
                             if(vals.size() == 0 && j > 1)
                                 returnedEmpty.set(true);
                             else {
@@ -225,7 +228,8 @@ public class BdbStorageEngineTest extends AbstractStorageEngineTest {
                                 try {
                                     store.put(new ByteArray(keyBytes),
                                               new Versioned<byte[]>(valueBytes, v),
-                                              null);
+                                              null,
+                                              0L);
                                 } catch(ObsoleteVersionException e) {
                                     // Ignore these
                                 }
@@ -246,12 +250,12 @@ public class BdbStorageEngineTest extends AbstractStorageEngineTest {
         final ByteArray key = new ByteArray("getAndLock".getBytes());
         final byte[] valueBytes = "bar".getBytes();
 
-        store.put(key, new Versioned<byte[]>(valueBytes), null);
+        store.put(key, new Versioned<byte[]>(valueBytes), null, 0L);
         KeyLockHandle<byte[]> handle = store.getAndLock(key);
 
         // get will block and timeout
         try {
-            store.get(key, null);
+            store.get(key, null, 0L);
             fail("get(..) should have blocked and timedout");
         } catch(PersistenceFailureException pfe) {
             // expected
@@ -263,7 +267,7 @@ public class BdbStorageEngineTest extends AbstractStorageEngineTest {
         store.releaseLock(handle);
 
         // get should not block, since the lock has been released
-        List<Versioned<byte[]>> vals = store.get(key, null);
+        List<Versioned<byte[]>> vals = store.get(key, null, 0L);
         assertEquals("Should read back the version previously written", 1, vals.size());
         assertEquals("Should read back the version previously written",
                      new ByteArray(valueBytes),
@@ -275,13 +279,13 @@ public class BdbStorageEngineTest extends AbstractStorageEngineTest {
         final ByteArray key = new ByteArray("putAndLock".getBytes());
         final byte[] valueBytes = "Lion".getBytes();
 
-        store.put(key, new Versioned<byte[]>(valueBytes), null);
+        store.put(key, new Versioned<byte[]>(valueBytes), null, 0L);
         // begin the read-modify-write cycle
         KeyLockHandle<byte[]> handle = store.getAndLock(key);
 
         // put will block and timeout
         try {
-            store.put(key, new Versioned<byte[]>("Mountain Lion".getBytes()), null);
+            store.put(key, new Versioned<byte[]>("Mountain Lion".getBytes()), null, 0L);
             fail("put(..) should have blocked and timedout");
         } catch(PersistenceFailureException pfe) {
             // expected
@@ -294,7 +298,7 @@ public class BdbStorageEngineTest extends AbstractStorageEngineTest {
         store.putAndUnlock(key, handle);
 
         // get should not block, and read out Mavericks
-        List<Versioned<byte[]>> vals = store.get(key, null);
+        List<Versioned<byte[]>> vals = store.get(key, null, 0L);
         assertEquals("Exactly one version", 1, vals.size());
         assertEquals("Should read back the version written by putAndUnlock",
                      "Mavericks",
@@ -313,7 +317,7 @@ public class BdbStorageEngineTest extends AbstractStorageEngineTest {
             public void run() {
                 while(keepRunning.get()) {
                     byte[] bytes = Integer.toString(count.getAndIncrement()).getBytes();
-                    store.put(new ByteArray(bytes), Versioned.value(bytes), null);
+                    store.put(new ByteArray(bytes), Versioned.value(bytes), null, 0L);
                     count.incrementAndGet();
                 }
             }
@@ -323,7 +327,7 @@ public class BdbStorageEngineTest extends AbstractStorageEngineTest {
             public void run() {
                 while(keepRunning.get()) {
                     byte[] bytes = Integer.toString(rand.nextInt(count.get())).getBytes();
-                    store.delete(new ByteArray(bytes), new VectorClock());
+                    store.delete(new ByteArray(bytes), new VectorClock(), 0L);
                     count.incrementAndGet();
                 }
             }

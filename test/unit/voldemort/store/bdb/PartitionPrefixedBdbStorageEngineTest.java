@@ -133,15 +133,15 @@ public class PartitionPrefixedBdbStorageEngineTest {
             assertEquals(cStrategy.getPartitionList(key.get()).get(0),
                          zStrategy.getPartitionList(key.get()).get(0));
 
-            cPrefixedBdbStore.put(key, new Versioned<byte[]>(kvpairs.get(key)), null);
-            zPrefixedBdbStore.put(key, new Versioned<byte[]>(kvpairs.get(key)), null);
+            cPrefixedBdbStore.put(key, new Versioned<byte[]>(kvpairs.get(key)), null, 0L);
+            zPrefixedBdbStore.put(key, new Versioned<byte[]>(kvpairs.get(key)), null, 0L);
         }
 
         for(ByteArray key: kvpairs.keySet()) {
             assertEquals("Values read back does not match up",
                          0,
-                         ByteUtils.compare(cPrefixedBdbStore.get(key, null).get(0).getValue(),
-                                           zPrefixedBdbStore.get(key, null).get(0).getValue()));
+                         ByteUtils.compare(cPrefixedBdbStore.get(key, null, 0L).get(0).getValue(),
+                                           zPrefixedBdbStore.get(key, null, 0L).get(0).getValue()));
         }
         cPrefixedBdbStore.close();
         zPrefixedBdbStore.close();
@@ -194,7 +194,8 @@ public class PartitionPrefixedBdbStorageEngineTest {
 
                 prefixedBdbStore.put(new ByteArray(bkey),
                                      new Versioned<byte[]>(("value" + i).getBytes()),
-                                     null);
+                                     null,
+                                     0L);
             }
 
             // check if they are properly retrieved by that partition id

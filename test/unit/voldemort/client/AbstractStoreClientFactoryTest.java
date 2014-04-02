@@ -97,8 +97,8 @@ public abstract class AbstractStoreClientFactoryTest {
                                                                        getValidBootstrapUrl()).getStoreClient(getValidStoreName());
         String key = "hello";
         Date value = new Date();
-        factory.put(key, value);
-        assertEquals(value, factory.getValue(key));
+        factory.put(key, value, 0L);
+        assertEquals(value, factory.getValue(key, 0L));
     }
 
     private class CustomSerializerFactory implements SerializerFactory {

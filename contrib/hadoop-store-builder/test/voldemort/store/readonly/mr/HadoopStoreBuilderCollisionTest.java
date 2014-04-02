@@ -165,7 +165,7 @@ public class HadoopStoreBuilderCollisionTest {
         } catch(Exception e) {}
     }
 
-    @SuppressWarnings( { "unchecked" })
+    @SuppressWarnings({ "unchecked" })
     public void testCollisionWithParams(int totalElements, int maxCollisions) throws IOException {
 
         assertEquals(totalElements % maxCollisions, 0);
@@ -255,7 +255,7 @@ public class HadoopStoreBuilderCollisionTest {
 
         // check values
         for(Map.Entry<String, String> entry: values.entrySet()) {
-            List<Versioned<Object>> found = store.get(entry.getKey(), null);
+            List<Versioned<Object>> found = store.get(entry.getKey(), null, 0L);
             Assert.assertEquals("Incorrect number of results", 1, found.size());
             Assert.assertEquals(entry.getValue(), found.get(0).getValue());
         }

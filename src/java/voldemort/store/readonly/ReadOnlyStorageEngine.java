@@ -507,7 +507,8 @@ public class ReadOnlyStorageEngine extends AbstractStorageEngine<ByteArray, byte
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms) throws VoldemortException {
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
+            throws VoldemortException {
         StoreUtils.assertValidKey(key);
         try {
             fileModificationLock.readLock().lock();
@@ -536,8 +537,8 @@ public class ReadOnlyStorageEngine extends AbstractStorageEngine<ByteArray, byte
 
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
-                                                          Map<ByteArray, byte[]> transforms)
-            throws VoldemortException {
+                                                          Map<ByteArray, byte[]> transforms,
+                                                          long rid) throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
         Map<ByteArray, List<Versioned<byte[]>>> results = StoreUtils.newEmptyHashMap(keys);
         try {
@@ -570,7 +571,7 @@ public class ReadOnlyStorageEngine extends AbstractStorageEngine<ByteArray, byte
      * Not supported, throws UnsupportedOperationException if called
      */
     @Override
-    public boolean delete(ByteArray key, Version version) throws VoldemortException {
+    public boolean delete(ByteArray key, Version version, long rid) throws VoldemortException {
         throw new UnsupportedOperationException("Delete is not supported on this store, it is read-only.");
     }
 
@@ -578,7 +579,7 @@ public class ReadOnlyStorageEngine extends AbstractStorageEngine<ByteArray, byte
      * Not supported, throws UnsupportedOperationException if called
      */
     @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, long rid)
             throws VoldemortException {
         throw new VoldemortUnsupportedOperationalException("Put is not supported on this store, it is read-only.");
     }
@@ -628,8 +629,8 @@ public class ReadOnlyStorageEngine extends AbstractStorageEngine<ByteArray, byte
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key) {
-        return StoreUtils.getVersions(get(key, null));
+    public List<Version> getVersions(ByteArray key, long rid) {
+        return StoreUtils.getVersions(get(key, null, rid));
     }
 
     @Override

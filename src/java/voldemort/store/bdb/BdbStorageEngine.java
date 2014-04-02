@@ -226,12 +226,12 @@ public class BdbStorageEngine extends AbstractStorageEngine<ByteArray, byte[], b
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key) {
-        return StoreUtils.getVersions(get(key, null));
+    public List<Version> getVersions(ByteArray key, long rid) {
+        return StoreUtils.getVersions(get(key, null, rid));
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms)
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
             throws PersistenceFailureException {
         StoreUtils.assertValidKey(key);
         DatabaseEntry keyEntry = new DatabaseEntry(key.get());
@@ -267,8 +267,8 @@ public class BdbStorageEngine extends AbstractStorageEngine<ByteArray, byte[], b
 
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
-                                                          Map<ByteArray, byte[]> transforms)
-            throws VoldemortException {
+                                                          Map<ByteArray, byte[]> transforms,
+                                                          long rid) throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
         Map<ByteArray, List<Versioned<byte[]>>> results = null;
         long startTimeNs = -1;
@@ -294,7 +294,7 @@ public class BdbStorageEngine extends AbstractStorageEngine<ByteArray, byte[], b
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, long rid)
             throws PersistenceFailureException {
 
         long startTimeNs = -1;
@@ -371,7 +371,8 @@ public class BdbStorageEngine extends AbstractStorageEngine<ByteArray, byte[], b
     }
 
     @Override
-    public boolean delete(ByteArray key, Version version) throws PersistenceFailureException {
+    public boolean delete(ByteArray key, Version version, long rid)
+            throws PersistenceFailureException {
 
         StoreUtils.assertValidKey(key);
 

@@ -63,12 +63,12 @@ public class InMemoryStorageEngine<K, V, T> extends AbstractStorageEngine<K, V, 
         this.map.clear();
     }
 
-    public boolean delete(K key) {
-        return delete(key, null);
+    public boolean delete(K key, long rid) {
+        return delete(key, null, rid);
     }
 
     @Override
-    public synchronized boolean delete(K key, Version version) {
+    public synchronized boolean delete(K key, Version version, long rid) {
         StoreUtils.assertValidKey(key);
 
         List<Versioned<V>> values = map.get(key);
@@ -100,12 +100,13 @@ public class InMemoryStorageEngine<K, V, T> extends AbstractStorageEngine<K, V, 
     }
 
     @Override
-    public List<Version> getVersions(K key) {
-        return StoreUtils.getVersions(get(key, null));
+    public List<Version> getVersions(K key, long rid) {
+        return StoreUtils.getVersions(get(key, null, rid));
     }
 
     @Override
-    public synchronized List<Versioned<V>> get(K key, T transform) throws VoldemortException {
+    public synchronized List<Versioned<V>> get(K key, T transform, long rid)
+            throws VoldemortException {
         StoreUtils.assertValidKey(key);
         List<Versioned<V>> results = map.get(key);
         if(results == null) {
@@ -116,14 +117,15 @@ public class InMemoryStorageEngine<K, V, T> extends AbstractStorageEngine<K, V, 
     }
 
     @Override
-    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms)
+    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, long rid)
             throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
         return StoreUtils.getAll(this, keys, transforms);
     }
 
     @Override
-    public synchronized void put(K key, Versioned<V> value, T transforms) throws VoldemortException {
+    public synchronized void put(K key, Versioned<V> value, T transforms, long rid)
+            throws VoldemortException {
         StoreUtils.assertValidKey(key);
         List<Versioned<V>> items = map.get(key);
         // If we have no value, add the current value
@@ -148,7 +150,9 @@ public class InMemoryStorageEngine<K, V, T> extends AbstractStorageEngine<K, V, 
     }
 
     @Override
-    public synchronized List<Versioned<V>> multiVersionPut(K key, final List<Versioned<V>> values) {
+    public synchronized List<Versioned<V>> multiVersionPut(K key,
+                                                           final List<Versioned<V>> values,
+                                                           long rid) {
         // TODO the day this class implements getAndLock and putAndUnlock, this
         // method can be removed
         StoreUtils.assertValidKey(key);

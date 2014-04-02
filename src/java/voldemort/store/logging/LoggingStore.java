@@ -21,10 +21,10 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import voldemort.VoldemortException;
+import voldemort.store.CompositeVoldemortRequest;
 import voldemort.store.DelegatingStore;
 import voldemort.store.Store;
 import voldemort.store.StoreCapabilityType;
-import voldemort.store.CompositeVoldemortRequest;
 import voldemort.utils.SystemTime;
 import voldemort.utils.Time;
 import voldemort.versioning.Version;
@@ -82,13 +82,13 @@ public class LoggingStore<K, V, T> extends DelegatingStore<K, V, T> {
     }
 
     @Override
-    public boolean delete(K key, Version version) throws VoldemortException {
+    public boolean delete(K key, Version version, long rid) throws VoldemortException {
         long startTimeNs = 0;
         boolean succeeded = false;
         if(logger.isDebugEnabled())
             startTimeNs = time.getNanoseconds();
         try {
-            boolean deletedSomething = getInnerStore().delete(key, version);
+            boolean deletedSomething = getInnerStore().delete(key, version, rid);
             succeeded = true;
             return deletedSomething;
         } finally {
@@ -97,13 +97,13 @@ public class LoggingStore<K, V, T> extends DelegatingStore<K, V, T> {
     }
 
     @Override
-    public List<Versioned<V>> get(K key, T transform) throws VoldemortException {
+    public List<Versioned<V>> get(K key, T transform, long rid) throws VoldemortException {
         long startTimeNs = 0;
         boolean succeeded = false;
         if(logger.isDebugEnabled())
             startTimeNs = time.getNanoseconds();
         try {
-            List<Versioned<V>> l = getInnerStore().get(key, transform);
+            List<Versioned<V>> l = getInnerStore().get(key, transform, rid);
             succeeded = true;
             return l;
         } finally {
@@ -112,14 +112,14 @@ public class LoggingStore<K, V, T> extends DelegatingStore<K, V, T> {
     }
 
     @Override
-    public void put(K key, Versioned<V> value, T transform) throws VoldemortException {
+    public void put(K key, Versioned<V> value, T transform, long rid) throws VoldemortException {
         long startTimeNs = 0;
         boolean succeeded = false;
         if(logger.isDebugEnabled()) {
             startTimeNs = time.getNanoseconds();
         }
         try {
-            getInnerStore().put(key, value, transform);
+            getInnerStore().put(key, value, transform, rid);
             succeeded = true;
         } finally {
             printTimedMessage("PUT", succeeded, startTimeNs);
@@ -143,7 +143,8 @@ public class LoggingStore<K, V, T> extends DelegatingStore<K, V, T> {
     }
 
     @Override
-    public List<Versioned<V>> get(CompositeVoldemortRequest<K, V> request) throws VoldemortException {
+    public List<Versioned<V>> get(CompositeVoldemortRequest<K, V> request)
+            throws VoldemortException {
         long startTimeNs = 0;
         boolean succeeded = false;
         if(logger.isDebugEnabled())

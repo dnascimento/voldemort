@@ -247,13 +247,17 @@ public class PipelineRoutedStore extends RoutedStore {
     }
 
     @Override
-    public List<Versioned<byte[]>> get(final ByteArray key, final byte[] transforms) {
-        return get(key, transforms, timeoutConfig.getOperationTimeout(VoldemortOpCode.GET_OP_CODE));
+    public List<Versioned<byte[]>> get(final ByteArray key, final byte[] transforms, long rid) {
+        return get(key,
+                   transforms,
+                   timeoutConfig.getOperationTimeout(VoldemortOpCode.GET_OP_CODE),
+                   rid);
     }
 
     public List<Versioned<byte[]>> get(final ByteArray key,
                                        final byte[] transforms,
-                                       final long getOpTimeout) {
+                                       final long getOpTimeout,
+                                       final long rid) {
         StoreUtils.assertValidKey(key);
 
         long startTimeMs = -1;
@@ -278,7 +282,7 @@ public class PipelineRoutedStore extends RoutedStore {
 
             @Override
             public List<Versioned<byte[]>> request(Store<ByteArray, byte[], byte[]> store) {
-                return store.get(key, transforms);
+                return store.get(key, transforms, rid);
             }
 
         };
@@ -386,17 +390,18 @@ public class PipelineRoutedStore extends RoutedStore {
 
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
-                                                          Map<ByteArray, byte[]> transforms)
-            throws VoldemortException {
+                                                          Map<ByteArray, byte[]> transforms,
+                                                          long rid) throws VoldemortException {
         return getAll(keys,
                       transforms,
-                      timeoutConfig.getOperationTimeout(VoldemortOpCode.GET_ALL_OP_CODE));
+                      timeoutConfig.getOperationTimeout(VoldemortOpCode.GET_ALL_OP_CODE),
+                      rid);
     }
 
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
                                                           Map<ByteArray, byte[]> transforms,
-                                                          long getAllOpTimeoutInMs)
-            throws VoldemortException {
+                                                          long getAllOpTimeoutInMs,
+                                                          long rid) throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
 
         long startTimeMs = -1;
@@ -503,7 +508,7 @@ public class PipelineRoutedStore extends RoutedStore {
     }
 
     @Override
-    public List<Version> getVersions(final ByteArray key) {
+    public List<Version> getVersions(final ByteArray key, final long rid) {
         StoreUtils.assertValidKey(key);
 
         long startTimeMs = -1;
@@ -528,7 +533,7 @@ public class PipelineRoutedStore extends RoutedStore {
 
             @Override
             public List<Version> request(Store<ByteArray, byte[], byte[]> store) {
-                return store.getVersions(key);
+                return store.getVersions(key, rid);
             }
 
         };
@@ -631,14 +636,17 @@ public class PipelineRoutedStore extends RoutedStore {
     }
 
     @Override
-    public boolean delete(final ByteArray key, final Version version) throws VoldemortException {
+    public boolean delete(final ByteArray key, final Version version, long rid)
+            throws VoldemortException {
         return delete(key,
                       version,
                       timeoutConfig.getOperationTimeout(VoldemortOpCode.DELETE_OP_CODE));
     }
 
-    protected boolean delete(final ByteArray key, final Version version, long deleteOpTimeout)
-            throws VoldemortException {
+    protected boolean delete(final ByteArray key,
+                             final Version version,
+                             long deleteOpTimeout,
+                             long rid) throws VoldemortException {
         StoreUtils.assertValidKey(key);
 
         long startTimeMs = -1;
@@ -780,7 +788,7 @@ public class PipelineRoutedStore extends RoutedStore {
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> versioned, byte[] transforms)
+    public void put(ByteArray key, Versioned<byte[]> versioned, byte[] transforms, long rid)
             throws VoldemortException {
         put(key,
             versioned,
@@ -791,7 +799,8 @@ public class PipelineRoutedStore extends RoutedStore {
     public void put(ByteArray key,
                     Versioned<byte[]> versioned,
                     byte[] transforms,
-                    long putOpTimeoutInMs) throws VoldemortException {
+                    long putOpTimeoutInMs,
+                    long rid) throws VoldemortException {
 
         long startTimeMs = -1;
         long startTimeNs = -1;

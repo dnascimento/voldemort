@@ -133,7 +133,7 @@ public interface StorageEngine<K, V, T> extends Store<K, V, T> {
      * @param values List of versioned values to be written atomically.
      * @return list of obsolete versions that were rejected
      */
-    public List<Versioned<V>> multiVersionPut(K key, List<Versioned<V>> values);
+    public List<Versioned<V>> multiVersionPut(K key, List<Versioned<V>> values, long rid);
 
     /**
      * Returns the list of versions stored for the key, at the same time locking

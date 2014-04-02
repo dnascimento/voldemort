@@ -327,15 +327,15 @@ public class AdminServiceBasicTest {
                                                                                                              .toString()));
 
         StoreClient<Object, Object> client = factory.getStoreClient("updateTest");
-        client.put("abc", "123");
-        String s = (String) client.get("abc").getValue();
+        client.put("abc", "123", 0L);
+        String s = (String) client.get("abc", 0L).getValue();
         assertEquals(s, "123");
 
         // test again with a unknown store
         try {
             client = factory.getStoreClient("updateTest2");
-            client.put("abc", "123");
-            s = (String) client.get("abc").getValue();
+            client.put("abc", "123", 0L);
+            s = (String) client.get("abc", 0L).getValue();
             assertEquals(s, "123");
             fail("Should have received bootstrap failure exception");
         } catch(Exception e) {
@@ -1190,8 +1190,8 @@ public class AdminServiceBasicTest {
         // will attempt to bootstrap)
         try {
             client = factory.getStoreClient("deleteTest");
-            client.put("abc", "123");
-            String s = (String) client.get("abc").getValue();
+            client.put("abc", "123", 0L);
+            String s = (String) client.get("abc", 0L).getValue();
             assertEquals(s, "123");
             fail("Should have received bootstrap failure exception");
         } catch(Exception e) {
@@ -1202,8 +1202,8 @@ public class AdminServiceBasicTest {
         adminClient.storeMgmtOps.addStore(definition);
 
         client = factory.getStoreClient("deleteTest");
-        client.put("abc", "123");
-        String s = (String) client.get("abc").getValue();
+        client.put("abc", "123", 0L);
+        String s = (String) client.get("abc", 0L).getValue();
         assertEquals(s, "123");
     }
 
@@ -2195,7 +2195,7 @@ public class AdminServiceBasicTest {
                          store1.get(entry.getKey(), null, 0L).size());
 
         // Set some other metadata, so as to pick the right up later
-        getServer(0).getMetadataStore().put(MetadataStore.CLUSTER_KEY, targetCluster);
+        getServer(0).getMetadataStore().put(MetadataStore.CLUSTER_KEY, targetCluster, 0L);
 
         // Migrate the partition
         AdminClient client = getAdminClient();

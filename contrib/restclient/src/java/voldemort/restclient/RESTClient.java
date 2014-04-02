@@ -56,13 +56,13 @@ public class RESTClient<K, V> implements StoreClient<K, V> {
     }
 
     @Override
-    public V getValue(K key) {
-        return getValue(key, null);
+    public V getValue(K key, long rid) {
+        return getValue(key, null, rid);
     }
 
     @Override
-    public V getValue(K key, V defaultValue) {
-        Versioned<V> retVal = get(key);
+    public V getValue(K key, V defaultValue, long rid) {
+        Versioned<V> retVal = get(key, rid);
         if(retVal == null) {
             return defaultValue;
         } else {
@@ -71,23 +71,26 @@ public class RESTClient<K, V> implements StoreClient<K, V> {
     }
 
     @Override
-    public Versioned<V> get(K key) {
-        return get(key, null);
+    public Versioned<V> get(K key, long rid) {
+        return get(key, null, rid);
     }
 
     @Override
-    public Versioned<V> get(K key, Object transforms) {
-        List<Versioned<V>> resultList = this.clientStore.get(key, null);
-        return getItemOrThrow(key, null, resultList);
+    public Versioned<V> get(K key, Object transforms, long rid) {
+        List<Versioned<V>> resultList = this.clientStore.get(key, null, rid);
+        return getItemOrThrow(key, null, resultList, rid);
     }
 
     @Override
-    public Versioned<V> get(K key, Versioned<V> defaultValue) {
-        List<Versioned<V>> resultList = this.clientStore.get(key, null);
-        return getItemOrThrow(key, defaultValue, resultList);
+    public Versioned<V> get(K key, Versioned<V> defaultValue, long rid) {
+        List<Versioned<V>> resultList = this.clientStore.get(key, null, rid);
+        return getItemOrThrow(key, defaultValue, resultList, rid);
     }
 
-    protected Versioned<V> getItemOrThrow(K key, Versioned<V> defaultValue, List<Versioned<V>> items) {
+    protected Versioned<V> getItemOrThrow(K key,
+                                          Versioned<V> defaultValue,
+                                          List<Versioned<V>> items,
+                                          long rid) {
         if(items.size() == 0)
             return defaultValue;
         else if(items.size() == 1)
@@ -98,18 +101,18 @@ public class RESTClient<K, V> implements StoreClient<K, V> {
     }
 
     @Override
-    public Map<K, Versioned<V>> getAll(Iterable<K> keys) {
-        return getAll(keys, null);
+    public Map<K, Versioned<V>> getAll(Iterable<K> keys, long rid) {
+        return getAll(keys, null, rid);
     }
 
     @Override
-    public Map<K, Versioned<V>> getAll(Iterable<K> keys, Map<K, Object> transforms) {
+    public Map<K, Versioned<V>> getAll(Iterable<K> keys, Map<K, Object> transforms, long rid) {
         Map<K, List<Versioned<V>>> items = null;
-        items = this.clientStore.getAll(keys, null);
+        items = this.clientStore.getAll(keys, null, rid);
         Map<K, Versioned<V>> result = Maps.newHashMapWithExpectedSize(items.size());
 
         for(Entry<K, List<Versioned<V>>> mapEntry: items.entrySet()) {
-            Versioned<V> value = getItemOrThrow(mapEntry.getKey(), null, mapEntry.getValue());
+            Versioned<V> value = getItemOrThrow(mapEntry.getKey(), null, mapEntry.getValue(), rid);
             result.put(mapEntry.getKey(), value);
         }
         return result;
@@ -121,25 +124,25 @@ public class RESTClient<K, V> implements StoreClient<K, V> {
      * to the Receiver of this request.
      */
     @Override
-    public Version put(K key, V value) {
-        return put(key, new Versioned<V>(value));
+    public Version put(K key, V value, long rid) {
+        return put(key, new Versioned<V>(value), rid);
     }
 
     @Override
-    public Version put(K key, V value, Object transforms) {
-        return put(key, value);
+    public Version put(K key, V value, Object transforms, long rid) {
+        return put(key, value, rid);
     }
 
     @Override
-    public Version put(K key, Versioned<V> versioned) throws ObsoleteVersionException {
-        clientStore.put(key, versioned, null);
+    public Version put(K key, Versioned<V> versioned, long rid) throws ObsoleteVersionException {
+        clientStore.put(key, versioned, null, rid);
         return versioned.getVersion();
     }
 
     @Override
-    public boolean putIfNotObsolete(K key, Versioned<V> versioned) {
+    public boolean putIfNotObsolete(K key, Versioned<V> versioned, long rid) {
         try {
-            put(key, versioned);
+            put(key, versioned, rid);
             return true;
         } catch(ObsoleteVersionException e) {
             return false;
@@ -175,16 +178,16 @@ public class RESTClient<K, V> implements StoreClient<K, V> {
     }
 
     @Override
-    public boolean delete(K key) {
-        Versioned<V> versioned = get(key);
+    public boolean delete(K key, long rid) {
+        Versioned<V> versioned = get(key, rid);
         if(versioned == null)
             return false;
-        return this.clientStore.delete(key, versioned.getVersion());
+        return this.clientStore.delete(key, versioned.getVersion(), rid);
     }
 
     @Override
-    public boolean delete(K key, Version version) {
-        return this.clientStore.delete(key, version);
+    public boolean delete(K key, Version version, long rid) {
+        return this.clientStore.delete(key, version, rid);
     }
 
     @Override

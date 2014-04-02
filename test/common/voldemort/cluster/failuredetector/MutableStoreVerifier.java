@@ -71,19 +71,21 @@ public class MutableStoreVerifier extends BasicStoreVerifier<ByteArray, byte[], 
             public void close() throws VoldemortException {}
 
             @Override
-            public boolean delete(ByteArray key, Version version) throws VoldemortException {
+            public boolean delete(ByteArray key, Version version, long rid)
+                    throws VoldemortException {
                 return false;
             }
 
             @Override
-            public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms)
+            public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
                     throws VoldemortException {
                 return null;
             }
 
             @Override
             public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
-                                                                  Map<ByteArray, byte[]> transforms)
+                                                                  Map<ByteArray, byte[]> transforms,
+                                                                  long rid)
                     throws VoldemortException {
                 return null;
             }
@@ -99,12 +101,12 @@ public class MutableStoreVerifier extends BasicStoreVerifier<ByteArray, byte[], 
             }
 
             @Override
-            public List<Version> getVersions(ByteArray key) {
+            public List<Version> getVersions(ByteArray key, long rid) {
                 return null;
             }
 
             @Override
-            public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms)
+            public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, long rid)
                     throws VoldemortException {}
 
             @Override

@@ -796,7 +796,7 @@ public abstract class AbstractNonZonedRebalanceTest extends AbstractRebalanceTes
 
                             // should get a valid value
                             try {
-                                Versioned<String> value = storeClientRW.get(keys.get(index));
+                                Versioned<String> value = storeClientRW.get(keys.get(index), 0L);
                                 assertNotSame("StoreClient get() should not return null.",
                                               null,
                                               value);
@@ -804,7 +804,7 @@ public abstract class AbstractNonZonedRebalanceTest extends AbstractRebalanceTes
                                              new Versioned<String>(testEntries.get(keys.get(index))),
                                              value);
 
-                                value = storeClientRO.get(keys.get(index));
+                                value = storeClientRO.get(keys.get(index), 0L);
                                 assertNotSame("StoreClient get() should not return null.",
                                               null,
                                               value);
@@ -952,7 +952,8 @@ public abstract class AbstractNonZonedRebalanceTest extends AbstractRebalanceTes
                                 VoldemortServer server = serverIterator.next();
                                 if(ByteUtils.getString(server.getMetadataStore()
                                                              .get(MetadataStore.SERVER_STATE_KEY,
-                                                                  null)
+                                                                  null,
+                                                                  0L)
                                                              .get(0)
                                                              .getValue(),
                                                        "UTF-8")
@@ -990,7 +991,7 @@ public abstract class AbstractNonZonedRebalanceTest extends AbstractRebalanceTes
                                     }
                                     String keyStr = ByteUtils.getString(movingKey.get(), "UTF-8");
                                     String valStr = "proxy_write";
-                                    storeClientRW.put(keyStr, valStr);
+                                    storeClientRW.put(keyStr, valStr, 0L);
                                     baselineTuples.put(keyStr, valStr);
                                     // all these keys will have [2:1] vector
                                     // clock

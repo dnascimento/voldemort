@@ -163,7 +163,8 @@ public class MysqlStorageEngine extends AbstractStorageEngine<ByteArray, byte[],
     }
 
     @Override
-    public boolean delete(ByteArray key, Version maxVersion) throws PersistenceFailureException {
+    public boolean delete(ByteArray key, Version maxVersion, long rid)
+            throws PersistenceFailureException {
         StoreUtils.assertValidKey(key);
         Connection conn = null;
         PreparedStatement selectStmt = null;
@@ -212,8 +213,8 @@ public class MysqlStorageEngine extends AbstractStorageEngine<ByteArray, byte[],
 
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
-                                                          Map<ByteArray, byte[]> transforms)
-            throws VoldemortException {
+                                                          Map<ByteArray, byte[]> transforms,
+                                                          long rid) throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -246,14 +247,14 @@ public class MysqlStorageEngine extends AbstractStorageEngine<ByteArray, byte[],
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms)
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
             throws PersistenceFailureException {
         StoreUtils.assertValidKey(key);
         return StoreUtils.get(this, key, transforms);
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, long rid)
             throws PersistenceFailureException {
         StoreUtils.assertValidKey(key);
         boolean doCommit = false;
@@ -403,7 +404,7 @@ public class MysqlStorageEngine extends AbstractStorageEngine<ByteArray, byte[],
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key) {
-        return StoreUtils.getVersions(get(key, null));
+    public List<Version> getVersions(ByteArray key, long rid) {
+        return StoreUtils.getVersions(get(key, null, rid));
     }
 }
