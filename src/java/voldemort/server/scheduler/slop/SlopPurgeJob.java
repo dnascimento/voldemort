@@ -90,7 +90,7 @@ public class SlopPurgeJob extends DataMaintenanceJob {
                 // if any one of the filters were met, delete
                 if(purge) {
                     numKeysUpdatedThisRun.incrementAndGet();
-                    slopStorageEngine.delete(keyAndVal.getFirst(), versioned.getVersion());
+                    slopStorageEngine.delete(keyAndVal.getFirst(), versioned.getVersion(), 0L);
                 }
                 numKeysScannedThisRun.incrementAndGet();
                 throttler.maybeThrottle(1);

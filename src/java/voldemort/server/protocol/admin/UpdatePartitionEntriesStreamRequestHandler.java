@@ -157,7 +157,8 @@ public class UpdatePartitionEntriesStreamRequestHandler implements StreamRequest
         if(filter.accept(key, value)) {
             startNs = System.nanoTime();
             try {
-                processEntry(key, value);
+                // TODO pode receber RID
+                processEntry(key, value, 0L);
                 if(logger.isTraceEnabled())
                     logger.trace(getHandlerName() + " (Streaming put) successful");
             } catch(ObsoleteVersionException e) {
@@ -168,7 +169,8 @@ public class UpdatePartitionEntriesStreamRequestHandler implements StreamRequest
             } finally {
                 if(streamStats != null) {
                     streamStats.reportStreamingPut(Operation.UPDATE_ENTRIES);
-                    streamStats.reportStorageTime(Operation.UPDATE_ENTRIES, Utils.elapsedTimeNs(startNs, System.nanoTime()));
+                    streamStats.reportStorageTime(Operation.UPDATE_ENTRIES,
+                                                  Utils.elapsedTimeNs(startNs, System.nanoTime()));
                 }
             }
             throttler.maybeThrottle(key.length() + AdminServiceRequestHandler.valueSize(value));
@@ -216,8 +218,9 @@ public class UpdatePartitionEntriesStreamRequestHandler implements StreamRequest
     }
 
     @SuppressWarnings("unused")
-    protected void processEntry(ByteArray key, Versioned<byte[]> value) throws IOException {
-        storageEngine.put(key, value, null);
+    protected void processEntry(ByteArray key, Versioned<byte[]> value, long rid)
+            throws IOException {
+        storageEngine.put(key, value, null, rid);
     }
 
     protected String getHandlerName() {

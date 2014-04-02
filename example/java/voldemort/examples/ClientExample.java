@@ -30,10 +30,11 @@ public class ClientExample {
         StoreClientFactory factory = new SocketStoreClientFactory(new ClientConfig().setBootstrapUrls(bootstrapUrl));
         StoreClient<String, BananaMsg.Banana> client = factory.getStoreClient("test");
         client.put("some_key",
-                   BananaMsg.Banana.newBuilder().setTipo("costa rica").setNome("chiquita").build());
+                   BananaMsg.Banana.newBuilder().setTipo("costa rica").setNome("chiquita").build(),
+                   0L);
 
         // get the value
-        Versioned<BananaMsg.Banana> version = client.get("some_key");
+        Versioned<BananaMsg.Banana> version = client.get("some_key", 0L);
         System.out.println(version.getValue());
         // modify the value
         // version.setObject("new_value");

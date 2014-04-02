@@ -99,7 +99,7 @@ public class DataCleanupJob<K, V, T> implements Runnable {
                 Pair<K, Versioned<V>> keyAndVal = iterator.next();
                 VectorClock clock = (VectorClock) keyAndVal.getSecond().getVersion();
                 if(now - clock.getTimestamp() > maxAgeMs) {
-                    store.delete(keyAndVal.getFirst(), clock);
+                    store.delete(keyAndVal.getFirst(), clock, 0L);
                     this.deleteProgressThisRun.incrementAndGet();
                     if(this.deleteProgressThisRun.get() % 10000 == 0)
                         logger.debug("Deleted item " + this.deleteProgressThisRun.get());

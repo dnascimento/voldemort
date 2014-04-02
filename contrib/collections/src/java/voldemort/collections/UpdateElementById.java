@@ -37,7 +37,7 @@ public class UpdateElementById<K, E> extends UpdateAction<Map<String, Object>, M
 
     @Override
     public void update(StoreClient<Map<String, Object>, Map<String, Object>> storeClient) {
-        Versioned<Map<String, Object>> nodeMap = storeClient.get(_key.mapValue());
+        Versioned<Map<String, Object>> nodeMap = storeClient.get(_key.mapValue(), 0L);
         if(nodeMap == null)
             throw new IndexOutOfBoundsException("invalid id " + _key.getId());
         Version version = (_version != null) ? _version : nodeMap.getVersion();
@@ -52,7 +52,7 @@ public class UpdateElementById<K, E> extends UpdateAction<Map<String, Object>, M
                                                 listNode.getNextId(),
                                                 true);
         storeClient.put(_key.mapValue(), new Versioned<Map<String, Object>>(newNode.mapValue(),
-                                                                            version));
+                                                                            version), 0L);
 
     }
 

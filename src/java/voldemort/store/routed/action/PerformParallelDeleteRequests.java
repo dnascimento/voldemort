@@ -75,8 +75,9 @@ public class PerformParallelDeleteRequests<V, PD extends BasicPipelineData<V>> e
                                          long timeoutMs,
                                          Map<Integer, NonblockingStore> nonblockingStores,
                                          HintedHandoff hintedHandoff,
-                                         Version version) {
-        super(pipelineData, completeEvent, key);
+                                         Version version,
+                                         long rid) {
+        super(pipelineData, completeEvent, key, rid);
         this.failureDetector = failureDetector;
         this.preferred = preferred;
         this.required = required;
@@ -87,6 +88,7 @@ public class PerformParallelDeleteRequests<V, PD extends BasicPipelineData<V>> e
         this.hintedHandoff = hintedHandoff;
     }
 
+    @Override
     public void execute(final Pipeline pipeline) {
         List<Node> nodes = pipelineData.getNodes();
         final Map<Integer, Response<ByteArray, Object>> responses = new ConcurrentHashMap<Integer, Response<ByteArray, Object>>();
@@ -107,6 +109,7 @@ public class PerformParallelDeleteRequests<V, PD extends BasicPipelineData<V>> e
 
             NonblockingStoreCallback callback = new NonblockingStoreCallback() {
 
+                @Override
                 public void requestComplete(Object result, long requestTime) {
                     if(logger.isTraceEnabled())
                         logger.trace(pipeline.getOperation().getSimpleName()
@@ -161,7 +164,7 @@ public class PerformParallelDeleteRequests<V, PD extends BasicPipelineData<V>> e
                             + " request on node " + node.getId());
 
             NonblockingStore store = nonblockingStores.get(node.getId());
-            store.submitDeleteRequest(key, version, callback, timeoutMs);
+            store.submitDeleteRequest(key, version, callback, timeoutMs, rid);
         }
 
         try {

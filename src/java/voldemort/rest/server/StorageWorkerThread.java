@@ -103,7 +103,8 @@ public class StorageWorkerThread implements Runnable {
                         }
                         try {
                             List<Versioned<byte[]>> versionedValues = store.get(requestObject.getKey(),
-                                                                                null);
+                                                                                null,
+                                                                                0L);
                             // handle non existing key
                             if(versionedValues.size() > 0) {
                                 GetResponseSender responseConstructor = new GetResponseSender(messageEvent,
@@ -132,7 +133,8 @@ public class StorageWorkerThread implements Runnable {
                         }
                         try {
                             Map<ByteArray, List<Versioned<byte[]>>> keyValuesMap = store.getAll(requestObject.getIterableKeys(),
-                                                                                                null);
+                                                                                                null,
+                                                                                                0L);
                             // check if there is atleast one valid key
                             // before sending response
                             boolean hasAtleastOneValidKey = false;
@@ -165,7 +167,7 @@ public class StorageWorkerThread implements Runnable {
                             logger.debug("Incoming put request");
                         }
                         try {
-                            store.put(requestObject.getKey(), requestObject.getValue(), null);
+                            store.put(requestObject.getKey(), requestObject.getValue(), null, 0L);
                             PutResponseSender responseConstructor = new PutResponseSender(messageEvent);
                             responseConstructor.sendResponse(performanceStats,
                                                              fromLocalZone,
@@ -181,7 +183,8 @@ public class StorageWorkerThread implements Runnable {
                         }
                         try {
                             boolean result = store.delete(requestObject.getKey(),
-                                                          requestObject.getVersion());
+                                                          requestObject.getVersion(),
+                                                          0L);
                             if(!result) {
                                 logger.error("Error when doing delete. Non Existing key/version. Nothing to delete");
                                 RestErrorHandler.writeErrorResponse(messageEvent,
@@ -204,7 +207,7 @@ public class StorageWorkerThread implements Runnable {
                             logger.debug("Incoming get version request");
                         }
                         try {
-                            List<Version> versions = store.getVersions(requestObject.getKey());
+                            List<Version> versions = store.getVersions(requestObject.getKey(), 0L);
 
                             // handle non existing key
                             if(versions.size() > 0) {

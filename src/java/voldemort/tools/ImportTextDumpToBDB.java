@@ -1,12 +1,12 @@
 /**
  * Copyright 2013 LinkedIn, Inc
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- *
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -15,9 +15,22 @@
  */
 package voldemort.tools;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.Callable;
+
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
+
 import org.apache.commons.codec.DecoderException;
+
 import voldemort.VoldemortException;
 import voldemort.cluster.Cluster;
 import voldemort.cluster.Node;
@@ -37,35 +50,32 @@ import voldemort.versioning.Versioned;
 import voldemort.xml.ClusterMapper;
 import voldemort.xml.StoreDefinitionsMapper;
 
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.Callable;
-
 public class ImportTextDumpToBDB {
+
     static Integer READER_BUFFER_SIZE = 16777216;
 
     public static OptionParser getParser() {
         OptionParser parser = new OptionParser();
         parser.acceptsAll(Arrays.asList("input"), "Input file or containing folder of data dump")
-                .withRequiredArg()
-                .ofType(String.class)
-                .describedAs("input-file-or-folder");
+              .withRequiredArg()
+              .ofType(String.class)
+              .describedAs("input-file-or-folder");
         parser.acceptsAll(Arrays.asList("bdb"), "BDB folder store folder (not master)")
-                .withRequiredArg()
-                .ofType(String.class)
-                .describedAs("bdb-folder");
+              .withRequiredArg()
+              .ofType(String.class)
+              .describedAs("bdb-folder");
         parser.acceptsAll(Arrays.asList("stores-xml"), "Location of stores xml")
-                .withRequiredArg()
-                .ofType(String.class)
-                .describedAs("stores-xml");
+              .withRequiredArg()
+              .ofType(String.class)
+              .describedAs("stores-xml");
         parser.acceptsAll(Arrays.asList("cluster-xml"), "Location of cluster xml")
-                .withRequiredArg()
-                .ofType(String.class)
-                .describedAs("cluster-xml");
+              .withRequiredArg()
+              .ofType(String.class)
+              .describedAs("cluster-xml");
         parser.acceptsAll(Arrays.asList("node-id"), "Current node id")
-                .withRequiredArg()
-                .ofType(Integer.class)
-                .describedAs("node-id");
+              .withRequiredArg()
+              .ofType(Integer.class)
+              .describedAs("node-id");
 
         return parser;
     }
@@ -78,33 +88,26 @@ public class ImportTextDumpToBDB {
             System.out.println("Supported data dump should be a file or a folder containing files with lines of data.");
             System.out.println("Each line should be in the format of the following (all in Hex Decimal format)");
             System.out.println("\n\tKEY_BINARY VECTOR_CLOCK_BINARY VALUE_BINARY\n");
-        }
-        else if(!options.has("input")) {
+        } else if(!options.has("input")) {
             System.err.println("Option \"input\" is required");
             exitStatus = 1;
-        }
-        else if(!new File((String)options.valueOf("input")).isDirectory()) {
-            System.err.println("Not a directory: " + options.valueOf("input") );
+        } else if(!new File((String) options.valueOf("input")).isDirectory()) {
+            System.err.println("Not a directory: " + options.valueOf("input"));
             exitStatus = 1;
-        }
-        else if(!options.has("bdb")) {
+        } else if(!options.has("bdb")) {
             System.err.println("Option \"bdb\" is required");
             exitStatus = 1;
-        }
-        else if(!options.has("stores-xml")) {
+        } else if(!options.has("stores-xml")) {
             System.err.println("Option \"stores-xml\" is required");
             exitStatus = 1;
-        }
-        else if(!new File((String)options.valueOf("stores-xml")).isFile()) {
-            System.err.println("Not a file: " + options.valueOf("stores-xml") );
+        } else if(!new File((String) options.valueOf("stores-xml")).isFile()) {
+            System.err.println("Not a file: " + options.valueOf("stores-xml"));
             exitStatus = 1;
-        }
-        else if(!options.has("cluster-xml")) {
+        } else if(!options.has("cluster-xml")) {
             System.err.println("Option \"cluster-xml\" is required");
             exitStatus = 1;
-        }
-        else if(!new File((String)options.valueOf("cluster-xml")).isFile()) {
-            System.err.println("Not a file: " + options.valueOf("cluster-xml") );
+        } else if(!new File((String) options.valueOf("cluster-xml")).isFile()) {
+            System.err.println("Not a file: " + options.valueOf("cluster-xml"));
             exitStatus = 1;
         }
         if(exitStatus != null) {
@@ -151,27 +154,56 @@ public class ImportTextDumpToBDB {
         if(storeDef == null) {
             throw new VoldemortException("StoreNotfound: " + storeName);
         }
-        RoutingStrategy routingStrategy = new RoutingStrategyFactory().updateRoutingStrategy(storeDef, cluster);
+        RoutingStrategy routingStrategy = new RoutingStrategyFactory().updateRoutingStrategy(storeDef,
+                                                                                             cluster);
 
         Properties properties = new Properties();
-        properties.put("node.id","0");
-        properties.put("voldemort.home",storeBdbFolder.getParent());
+        properties.put("node.id", "0");
+        properties.put("voldemort.home", storeBdbFolder.getParent());
         VoldemortConfig voldemortConfig = new VoldemortConfig(properties);
         voldemortConfig.setBdbDataDirectory(storeBdbFolder.getParent());
         voldemortConfig.setEnableJmx(false);
         voldemortConfig.setBdbOneEnvPerStore(true);
         BdbStorageConfiguration bdbConfiguration = new BdbStorageConfiguration(voldemortConfig);
         class MockStoreDefinition extends StoreDefinition {
+
             public MockStoreDefinition() {
-                super(storeName,null,null,null,null,null,null,null,0,null,0,null,0,null,null,null,null,null,null,null,null,null,null,null,null,0);
+                super(storeName,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      0,
+                      null,
+                      0,
+                      null,
+                      0,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      null,
+                      0);
             }
+
             @Override
             public boolean hasMemoryFootprint() {
                 return false;
             }
         }
         StoreDefinition mockStoreDef = new MockStoreDefinition();
-        StorageEngine<ByteArray, byte[], byte[]> engine = bdbConfiguration.getStore(mockStoreDef, routingStrategy);
+        StorageEngine<ByteArray, byte[], byte[]> engine = bdbConfiguration.getStore(mockStoreDef,
+                                                                                    routingStrategy);
         long reportIntervalMs = 10000L;
         long lastCount = 0;
         long lastInserted = 0;
@@ -181,7 +213,8 @@ public class ImportTextDumpToBDB {
         long inserted = 0;
         for(File f: dataFiles) {
             try {
-                BufferedReader bufferedReader = new BufferedReader(new FileReader(f), READER_BUFFER_SIZE);
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(f),
+                                                                   READER_BUFFER_SIZE);
                 engine.beginBatchModifications();
                 while(true) {
                     String line = bufferedReader.readLine();
@@ -191,7 +224,7 @@ public class ImportTextDumpToBDB {
                     Pair<ByteArray, Versioned<byte[]>> entry;
                     try {
                         entry = lineToEntry(line);
-                    } catch (Exception e) {
+                    } catch(Exception e) {
                         System.err.println("Skipping line: " + line);
                         e.printStackTrace();
                         continue;
@@ -201,7 +234,7 @@ public class ImportTextDumpToBDB {
                     for(Node node: nodeList) {
                         if(nodeId == node.getId()) {
                             try {
-                                engine.put(key, entry.getSecond(), null);
+                                engine.put(key, entry.getSecond(), null, 0L);
                                 inserted++;
                             } catch(ObsoleteVersionException e) {
                                 e.printStackTrace();
@@ -213,22 +246,27 @@ public class ImportTextDumpToBDB {
                     final Long countObject = count;
                     final Long insertedObject = inserted;
                     Boolean reported = rp.tryReport(new Callable<Boolean>() {
+
                         @Override
                         public Boolean call() throws Exception {
-                            System.out.print(String.format("Imported %15d entries; Inserted %15d entries", countObject, insertedObject));
+                            System.out.print(String.format("Imported %15d entries; Inserted %15d entries",
+                                                           countObject,
+                                                           insertedObject));
                             return true;
                         }
                     });
                     if(reported != null) {
-                        long importSpeed = (count - lastCount)/ (reportIntervalMs / 1000);
-                        long insertSpeed = (inserted - lastInserted)/ (reportIntervalMs / 1000);
-                        System.out.println(String.format("; ImportSpeed: %8d/s; InsertSpeed: %8d/s ", importSpeed, insertSpeed));
+                        long importSpeed = (count - lastCount) / (reportIntervalMs / 1000);
+                        long insertSpeed = (inserted - lastInserted) / (reportIntervalMs / 1000);
+                        System.out.println(String.format("; ImportSpeed: %8d/s; InsertSpeed: %8d/s ",
+                                                         importSpeed,
+                                                         insertSpeed));
                         lastCount = count;
                         lastInserted = inserted;
                     }
                 }
                 bufferedReader.close();
-            } catch (IOException e) {
+            } catch(IOException e) {
                 e.printStackTrace();
             } finally {
                 engine.endBatchModifications();
@@ -236,12 +274,16 @@ public class ImportTextDumpToBDB {
         }
         engine.close();
 
-        System.out.println(String.format("Finished importing %d entries (%d inserted, rest discarded)", count, inserted));
+        System.out.println(String.format("Finished importing %d entries (%d inserted, rest discarded)",
+                                         count,
+                                         inserted));
     }
 
     static private class Reporter<T> {
+
         Long intervalMs;
         Long lastReport;
+
         Reporter(long intervalMs) {
             this.intervalMs = intervalMs;
         }
@@ -261,7 +303,8 @@ public class ImportTextDumpToBDB {
         }
     }
 
-    public static Pair<ByteArray, Versioned<byte[]>> lineToEntry(String line) throws DecoderException {
+    public static Pair<ByteArray, Versioned<byte[]>> lineToEntry(String line)
+            throws DecoderException {
         String[] components = line.split(" ");
 
         String keyBytesString = components[0];

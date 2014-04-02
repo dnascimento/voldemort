@@ -208,8 +208,7 @@ public class AdminClient {
             if(clientConfig.getBootstrapUrls().length > 0) {
                 this.mainBootstrapUrl = clientConfig.getBootstrapUrls()[0];
             }
-        }
-        catch(IllegalStateException e) {}
+        } catch(IllegalStateException e) {}
     }
 
     /**
@@ -362,8 +361,12 @@ public class AdminClient {
                 }
                 String metadataVersionStoreName = SystemStoreConstants.SystemStoreName.voldsys$_metadata_version_persistence.name();
                 String quotaStoreName = SystemStoreConstants.SystemStoreName.voldsys$_store_quotas.name();
-                metadataVersionSysStoreClient = systemStoreFactory.createSystemStore(metadataVersionStoreName, null, null);
-                quotaSysStoreClient = systemStoreFactory.createSystemStore(quotaStoreName, null, null);
+                metadataVersionSysStoreClient = systemStoreFactory.createSystemStore(metadataVersionStoreName,
+                                                                                     null,
+                                                                                     null);
+                quotaSysStoreClient = systemStoreFactory.createSystemStore(quotaStoreName,
+                                                                           null,
+                                                                           null);
             } catch(Exception e) {
                 logger.debug("Error while creating a system store client for metadata version store/quota store.");
             }
@@ -989,7 +992,8 @@ public class AdminClient {
                                          Versioned<String> value) {
 
             /*
-             * Assume everything will be fine, increment the metadata version for the key
+             * Assume everything will be fine, increment the metadata version
+             * for the key
              * Would not harm even if the operation fails
              */
             if(key.equals(CLUSTER_VERSION_KEY) || key.equals(STORES_VERSION_KEY)) {
@@ -1064,7 +1068,8 @@ public class AdminClient {
                                              Versioned<String> storesValue) {
 
             /*
-             * We first increment the metadata version for the cluster and the stores
+             * We first increment the metadata version for the cluster and the
+             * stores
              * which does not harm even if the operation fail
              */
             if(clusterKey.equals(CLUSTER_VERSION_KEY)) {
@@ -1087,13 +1092,13 @@ public class AdminClient {
             }
             for(Integer currentNodeId: remoteNodeIds) {
                 logger.info("Setting " + clusterKey + " and " + storesKey + " for "
-                        + getAdminClientCluster().getNodeById(currentNodeId).getHost() + ":"
-                        + getAdminClientCluster().getNodeById(currentNodeId).getId());
+                            + getAdminClientCluster().getNodeById(currentNodeId).getHost() + ":"
+                            + getAdminClientCluster().getNodeById(currentNodeId).getId());
                 updateRemoteMetadataPair(currentNodeId,
-                        clusterKey,
-                        clusterValue,
-                        storesKey,
-                        storesValue);
+                                         clusterKey,
+                                         clusterValue,
+                                         storesKey,
+                                         storesValue);
             }
         }
 
@@ -2250,7 +2255,7 @@ public class AdminClient {
             SocketStore socketStore = adminStoreClient.getSocketStore(nodeKeyValue.getNodeId(),
                                                                       storeName);
 
-            socketStore.put(nodeKeyValue.getKey(), nodeKeyValue.getVersioned(), null);
+            socketStore.put(nodeKeyValue.getKey(), nodeKeyValue.getVersioned(), null, 0L);
         }
 
         /**
@@ -2264,7 +2269,7 @@ public class AdminClient {
          */
         public List<Versioned<byte[]>> getNodeKey(String storeName, int nodeId, ByteArray key) {
             SocketStore socketStore = adminStoreClient.getSocketStore(nodeId, storeName);
-            return socketStore.get(key, null);
+            return socketStore.get(key, null, 0L);
         }
 
         // As needed, add 'getall', 'delete', and so on interfaces...
@@ -2472,7 +2477,7 @@ public class AdminClient {
                         key = keys.next();
                     }
                     try {
-                        value = store.get(key, null);
+                        value = store.get(key, null, 0L);
                         return new QueryKeyResult(key, value);
                     } catch(Exception e) {
                         return new QueryKeyResult(key, e);
@@ -3633,19 +3638,22 @@ public class AdminClient {
                                                                 System.currentTimeMillis());
             quotaSysStoreClient.putSysStore(QuotaUtils.makeQuotaKey(storeName,
                                                                     QuotaType.valueOf(quotaType)),
-                                            new Versioned<String>(quotaValue, denseClock));
+                                            new Versioned<String>(quotaValue, denseClock),
+                                            0L);
             logger.info("Set quota " + quotaType + " to " + quotaValue + " for store " + storeName);
         }
 
         public void unsetQuota(String storeName, String quotaType) {
             quotaSysStoreClient.deleteSysStore(QuotaUtils.makeQuotaKey(storeName,
-                                                                       QuotaType.valueOf(quotaType)));
+                                                                       QuotaType.valueOf(quotaType)),
+                                               0L);
             logger.info("Unset quota " + quotaType + " for store " + storeName);
         }
 
         public Versioned<String> getQuota(String storeName, String quotaType) {
             return quotaSysStoreClient.getSysStore(QuotaUtils.makeQuotaKey(storeName,
-                                                                           QuotaType.valueOf(quotaType)));
+                                                                           QuotaType.valueOf(quotaType)),
+                                                   0L);
         }
 
         /**

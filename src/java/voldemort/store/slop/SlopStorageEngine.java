@@ -109,26 +109,27 @@ public class SlopStorageEngine extends AbstractStorageEngine<ByteArray, byte[], 
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms) throws VoldemortException {
-        return slopEngine.get(key, transforms);
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
+            throws VoldemortException {
+        return slopEngine.get(key, transforms, rid);
     }
 
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
-                                                          Map<ByteArray, byte[]> transforms)
-            throws VoldemortException {
-        return slopEngine.getAll(keys, transforms);
+                                                          Map<ByteArray, byte[]> transforms,
+                                                          long rid) throws VoldemortException {
+        return slopEngine.getAll(keys, transforms, rid);
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, long rid)
             throws VoldemortException {
-        slopEngine.put(key, value, transforms);
+        slopEngine.put(key, value, transforms, rid);
     }
 
     @Override
-    public boolean delete(ByteArray key, Version version) throws VoldemortException {
-        return slopEngine.delete(key, version);
+    public boolean delete(ByteArray key, Version version, long rid) throws VoldemortException {
+        return slopEngine.delete(key, version, rid);
     }
 
     @Override
@@ -142,8 +143,8 @@ public class SlopStorageEngine extends AbstractStorageEngine<ByteArray, byte[], 
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key) {
-        return slopEngine.getVersions(key);
+    public List<Version> getVersions(ByteArray key, long rid) {
+        return slopEngine.getVersions(key, rid);
     }
 
     @Override

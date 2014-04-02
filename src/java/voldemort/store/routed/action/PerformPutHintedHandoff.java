@@ -43,8 +43,9 @@ public class PerformPutHintedHandoff extends AbstractHintedHandoffAction<Void, P
                                    Versioned<byte[]> versioned,
                                    byte[] transforms,
                                    HintedHandoff hintedHandoff,
-                                   Time time) {
-        super(pipelineData, completeEvent, key, hintedHandoff);
+                                   Time time,
+                                   long rid) {
+        super(pipelineData, completeEvent, key, hintedHandoff, rid);
         this.versioned = versioned;
         this.time = time;
         this.transforms = transforms;
@@ -53,7 +54,8 @@ public class PerformPutHintedHandoff extends AbstractHintedHandoffAction<Void, P
     @Override
     public void execute(Pipeline pipeline) {
         Versioned<byte[]> versionedCopy = pipelineData.getVersionedCopy();
-        for(Node slopFinalDestinationNode: pipelineData.getSynchronizer().getDelegatedSlopDestinations()) {
+        for(Node slopFinalDestinationNode: pipelineData.getSynchronizer()
+                                                       .getDelegatedSlopDestinations()) {
             int failedNodeId = slopFinalDestinationNode.getId();
             if(versionedCopy == null) {
                 VectorClock clock = (VectorClock) versioned.getVersion();
@@ -64,9 +66,9 @@ public class PerformPutHintedHandoff extends AbstractHintedHandoffAction<Void, P
 
             Version version = versionedCopy.getVersion();
             if(logger.isTraceEnabled())
-                logger.trace("Performing parallel hinted handoff for node " + slopFinalDestinationNode
-                             + ", store " + pipelineData.getStoreName() + " key " + key
-                             + ", version " + version);
+                logger.trace("Performing parallel hinted handoff for node "
+                             + slopFinalDestinationNode + ", store " + pipelineData.getStoreName()
+                             + " key " + key + ", version " + version);
 
             Slop slop = new Slop(pipelineData.getStoreName(),
                                  Slop.Operation.PUT,

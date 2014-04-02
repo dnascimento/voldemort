@@ -61,8 +61,9 @@ public class PerformSerialPutRequests extends
                                     int required,
                                     Versioned<byte[]> versioned,
                                     Time time,
-                                    Event masterDeterminedEvent) {
-        super(pipelineData, completeEvent, key);
+                                    Event masterDeterminedEvent,
+                                    long rid) {
+        super(pipelineData, completeEvent, key, rid);
         this.failureDetector = failureDetector;
         this.stores = stores;
         this.required = required;
@@ -104,7 +105,7 @@ public class PerformSerialPutRequests extends
             long start = System.nanoTime();
 
             try {
-                stores.get(node.getId()).put(key, versionedCopy, transforms);
+                stores.get(node.getId()).put(key, versionedCopy, transforms, rid);
                 long requestTime = (System.nanoTime() - start) / Time.NS_PER_MS;
                 pipelineData.incrementSuccesses();
                 failureDetector.recordSuccess(node, requestTime);

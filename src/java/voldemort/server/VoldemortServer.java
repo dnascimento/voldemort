@@ -118,7 +118,8 @@ public class VoldemortServer extends AbstractService {
         metadataInnerEngine.put(MetadataStore.CLUSTER_KEY,
                                 new Versioned<String>(new ClusterMapper().writeCluster(cluster),
                                                       version),
-                                null);
+                                null,
+                                0L);
         this.metadata = new MetadataStore(metadataInnerEngine, voldemortConfig.getNodeId());
 
         this.services = createServices();
@@ -425,8 +426,8 @@ public class VoldemortServer extends AbstractService {
     public void restoreDataFromReplication(int numberOfParallelTransfers) {
 
         AdminClient adminClient = AdminClient.createTempAdminClient(voldemortConfig,
-                                                                       metadata.getCluster(),
-                                                                       numberOfParallelTransfers * 2);
+                                                                    metadata.getCluster(),
+                                                                    numberOfParallelTransfers * 2);
         try {
             adminClient.restoreOps.restoreDataFromReplications(metadata.getNodeId(),
                                                                numberOfParallelTransfers);

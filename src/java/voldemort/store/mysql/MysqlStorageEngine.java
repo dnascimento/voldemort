@@ -250,7 +250,7 @@ public class MysqlStorageEngine extends AbstractStorageEngine<ByteArray, byte[],
     public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
             throws PersistenceFailureException {
         StoreUtils.assertValidKey(key);
-        return StoreUtils.get(this, key, transforms);
+        return StoreUtils.get(this, key, transforms, rid);
     }
 
     @Override

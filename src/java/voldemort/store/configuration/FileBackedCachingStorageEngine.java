@@ -222,7 +222,8 @@ public class FileBackedCachingStorageEngine extends
 
     // Assigning new Vector clock here: TODO: Decide what vector clock to use ?
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms) throws VoldemortException {
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
+            throws VoldemortException {
         StoreUtils.assertValidKey(key);
         String keyString = new String(key.get());
         List<Versioned<byte[]>> found = new ArrayList<Versioned<byte[]>>();
@@ -241,12 +242,12 @@ public class FileBackedCachingStorageEngine extends
 
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
-                                                          Map<ByteArray, byte[]> transforms)
-            throws VoldemortException {
+                                                          Map<ByteArray, byte[]> transforms,
+                                                          long rid) throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
         Map<ByteArray, List<Versioned<byte[]>>> result = StoreUtils.newEmptyHashMap(keys);
         for(ByteArray key: keys) {
-            List<Versioned<byte[]>> values = get(key, null);
+            List<Versioned<byte[]>> values = get(key, null, rid);
             if(!values.isEmpty())
                 result.put(key, values);
         }
@@ -254,8 +255,8 @@ public class FileBackedCachingStorageEngine extends
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key) {
-        List<Versioned<byte[]>> values = get(key, null);
+    public List<Version> getVersions(ByteArray key, long rid) {
+        List<Versioned<byte[]>> values = get(key, null, rid);
         List<Version> versions = new ArrayList<Version>(values.size());
         for(Versioned<?> value: values) {
             versions.add(value.getVersion());
@@ -269,7 +270,7 @@ public class FileBackedCachingStorageEngine extends
      * will throw OVE, on the insert of the second key, value pair.Ideally, the version should be persisted 
      * along with the entries in the file too.. 
      */
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, long rid)
             throws VoldemortException {
         StoreUtils.assertValidKey(key);
 
@@ -296,7 +297,7 @@ public class FileBackedCachingStorageEngine extends
     }
 
     @Override
-    public boolean delete(ByteArray key, Version version) throws VoldemortException {
+    public boolean delete(ByteArray key, Version version, long rid) throws VoldemortException {
         boolean deleteSuccessful = false;
         StoreUtils.assertValidKey(key);
         String keyString = new String(key.get());

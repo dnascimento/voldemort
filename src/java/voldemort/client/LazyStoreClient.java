@@ -85,66 +85,82 @@ public class LazyStoreClient<K, V> implements StoreClient<K, V> {
         }
     }
 
-    public V getValue(K key) {
-        return getStoreClient().getValue(key);
+    @Override
+    public V getValue(K key, long rid) {
+        return getStoreClient().getValue(key, rid);
     }
 
-    public V getValue(K key, V defaultValue) {
-        return getStoreClient().getValue(key, defaultValue);
+    @Override
+    public V getValue(K key, V defaultValue, long rid) {
+        return getStoreClient().getValue(key, defaultValue, rid);
     }
 
-    public Versioned<V> get(K key) {
-        return getStoreClient().get(key);
+    @Override
+    public Versioned<V> get(K key, long rid) {
+        return getStoreClient().get(key, rid);
     }
 
-    public Versioned<V> get(K key, Object transforms) {
-        return getStoreClient().get(key, transforms);
+    @Override
+    public Versioned<V> get(K key, Object transforms, long rid) {
+        return getStoreClient().get(key, transforms, rid);
     }
 
-    public Map<K, Versioned<V>> getAll(Iterable<K> keys) {
-        return getStoreClient().getAll(keys);
+    @Override
+    public Map<K, Versioned<V>> getAll(Iterable<K> keys, long rid) {
+        return getStoreClient().getAll(keys, rid);
     }
 
-    public Map<K, Versioned<V>> getAll(Iterable<K> keys, Map<K, Object> transforms) {
-        return getStoreClient().getAll(keys, transforms);
+    @Override
+    public Map<K, Versioned<V>> getAll(Iterable<K> keys, Map<K, Object> transforms, long rid) {
+        return getStoreClient().getAll(keys, transforms, rid);
     }
 
-    public Versioned<V> get(K key, Versioned<V> defaultValue) {
-        return getStoreClient().get(key, defaultValue);
+    @Override
+    public Versioned<V> get(K key, Versioned<V> defaultValue, long rid) {
+        return getStoreClient().get(key, defaultValue, rid);
     }
 
-    public Version put(K key, V value) {
-        return getStoreClient().put(key, value);
+    @Override
+    public Version put(K key, V value, long rid) {
+        return getStoreClient().put(key, value, rid);
     }
 
-    public Version put(K key, V value, Object transforms) {
-        return getStoreClient().put(key, value, transforms);
+    @Override
+    public Version put(K key, V value, Object transforms, long rid) {
+        return getStoreClient().put(key, value, transforms, rid);
     }
 
-    public Version put(K key, Versioned<V> versioned) throws ObsoleteVersionException {
-        return getStoreClient().put(key, versioned);
+    @Override
+    public Version put(K key, Versioned<V> versioned, long rid) throws ObsoleteVersionException {
+        return getStoreClient().put(key, versioned, rid);
     }
 
-    public boolean putIfNotObsolete(K key, Versioned<V> versioned) {
-        return getStoreClient().putIfNotObsolete(key, versioned);
+    @Override
+    public boolean putIfNotObsolete(K key, Versioned<V> versioned, long rid) {
+        return getStoreClient().putIfNotObsolete(key, versioned, rid);
     }
 
-    public boolean applyUpdate(UpdateAction<K, V> action) {
-        return getStoreClient().applyUpdate(action);
+    @Override
+    public boolean applyUpdate(UpdateAction<K, V> action, long rid) {
+        return getStoreClient().applyUpdate(action, rid);
     }
 
-    public boolean applyUpdate(UpdateAction<K, V> action, int maxTries) {
-        return getStoreClient().applyUpdate(action, maxTries);
+    @Override
+    public boolean applyUpdate(UpdateAction<K, V> action, int maxTries, long rid) {
+        return getStoreClient().applyUpdate(action, maxTries, rid);
     }
 
-    public boolean delete(K key) {
-        return getStoreClient().delete(key);
+    @Override
+    public boolean delete(K key, long rid) {
+        return getStoreClient().delete(key, rid);
     }
 
-    public boolean delete(K key, Version version) {
-        return getStoreClient().delete(key, version);
+    @Override
+    public boolean delete(K key, Version version, long rid) {
+        return getStoreClient().delete(key, version, rid);
     }
 
+    @Override
     public List<Node> getResponsibleNodes(K key) {
         return getStoreClient().getResponsibleNodes(key);
     }

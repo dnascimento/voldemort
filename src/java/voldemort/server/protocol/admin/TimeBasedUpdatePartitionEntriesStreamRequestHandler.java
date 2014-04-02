@@ -47,7 +47,8 @@ public class TimeBasedUpdatePartitionEntriesStreamRequestHandler extends
     }
 
     @Override
-    protected void processEntry(ByteArray key, Versioned<byte[]> value) throws IOException {
+    protected void processEntry(ByteArray key, Versioned<byte[]> value, long rid)
+            throws IOException {
         KeyLockHandle<byte[]> handle = null;
         try {
             handle = storageEngine.getAndLock(key);

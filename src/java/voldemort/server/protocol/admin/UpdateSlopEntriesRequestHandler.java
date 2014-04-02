@@ -141,7 +141,8 @@ public class UpdateSlopEntriesRequestHandler implements StreamRequestHandler {
                     // Retrieve the value
                     byte[] value = ProtoUtils.decodeBytes(request.getValue()).get();
                     startNs = System.nanoTime();
-                    storageEngine.put(key, Versioned.value(value, vectorClock), transforms);
+                    // TODO Pode receber o RID
+                    storageEngine.put(key, Versioned.value(value, vectorClock), transforms, 0L);
                     if(isJmxEnabled)
                         streamStats.reportStorageTime(Operation.SLOP_UPDATE,
                                                       Utils.elapsedTimeNs(startNs,
@@ -158,7 +159,8 @@ public class UpdateSlopEntriesRequestHandler implements StreamRequestHandler {
             case DELETE:
                 try {
                     startNs = System.nanoTime();
-                    storageEngine.delete(key, vectorClock);
+                    // TODO Pode receber o RID
+                    storageEngine.delete(key, vectorClock, 0L);
                     if(isJmxEnabled)
                         streamStats.reportStorageTime(Operation.SLOP_UPDATE, System.nanoTime()
                                                                              - startNs);

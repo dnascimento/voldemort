@@ -35,8 +35,9 @@ public class PerformDeleteHintedHandoff extends
                                       Pipeline.Event completeEvent,
                                       ByteArray key,
                                       Version version,
-                                      HintedHandoff hintedHandoff) {
-        super(pipelineData, completeEvent, key, hintedHandoff);
+                                      HintedHandoff hintedHandoff,
+                                      long rid) {
+        super(pipelineData, completeEvent, key, hintedHandoff, rid);
         this.version = version;
     }
 

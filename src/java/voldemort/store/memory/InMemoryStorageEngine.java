@@ -120,7 +120,7 @@ public class InMemoryStorageEngine<K, V, T> extends AbstractStorageEngine<K, V, 
     public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, long rid)
             throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
-        return StoreUtils.getAll(this, keys, transforms);
+        return StoreUtils.getAll(this, keys, transforms, 0L);
     }
 
     @Override

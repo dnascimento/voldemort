@@ -73,7 +73,7 @@ public abstract class SlopPusherJob {
         Versioned<Slop> versioned = keyAndVal.getSecond();
         // If configured to delete the dead slop
         if(voldemortConfig.getAutoPurgeDeadSlops()) {
-            slopStorageEngine.delete(keyAndVal.getFirst(), versioned.getVersion());
+            slopStorageEngine.delete(keyAndVal.getFirst(), versioned.getVersion(), 0L);
 
             if(getLogger().isDebugEnabled()) {
                 getLogger().debug("Auto purging dead slop :" + versioned.getValue());

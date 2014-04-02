@@ -72,7 +72,7 @@ public class RepairJob extends DataMaintenanceJob {
                         /**
                          * Blow away the entire key with all its versions..
                          */
-                        engine.delete(key, null);
+                        engine.delete(key, null, 0L);
                         numDeletedKeys = this.numKeysUpdatedThisRun.incrementAndGet();
                     }
                     itemsScanned = this.numKeysScannedThisRun.incrementAndGet();

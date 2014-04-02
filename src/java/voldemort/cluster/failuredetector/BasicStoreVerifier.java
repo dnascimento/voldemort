@@ -49,7 +49,7 @@ public class BasicStoreVerifier<K, V, T> implements StoreVerifier {
                                          + " store is null; cannot determine node availability");
 
         // This is our test.
-        store.get(key, null);
+        store.get(key, null, 0L);
     }
 
     public void flushCachedStores() {

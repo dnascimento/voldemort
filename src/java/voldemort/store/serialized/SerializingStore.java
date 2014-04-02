@@ -69,8 +69,8 @@ public class SerializingStore<K, V, T> extends AbstractStore<K, V, T> {
     }
 
     @Override
-    public boolean delete(K key, Version version) throws VoldemortException {
-        return store.delete(keyToBytes(key), version);
+    public boolean delete(K key, Version version, long rid) throws VoldemortException {
+        return store.delete(keyToBytes(key), version, rid);
     }
 
     private ByteArray keyToBytes(K key) {
@@ -103,10 +103,11 @@ public class SerializingStore<K, V, T> extends AbstractStore<K, V, T> {
     }
 
     @Override
-    public List<Versioned<V>> get(K key, T transforms) throws VoldemortException {
+    public List<Versioned<V>> get(K key, T transforms, long rid) throws VoldemortException {
         List<Versioned<byte[]>> found = store.get(keyToBytes(key),
                                                   (transformsSerializer != null && transforms != null) ? transformsSerializer.toBytes(transforms)
-                                                                                                      : null);
+                                                                                                      : null,
+                                                  rid);
         List<Versioned<V>> results = new ArrayList<Versioned<V>>(found.size());
         for(Versioned<byte[]> versioned: found)
             results.add(new Versioned<V>(valueSerializer.toObject(versioned.getValue()),
@@ -115,12 +116,13 @@ public class SerializingStore<K, V, T> extends AbstractStore<K, V, T> {
     }
 
     @Override
-    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms)
+    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, long rid)
             throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
         Map<ByteArray, K> byteKeyToKey = keysToBytes(keys);
         Map<ByteArray, List<Versioned<byte[]>>> storeResult = store.getAll(byteKeyToKey.keySet(),
-                                                                           transformsToBytes(transforms));
+                                                                           transformsToBytes(transforms),
+                                                                           rid);
         Map<K, List<Versioned<V>>> result = Maps.newHashMapWithExpectedSize(storeResult.size());
         for(Map.Entry<ByteArray, List<Versioned<byte[]>>> mapEntry: storeResult.entrySet()) {
             List<Versioned<V>> values = Lists.newArrayListWithExpectedSize(mapEntry.getValue()
@@ -135,16 +137,17 @@ public class SerializingStore<K, V, T> extends AbstractStore<K, V, T> {
     }
 
     @Override
-    public void put(K key, Versioned<V> value, T transforms) throws VoldemortException {
+    public void put(K key, Versioned<V> value, T transforms, long rid) throws VoldemortException {
         store.put(keyToBytes(key),
                   new Versioned<byte[]>(valueSerializer.toBytes(value.getValue()),
                                         value.getVersion()),
-                  transformToBytes(transforms));
+                  transformToBytes(transforms),
+                  rid);
     }
 
     @Override
-    public List<Version> getVersions(K key) {
-        return store.getVersions(keyToBytes(key));
+    public List<Version> getVersions(K key, long rid) {
+        return store.getVersions(keyToBytes(key), rid);
     }
 
     @Override

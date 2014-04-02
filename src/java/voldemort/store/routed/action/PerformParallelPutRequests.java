@@ -78,8 +78,9 @@ public class PerformParallelPutRequests extends
                                       int required,
                                       long timeoutMs,
                                       Map<Integer, NonblockingStore> nonblockingStores,
-                                      HintedHandoff hintedHandoff) {
-        super(pipelineData, completeEvent, key);
+                                      HintedHandoff hintedHandoff,
+                                      long rid) {
+        super(pipelineData, completeEvent, key, rid);
         this.failureDetector = failureDetector;
         this.preferred = preferred;
         this.required = required;
@@ -216,7 +217,7 @@ public class PerformParallelPutRequests extends
                              + " request on node " + node.getId() + " for key " + key);
 
             NonblockingStore store = nonblockingStores.get(node.getId());
-            store.submitPutRequest(key, versionedCopy, transforms, callback, timeoutMs);
+            store.submitPutRequest(key, versionedCopy, transforms, callback, timeoutMs, rid);
         }
 
         try {

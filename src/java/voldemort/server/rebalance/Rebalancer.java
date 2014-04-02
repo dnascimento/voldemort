@@ -218,8 +218,8 @@ public class Rebalancer implements Runnable {
                         // Reset the rebalancing source cluster back to null
 
                         changeClusterAndStores(MetadataStore.REBALANCING_SOURCE_CLUSTER_XML, null,
-                                               // Reset the rebalancing source
-                                               // stores back to null
+                        // Reset the rebalancing source
+                        // stores back to null
                                                MetadataStore.REBALANCING_SOURCE_STORES_XML,
                                                null);
 
@@ -384,14 +384,14 @@ public class Rebalancer implements Runnable {
                                         final List<StoreDefinition> storeDefs) {
         metadataStore.writeLock.lock();
         try {
-            VectorClock updatedVectorClock = ((VectorClock) metadataStore.get(clusterKey, null)
+            VectorClock updatedVectorClock = ((VectorClock) metadataStore.get(clusterKey, null, 0L)
                                                                          .get(0)
                                                                          .getVersion()).incremented(metadataStore.getNodeId(),
                                                                                                     System.currentTimeMillis());
             metadataStore.put(clusterKey, Versioned.value((Object) cluster, updatedVectorClock));
 
             // now put new stores
-            updatedVectorClock = ((VectorClock) metadataStore.get(storesKey, null)
+            updatedVectorClock = ((VectorClock) metadataStore.get(storesKey, null, 0L)
                                                              .get(0)
                                                              .getVersion()).incremented(metadataStore.getNodeId(),
                                                                                         System.currentTimeMillis());

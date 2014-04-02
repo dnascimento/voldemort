@@ -150,12 +150,12 @@ public class RESTClient<K, V> implements StoreClient<K, V> {
     }
 
     @Override
-    public boolean applyUpdate(UpdateAction<K, V> action) {
-        return applyUpdate(action, 3);
+    public boolean applyUpdate(UpdateAction<K, V> action, long rid) {
+        return applyUpdate(action, 3, rid);
     }
 
     @Override
-    public boolean applyUpdate(UpdateAction<K, V> action, int maxTries) {
+    public boolean applyUpdate(UpdateAction<K, V> action, int maxTries, long rid) {
         boolean success = false;
         try {
             for(int i = 0; i < maxTries; i++) {

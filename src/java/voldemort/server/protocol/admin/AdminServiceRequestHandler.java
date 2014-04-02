@@ -757,8 +757,8 @@ public class AdminServiceRequestHandler implements RequestHandler {
 
                         job.setFilter(request.getFilterNodeIdsList(),
                                       request.hasFilterZoneId() ? request.getFilterZoneId()
-                                                         : Zone.UNSET_ZONE_ID,
-                                                         request.getFilterStoreNamesList());
+                                                               : Zone.UNSET_ZONE_ID,
+                                      request.getFilterStoreNamesList());
                         job.run();
                     } else {
                         logger.error("SlopPurgeJob is not initialized.");
@@ -1061,7 +1061,7 @@ public class AdminServiceRequestHandler implements RequestHandler {
                                          * TODO This also needs to be fixed to
                                          * use the atomic multi version puts
                                          */
-                                        storageEngine.put(key, value, null);
+                                        storageEngine.put(key, value, null, 0L);
                                     } catch(ObsoleteVersionException e) {
                                         // log and ignore
                                         logger.debug("Fetch and update threw Obsolete version exception. Ignoring");
@@ -1182,7 +1182,7 @@ public class AdminServiceRequestHandler implements RequestHandler {
                                                                                      : metadataStore.getCluster(),
                                                           metadataStore.getStoreDef(storeName))
                    && filter.accept(key, value)) {
-                    if(storageEngine.delete(key, value.getVersion())) {
+                    if(storageEngine.delete(key, value.getVersion(), 0L)) {
                         deleteSuccess++;
                         if((deleteSuccess % 10000) == 0) {
                             logger.info(deleteSuccess + " entries deleted from node "
@@ -1219,7 +1219,8 @@ public class AdminServiceRequestHandler implements RequestHandler {
                 logger.info("Updating metadata for key '" + keyString + "'");
                 metadataStore.put(new ByteArray(ByteUtils.getBytes(keyString, "UTF-8")),
                                   versionedValue,
-                                  null);
+                                  null,
+                                  0L);
                 logger.info("Successfully updated metadata for key '" + keyString + "'");
             }
         } catch(VoldemortException e) {
@@ -1229,7 +1230,7 @@ public class AdminServiceRequestHandler implements RequestHandler {
 
         return response.build();
     }
-    
+
     public VAdminProto.UpdateMetadataPairResponse handleUpdateMetadataPair(VAdminProto.UpdateMetadataPairRequest request) {
         VAdminProto.UpdateMetadataPairResponse.Builder response = VAdminProto.UpdateMetadataPairResponse.newBuilder();
         try {
@@ -1237,26 +1238,29 @@ public class AdminServiceRequestHandler implements RequestHandler {
             ByteArray storesKey = ProtoUtils.decodeBytes(request.getStoresKey());
             String clusterKeyString = ByteUtils.getString(clusterKey.get(), "UTF-8");
             String storesKeyString = ByteUtils.getString(storesKey.get(), "UTF-8");
-            
-            if (MetadataStore.METADATA_KEYS.contains(clusterKeyString) && MetadataStore.METADATA_KEYS.contains(storesKeyString)) {
-                
+
+            if(MetadataStore.METADATA_KEYS.contains(clusterKeyString)
+               && MetadataStore.METADATA_KEYS.contains(storesKeyString)) {
+
                 Versioned<byte[]> clusterVersionedValue = ProtoUtils.decodeVersioned(request.getClusterValue());
                 Versioned<byte[]> storesVersionedValue = ProtoUtils.decodeVersioned(request.getStoresValue());
-      
+
                 metadataStore.writeLock.lock();
                 try {
-                    logger.info("Updating metadata for keys '" + clusterKeyString + "'" +  " and '" + storesKeyString + "'");
-                    metadataStore.put(clusterKey, clusterVersionedValue, null);
-                    metadataStore.put(storesKey, storesVersionedValue, null);
-                    logger.info("Successfully updated metadata for keys '" + clusterKeyString + "'" +  " and '" + storesKeyString + "'");
-                }
-                finally {
+                    logger.info("Updating metadata for keys '" + clusterKeyString + "'" + " and '"
+                                + storesKeyString + "'");
+                    metadataStore.put(clusterKey, clusterVersionedValue, null, 0L);
+                    metadataStore.put(storesKey, storesVersionedValue, null, 0L);
+                    logger.info("Successfully updated metadata for keys '" + clusterKeyString + "'"
+                                + " and '" + storesKeyString + "'");
+                } finally {
                     metadataStore.writeLock.unlock();
                 }
             }
         } catch(VoldemortException e) {
             response.setError(ProtoUtils.encodeError(errorCodeMapper, e));
-            logger.error("handleUpdateMetadataPair failed for request(" + request.toString() + ")", e);
+            logger.error("handleUpdateMetadataPair failed for request(" + request.toString() + ")",
+                         e);
         }
         return response.build();
     }
@@ -1268,7 +1272,7 @@ public class AdminServiceRequestHandler implements RequestHandler {
             ByteArray key = ProtoUtils.decodeBytes(request.getKey());
             String keyString = ByteUtils.getString(key.get(), "UTF-8");
             if(MetadataStore.METADATA_KEYS.contains(keyString)) {
-                List<Versioned<byte[]>> versionedList = metadataStore.get(key, null);
+                List<Versioned<byte[]>> versionedList = metadataStore.get(key, null, 0L);
                 int size = (versionedList.size() > 0) ? 1 : 0;
 
                 if(size > 0) {
@@ -1362,7 +1366,7 @@ public class AdminServiceRequestHandler implements RequestHandler {
                         }
 
                         try {
-                            metadataStore.put(MetadataStore.STORES_KEY, newStoreDefList);
+                            metadataStore.put(MetadataStore.STORES_KEY, newStoreDefList, 0L);
                         } catch(Exception e) {
                             throw new VoldemortException(e);
                         }
@@ -1421,7 +1425,9 @@ public class AdminServiceRequestHandler implements RequestHandler {
                     // update stores list in metadata store (this also has the
                     // effect of updating the stores.xml file)
                     List<StoreDefinition> currentStoreDefs;
-                    List<Versioned<byte[]>> v = metadataStore.get(MetadataStore.STORES_KEY, null);
+                    List<Versioned<byte[]>> v = metadataStore.get(MetadataStore.STORES_KEY,
+                                                                  null,
+                                                                  0L);
 
                     if(((v.size() > 0) ? 1 : 0) > 0) {
                         Versioned<byte[]> currentValue = v.get(0);
@@ -1432,7 +1438,7 @@ public class AdminServiceRequestHandler implements RequestHandler {
                     }
                     currentStoreDefs.add(def);
                     try {
-                        metadataStore.put(MetadataStore.STORES_KEY, currentStoreDefs);
+                        metadataStore.put(MetadataStore.STORES_KEY, currentStoreDefs, 0L);
                     } catch(Exception e) {
                         throw new VoldemortException(e);
                     }
@@ -1654,7 +1660,7 @@ public class AdminServiceRequestHandler implements RequestHandler {
 
                     // save the changes
                     try {
-                        metadataStore.put(MetadataStore.STORES_KEY, storeDefList);
+                        metadataStore.put(MetadataStore.STORES_KEY, storeDefList, 0L);
                     } catch(Exception e) {
                         throw new VoldemortException(e);
                     }

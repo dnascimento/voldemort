@@ -65,8 +65,8 @@ public class RebalancingJob implements Runnable {
             while(iterator.hasNext()) {
                 Pair<ByteArray, Versioned<byte[]>> keyAndVal = iterator.next();
                 if(needsRebalancing(keyAndVal.getFirst())) {
-                    remote.put(keyAndVal.getFirst(), keyAndVal.getSecond(), null);
-                    engine.delete(keyAndVal.getFirst(), keyAndVal.getSecond().getVersion());
+                    remote.put(keyAndVal.getFirst(), keyAndVal.getSecond(), null, 0L);
+                    engine.delete(keyAndVal.getFirst(), keyAndVal.getSecond().getVersion(), 0L);
                     rebalanced++;
                 }
             }

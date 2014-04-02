@@ -91,7 +91,7 @@ public class DefaultStoreClient<K, V> implements StoreClient<K, V> {
         if(beforeRebootstrapCallback != null) {
             try {
                 beforeRebootstrapCallback.call();
-            } catch (Exception e) {
+            } catch(Exception e) {
                 logger.warn("Exception caught when running callback before bootstrap", e);
             }
         }
@@ -99,17 +99,19 @@ public class DefaultStoreClient<K, V> implements StoreClient<K, V> {
         this.store = storeFactory.getRawStore(storeName, resolver);
     }
 
-    public boolean delete(K key) {
-        Versioned<V> versioned = get(key);
+    @Override
+    public boolean delete(K key, long rid) {
+        Versioned<V> versioned = get(key, rid);
         if(versioned == null)
             return false;
-        return delete(key, versioned.getVersion());
+        return delete(key, versioned.getVersion(), rid);
     }
 
-    public boolean delete(K key, Version version) {
+    @Override
+    public boolean delete(K key, Version version, long rid) {
         for(int attempts = 0; attempts < this.metadataRefreshAttempts; attempts++) {
             try {
-                return store.delete(key, version);
+                return store.delete(key, version, rid);
             } catch(InvalidMetadataException e) {
                 logger.info("Received invalid metadata exception during delete [  "
                             + e.getMessage() + " ] on store '" + storeName + "'. Rebootstrapping");
@@ -120,26 +122,29 @@ public class DefaultStoreClient<K, V> implements StoreClient<K, V> {
                                      + " metadata refresh attempts failed.");
     }
 
-    public V getValue(K key, V defaultValue) {
-        Versioned<V> versioned = get(key);
+    @Override
+    public V getValue(K key, V defaultValue, long rid) {
+        Versioned<V> versioned = get(key, rid);
         if(versioned == null)
             return defaultValue;
         else
             return versioned.getValue();
     }
 
-    public V getValue(K key) {
-        Versioned<V> returned = get(key, null);
+    @Override
+    public V getValue(K key, long rid) {
+        Versioned<V> returned = get(key, null, rid);
         if(returned == null)
             return null;
         else
             return returned.getValue();
     }
 
-    public Versioned<V> get(K key, Versioned<V> defaultValue) {
+    @Override
+    public Versioned<V> get(K key, Versioned<V> defaultValue, long rid) {
         for(int attempts = 0; attempts < this.metadataRefreshAttempts; attempts++) {
             try {
-                List<Versioned<V>> items = store.get(key, null);
+                List<Versioned<V>> items = store.get(key, null, rid);
                 return getItemOrThrow(key, defaultValue, items);
             } catch(InvalidMetadataException e) {
                 logger.info("Received invalid metadata exception during get [  " + e.getMessage()
@@ -151,10 +156,10 @@ public class DefaultStoreClient<K, V> implements StoreClient<K, V> {
                                      + " metadata refresh attempts failed.");
     }
 
-    public Versioned<V> get(K key, Versioned<V> defaultValue, Object transform) {
+    public Versioned<V> get(K key, Versioned<V> defaultValue, Object transform, long rid) {
         for(int attempts = 0; attempts < this.metadataRefreshAttempts; attempts++) {
             try {
-                List<Versioned<V>> items = store.get(key, transform);
+                List<Versioned<V>> items = store.get(key, transform, rid);
                 return getItemOrThrow(key, defaultValue, items);
             } catch(InvalidMetadataException e) {
                 logger.info("Received invalid metadata exception during get [  " + e.getMessage()
@@ -166,10 +171,10 @@ public class DefaultStoreClient<K, V> implements StoreClient<K, V> {
                                      + " metadata refresh attempts failed.");
     }
 
-    protected List<Version> getVersions(K key) {
+    protected List<Version> getVersions(K key, long rid) {
         for(int attempts = 0; attempts < this.metadataRefreshAttempts; attempts++) {
             try {
-                return store.getVersions(key);
+                return store.getVersions(key, rid);
             } catch(InvalidMetadataException e) {
                 logger.info("Received invalid metadata exception during getVersions [  "
                             + e.getMessage() + " ] on store '" + storeName + "'. Rebootstrapping");
@@ -190,18 +195,20 @@ public class DefaultStoreClient<K, V> implements StoreClient<K, V> {
                                                 + ") = " + items, items);
     }
 
-    public Versioned<V> get(K key) {
-        return get(key, null);
+    @Override
+    public Versioned<V> get(K key, long rid) {
+        return get(key, null, rid);
     }
 
-    public Map<K, Versioned<V>> getAll(Iterable<K> keys) {
+    @Override
+    public Map<K, Versioned<V>> getAll(Iterable<K> keys, long rid) {
         Map<K, List<Versioned<V>>> items = null;
         for(int attempts = 0;; attempts++) {
             if(attempts >= this.metadataRefreshAttempts)
                 throw new VoldemortException(this.metadataRefreshAttempts
                                              + " metadata refresh attempts failed.");
             try {
-                items = store.getAll(keys, null);
+                items = store.getAll(keys, null, rid);
                 break;
             } catch(InvalidMetadataException e) {
                 logger.info("Received invalid metadata exception during getAll [  "
@@ -218,28 +225,29 @@ public class DefaultStoreClient<K, V> implements StoreClient<K, V> {
         return result;
     }
 
-    public Version put(K key, V value) {
-        List<Version> versions = getVersions(key);
+    @Override
+    public Version put(K key, V value, long rid) {
+        List<Version> versions = getVersions(key, rid);
         Versioned<V> versioned;
         if(versions.isEmpty())
             versioned = Versioned.value(value, new VectorClock());
         else if(versions.size() == 1)
             versioned = Versioned.value(value, versions.get(0));
         else {
-            versioned = get(key, null);
+            versioned = get(key, null, rid);
             if(versioned == null)
                 versioned = Versioned.value(value, new VectorClock());
             else
                 versioned.setObject(value);
         }
-        return put(key, versioned);
+        return put(key, versioned, rid);
     }
 
-    public Version put(K key, Versioned<V> versioned, Object transform)
+    public Version put(K key, Versioned<V> versioned, Object transform, long rid)
             throws ObsoleteVersionException {
         for(int attempts = 0; attempts < this.metadataRefreshAttempts; attempts++) {
             try {
-                store.put(key, versioned, transform);
+                store.put(key, versioned, transform, rid);
                 return versioned.getVersion();
             } catch(InvalidMetadataException e) {
                 logger.info("Received invalid metadata exception during put [  " + e.getMessage()
@@ -251,20 +259,22 @@ public class DefaultStoreClient<K, V> implements StoreClient<K, V> {
                                      + " metadata refresh attempts failed.");
     }
 
-    public boolean putIfNotObsolete(K key, Versioned<V> versioned) {
+    @Override
+    public boolean putIfNotObsolete(K key, Versioned<V> versioned, long rid) {
         try {
-            put(key, versioned);
+            put(key, versioned, rid);
             return true;
         } catch(ObsoleteVersionException e) {
             return false;
         }
     }
 
-    public Version put(K key, Versioned<V> versioned) throws ObsoleteVersionException {
+    @Override
+    public Version put(K key, Versioned<V> versioned, long rid) throws ObsoleteVersionException {
 
         for(int attempts = 0; attempts < this.metadataRefreshAttempts; attempts++) {
             try {
-                store.put(key, versioned, null);
+                store.put(key, versioned, null, rid);
                 return versioned.getVersion();
             } catch(InvalidMetadataException e) {
                 logger.info("Received invalid metadata exception during put [  " + e.getMessage()
@@ -276,11 +286,13 @@ public class DefaultStoreClient<K, V> implements StoreClient<K, V> {
                                      + " metadata refresh attempts failed.");
     }
 
-    public boolean applyUpdate(UpdateAction<K, V> action) {
-        return applyUpdate(action, 3);
+    @Override
+    public boolean applyUpdate(UpdateAction<K, V> action, long rid) {
+        return applyUpdate(action, 3, rid);
     }
 
-    public boolean applyUpdate(UpdateAction<K, V> action, int maxTries) {
+    @Override
+    public boolean applyUpdate(UpdateAction<K, V> action, int maxTries, long rid) {
         boolean success = false;
         try {
             for(int i = 0; i < maxTries; i++) {
@@ -302,6 +314,7 @@ public class DefaultStoreClient<K, V> implements StoreClient<K, V> {
         return false;
     }
 
+    @Override
     public List<Node> getResponsibleNodes(K key) {
         RoutingStrategy strategy = (RoutingStrategy) store.getCapability(StoreCapabilityType.ROUTING_STRATEGY);
         @SuppressWarnings("unchecked")
@@ -309,9 +322,8 @@ public class DefaultStoreClient<K, V> implements StoreClient<K, V> {
         return strategy.routeRequest(keySerializer.toBytes(key));
     }
 
-    @SuppressWarnings("unused")
-    protected Version getVersion(K key) {
-        List<Version> versions = getVersions(key);
+    protected Version getVersion(K key, long rid) {
+        List<Version> versions = getVersions(key, rid);
         if(versions.size() == 0)
             return null;
         else if(versions.size() == 1)
@@ -321,18 +333,20 @@ public class DefaultStoreClient<K, V> implements StoreClient<K, V> {
                                                 + ") = " + versions, versions);
     }
 
-    public Versioned<V> get(K key, Object transforms) {
-        return get(key, null, transforms);
+    @Override
+    public Versioned<V> get(K key, Object transforms, long rid) {
+        return get(key, null, transforms, rid);
     }
 
-    public Map<K, Versioned<V>> getAll(Iterable<K> keys, Map<K, Object> transforms) {
+    @Override
+    public Map<K, Versioned<V>> getAll(Iterable<K> keys, Map<K, Object> transforms, long rid) {
         Map<K, List<Versioned<V>>> items = null;
         for(int attempts = 0;; attempts++) {
             if(attempts >= this.metadataRefreshAttempts)
                 throw new VoldemortException(this.metadataRefreshAttempts
                                              + " metadata refresh attempts failed.");
             try {
-                items = store.getAll(keys, transforms);
+                items = store.getAll(keys, transforms, rid);
                 break;
             } catch(InvalidMetadataException e) {
                 logger.info("Received invalid metadata exception during getAll [  "
@@ -349,21 +363,22 @@ public class DefaultStoreClient<K, V> implements StoreClient<K, V> {
         return result;
     }
 
-    public Version put(K key, V value, Object transforms) {
-        List<Version> versions = getVersions(key);
+    @Override
+    public Version put(K key, V value, Object transforms, long rid) {
+        List<Version> versions = getVersions(key, rid);
         Versioned<V> versioned;
         if(versions.isEmpty())
             versioned = Versioned.value(value, new VectorClock());
         else if(versions.size() == 1)
             versioned = Versioned.value(value, versions.get(0));
         else {
-            versioned = get(key, null);
+            versioned = get(key, null, rid);
             if(versioned == null)
                 versioned = Versioned.value(value, new VectorClock());
             else
                 versioned.setObject(value);
         }
-        return put(key, versioned, transforms);
+        return put(key, versioned, transforms, rid);
 
     }
 

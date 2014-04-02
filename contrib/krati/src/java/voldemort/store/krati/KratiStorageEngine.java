@@ -65,7 +65,7 @@ public class KratiStorageEngine extends AbstractStorageEngine<ByteArray, byte[],
                                                           Map<ByteArray, byte[]> transforms,
                                                           long rid) throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
-        return StoreUtils.getAll(this, keys, null);
+        return StoreUtils.getAll(this, keys, null, 0L);
     }
 
     @Override

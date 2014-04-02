@@ -47,6 +47,7 @@ public class VoldemortNativeRequestHandler extends AbstractRequestHandler implem
         this.protocolVersion = protocolVersion;
     }
 
+    @Override
     public StreamRequestHandler handleRequest(DataInputStream inputStream,
                                               DataOutputStream outputStream) throws IOException {
         byte opCode = inputStream.readByte();
@@ -112,7 +113,8 @@ public class VoldemortNativeRequestHandler extends AbstractRequestHandler implem
         ByteArray key = readKey(inputStream);
         List<Version> results = null;
         try {
-            results = store.getVersions(key);
+            // TODO PODE RECEBER RID TAMBEM!!!
+            results = store.getVersions(key, 0L);
             outputStream.writeShort(0);
         } catch(VoldemortException e) {
             logger.error(e.getMessage());
@@ -147,6 +149,7 @@ public class VoldemortNativeRequestHandler extends AbstractRequestHandler implem
      * needs to stay in sync with handleRequest.
      */
 
+    @Override
     public boolean isCompleteRequest(final ByteBuffer buffer) {
         DataInputStream inputStream = new DataInputStream(new ByteBufferBackedInputStream(buffer));
 
@@ -309,7 +312,8 @@ public class VoldemortNativeRequestHandler extends AbstractRequestHandler implem
         }
         List<Versioned<byte[]>> results = null;
         try {
-            results = store.get(key, transforms);
+            // TODO PODE RECEBER RID TAMBEM!!!
+            results = store.get(key, transforms, 0L);
             outputStream.writeShort(0);
         } catch(VoldemortException e) {
             logger.error(e.getMessage());
@@ -353,7 +357,8 @@ public class VoldemortNativeRequestHandler extends AbstractRequestHandler implem
         // execute the operation
         Map<ByteArray, List<Versioned<byte[]>>> results = null;
         try {
-            results = store.getAll(keys, transforms);
+            // TODO PODE RECEBER RID TAMBEM!!!
+            results = store.getAll(keys, transforms, 0L);
             outputStream.writeShort(0);
         } catch(VoldemortException e) {
             logger.error(e.getMessage());
@@ -443,7 +448,8 @@ public class VoldemortNativeRequestHandler extends AbstractRequestHandler implem
             }
         }
         try {
-            store.put(key, new Versioned<byte[]>(value, clock), transforms);
+            // TODO PODE RECEBER RID TAMBEM!!!
+            store.put(key, new Versioned<byte[]>(value, clock), transforms, 0L);
             outputStream.writeShort(0);
         } catch(VoldemortException e) {
             writeException(outputStream, e);
@@ -477,7 +483,8 @@ public class VoldemortNativeRequestHandler extends AbstractRequestHandler implem
         ByteUtils.read(inputStream, versionBytes);
         VectorClock version = new VectorClock(versionBytes);
         try {
-            boolean succeeded = store.delete(key, version);
+            // TODO PODE RECEBER RID TAMBEM!!!
+            boolean succeeded = store.delete(key, version, 0L);
             outputStream.writeShort(0);
             outputStream.writeBoolean(succeeded);
         } catch(VoldemortException e) {

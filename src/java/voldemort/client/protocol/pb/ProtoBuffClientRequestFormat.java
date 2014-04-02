@@ -62,6 +62,7 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                    VectorClock version,
                                    RequestRoutingType routingType,
                                    long rid) throws IOException {
+        System.out.println("writeDeleteRequest" + rid);
         StoreUtils.assertValidKey(key);
         ProtoUtils.writeMessage(output,
                                 VProto.VoldemortRequest.newBuilder()
@@ -98,6 +99,7 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                 RequestRoutingType routingType,
                                 long rid) throws IOException {
         StoreUtils.assertValidKey(key);
+        System.out.println("writeGetRequest" + rid);
 
         VProto.GetRequest.Builder get = VProto.GetRequest.newBuilder();
         get.setKey(ByteString.copyFrom(key.get()));
@@ -137,6 +139,7 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                    RequestRoutingType routingType,
                                    long rid) throws IOException {
         StoreUtils.assertValidKeys(keys);
+        System.out.println("writeGetAllRequest" + rid);
 
         VProto.GetAllRequest.Builder req = VProto.GetAllRequest.newBuilder();
         req.setRid(rid);
@@ -189,13 +192,14 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                 VectorClock version,
                                 RequestRoutingType routingType,
                                 long rid) throws IOException {
+        System.out.println("WritePutRequest" + rid);
         StoreUtils.assertValidKey(key);
         VProto.PutRequest.Builder req = VProto.PutRequest.newBuilder()
+                                                         .setRid(rid)
                                                          .setKey(ByteString.copyFrom(key.get()))
                                                          .setVersioned(VProto.Versioned.newBuilder()
                                                                                        .setValue(ByteString.copyFrom(value))
                                                                                        .setVersion(ProtoUtils.encodeClock(version)));
-        req.setRid(rid);
         if(transforms != null)
             req = req.setTransforms(ByteString.copyFrom(transforms));
 
@@ -249,6 +253,7 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                        RequestRoutingType routingType,
                                        long rid) throws IOException {
         StoreUtils.assertValidKey(key);
+        System.out.println("writeGetVersionRequest" + rid);
         ProtoUtils.writeMessage(output,
                                 VProto.VoldemortRequest.newBuilder()
                                                        .setType(RequestType.GET_VERSION)

@@ -85,7 +85,7 @@ public class VStack<K, E> implements Queue<E> {
      */
     public boolean isEmpty() {
         VListKey<K> newKey = new VListKey<K>(_key, 0);
-        Versioned<Map<String, Object>> firstNode = _storeClient.get(newKey.mapValue());
+        Versioned<Map<String, Object>> firstNode = _storeClient.get(newKey.mapValue(), 0L);
         return firstNode == null;
     }
 
@@ -233,7 +233,7 @@ public class VStack<K, E> implements Queue<E> {
             throw new NullPointerException("null objects are not allowed");
         AddNodeAction<K, E> addAction = new AddNodeAction<K, E>(_key, e);
         try {
-            return _storeClient.applyUpdate(addAction);
+            return _storeClient.applyUpdate(addAction, 0L);
         } catch(IndexOutOfBoundsException ex) {
             // over-capacity
             return false;
@@ -301,7 +301,7 @@ public class VStack<K, E> implements Queue<E> {
         VListKey<K> key = new VListKey<K>(_key, id);
         UpdateElementById<K, E> updateElementAction = new UpdateElementById<K, E>(key, element);
 
-        if(!_storeClient.applyUpdate(updateElementAction))
+        if(!_storeClient.applyUpdate(updateElementAction, 0L))
             throw new ObsoleteVersionException("update failed");
 
         return updateElementAction.getResult();
@@ -311,7 +311,7 @@ public class VStack<K, E> implements Queue<E> {
         VListKey<K> key = new VListKey<K>(_key, id);
         UpdateElementById<K, E> updateElementAction = new UpdateElementById<K, E>(key, element);
 
-        if(!_storeClient.applyUpdate(updateElementAction))
+        if(!_storeClient.applyUpdate(updateElementAction, 0L))
             throw new ObsoleteVersionException("update failed");
 
         return updateElementAction.getResult();
@@ -342,7 +342,7 @@ public class VStack<K, E> implements Queue<E> {
      */
     Versioned<VListNode<E>> getListNode(int id) {
         VListKey<K> key = new VListKey<K>(_key, id);
-        Versioned<Map<String, Object>> resultMap = _storeClient.get(key.mapValue());
+        Versioned<Map<String, Object>> resultMap = _storeClient.get(key.mapValue(), 0L);
         if(resultMap == null)
             return null;
 

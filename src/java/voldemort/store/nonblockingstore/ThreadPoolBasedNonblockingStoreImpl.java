@@ -47,14 +47,17 @@ public class ThreadPoolBasedNonblockingStoreImpl implements NonblockingStore {
         this.innerStore = Utils.notNull(innerStore);
     }
 
+    @Override
     public void submitGetAllRequest(final Iterable<ByteArray> keys,
                                     final Map<ByteArray, byte[]> transforms,
                                     final NonblockingStoreCallback callback,
-                                    long timeoutMs) {
+                                    long timeoutMs,
+                                    final long rid) {
         submit(new StoreRequest<Map<ByteArray, List<Versioned<byte[]>>>>() {
 
+            @Override
             public Map<ByteArray, List<Versioned<byte[]>>> request(Store<ByteArray, byte[], byte[]> store) {
-                return innerStore.getAll(keys, transforms);
+                return innerStore.getAll(keys, transforms, rid);
             }
         },
                callback,
@@ -62,54 +65,66 @@ public class ThreadPoolBasedNonblockingStoreImpl implements NonblockingStore {
                "get all");
     }
 
+    @Override
     public void submitGetRequest(final ByteArray key,
                                  final byte[] transforms,
                                  NonblockingStoreCallback callback,
-                                 long timeoutMs) {
+                                 long timeoutMs,
+                                 final long rid) {
         submit(new StoreRequest<List<Versioned<byte[]>>>() {
 
+            @Override
             public List<Versioned<byte[]>> request(Store<ByteArray, byte[], byte[]> store) {
-                return innerStore.get(key, transforms);
+                return innerStore.get(key, transforms, rid);
             }
 
         }, callback, timeoutMs, "get");
     }
 
+    @Override
     public void submitGetVersionsRequest(final ByteArray key,
                                          NonblockingStoreCallback callback,
-                                         long timeoutMs) {
+                                         long timeoutMs,
+                                         final long rid) {
         submit(new StoreRequest<List<Version>>() {
 
+            @Override
             public List<Version> request(Store<ByteArray, byte[], byte[]> store) {
-                return innerStore.getVersions(key);
+                return innerStore.getVersions(key, rid);
             }
 
         }, callback, timeoutMs, "submit");
     }
 
+    @Override
     public void submitPutRequest(final ByteArray key,
                                  final Versioned<byte[]> value,
                                  final byte[] transforms,
                                  NonblockingStoreCallback callback,
-                                 long timeoutMs) {
+                                 long timeoutMs,
+                                 final long rid) {
         submit(new StoreRequest<Void>() {
 
+            @Override
             public Void request(Store<ByteArray, byte[], byte[]> store) {
-                innerStore.put(key, value, transforms);
+                innerStore.put(key, value, transforms, rid);
                 return null;
             }
 
         }, callback, timeoutMs, "put");
     }
 
+    @Override
     public void submitDeleteRequest(final ByteArray key,
                                     final Version version,
                                     NonblockingStoreCallback callback,
-                                    long timeoutMs) {
+                                    long timeoutMs,
+                                    final long rid) {
         submit(new StoreRequest<Boolean>() {
 
+            @Override
             public Boolean request(Store<ByteArray, byte[], byte[]> store) {
-                return innerStore.delete(key, version);
+                return innerStore.delete(key, version, rid);
             }
 
         }, callback, timeoutMs, "delete");
@@ -121,6 +136,7 @@ public class ThreadPoolBasedNonblockingStoreImpl implements NonblockingStore {
                         final String operationName) {
         executor.submit(new Runnable() {
 
+            @Override
             public void run() {
                 long start = System.nanoTime();
                 final long timeoutNs = timeoutMs * Time.NS_PER_MS;
@@ -165,6 +181,7 @@ public class ThreadPoolBasedNonblockingStoreImpl implements NonblockingStore {
         });
     }
 
+    @Override
     public void close() throws VoldemortException {
         innerStore.close();
     }

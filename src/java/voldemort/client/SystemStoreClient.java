@@ -67,18 +67,18 @@ public class SystemStoreClient<K, V> {
         }
     }
 
-    public Version putSysStore(K key, V value) {
+    public Version putSysStore(K key, V value, long rid) {
         Version version = null;
         try {
             if(logger.isDebugEnabled()) {
                 logger.debug("Invoking Put for key : " + key + " on store name : " + this.storeName);
             }
-            Versioned<V> versioned = getSysStore(key);
+            Versioned<V> versioned = getSysStore(key, rid);
             if(versioned == null)
                 versioned = Versioned.value(value, new VectorClock());
             else
                 versioned.setObject(value);
-            this.sysStore.put(key, versioned, null);
+            this.sysStore.put(key, versioned, null, rid);
             version = versioned.getVersion();
         } catch(Exception e) {
             if(logger.isDebugEnabled()) {
@@ -88,13 +88,13 @@ public class SystemStoreClient<K, V> {
         return version;
     }
 
-    public Version putSysStore(K key, Versioned<V> value) {
+    public Version putSysStore(K key, Versioned<V> value, long rid) {
         Version version = null;
         try {
             if(logger.isDebugEnabled()) {
                 logger.debug("Invoking Put for key : " + key + " on store name : " + this.storeName);
             }
-            this.sysStore.put(key, value, null);
+            this.sysStore.put(key, value, null, rid);
             version = value.getVersion();
         } catch(Exception e) {
             if(logger.isDebugEnabled()) {
@@ -105,18 +105,18 @@ public class SystemStoreClient<K, V> {
         return version;
     }
 
-    public boolean deleteSysStore(K key) {
+    public boolean deleteSysStore(K key, long rid) {
         try {
             if(logger.isDebugEnabled()) {
                 logger.debug("Invoking Delete for key : " + key + " on store name : "
                              + this.storeName);
             }
-            Versioned<V> versioned = getSysStore(key);
+            Versioned<V> versioned = getSysStore(key, rid);
             if(versioned == null) {
                 // Nothing to delete
                 return true;
             }
-            return this.sysStore.delete(key, versioned.getVersion());
+            return this.sysStore.delete(key, versioned.getVersion(), rid);
         } catch(Exception e) {
             if(logger.isDebugEnabled()) {
                 logger.debug("Exception caught during deleteSysStore: " + e);
@@ -126,11 +126,11 @@ public class SystemStoreClient<K, V> {
         }
     }
 
-    public Versioned<V> getSysStore(K key) {
+    public Versioned<V> getSysStore(K key, long rid) {
         logger.debug("Invoking Get for key : " + key + " on store name : " + this.storeName);
         Versioned<V> versioned = null;
         try {
-            List<Versioned<V>> items = this.sysStore.get(key, null);
+            List<Versioned<V>> items = this.sysStore.get(key, null, rid);
 
             if(items.size() == 1)
                 versioned = items.get(0);
@@ -152,11 +152,11 @@ public class SystemStoreClient<K, V> {
         return versioned;
     }
 
-    public V getValueSysStore(K key) {
+    public V getValueSysStore(K key, long rid) {
         V value = null;
         try {
             logger.debug("Invoking Get for key : " + key + " on store name : " + this.storeName);
-            Versioned<V> versioned = getSysStore(key);
+            Versioned<V> versioned = getSysStore(key, rid);
             if(versioned != null) {
                 logger.debug("Value for key : " + key + " = " + versioned.getValue()
                              + " on store name : " + this.storeName);

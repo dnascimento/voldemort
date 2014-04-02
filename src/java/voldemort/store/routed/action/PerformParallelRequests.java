@@ -70,8 +70,9 @@ public class PerformParallelRequests<V, PD extends BasicPipelineData<V>> extends
                                    long timeoutMs,
                                    Map<Integer, NonblockingStore> nonblockingStores,
                                    Event insufficientSuccessesEvent,
-                                   Event insufficientZonesEvent) {
-        super(pipelineData, completeEvent, key);
+                                   Event insufficientZonesEvent,
+                                   long rid) {
+        super(pipelineData, completeEvent, key, rid);
         this.failureDetector = failureDetector;
         this.preferred = preferred;
         this.required = required;
@@ -82,6 +83,7 @@ public class PerformParallelRequests<V, PD extends BasicPipelineData<V>> extends
         this.insufficientZonesEvent = insufficientZonesEvent;
     }
 
+    @Override
     public void execute(final Pipeline pipeline) {
         List<Node> nodes = pipelineData.getNodes();
         int attempts = Math.min(preferred, nodes.size());
@@ -100,6 +102,7 @@ public class PerformParallelRequests<V, PD extends BasicPipelineData<V>> extends
 
             NonblockingStoreCallback callback = new NonblockingStoreCallback() {
 
+                @Override
                 public void requestComplete(Object result, long requestTime) {
                     if(logger.isTraceEnabled())
                         logger.trace(pipeline.getOperation().getSimpleName()
@@ -145,9 +148,9 @@ public class PerformParallelRequests<V, PD extends BasicPipelineData<V>> extends
             NonblockingStore store = nonblockingStores.get(node.getId());
 
             if(pipeline.getOperation() == Operation.GET)
-                store.submitGetRequest(key, transforms, callback, timeoutMs);
+                store.submitGetRequest(key, transforms, callback, timeoutMs, rid);
             else if(pipeline.getOperation() == Operation.GET_VERSIONS)
-                store.submitGetVersionsRequest(key, callback, timeoutMs);
+                store.submitGetVersionsRequest(key, callback, timeoutMs, rid);
             else
                 throw new IllegalStateException(getClass().getName()
                                                 + " does not support pipeline operation "

@@ -77,7 +77,7 @@ public class ServerStoreVerifier implements StoreVerifier {
             }
         }
 
-        store.get(KEY, null);
+        store.get(KEY, null, 0L);
     }
 
     public void flushCachedStores() {

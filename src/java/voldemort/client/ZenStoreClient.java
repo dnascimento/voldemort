@@ -118,7 +118,9 @@ public class ZenStoreClient<K, V> extends DefaultStoreClient<K, V> {
         if(this.sysRepository.getClientRegistryStore() != null) {
             try {
                 Version version = this.sysRepository.getClientRegistryStore()
-                                                    .putSysStore(clientId, clientInfo.toString());
+                                                    .putSysStore(clientId,
+                                                                 clientInfo.toString(),
+                                                                 0L);
                 refresher = new ClientRegistryRefresher(this.sysRepository,
                                                         clientId,
                                                         clientInfo,

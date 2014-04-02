@@ -172,7 +172,7 @@ public class SerializingStorageEngine<K, V, T> extends SerializingStore<K, V, T>
     }
 
     @Override
-    public List<Versioned<V>> multiVersionPut(K key, List<Versioned<V>> values) {
+    public List<Versioned<V>> multiVersionPut(K key, List<Versioned<V>> values, long rid) {
         throw new UnsupportedOperationException("multiVersionPut is not supported for "
                                                 + this.getClass().getName());
     }

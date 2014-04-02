@@ -56,7 +56,7 @@ public abstract class ClientStoreVerifier implements StoreVerifier {
             }
         }
 
-        store.get(KEY, null);
+        store.get(KEY, null, 0L);
     }
 
     protected abstract Store<ByteArray, byte[], byte[]> getStoreInternal(Node node);

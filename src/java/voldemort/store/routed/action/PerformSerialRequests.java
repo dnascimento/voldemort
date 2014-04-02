@@ -57,8 +57,9 @@ public class PerformSerialRequests<V, PD extends BasicPipelineData<V>> extends
                                  int preferred,
                                  int required,
                                  StoreRequest<V> storeRequest,
-                                 Event insufficientSuccessesEvent) {
-        super(pipelineData, completeEvent, key);
+                                 Event insufficientSuccessesEvent,
+                                 long rid) {
+        super(pipelineData, completeEvent, key, rid);
         this.failureDetector = failureDetector;
         this.stores = stores;
         this.preferred = preferred;
@@ -81,6 +82,7 @@ public class PerformSerialRequests<V, PD extends BasicPipelineData<V>> extends
         }
     }
 
+    @Override
     public void execute(Pipeline pipeline) {
         List<Node> nodes = pipelineData.getNodes();
 

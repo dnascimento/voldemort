@@ -50,19 +50,22 @@ public class PerformParallelGetAllRequests
     private final Map<Integer, NonblockingStore> nonblockingStores;
 
     private final FailureDetector failureDetector;
+    private final long rid;
 
     public PerformParallelGetAllRequests(GetAllPipelineData pipelineData,
                                          Event completeEvent,
                                          FailureDetector failureDetector,
                                          long timeoutMs,
-                                         Map<Integer, NonblockingStore> nonblockingStores) {
+                                         Map<Integer, NonblockingStore> nonblockingStores,
+                                         long rid) {
         super(pipelineData, completeEvent);
         this.failureDetector = failureDetector;
         this.timeoutMs = timeoutMs;
         this.nonblockingStores = nonblockingStores;
+        this.rid = rid;
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
     public void execute(final Pipeline pipeline) {
         int attempts = pipelineData.getNodeToKeysMap().size();
         final Map<Integer, Response<Iterable<ByteArray>, Object>> responses = new ConcurrentHashMap<Integer, Response<Iterable<ByteArray>, Object>>();
@@ -80,6 +83,7 @@ public class PerformParallelGetAllRequests
 
             NonblockingStoreCallback callback = new NonblockingStoreCallback() {
 
+                @Override
                 public void requestComplete(Object result, long requestTime) {
                     if(logger.isTraceEnabled())
                         logger.trace(pipeline.getOperation().getSimpleName()
@@ -115,7 +119,7 @@ public class PerformParallelGetAllRequests
                              + " request on node " + node.getId());
 
             NonblockingStore store = nonblockingStores.get(node.getId());
-            store.submitGetAllRequest(keys, transforms, callback, timeoutMs);
+            store.submitGetAllRequest(keys, transforms, callback, timeoutMs, rid);
         }
 
         try {

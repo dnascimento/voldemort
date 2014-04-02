@@ -82,7 +82,7 @@ public class FullScanFetchEntriesRequestHandler extends FullScanFetchStreamReque
         // that would affect timing measurements of storage operations.
 
         if(isItemAccepted(key.get())) {
-            List<Versioned<byte[]>> values = storageEngine.get(key, null);
+            List<Versioned<byte[]>> values = storageEngine.get(key, null, 0L);
             reportStorageOpTime(startNs);
             throttler.maybeThrottle(key.length());
             for(Versioned<byte[]> value: values) {

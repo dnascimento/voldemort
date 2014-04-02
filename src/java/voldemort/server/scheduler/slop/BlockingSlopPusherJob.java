@@ -151,20 +151,21 @@ public class BlockingSlopPusherJob extends SlopPusherJob implements Runnable {
                                 store.put(slop.getKey(),
                                           new Versioned<byte[]>(slop.getValue(),
                                                                 versioned.getVersion()),
-                                          slop.getTransforms());
+                                          slop.getTransforms(),
+                                          0L);
                                 nBytes += slop.getValue().length
                                           + ((VectorClock) versioned.getVersion()).sizeInBytes()
                                           + 1;
 
                             } else if(slop.getOperation() == Operation.DELETE) {
                                 nBytes += ((VectorClock) versioned.getVersion()).sizeInBytes() + 1;
-                                store.delete(slop.getKey(), versioned.getVersion());
+                                store.delete(slop.getKey(), versioned.getVersion(), 0L);
                             } else {
                                 logger.error("Unknown slop operation: " + slop.getOperation());
                                 continue;
                             }
                             failureDetector.recordSuccess(node, deltaMs(startNs));
-                            slopStore.delete(slop.makeKey(), versioned.getVersion());
+                            slopStore.delete(slop.makeKey(), versioned.getVersion(), 0L);
 
                             slopsPushed++;
                             // Increment succeeded
@@ -177,7 +178,7 @@ public class BlockingSlopPusherJob extends SlopPusherJob implements Runnable {
                         } catch(ObsoleteVersionException e) {
 
                             // okay it is old, just delete it
-                            slopStore.delete(slop.makeKey(), versioned.getVersion());
+                            slopStore.delete(slop.makeKey(), versioned.getVersion(), 0L);
                             slopsPushed++;
 
                             // Increment succeeded

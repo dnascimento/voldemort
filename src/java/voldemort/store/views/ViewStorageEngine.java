@@ -104,13 +104,14 @@ public class ViewStorageEngine extends AbstractStorageEngine<ByteArray, byte[], 
     }
 
     @Override
-    public boolean delete(ByteArray key, Version version) throws VoldemortException {
-        return target.delete(key, version);
+    public boolean delete(ByteArray key, Version version, long rid) throws VoldemortException {
+        return target.delete(key, version, rid);
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms) throws VoldemortException {
-        List<Versioned<byte[]>> values = target.get(key, null);
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
+            throws VoldemortException {
+        List<Versioned<byte[]>> values = target.get(key, null, rid);
 
         List<Versioned<byte[]>> results = new ArrayList<Versioned<byte[]>>();
 
@@ -130,18 +131,18 @@ public class ViewStorageEngine extends AbstractStorageEngine<ByteArray, byte[], 
 
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
-                                                          Map<ByteArray, byte[]> transforms)
-            throws VoldemortException {
-        return StoreUtils.getAll(this, keys, transforms);
+                                                          Map<ByteArray, byte[]> transforms,
+                                                          long rid) throws VoldemortException {
+        return StoreUtils.getAll(this, keys, transforms, rid);
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key) {
-        return target.getVersions(key);
+    public List<Version> getVersions(ByteArray key, long rid) {
+        return target.getVersions(key, rid);
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, long rid)
             throws VoldemortException {
         if(valueCompressionStrategy != null)
             value = inflateValue(value);
@@ -151,7 +152,7 @@ public class ViewStorageEngine extends AbstractStorageEngine<ByteArray, byte[], 
                                                    value.getVersion());
         if(valueCompressionStrategy != null)
             result = deflateValue(result);
-        target.put(key, result, null);
+        target.put(key, result, null, rid);
     }
 
     @Override
@@ -179,7 +180,7 @@ public class ViewStorageEngine extends AbstractStorageEngine<ByteArray, byte[], 
         ViewIterator iterator = new ViewIterator(target.entries());
         while(iterator.hasNext()) {
             Pair<ByteArray, Versioned<byte[]>> pair = iterator.next();
-            target.delete(pair.getFirst(), pair.getSecond().getVersion());
+            target.delete(pair.getFirst(), pair.getSecond().getVersion(), 0L);
         }
     }
 

@@ -45,11 +45,11 @@ public class VersionIncrementingStore<K, V, T> extends DelegatingStore<K, V, T> 
     }
 
     @Override
-    public void put(K key, Versioned<V> value, T transforms) throws VoldemortException {
+    public void put(K key, Versioned<V> value, T transforms, long rid) throws VoldemortException {
         value = value.cloneVersioned();
         VectorClock clock = (VectorClock) value.getVersion();
         clock.incrementVersion(nodeId, time.getMilliseconds());
-        super.put(key, value, transforms);
+        super.put(key, value, transforms, rid);
     }
 
     @Override

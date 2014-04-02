@@ -675,7 +675,7 @@ public class MetadataStore extends AbstractStorageEngine<ByteArray, byte[], byte
         readLock.lock();
         try {
             StoreUtils.assertValidKeys(keys);
-            return StoreUtils.getAll(this, keys, transforms);
+            return StoreUtils.getAll(this, keys, transforms, rid);
         } finally {
             readLock.unlock();
         }

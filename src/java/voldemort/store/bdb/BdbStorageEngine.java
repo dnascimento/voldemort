@@ -276,7 +276,7 @@ public class BdbStorageEngine extends AbstractStorageEngine<ByteArray, byte[], b
         if(logger.isTraceEnabled())
             startTimeNs = System.nanoTime();
         try {
-            results = StoreUtils.getAll(this, keys, transforms);
+            results = StoreUtils.getAll(this, keys, transforms, rid);
         } catch(PersistenceFailureException pfe) {
             throw pfe;
         } finally {

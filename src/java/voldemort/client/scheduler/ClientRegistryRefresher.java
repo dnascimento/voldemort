@@ -64,7 +64,7 @@ public class ClientRegistryRefresher implements Runnable {
                  * update keeping failing when strange situations occur.
                  */
                 lastVersion = this.systemStoreRepository.getClientRegistryStore()
-                                                        .getSysStore(clientId)
+                                                        .getSysStore(clientId, 0L)
                                                         .getVersion();
                 hadConflict = false;
             }
@@ -74,10 +74,11 @@ public class ClientRegistryRefresher implements Runnable {
             lastVersion = this.systemStoreRepository.getClientRegistryStore()
                                                     .putSysStore(clientId,
                                                                  new Versioned<String>(clientInfo.toString(),
-                                                                                       lastVersion));
+                                                                                       lastVersion),
+                                                                 0L);
         } catch(ObsoleteVersionException e) {
             Versioned<String> existingValue = this.systemStoreRepository.getClientRegistryStore()
-                                                                        .getSysStore(clientId);
+                                                                        .getSysStore(clientId, 0L);
             logger.warn("Multiple clients are updating the same client registry entry");
             logger.warn("  current value: " + clientInfo + " " + lastVersion);
             logger.warn("  existing value: " + existingValue.getValue() + " "

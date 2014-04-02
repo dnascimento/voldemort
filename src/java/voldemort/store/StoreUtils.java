@@ -65,10 +65,14 @@ public class StoreUtils {
     /**
      * Implements get by delegating to getAll.
      */
-    public static <K, V, T> List<Versioned<V>> get(Store<K, V, T> storageEngine, K key, T transform) {
+    public static <K, V, T> List<Versioned<V>> get(Store<K, V, T> storageEngine,
+                                                   K key,
+                                                   T transform,
+                                                   long rid) {
         Map<K, List<Versioned<V>>> result = storageEngine.getAll(Collections.singleton(key),
                                                                  Collections.singletonMap(key,
-                                                                                          transform));
+                                                                                          transform),
+                                                                 rid);
         if(result.size() > 0)
             return result.get(key);
         else
@@ -80,12 +84,14 @@ public class StoreUtils {
      */
     public static <K, V, T> Map<K, List<Versioned<V>>> getAll(Store<K, V, T> storageEngine,
                                                               Iterable<K> keys,
-                                                              Map<K, T> transforms) {
+                                                              Map<K, T> transforms,
+                                                              long rid) {
         Map<K, List<Versioned<V>>> result = newEmptyHashMap(keys);
         for(K key: keys) {
             List<Versioned<V>> value = storageEngine.get(key,
                                                          transforms != null ? transforms.get(key)
-                                                                           : null);
+                                                                           : null,
+                                                         rid);
             if(!value.isEmpty())
                 result.put(key, value);
         }
@@ -146,14 +152,16 @@ public class StoreUtils {
     }
 
     /**
-     * Check if the the nodeId is present in the cluster managed by the metadata store
+     * Check if the the nodeId is present in the cluster managed by the metadata
+     * store
      * or throw an exception.
-     *
+     * 
      * @param nodeId The nodeId to check existence of
      */
     public static void assertValidNode(MetadataStore metadataStore, Integer nodeId) {
         if(!metadataStore.getCluster().hasNodeWithId(nodeId)) {
-            throw new InvalidMetadataException("NodeId " + nodeId + " is not or no longer in this cluster");
+            throw new InvalidMetadataException("NodeId " + nodeId
+                                               + " is not or no longer in this cluster");
         }
     }
 

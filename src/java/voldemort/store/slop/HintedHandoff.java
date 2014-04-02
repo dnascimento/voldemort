@@ -190,7 +190,7 @@ public class HintedHandoff {
 
             }
         };
-        nonblockingStore.submitPutRequest(slopKey, slopVersioned, null, callback, timeoutMs);
+        nonblockingStore.submitPutRequest(slopKey, slopVersioned, null, callback, timeoutMs, 0L);
     }
 
     /**
@@ -223,7 +223,7 @@ public class HintedHandoff {
                                      + failedNode + " to node " + node);
 
                     // No transform needs to applied to the slop
-                    slopStore.put(slop.makeKey(), new Versioned<Slop>(slop, version), null);
+                    slopStore.put(slop.makeKey(), new Versioned<Slop>(slop, version), null, 0L);
 
                     persisted = true;
                     failureDetector.recordSuccess(node, (System.nanoTime() - startNs)

@@ -157,7 +157,7 @@ public class VoldemortAvroClientShell {
                         continue;
                     }
 
-                    System.out.println("Value - " + client.get(key));
+                    System.out.println("Value - " + client.get(key, 0L));
                 } else if(line.toLowerCase().startsWith("put")) {
 
                     String keyString = null;
@@ -194,7 +194,7 @@ public class VoldemortAvroClientShell {
                         continue;
                     }
 
-                    System.out.println("Put - " + client.put(key, value));
+                    System.out.println("Put - " + client.put(key, value, 0L));
                 } else if(line.startsWith("quit") || line.startsWith("exit")) {
                     System.out.println("k k thx bye.");
                     System.exit(0);

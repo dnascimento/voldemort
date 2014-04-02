@@ -22,7 +22,6 @@ public class AddNodeAction<K, E> extends UpdateAction<Map<String, Object>, Map<S
     private final K _key;
     private final E _value;
 
-    @SuppressWarnings("unchecked")
     private StoreClient<Map<String, Object>, Map<String, Object>> _storeClient = null;
     private Map<Integer, Map<String, Object>> _rollback = new HashMap<Integer, Map<String, Object>>();
 
@@ -38,7 +37,7 @@ public class AddNodeAction<K, E> extends UpdateAction<Map<String, Object>, Map<S
 
         for(Entry<Integer, Map<String, Object>> entry: _rollback.entrySet()) {
             VListKey<K> key = new VListKey<K>(_key, entry.getKey());
-            _storeClient.put(key.mapValue(), entry.getValue());
+            _storeClient.put(key.mapValue(), entry.getValue(), 0L);
         }
     }
 
@@ -52,7 +51,7 @@ public class AddNodeAction<K, E> extends UpdateAction<Map<String, Object>, Map<S
     public void update(StoreClient<Map<String, Object>, Map<String, Object>> storeClient) {
         _storeClient = storeClient;
         VListKey<K> newKey = new VListKey<K>(_key, 0);
-        Versioned<Map<String, Object>> firstNodeMap = storeClient.get(newKey.mapValue());
+        Versioned<Map<String, Object>> firstNodeMap = storeClient.get(newKey.mapValue(), 0L);
         // adding first node of the list
         if(firstNodeMap == null) {
             Versioned<Map<String, Object>> newNode = new Versioned<Map<String, Object>>((new VListNode<E>(_value,
@@ -62,7 +61,7 @@ public class AddNodeAction<K, E> extends UpdateAction<Map<String, Object>, Map<S
                                                                                                           true)).mapValue());
             // throws ObsoleteVersionException if another process has created a
             // new node already
-            storeClient.put(newKey.mapValue(), newNode);
+            storeClient.put(newKey.mapValue(), newNode, 0L);
         } else // add to front of list
         {
             Versioned<VListNode<E>> firstNode = new Versioned<VListNode<E>>(VListNode.<E> valueOf(firstNodeMap.getValue()),
@@ -76,7 +75,8 @@ public class AddNodeAction<K, E> extends UpdateAction<Map<String, Object>, Map<S
             Map<String, Object> tmpMap = new HashMap<String, Object>(firstNodeMap.getValue());
             tmpMap.put(VListNode.STABLE, false);
             storeClient.put(newKey.mapValue(),
-                            new Versioned<Map<String, Object>>(tmpMap, firstNodeMap.getVersion()));
+                            new Versioned<Map<String, Object>>(tmpMap, firstNodeMap.getVersion()),
+                            0L);
             _rollback.put(0, firstNodeMap.getValue());
 
             int newId;
@@ -88,7 +88,7 @@ public class AddNodeAction<K, E> extends UpdateAction<Map<String, Object>, Map<S
             Versioned<VListNode<E>> nextNode = null;
             VListKey<K> nextKey = new VListKey<K>(_key, nextId);
             if(nextId != VStack.NULL_ID) {
-                Versioned<Map<String, Object>> nextNodeMap = storeClient.get(nextKey.mapValue());
+                Versioned<Map<String, Object>> nextNodeMap = storeClient.get(nextKey.mapValue(), 0L);
                 if(nextNodeMap == null)
                     throw new ObsoleteVersionException("possible concurrent modification");
                 nextNode = new Versioned<VListNode<E>>(VListNode.<E> valueOf(nextNodeMap.getValue()),
@@ -101,14 +101,15 @@ public class AddNodeAction<K, E> extends UpdateAction<Map<String, Object>, Map<S
                 tmpMap = new HashMap<String, Object>(nextNode.getValue().mapValue());
                 tmpMap.put(VListNode.STABLE, false);
                 storeClient.put(nextKey.mapValue(),
-                                new Versioned<Map<String, Object>>(tmpMap, nextNode.getVersion()));
+                                new Versioned<Map<String, Object>>(tmpMap, nextNode.getVersion()),
+                                0L);
                 _rollback.put(nextId, nextNode.getValue().mapValue());
             }
 
             // insert new node
             Map<String, Object> newNode = (new VListNode<E>(_value, 0, VStack.NULL_ID, newId, true)).mapValue();
             // don't need to specify versioned because node is already "locked"
-            storeClient.put(newKey.mapValue(), newNode);
+            storeClient.put(newKey.mapValue(), newNode, 0L);
 
             // move first node to next index
             VListKey<K> firstKey = new VListKey<K>(_key, newId);
@@ -120,11 +121,11 @@ public class AddNodeAction<K, E> extends UpdateAction<Map<String, Object>, Map<S
                                                                               .getNextId(),
                                                                      true));
             // don't need to specify versioned because node is already "locked"
-            storeClient.put(firstKey.mapValue(), firstNode.getValue().mapValue());
+            storeClient.put(firstKey.mapValue(), firstNode.getValue().mapValue(), 0L);
 
             // redefine previous pointer on next node
             if(nextNode != null) {
-                if(!storeClient.applyUpdate(new UpdateNextNode<K, E>(nextNode, nextKey, newId)))
+                if(!storeClient.applyUpdate(new UpdateNextNode<K, E>(nextNode, nextKey, newId), 0L))
                     throw new ObsoleteVersionException("unable to update node");
             }
         }
@@ -160,7 +161,7 @@ public class AddNodeAction<K, E> extends UpdateAction<Map<String, Object>, Map<S
         public void update(StoreClient<Map<String, Object>, Map<String, Object>> storeClient) {
             if(numCalls > 0) {
                 // TODO jko maybe delete this if unnecessary
-                Versioned<Map<String, Object>> nextNodeMap = storeClient.get(_key.mapValue());
+                Versioned<Map<String, Object>> nextNodeMap = storeClient.get(_key.mapValue(), 0L);
                 if(nextNodeMap == null)
                     throw new ObsoleteVersionException("possible concurrent modification");
                 _listNode = new Versioned<VListNode<E>>(VListNode.<E> valueOf(nextNodeMap.getValue()),
@@ -174,7 +175,7 @@ public class AddNodeAction<K, E> extends UpdateAction<Map<String, Object>, Map<S
                                                  nodeValue.getNextId(),
                                                  true));
             Map<String, Object> nextNodeMap = _listNode.getValue().mapValue();
-            storeClient.put(_key.mapValue(), nextNodeMap);
+            storeClient.put(_key.mapValue(), nextNodeMap, 0L);
 
             numCalls++;
         }

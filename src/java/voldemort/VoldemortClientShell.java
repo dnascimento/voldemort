@@ -252,7 +252,7 @@ public class VoldemortClientShell {
         Object key = parseKey(putArgStr, parsePos);
         putArgStr = putArgStr.substring(parsePos.intValue());
         Object value = parseValue(putArgStr, parsePos);
-        client.put(key, value);
+        client.put(key, value, 0L);
     }
 
     /**
@@ -273,7 +273,7 @@ public class VoldemortClientShell {
             getAllArgStr = getAllArgStr.substring(parsePos.intValue());
         }
 
-        Map<Object, Versioned<Object>> vals = client.getAll(keys);
+        Map<Object, Versioned<Object>> vals = client.getAll(keys, 0L);
         if(vals.size() > 0) {
             for(Map.Entry<Object, Versioned<Object>> entry: vals.entrySet()) {
                 commandOutput.print(entry.getKey());
@@ -288,13 +288,13 @@ public class VoldemortClientShell {
     protected void processGet(String getArgStr) {
         MutableInt parsePos = new MutableInt(0);
         Object key = parseKey(getArgStr, parsePos);
-        printVersioned(client.get(key));
+        printVersioned(client.get(key, 0L));
     }
 
     protected void processDelete(String deleteArgStr) {
         MutableInt parsePos = new MutableInt(0);
         Object key = parseKey(deleteArgStr, parsePos);
-        client.delete(key);
+        client.delete(key, 0L);
     }
 
     protected void processCommands(boolean printCommands) throws IOException {

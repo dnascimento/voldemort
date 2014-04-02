@@ -77,7 +77,7 @@ public class AsyncProxyPutTask implements Runnable {
             Store<ByteArray, byte[], byte[]> socketStore = redirectingStore.getRedirectingSocketStore(redirectingStore.getName(),
                                                                                                       destinationNode);
 
-            socketStore.put(key, value, transforms);
+            socketStore.put(key, value, transforms, 0L);
             redirectingStore.recordSuccess(proxyNode, startNs);
             redirectingStore.reportProxyPutSuccess();
             if(logger.isTraceEnabled()) {

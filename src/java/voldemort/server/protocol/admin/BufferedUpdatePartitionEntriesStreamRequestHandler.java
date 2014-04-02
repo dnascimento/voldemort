@@ -62,7 +62,8 @@ class BufferedUpdatePartitionEntriesStreamRequestHandler extends
      */
     private void writeBufferedValsToStorage() {
         List<Versioned<byte[]>> obsoleteVals = storageEngine.multiVersionPut(currBufferedKey,
-                                                                             currBufferedVals);
+                                                                             currBufferedVals,
+                                                                             0L);
         // log Obsolete versions in debug mode
         if(logger.isDebugEnabled() && obsoleteVals.size() > 0) {
             logger.debug("updateEntries (Streaming multi-version-put) rejected these versions as obsolete : "
@@ -100,7 +101,8 @@ class BufferedUpdatePartitionEntriesStreamRequestHandler extends
     }
 
     @Override
-    protected void processEntry(ByteArray key, Versioned<byte[]> value) throws IOException {
+    protected void processEntry(ByteArray key, Versioned<byte[]> value, long rid)
+            throws IOException {
         // Check if the current key is same as the one before.
         if(currBufferedKey != null && !key.equals(currBufferedKey)) {
             // if not, write buffered values for the previous key to storage

@@ -168,7 +168,7 @@ public interface StoreClient<K, V> {
      * @return true if the action is successfully applied, false if the 3
      *         attempts all result in ObsoleteVersionException
      */
-    public boolean applyUpdate(UpdateAction<K, V> action);
+    public boolean applyUpdate(UpdateAction<K, V> action, long rid);
 
     /**
      * Apply the given action repeatedly until no ObsoleteVersionException is
@@ -179,7 +179,7 @@ public interface StoreClient<K, V> {
      * @return true if the action is successfully applied, false if maxTries
      *         failed attempts have been made
      */
-    public boolean applyUpdate(UpdateAction<K, V> action, int maxTries);
+    public boolean applyUpdate(UpdateAction<K, V> action, int maxTries, long rid);
 
     /**
      * Delete any version of the given key which equal to or less than the

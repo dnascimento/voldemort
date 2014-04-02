@@ -117,9 +117,9 @@ public class PerformSerialGetAllRequests
                     Store<ByteArray, byte[], byte[]> store = stores.get(node.getId());
                     List<Versioned<byte[]>> values;
                     if(transforms == null)
-                        values = store.get(key, null);
+                        values = store.get(key, null, 0L);
                     else
-                        values = store.get(key, transforms.get(key));
+                        values = store.get(key, transforms.get(key), 0L);
 
                     if(values.size() != 0) {
                         if(result.get(key) == null)

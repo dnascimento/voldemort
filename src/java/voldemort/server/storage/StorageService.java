@@ -448,7 +448,7 @@ public class StorageService extends AbstractService {
 
         try {
             ByteArray metadataVersionsKey = new ByteArray(VERSIONS_METADATA_STORE.getBytes());
-            List<Versioned<byte[]>> versionList = versionStore.get(metadataVersionsKey, null);
+            List<Versioned<byte[]>> versionList = versionStore.get(metadataVersionsKey, null, 0L);
             VectorClock newClock = null;
 
             if(versionList != null && versionList.size() > 0) {
@@ -485,7 +485,8 @@ public class StorageService extends AbstractService {
             }
             versionStore.put(metadataVersionsKey,
                              new Versioned<byte[]>(finalVersionList.toString().getBytes(), newClock),
-                             null);
+                             null,
+                             0L);
 
         } catch(Exception e) {
             e.printStackTrace();
