@@ -56,6 +56,7 @@ public class BannagePeriodFailureDetector extends AbstractFailureDetector {
         super(failureDetectorConfig);
     }
 
+    @Override
     public boolean isAvailable(Node node) {
         checkNodeArg(node);
 
@@ -84,11 +85,13 @@ public class BannagePeriodFailureDetector extends AbstractFailureDetector {
         }
     }
 
+    @Override
     public void recordException(Node node, long requestTime, UnreachableStoreException e) {
         checkArgs(node, requestTime);
         setUnavailable(node, e);
     }
 
+    @Override
     public void recordSuccess(Node node, long requestTime) {
         checkArgs(node, requestTime);
         setAvailable(node);

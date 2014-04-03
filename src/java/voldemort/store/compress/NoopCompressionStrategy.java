@@ -9,14 +9,17 @@ import java.io.IOException;
  */
 public class NoopCompressionStrategy implements CompressionStrategy {
 
+    @Override
     public byte[] deflate(byte[] data) throws IOException {
         return data;
     }
 
+    @Override
     public byte[] inflate(byte[] data) throws IOException {
         return data;
     }
 
+    @Override
     public String getType() {
         return "noop";
     }

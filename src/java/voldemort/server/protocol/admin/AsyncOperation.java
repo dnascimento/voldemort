@@ -27,6 +27,7 @@ public abstract class AsyncOperation implements Runnable {
 
     }
 
+    @Override
     public void run() {
         updateStatus("Started " + getStatus());
         try {

@@ -59,6 +59,7 @@ public class ReadOnlyStorageConfiguration implements StorageConfiguration {
         this.enforceMlock = config.isUseMlock();
     }
 
+    @Override
     public void close() {
         MBeanServer server = ManagementFactory.getPlatformMBeanServer();
         for(ObjectName name: registeredBeans)
@@ -69,6 +70,7 @@ public class ReadOnlyStorageConfiguration implements StorageConfiguration {
         this.routingStrategy = routingStrategy;
     }
 
+    @Override
     public StorageEngine<ByteArray, byte[], byte[]> getStore(StoreDefinition storeDef,
                                                              RoutingStrategy strategy) {
         this.setRoutingStrategy(strategy);
@@ -91,10 +93,12 @@ public class ReadOnlyStorageConfiguration implements StorageConfiguration {
         return store;
     }
 
+    @Override
     public String getType() {
         return TYPE_NAME;
     }
 
+    @Override
     public void update(StoreDefinition storeDef) {
         throw new VoldemortException("Storage config updates not permitted for "
                                      + this.getClass().getCanonicalName());

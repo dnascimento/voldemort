@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src/java"/>
-	<classpathentry kind="src" path="contrib/hadoop-store-builder/src/java"/>
-	<classpathentry kind="src" path="example/java"/>
+	<classpathentry kind="src" path="test/unit"/>
+	<classpathentry kind="src" path="contrib/ec2-testing/test"/>
 	<classpathentry kind="src" path="contrib/krati/src/java"/>
-	<classpathentry kind="src" path="contrib/collections/src/java"/>
+	<classpathentry kind="src" path="contrib/restclient/test"/>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry kind="src" path="contrib/ec2-testing/resources"/>
 	<classpathentry kind="src" path="contrib/restclient/src/java"/>
+	<classpathentry kind="src" path="test/undo"/>
+	<classpathentry kind="src" path="test/common"/>
+	<classpathentry kind="src" path="contrib/krati/test"/>
+	<classpathentry kind="src" path="contrib/collections/test"/>
+	<classpathentry kind="src" path="contrib/hadoop-store-builder/src/java"/>
+	<classpathentry kind="src" path="contrib/hadoop-store-builder/test"/>
+	<classpathentry kind="src" path="test/long"/>
+	<classpathentry kind="src" path="contrib/collections/src/java"/>
+	<classpathentry kind="src" path="test/integration"/>
+	<classpathentry kind="src" path="contrib/ec2-testing/src/java"/>
 	<classpathentry kind="lib" path="lib/catalina-ant.jar"/>
 	<classpathentry kind="lib" path="lib/commons-codec-1.4.jar"/>
 	<classpathentry kind="lib" path="lib/commons-dbcp-1.2.2.jar"/>
@@ -57,5 +68,8 @@
 	<classpathentry kind="var" path="M2_REPO/com/google/protobuf/protobuf-java/2.5.0/protobuf-java-2.5.0.jar" sourcepath="M2_REPO/com/google/protobuf/protobuf-java/2.5.0/protobuf-java-2.5.0-sources.jar"/>
 	<classpathentry kind="lib" path="lib/protobuf-java-2.5.0.jar"/>
 	<classpathentry kind="lib" path="lib/guava-16.0.1.jar" sourcepath="/Users/darionascimento/.m2/repository/com/google/guava/guava/16.0.1/guava-16.0.1-sources.jar"/>
+	<classpathentry kind="lib" path="contrib/ec2-testing/lib/httpclient-4.0.1.jar"/>
+	<classpathentry kind="lib" path="contrib/ec2-testing/lib/httpcore-4.0.1.jar"/>
+	<classpathentry kind="lib" path="contrib/ec2-testing/lib/typica.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

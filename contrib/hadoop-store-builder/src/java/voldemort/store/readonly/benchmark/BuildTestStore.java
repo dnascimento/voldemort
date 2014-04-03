@@ -49,6 +49,7 @@ public class BuildTestStore extends Configured implements Tool {
         System.exit(res);
     }
 
+    @Override
     public int run(String[] args) throws Exception {
         if(args.length != 5)
             Utils.croak("Expected arguments store_name config_dir temp_dir input_path output_path");

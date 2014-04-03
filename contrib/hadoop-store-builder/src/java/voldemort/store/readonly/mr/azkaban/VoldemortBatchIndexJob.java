@@ -212,6 +212,7 @@ public class VoldemortBatchIndexJob extends AbstractHadoopJob {
         private int _checkPercent;
         private int _version;
 
+        @Override
         public void map(BytesWritable key,
                         BytesWritable value,
                         OutputCollector<BytesWritable, BytesWritable> output,
@@ -269,6 +270,7 @@ public class VoldemortBatchIndexJob extends AbstractHadoopJob {
             }
         }
 
+        @Override
         public void configure(JobConf conf) {
             Props props = HadoopUtils.getPropsFromJob(conf);
 
@@ -338,6 +340,7 @@ public class VoldemortBatchIndexJob extends AbstractHadoopJob {
          * Reduce should get sorted MD5 keys here with a single value (appended
          * in begining with 4 bits of nodeId)
          */
+        @Override
         public void reduce(BytesWritable key,
                            Iterator<BytesWritable> values,
                            OutputCollector<Text, Text> output,
@@ -380,6 +383,7 @@ public class VoldemortBatchIndexJob extends AbstractHadoopJob {
 
         }
 
+        @Override
         public void configure(JobConf job) {
             Props props = HadoopUtils.getPropsFromJob(job);
 
@@ -404,6 +408,7 @@ public class VoldemortBatchIndexJob extends AbstractHadoopJob {
             }
         }
 
+        @Override
         public void close() throws IOException {
 
             _indexFileStream.close();

@@ -21,6 +21,7 @@ public class GzipCompressionStrategy extends StreamCompressionStrategy {
         return new GZIPInputStream(underlying);
     }
 
+    @Override
     public String getType() {
         return "gzip";
     }

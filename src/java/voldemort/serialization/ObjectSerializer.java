@@ -37,6 +37,7 @@ public class ObjectSerializer<T> implements Serializer<T> {
      * @param object The object to be serialized
      * @return The bytes created from serializing the object
      */
+    @Override
     public byte[] toBytes(T object) {
         try {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -54,6 +55,7 @@ public class ObjectSerializer<T> implements Serializer<T> {
      * @param bytes The bytes to construct the object from
      * @return The object constructed
      */
+    @Override
     @SuppressWarnings("unchecked")
     public T toObject(byte[] bytes) {
         try {

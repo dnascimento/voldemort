@@ -65,6 +65,7 @@ public class AvroSpecificSerializer<T extends SpecificRecord> implements Seriali
         }
     }
 
+    @Override
     public byte[] toBytes(T object) {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         Encoder encoder = new BinaryEncoder(output);
@@ -81,6 +82,7 @@ public class AvroSpecificSerializer<T extends SpecificRecord> implements Seriali
         return output.toByteArray();
     }
 
+    @Override
     public T toObject(byte[] bytes) {
         Decoder decoder = DecoderFactory.defaultFactory().createBinaryDecoder(bytes, null);
         SpecificDatumReader<T> reader = null;

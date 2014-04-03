@@ -41,6 +41,7 @@ public class VoldemortServletContextListener implements ServletContextListener {
 
     private static final Logger logger = Logger.getLogger(VoldemortServletContextListener.class.getName());
 
+    @Override
     public void contextDestroyed(ServletContextEvent event) {
         logger.info("Calling application shutdown...");
         VoldemortServer server = (VoldemortServer) event.getServletContext()
@@ -53,6 +54,7 @@ public class VoldemortServletContextListener implements ServletContextListener {
         event.getServletContext().removeAttribute(VELOCITY_ENGINE_KEY);
     }
 
+    @Override
     public void contextInitialized(ServletContextEvent event) {
         try {
             logger.info("Creating application...");

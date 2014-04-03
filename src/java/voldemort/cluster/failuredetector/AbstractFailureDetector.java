@@ -71,6 +71,7 @@ public abstract class AbstractFailureDetector implements FailureDetector {
         return nodeStatus;
     }
 
+    @Override
     public void addFailureDetectorListener(FailureDetectorListener failureDetectorListener) {
         if(failureDetectorListener == null)
             throw new IllegalArgumentException("FailureDetectorListener must be non-null");
@@ -78,6 +79,7 @@ public abstract class AbstractFailureDetector implements FailureDetector {
         listeners.put(failureDetectorListener, failureDetectorListener);
     }
 
+    @Override
     public void removeFailureDetectorListener(FailureDetectorListener failureDetectorListener) {
         if(failureDetectorListener == null)
             throw new IllegalArgumentException("FailureDetectorListener must be non-null");
@@ -85,6 +87,7 @@ public abstract class AbstractFailureDetector implements FailureDetector {
         listeners.remove(failureDetectorListener);
     }
 
+    @Override
     public FailureDetectorConfig getConfig() {
         return failureDetectorConfig;
     }
@@ -113,6 +116,7 @@ public abstract class AbstractFailureDetector implements FailureDetector {
         return StringUtils.join(list, ",");
     }
 
+    @Override
     @JmxGetter(name = "availableNodeCount", description = "The number of available nodes")
     public int getAvailableNodeCount() {
         int available = 0;
@@ -125,11 +129,13 @@ public abstract class AbstractFailureDetector implements FailureDetector {
         return available;
     }
 
+    @Override
     @JmxGetter(name = "nodeCount", description = "The number of total nodes")
     public int getNodeCount() {
         return getConfig().getCluster().getNodes().size();
     }
 
+    @Override
     public void waitForAvailability(Node node) throws InterruptedException {
         checkNodeArg(node);
         NodeStatus nodeStatus = getNodeStatus(node);
@@ -140,6 +146,7 @@ public abstract class AbstractFailureDetector implements FailureDetector {
         }
     }
 
+    @Override
     public long getLastChecked(Node node) {
         checkNodeArg(node);
         NodeStatus nodeStatus = getNodeStatus(node);
@@ -149,6 +156,7 @@ public abstract class AbstractFailureDetector implements FailureDetector {
         }
     }
 
+    @Override
     public void destroy() {}
 
     protected void setAvailable(Node node) {

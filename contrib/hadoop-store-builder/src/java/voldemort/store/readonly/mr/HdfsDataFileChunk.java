@@ -33,6 +33,7 @@ public class HdfsDataFileChunk implements DataFileChunk {
         this.fileStream = fs.open(dataFile.getPath());
     }
 
+    @Override
     public int read(ByteBuffer buffer, long currentOffset) throws IOException {
         byte[] bufferByte = new byte[buffer.capacity()];
         this.fileStream.readFully(currentOffset, bufferByte);

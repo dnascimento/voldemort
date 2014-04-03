@@ -72,6 +72,7 @@ public abstract class AbstractHadoopStoreBuilderMapper<K, V> extends
      * followed by serialized value returned by makeValue() OR if we have
      * setKeys flag on the serialized key and serialized value
      */
+    @Override
     public void map(K key,
                     V value,
                     OutputCollector<BytesWritable, BytesWritable> output,

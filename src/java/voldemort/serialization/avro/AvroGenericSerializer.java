@@ -49,6 +49,7 @@ public class AvroGenericSerializer implements Serializer<Object> {
         typeDef = Schema.parse(schema);
     }
 
+    @Override
     public byte[] toBytes(Object object) {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         Encoder encoder = new BinaryEncoder(output);
@@ -65,6 +66,7 @@ public class AvroGenericSerializer implements Serializer<Object> {
         return output.toByteArray();
     }
 
+    @Override
     public Object toObject(byte[] bytes) {
         Decoder decoder = DecoderFactory.defaultFactory().createBinaryDecoder(bytes, null);
         GenericDatumReader<Object> reader = null;

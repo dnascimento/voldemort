@@ -33,8 +33,10 @@ public class ViewStorageConfiguration implements StorageConfiguration {
         this.storeRepo = repo;
     }
 
+    @Override
     public void close() {}
 
+    @Override
     public StorageEngine<ByteArray, byte[], byte[]> getStore(StoreDefinition storeDef,
                                                              RoutingStrategy strategy) {
         String name = storeDef.getName();
@@ -71,6 +73,7 @@ public class ViewStorageConfiguration implements StorageConfiguration {
                                      view);
     }
 
+    @Override
     public String getType() {
         return TYPE_NAME;
     }
@@ -89,6 +92,7 @@ public class ViewStorageConfiguration implements StorageConfiguration {
         return (View<?, ?, ?, ?>) ReflectUtils.callConstructor(viewClass, new Object[] {});
     }
 
+    @Override
     public void update(StoreDefinition storeDef) {
         throw new UnsupportedViewOperationException("Storage config updates not permitted for "
                                                     + this.getClass().getCanonicalName());

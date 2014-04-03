@@ -80,6 +80,7 @@ public class ConsistentHandoffStrategy implements HintedHandoffStrategy {
         }
     }
 
+    @Override
     public List<Node> routeHint(Node origin) {
         List<Node> prefList = Lists.newArrayList(routeToMap.get(origin.getId()));
         Collections.shuffle(prefList);

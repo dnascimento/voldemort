@@ -287,11 +287,13 @@ public abstract class AbstractHadoopJob extends AbstractJob {
         return this._props;
     }
 
+    @Override
     public void cancel() throws Exception {
         if(_runningJob != null)
             _runningJob.killJob();
     }
 
+    @Override
     public double getProgress() throws IOException {
         if(_runningJob == null)
             return 0.0;

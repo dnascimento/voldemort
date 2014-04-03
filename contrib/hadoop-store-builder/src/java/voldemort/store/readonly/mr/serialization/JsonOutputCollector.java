@@ -44,6 +44,7 @@ public class JsonOutputCollector<K, V> implements OutputCollector<K, V> {
         this.valueSerializer = Utils.nonNull(valueSerializer);
     }
 
+    @Override
     public void collect(K key, V value) throws IOException {
         innerCollector.collect(new BytesWritable(keySerializer.toBytes(key)),
                                new BytesWritable(valueSerializer.toBytes(value)));

@@ -195,6 +195,7 @@ public class VLinkedPagedList<I, LK extends Comparable<LK>> implements Iterable<
         return _serializer.toObject(bytes);
     }
 
+    @Override
     public Iterator<LK> iterator() {
         return listIterator();
     }
@@ -214,6 +215,7 @@ public class VLinkedPagedList<I, LK extends Comparable<LK>> implements Iterable<
             _serializer = serializer;
         }
 
+        @Override
         public int compare(Map<String, Object> arg0, Map<String, Object> arg1) {
             VPageIndexEntry<LK> entry0 = VPageIndexEntry.valueOf(arg0, _serializer);
             VPageIndexEntry<LK> entry1 = VPageIndexEntry.valueOf(arg1, _serializer);

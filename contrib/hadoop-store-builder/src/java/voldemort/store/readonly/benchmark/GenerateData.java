@@ -49,7 +49,6 @@ import voldemort.utils.Utils;
  * 
  * 
  */
-@SuppressWarnings("deprecation")
 public class GenerateData extends Configured implements Tool {
 
     public static void main(String[] args) throws Exception {
@@ -57,6 +56,7 @@ public class GenerateData extends Configured implements Tool {
         System.exit(res);
     }
 
+    @Override
     public int run(String[] args) throws Exception {
         if(args.length != 3)
             Utils.croak("USAGE: GenerateData input-file output-dir value-size");
@@ -94,6 +94,7 @@ public class GenerateData extends Configured implements Tool {
 
         private BytesWritable value;
 
+        @Override
         public void map(LongWritable lineNumber,
                         Text line,
                         OutputCollector<BytesWritable, BytesWritable> collector,

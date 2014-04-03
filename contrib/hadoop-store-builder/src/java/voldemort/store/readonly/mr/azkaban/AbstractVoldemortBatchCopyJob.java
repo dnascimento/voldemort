@@ -55,6 +55,7 @@ public abstract class AbstractVoldemortBatchCopyJob extends AbstractJob {
         _props = props;
     }
 
+    @Override
     public void run() throws Exception {
         JobConf conf = new JobConf();
         HadoopUtils.copyInAllProps(_props, conf);
@@ -74,6 +75,7 @@ public abstract class AbstractVoldemortBatchCopyJob extends AbstractJob {
 
             executors.execute(new Runnable() {
 
+                @Override
                 public void run() {
                     int id = node.getId();
                     String indexFile = inputDir + "/" + storeName + ".index" + "_"

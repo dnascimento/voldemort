@@ -44,15 +44,18 @@ public class MysqlStorageConfiguration implements StorageConfiguration {
         this.dataSource = ds;
     }
 
+    @Override
     public StorageEngine<ByteArray, byte[], byte[]> getStore(StoreDefinition storeDef,
                                                              RoutingStrategy strategy) {
         return new MysqlStorageEngine(storeDef.getName(), dataSource);
     }
 
+    @Override
     public String getType() {
         return TYPE_NAME;
     }
 
+    @Override
     public void close() {
         try {
             this.dataSource.close();
@@ -61,6 +64,7 @@ public class MysqlStorageConfiguration implements StorageConfiguration {
         }
     }
 
+    @Override
     public void update(StoreDefinition storeDef) {
         throw new VoldemortException("Storage config updates not permitted for "
                                      + this.getClass().getCanonicalName());

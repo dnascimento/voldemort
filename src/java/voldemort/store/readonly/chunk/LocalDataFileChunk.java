@@ -12,6 +12,7 @@ public class LocalDataFileChunk implements DataFileChunk {
         this.dataFile = dataFile;
     }
 
+    @Override
     public int read(ByteBuffer buffer, long currentOffset) throws IOException {
         return dataFile.read(buffer, currentOffset);
     }

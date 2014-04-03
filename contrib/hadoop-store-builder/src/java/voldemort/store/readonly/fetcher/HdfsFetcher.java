@@ -155,6 +155,7 @@ public class HdfsFetcher implements FileFetcher {
         HdfsFetcher.keytabPath = keytabLocation;
     }
 
+    @Override
     public File fetch(String sourceFileUrl, String destinationFile) throws IOException {
         String hadoopConfigPath = "";
         if(this.voldemortConfig != null) {
@@ -630,6 +631,7 @@ public class HdfsFetcher implements FileFetcher {
      */
     public static class IndexFileLastComparator implements Comparator<FileStatus> {
 
+        @Override
         public int compare(FileStatus fs1, FileStatus fs2) {
             // directories before files
             if(fs1.isDir())
@@ -659,6 +661,7 @@ public class HdfsFetcher implements FileFetcher {
         }
     }
 
+    @Override
     public void setAsyncOperationStatus(AsyncOperationStatus status) {
         this.status = status;
     }
@@ -733,7 +736,8 @@ public class HdfsFetcher implements FileFetcher {
                     fs = UserGroupInformation.getCurrentUser()
                                              .doAs(new PrivilegedExceptionAction<FileSystem>() {
 
-                                                 public FileSystem run() throws Exception {
+                                                 @Override
+                                                public FileSystem run() throws Exception {
                                                      FileSystem fs = path.getFileSystem(config);
                                                      return fs;
                                                  }

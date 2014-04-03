@@ -423,6 +423,7 @@ public abstract class AbstractStoreClientFactory implements StoreClientFactory {
     protected abstract FailureDetector initFailureDetector(final ClientConfig config,
                                                            Cluster cluster);
 
+    @Override
     public FailureDetector getFailureDetector() {
         if(this.cluster == null) {
             logger.info("Cluster is null ! Getting cluster.xml again for setting up FailureDetector.");
@@ -609,6 +610,7 @@ public abstract class AbstractStoreClientFactory implements StoreClientFactory {
         return requestFormatType;
     }
 
+    @Override
     public void close() {
         this.threadPool.shutdown();
 

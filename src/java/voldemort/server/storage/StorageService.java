@@ -657,10 +657,12 @@ public class StorageService extends AbstractService {
         if(storeDef.getType().compareTo(ReadOnlyStorageConfiguration.TYPE_NAME) == 0) {
             metadata.addMetadataStoreListener(storeDef.getName(), new MetadataStoreListener() {
 
+                @Override
                 public void updateRoutingStrategy(RoutingStrategy updatedRoutingStrategy) {
                     ((ReadOnlyStorageEngine) engine).setRoutingStrategy(updatedRoutingStrategy);
                 }
 
+                @Override
                 public void updateStoreDefinition(StoreDefinition storeDef) {
                     return;
                 }
@@ -1174,6 +1176,7 @@ public class StorageService extends AbstractService {
     public void logStoreStats(final String storeName) {
         this.scheduler.scheduleNow(new Runnable() {
 
+            @Override
             public void run() {
                 StorageEngine<ByteArray, byte[], byte[]> store = storeRepository.getStorageEngine(storeName);
                 if(store == null) {
@@ -1191,6 +1194,7 @@ public class StorageService extends AbstractService {
     public void logStoreStats() {
         this.scheduler.scheduleNow(new Runnable() {
 
+            @Override
             public void run() {
                 try {
                     DataSetStats totals = new DataSetStats();

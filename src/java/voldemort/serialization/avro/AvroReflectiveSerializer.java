@@ -67,6 +67,7 @@ public class AvroReflectiveSerializer<T> implements Serializer<T> {
         }
     }
 
+    @Override
     public byte[] toBytes(T object) {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         Encoder encoder = new BinaryEncoder(output);
@@ -83,6 +84,7 @@ public class AvroReflectiveSerializer<T> implements Serializer<T> {
         return output.toByteArray();
     }
 
+    @Override
     public T toObject(byte[] bytes) {
         Decoder decoder = DecoderFactory.defaultFactory().createBinaryDecoder(bytes, null);
         ReflectDatumReader<T> reader = null;

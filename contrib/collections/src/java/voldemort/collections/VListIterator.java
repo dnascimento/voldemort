@@ -94,6 +94,7 @@ public class VListIterator<E> implements MappedListIterator<Integer, Versioned<E
      * 
      * @see java.util.ListIterator#add(java.lang.Object)
      */
+    @Override
     public void add(Versioned<E> arg0) {
         _lastId = VStack.NULL_ID;
         _lastCall = LastCall.ADD;
@@ -105,6 +106,7 @@ public class VListIterator<E> implements MappedListIterator<Integer, Versioned<E
      * 
      * @see java.util.ListIterator#hasNext()
      */
+    @Override
     public boolean hasNext() {
         setNextNode();
         return _nextNode != null;
@@ -115,6 +117,7 @@ public class VListIterator<E> implements MappedListIterator<Integer, Versioned<E
      * 
      * @see java.util.ListIterator#hasPrevious()
      */
+    @Override
     public boolean hasPrevious() {
         setPreviousNode();
         return _previousNode != null;
@@ -125,6 +128,7 @@ public class VListIterator<E> implements MappedListIterator<Integer, Versioned<E
      * 
      * @see java.util.ListIterator#next()
      */
+    @Override
     public Versioned<E> next() {
         if(!hasNext())
             throw new NoSuchElementException();
@@ -150,6 +154,7 @@ public class VListIterator<E> implements MappedListIterator<Integer, Versioned<E
      * Returns the id of the element that would be returned by a subsequent call
      * to next. Returns null if the list iterator is at the end of the list.
      */
+    @Override
     public Integer nextId() {
         if(hasNext())
             return _nextNode.getValue().getId();
@@ -162,6 +167,7 @@ public class VListIterator<E> implements MappedListIterator<Integer, Versioned<E
      * 
      * @see java.util.ListIterator#previous()
      */
+    @Override
     public Versioned<E> previous() {
         if(hasPrevious()) {
             E resultValue = _previousNode.getValue().getValue();
@@ -180,6 +186,7 @@ public class VListIterator<E> implements MappedListIterator<Integer, Versioned<E
      * Returns the id of the element that would be returned by a subsequent call
      * to next. Returns null if the list iterator is at the end of the list.
      */
+    @Override
     public Integer previousId() {
         if(hasPrevious()) {
             return _previousNode.getValue().getId();
@@ -188,6 +195,7 @@ public class VListIterator<E> implements MappedListIterator<Integer, Versioned<E
         }
     }
 
+    @Override
     public Integer lastId() {
         if(_lastCall != LastCall.NEXT && _lastCall != LastCall.PREVIOUS)
             throw new IllegalStateException("neither next() nor previous() has been called");
@@ -199,6 +207,7 @@ public class VListIterator<E> implements MappedListIterator<Integer, Versioned<E
      * 
      * @see java.util.ListIterator#remove()
      */
+    @Override
     public void remove() {
         _lastId = VStack.NULL_ID;
         _lastCall = LastCall.REMOVE;
@@ -215,6 +224,7 @@ public class VListIterator<E> implements MappedListIterator<Integer, Versioned<E
      * ListIterator.remove nor ListIterator.add have been called after the last
      * call to next or previous.
      */
+    @Override
     public void set(Versioned<E> element) {
         if(element == null)
             throw new NullPointerException("cannot set a null element");

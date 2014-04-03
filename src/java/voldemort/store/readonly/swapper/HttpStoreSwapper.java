@@ -70,6 +70,7 @@ public class HttpStoreSwapper extends StoreSwapper {
         for(final Node node: cluster.getNodes()) {
             fetchDirs.put(node.getId(), executor.submit(new Callable<String>() {
 
+                @Override
                 public String call() throws Exception {
                     String url = node.getHttpUrl() + "/" + readOnlyMgmtPath;
                     HttpPost post = new HttpPost(url);

@@ -23,6 +23,7 @@ public class Identified<T, K extends Serializable> implements Identifiable<K> {
      * 
      * @see com.linkedin.common.entity.Identifiable#getId()
      */
+    @Override
     public K getId() {
         return _id;
     }

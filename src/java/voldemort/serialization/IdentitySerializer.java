@@ -25,10 +25,12 @@ package voldemort.serialization;
  */
 public class IdentitySerializer implements Serializer<byte[]> {
 
+    @Override
     public byte[] toBytes(byte[] bytes) {
         return bytes;
     }
 
+    @Override
     public byte[] toObject(byte[] bytes) {
         return bytes;
     }

@@ -36,6 +36,7 @@ import voldemort.serialization.Serializer;
 public abstract class JsonReducer extends JsonConfigurable implements
         Reducer<BytesWritable, BytesWritable, BytesWritable, BytesWritable> {
 
+    @Override
     public void configure(JobConf conf) {
         setInputKeySerializer(getSchemaFromJob(conf, "mapper.output.key.schema"));
         setInputValueSerializer(getSchemaFromJob(conf, "mapper.output.value.schema"));
@@ -55,6 +56,7 @@ public abstract class JsonReducer extends JsonConfigurable implements
                                        OutputCollector<Object, Object> collector,
                                        Reporter reporter) throws IOException;
 
+    @Override
     public void reduce(BytesWritable key,
                        Iterator<BytesWritable> values,
                        OutputCollector<BytesWritable, BytesWritable> output,
@@ -81,14 +83,17 @@ public abstract class JsonReducer extends JsonConfigurable implements
             this.inner = inner;
         }
 
+        @Override
         public boolean hasNext() {
             return inner.hasNext();
         }
 
+        @Override
         public Object next() {
             return serializer.toObject(inner.next().get());
         }
 
+        @Override
         public void remove() {
             inner.remove();
         }

@@ -27,22 +27,27 @@ public class SystemTime implements Time {
 
     public static final SystemTime INSTANCE = new SystemTime();
 
+    @Override
     public Date getCurrentDate() {
         return new Date();
     }
 
+    @Override
     public long getMilliseconds() {
         return System.currentTimeMillis();
     }
 
+    @Override
     public long getNanoseconds() {
         return System.nanoTime();
     }
 
+    @Override
     public int getSeconds() {
         return (int) (getMilliseconds() / MS_PER_SECOND);
     }
 
+    @Override
     public void sleep(long ms) throws InterruptedException {
         Thread.sleep(ms);
     }

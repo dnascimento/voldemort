@@ -53,6 +53,7 @@ public class VStack<K, E> implements Queue<E> {
      * 
      * @see java.util.Collection#clear()
      */
+    @Override
     public void clear() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
@@ -63,6 +64,7 @@ public class VStack<K, E> implements Queue<E> {
      * 
      * @see java.util.Collection#contains(java.lang.Object)
      */
+    @Override
     public boolean contains(Object arg0) {
         throw new UnsupportedOperationException();
     }
@@ -72,6 +74,7 @@ public class VStack<K, E> implements Queue<E> {
      * 
      * @see java.util.Collection#containsAll(java.util.Collection)
      */
+    @Override
     public boolean containsAll(Collection<?> arg0) {
         throw new UnsupportedOperationException();
     }
@@ -83,6 +86,7 @@ public class VStack<K, E> implements Queue<E> {
      * 
      * Runtime: 1 voldemort get operation
      */
+    @Override
     public boolean isEmpty() {
         VListKey<K> newKey = new VListKey<K>(_key, 0);
         Versioned<Map<String, Object>> firstNode = _storeClient.get(newKey.mapValue(), 0L);
@@ -94,6 +98,7 @@ public class VStack<K, E> implements Queue<E> {
      * 
      * @see java.util.Collection#iterator()
      */
+    @Override
     public Iterator<E> iterator() {
         return new VListIteratorValues<E>(listIterator(0));
     }
@@ -133,6 +138,7 @@ public class VStack<K, E> implements Queue<E> {
      * 
      * @see java.util.Collection#remove(java.lang.Object)
      */
+    @Override
     public boolean remove(Object arg0) {
         throw new UnsupportedOperationException();
     }
@@ -142,6 +148,7 @@ public class VStack<K, E> implements Queue<E> {
      * 
      * @see java.util.Collection#removeAll(java.util.Collection)
      */
+    @Override
     public boolean removeAll(Collection<?> arg0) {
         throw new UnsupportedOperationException();
     }
@@ -151,6 +158,7 @@ public class VStack<K, E> implements Queue<E> {
      * 
      * @see java.util.Collection#retainAll(java.util.Collection)
      */
+    @Override
     public boolean retainAll(Collection<?> arg0) {
         throw new UnsupportedOperationException();
     }
@@ -163,6 +171,7 @@ public class VStack<K, E> implements Queue<E> {
      * Runtime: O(n) gets (WARNING -- very very slow. Only use for debugging
      * purposes)
      */
+    @Override
     public int size() {
         int result = 0;
         for(@SuppressWarnings("unused")
@@ -177,6 +186,7 @@ public class VStack<K, E> implements Queue<E> {
      * 
      * @see java.util.Collection#toArray()
      */
+    @Override
     public Object[] toArray() {
         throw new UnsupportedOperationException();
     }
@@ -186,6 +196,7 @@ public class VStack<K, E> implements Queue<E> {
      * 
      * @see java.util.Collection#toArray(T[])
      */
+    @Override
     public <T> T[] toArray(T[] arg0) {
         throw new UnsupportedOperationException();
     }
@@ -193,6 +204,7 @@ public class VStack<K, E> implements Queue<E> {
     /*
      * (non-Javadoc) Adds a new element into the VStack with a new version.
      */
+    @Override
     public boolean add(E e) {
         if(!offer(e))
             throw new IllegalStateException();
@@ -204,6 +216,7 @@ public class VStack<K, E> implements Queue<E> {
      * 
      * @see java.util.Collection#addAll(java.util.Collection)
      */
+    @Override
     public boolean addAll(Collection<? extends E> elements) {
         throw new UnsupportedOperationException();
     }
@@ -213,6 +226,7 @@ public class VStack<K, E> implements Queue<E> {
      * 
      * @see java.util.Queue#element()
      */
+    @Override
     public E element() {
         E result = peek();
         if(result == null)
@@ -228,6 +242,7 @@ public class VStack<K, E> implements Queue<E> {
      * 
      * Runtime: worst case: 2 gets, 5 puts
      */
+    @Override
     public boolean offer(E e) {
         if(e == null)
             throw new NullPointerException("null objects are not allowed");
@@ -245,6 +260,7 @@ public class VStack<K, E> implements Queue<E> {
      * 
      * @see java.util.Queue#peek()
      */
+    @Override
     public E peek() {
         Versioned<E> versioned = peekVersioned();
         if(versioned == null) {
@@ -322,6 +338,7 @@ public class VStack<K, E> implements Queue<E> {
      * 
      * @see java.util.Queue#poll()
      */
+    @Override
     public E poll() {
         throw new UnsupportedOperationException();
     }
@@ -331,6 +348,7 @@ public class VStack<K, E> implements Queue<E> {
      * 
      * @see java.util.Queue#remove()
      */
+    @Override
     public E remove() {
         throw new UnsupportedOperationException();
     }

@@ -39,17 +39,21 @@ public class FileBackedCachingStorageConfiguration implements StorageConfigurati
         this.inputPath = config.getMetadataDirectory();
     }
 
+    @Override
     public StorageEngine<ByteArray, byte[], byte[]> getStore(StoreDefinition storeDef,
                                                              RoutingStrategy strategy) {
         return new FileBackedCachingStorageEngine(storeDef.getName(), inputPath);
     }
 
+    @Override
     public String getType() {
         return TYPE_NAME;
     }
 
+    @Override
     public void close() {}
 
+    @Override
     public void update(StoreDefinition storeDef) {
 
     }

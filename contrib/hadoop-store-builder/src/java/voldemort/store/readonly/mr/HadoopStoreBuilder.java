@@ -480,6 +480,7 @@ public class HadoopStoreBuilder {
 
                     FileStatus[] storeFiles = outputFs.listStatus(nodePath, new PathFilter() {
 
+                        @Override
                         public boolean accept(Path arg0) {
                             if(arg0.getName().endsWith("checksum")
                                && !arg0.getName().startsWith(".")) {
@@ -557,6 +558,7 @@ public class HadoopStoreBuilder {
      */
     static class IndexFileLastComparator implements Comparator<FileStatus> {
 
+        @Override
         public int compare(FileStatus fs1, FileStatus fs2) {
             // directories before files
             if(fs1.isDir())

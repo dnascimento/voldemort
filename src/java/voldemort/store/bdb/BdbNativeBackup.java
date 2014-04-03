@@ -77,6 +77,7 @@ public class BdbNativeBackup {
         status.setStatus("Determining the last backed up file...");
         File[] backupFiles = backupDir.listFiles(new FilenameFilter() {
 
+            @Override
             public boolean accept(File dir, String name) {
                 if(!name.endsWith(BDB_EXT)) {
                     return false;
@@ -121,6 +122,7 @@ public class BdbNativeBackup {
         // through, we don't lose stuff
         Arrays.sort(filesForBackup, new Comparator<String>() {
 
+            @Override
             public int compare(String o1, String o2) {
                 long result = fileNameToNumber(o1) - fileNameToNumber(o2);
                 if(result < 0) {

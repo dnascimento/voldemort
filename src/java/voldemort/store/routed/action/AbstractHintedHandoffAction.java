@@ -41,5 +41,6 @@ public abstract class AbstractHintedHandoffAction<V, PD extends BasicPipelineDat
         this.failedNodes = pipelineData.getFailedNodes();
     }
 
+    @Override
     public abstract void execute(Pipeline pipeline);
 }

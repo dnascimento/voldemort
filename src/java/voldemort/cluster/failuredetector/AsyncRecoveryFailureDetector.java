@@ -50,6 +50,7 @@ public class AsyncRecoveryFailureDetector extends AbstractFailureDetector implem
         recoveryThread.setDaemon(true);
         recoveryThread.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 
+            @Override
             public void uncaughtException(Thread t, Throwable e) {
                 if(logger.isEnabledFor(Level.ERROR))
                     logger.error("Uncaught exception in failure detector recovery thread:", e);
@@ -59,6 +60,7 @@ public class AsyncRecoveryFailureDetector extends AbstractFailureDetector implem
         recoveryThread.start();
     }
 
+    @Override
     public boolean isAvailable(Node node) {
         checkNodeArg(node);
         NodeStatus nodeStatus = getNodeStatus(node);
@@ -68,11 +70,13 @@ public class AsyncRecoveryFailureDetector extends AbstractFailureDetector implem
         }
     }
 
+    @Override
     public void recordException(Node node, long requestTime, UnreachableStoreException e) {
         checkArgs(node, requestTime);
         setUnavailable(node, e);
     }
 
+    @Override
     public void recordSuccess(Node node, long requestTime) {
         // Nodes only become available in our thread, but let's sanity-check our
         // arguments...
@@ -84,6 +88,7 @@ public class AsyncRecoveryFailureDetector extends AbstractFailureDetector implem
         isRunning = false;
     }
 
+    @Override
     public void run() {
         long asyncRecoveryInterval = getConfig().getAsyncRecoveryInterval();
 

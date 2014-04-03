@@ -42,6 +42,7 @@ public class SocketRequestHandlerFactory implements RequestHandlerFactory {
         this.rebalancer = rebalancer;
     }
 
+    @Override
     public RequestHandler getRequestHandler(RequestFormatType type) {
         switch(type) {
             case VOLDEMORT_V0:

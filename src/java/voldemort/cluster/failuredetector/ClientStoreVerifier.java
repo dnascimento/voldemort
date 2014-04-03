@@ -44,6 +44,7 @@ public abstract class ClientStoreVerifier implements StoreVerifier {
         stores = new HashMap<Integer, Store<ByteArray, byte[], byte[]>>();
     }
 
+    @Override
     public void verifyStore(Node node) throws UnreachableStoreException, VoldemortException {
         Store<ByteArray, byte[], byte[]> store = null;
 
@@ -61,6 +62,7 @@ public abstract class ClientStoreVerifier implements StoreVerifier {
 
     protected abstract Store<ByteArray, byte[], byte[]> getStoreInternal(Node node);
 
+    @Override
     public void flushCachedStores() {
         synchronized(stores) {
             this.stores.clear();

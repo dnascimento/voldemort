@@ -43,15 +43,18 @@ public abstract class AbstractService implements VoldemortService {
         this.isStarted = new AtomicBoolean(false);
     }
 
+    @Override
     public ServiceType getType() {
         return type;
     }
 
+    @Override
     @JmxGetter(name = "started", description = "Determine if the service has been started.")
     public boolean isStarted() {
         return isStarted.get();
     }
 
+    @Override
     @JmxOperation(description = "Start the service.", impact = MBeanOperationInfo.ACTION)
     public void start() {
         boolean isntStarted = isStarted.compareAndSet(false, true);
@@ -62,6 +65,7 @@ public abstract class AbstractService implements VoldemortService {
         startInner();
     }
 
+    @Override
     @JmxOperation(description = "Stop the service.", impact = MBeanOperationInfo.ACTION)
     public void stop() {
         logger.info("Stopping " + getType().getDisplayName());

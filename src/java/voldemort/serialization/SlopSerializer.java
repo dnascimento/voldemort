@@ -34,6 +34,7 @@ import voldemort.utils.ByteArray;
  */
 public class SlopSerializer implements Serializer<Slop> {
 
+    @Override
     public byte[] toBytes(Slop slop) {
         ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
         DataOutputStream data = new DataOutputStream(byteOutput);
@@ -56,6 +57,7 @@ public class SlopSerializer implements Serializer<Slop> {
         }
     }
 
+    @Override
     public Slop toObject(byte[] bytes) {
         DataInputStream input = new DataInputStream(new ByteArrayInputStream(bytes));
         try {

@@ -51,6 +51,7 @@ public class HadoopStoreBuilderReducerPerBucket extends AbstractStoreBuilderConf
      * partition-id, replica-type, [key-size, value-size, key, value]* if saving
      * keys is enabled
      */
+    @Override
     @SuppressWarnings("unchecked")
     public void reduce(BytesWritable key,
                        Iterator<BytesWritable> iterator,

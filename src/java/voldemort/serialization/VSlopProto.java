@@ -99,6 +99,7 @@ public final class VSlopProto {
       return defaultInstance;
     }
 
+    @Override
     public Slop getDefaultInstanceForType() {
       return defaultInstance;
     }
@@ -179,6 +180,7 @@ public final class VSlopProto {
       return voldemort.serialization.VSlopProto.internal_static_voldemort_Slop_descriptor;
     }
 
+    @Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return voldemort.serialization.VSlopProto.internal_static_voldemort_Slop_fieldAccessorTable
@@ -188,7 +190,8 @@ public final class VSlopProto {
 
     public static com.google.protobuf.Parser<Slop> PARSER =
         new com.google.protobuf.AbstractParser<Slop>() {
-      public Slop parsePartialFrom(
+      @Override
+    public Slop parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -208,12 +211,14 @@ public final class VSlopProto {
     /**
      * <code>optional string store = 1;</code>
      */
+    @Override
     public boolean hasStore() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
      * <code>optional string store = 1;</code>
      */
+    @Override
     public java.lang.String getStore() {
       java.lang.Object ref = store_;
       if (ref instanceof java.lang.String) {
@@ -231,6 +236,7 @@ public final class VSlopProto {
     /**
      * <code>optional string store = 1;</code>
      */
+    @Override
     public com.google.protobuf.ByteString
         getStoreBytes() {
       java.lang.Object ref = store_;
@@ -251,12 +257,14 @@ public final class VSlopProto {
     /**
      * <code>optional string operation = 2;</code>
      */
+    @Override
     public boolean hasOperation() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
      * <code>optional string operation = 2;</code>
      */
+    @Override
     public java.lang.String getOperation() {
       java.lang.Object ref = operation_;
       if (ref instanceof java.lang.String) {
@@ -274,6 +282,7 @@ public final class VSlopProto {
     /**
      * <code>optional string operation = 2;</code>
      */
+    @Override
     public com.google.protobuf.ByteString
         getOperationBytes() {
       java.lang.Object ref = operation_;
@@ -294,12 +303,14 @@ public final class VSlopProto {
     /**
      * <code>optional bytes key = 3;</code>
      */
+    @Override
     public boolean hasKey() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
      * <code>optional bytes key = 3;</code>
      */
+    @Override
     public com.google.protobuf.ByteString getKey() {
       return key_;
     }
@@ -310,12 +321,14 @@ public final class VSlopProto {
     /**
      * <code>optional bytes value = 4;</code>
      */
+    @Override
     public boolean hasValue() {
       return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
      * <code>optional bytes value = 4;</code>
      */
+    @Override
     public com.google.protobuf.ByteString getValue() {
       return value_;
     }
@@ -326,12 +339,14 @@ public final class VSlopProto {
     /**
      * <code>optional int32 node_id = 5;</code>
      */
+    @Override
     public boolean hasNodeId() {
       return ((bitField0_ & 0x00000010) == 0x00000010);
     }
     /**
      * <code>optional int32 node_id = 5;</code>
      */
+    @Override
     public int getNodeId() {
       return nodeId_;
     }
@@ -342,12 +357,14 @@ public final class VSlopProto {
     /**
      * <code>optional int64 arrived = 6;</code>
      */
+    @Override
     public boolean hasArrived() {
       return ((bitField0_ & 0x00000020) == 0x00000020);
     }
     /**
      * <code>optional int64 arrived = 6;</code>
      */
+    @Override
     public long getArrived() {
       return arrived_;
     }
@@ -361,6 +378,7 @@ public final class VSlopProto {
       arrived_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
+    @Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
@@ -369,6 +387,7 @@ public final class VSlopProto {
       return true;
     }
 
+    @Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
@@ -394,6 +413,7 @@ public final class VSlopProto {
     }
 
     private int memoizedSerializedSize = -1;
+    @Override
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
@@ -489,10 +509,12 @@ public final class VSlopProto {
     }
 
     public static Builder newBuilder() { return Builder.create(); }
+    @Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder(voldemort.serialization.VSlopProto.Slop prototype) {
       return newBuilder().mergeFrom(prototype);
     }
+    @Override
     public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
@@ -512,7 +534,8 @@ public final class VSlopProto {
         return voldemort.serialization.VSlopProto.internal_static_voldemort_Slop_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      @Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return voldemort.serialization.VSlopProto.internal_static_voldemort_Slop_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -537,7 +560,8 @@ public final class VSlopProto {
         return new Builder();
       }
 
-      public Builder clear() {
+      @Override
+    public Builder clear() {
         super.clear();
         store_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -554,20 +578,24 @@ public final class VSlopProto {
         return this;
       }
 
-      public Builder clone() {
+      @Override
+    public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
 
-      public com.google.protobuf.Descriptors.Descriptor
+      @Override
+    public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return voldemort.serialization.VSlopProto.internal_static_voldemort_Slop_descriptor;
       }
 
-      public voldemort.serialization.VSlopProto.Slop getDefaultInstanceForType() {
+      @Override
+    public voldemort.serialization.VSlopProto.Slop getDefaultInstanceForType() {
         return voldemort.serialization.VSlopProto.Slop.getDefaultInstance();
       }
 
-      public voldemort.serialization.VSlopProto.Slop build() {
+      @Override
+    public voldemort.serialization.VSlopProto.Slop build() {
         voldemort.serialization.VSlopProto.Slop result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
@@ -575,7 +603,8 @@ public final class VSlopProto {
         return result;
       }
 
-      public voldemort.serialization.VSlopProto.Slop buildPartial() {
+      @Override
+    public voldemort.serialization.VSlopProto.Slop buildPartial() {
         voldemort.serialization.VSlopProto.Slop result = new voldemort.serialization.VSlopProto.Slop(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
@@ -608,7 +637,8 @@ public final class VSlopProto {
         return result;
       }
 
-      public Builder mergeFrom(com.google.protobuf.Message other) {
+      @Override
+    public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof voldemort.serialization.VSlopProto.Slop) {
           return mergeFrom((voldemort.serialization.VSlopProto.Slop)other);
         } else {
@@ -645,11 +675,13 @@ public final class VSlopProto {
         return this;
       }
 
-      public final boolean isInitialized() {
+      @Override
+    public final boolean isInitialized() {
         return true;
       }
 
-      public Builder mergeFrom(
+      @Override
+    public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -673,13 +705,15 @@ public final class VSlopProto {
       /**
        * <code>optional string store = 1;</code>
        */
-      public boolean hasStore() {
+      @Override
+    public boolean hasStore() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
        * <code>optional string store = 1;</code>
        */
-      public java.lang.String getStore() {
+      @Override
+    public java.lang.String getStore() {
         java.lang.Object ref = store_;
         if (!(ref instanceof java.lang.String)) {
           java.lang.String s = ((com.google.protobuf.ByteString) ref)
@@ -693,7 +727,8 @@ public final class VSlopProto {
       /**
        * <code>optional string store = 1;</code>
        */
-      public com.google.protobuf.ByteString
+      @Override
+    public com.google.protobuf.ByteString
           getStoreBytes() {
         java.lang.Object ref = store_;
         if (ref instanceof String) {
@@ -747,13 +782,15 @@ public final class VSlopProto {
       /**
        * <code>optional string operation = 2;</code>
        */
-      public boolean hasOperation() {
+      @Override
+    public boolean hasOperation() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
        * <code>optional string operation = 2;</code>
        */
-      public java.lang.String getOperation() {
+      @Override
+    public java.lang.String getOperation() {
         java.lang.Object ref = operation_;
         if (!(ref instanceof java.lang.String)) {
           java.lang.String s = ((com.google.protobuf.ByteString) ref)
@@ -767,7 +804,8 @@ public final class VSlopProto {
       /**
        * <code>optional string operation = 2;</code>
        */
-      public com.google.protobuf.ByteString
+      @Override
+    public com.google.protobuf.ByteString
           getOperationBytes() {
         java.lang.Object ref = operation_;
         if (ref instanceof String) {
@@ -821,13 +859,15 @@ public final class VSlopProto {
       /**
        * <code>optional bytes key = 3;</code>
        */
-      public boolean hasKey() {
+      @Override
+    public boolean hasKey() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
        * <code>optional bytes key = 3;</code>
        */
-      public com.google.protobuf.ByteString getKey() {
+      @Override
+    public com.google.protobuf.ByteString getKey() {
         return key_;
       }
       /**
@@ -857,13 +897,15 @@ public final class VSlopProto {
       /**
        * <code>optional bytes value = 4;</code>
        */
-      public boolean hasValue() {
+      @Override
+    public boolean hasValue() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
        * <code>optional bytes value = 4;</code>
        */
-      public com.google.protobuf.ByteString getValue() {
+      @Override
+    public com.google.protobuf.ByteString getValue() {
         return value_;
       }
       /**
@@ -893,13 +935,15 @@ public final class VSlopProto {
       /**
        * <code>optional int32 node_id = 5;</code>
        */
-      public boolean hasNodeId() {
+      @Override
+    public boolean hasNodeId() {
         return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
        * <code>optional int32 node_id = 5;</code>
        */
-      public int getNodeId() {
+      @Override
+    public int getNodeId() {
         return nodeId_;
       }
       /**
@@ -926,13 +970,15 @@ public final class VSlopProto {
       /**
        * <code>optional int64 arrived = 6;</code>
        */
-      public boolean hasArrived() {
+      @Override
+    public boolean hasArrived() {
         return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       /**
        * <code>optional int64 arrived = 6;</code>
        */
-      public long getArrived() {
+      @Override
+    public long getArrived() {
         return arrived_;
       }
       /**
@@ -987,6 +1033,7 @@ public final class VSlopProto {
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
+        @Override
         public com.google.protobuf.ExtensionRegistry assignDescriptors(
             com.google.protobuf.Descriptors.FileDescriptor root) {
           descriptor = root;

@@ -99,6 +99,7 @@ public class SocketServer extends Thread {
 
         private AtomicLong threadIdSequence = new AtomicLong(0);
 
+        @Override
         public Thread newThread(Runnable r) {
             String name = "voldemort-server-" + threadIdSequence.getAndIncrement();
             Thread t = new Thread(threadGroup, r, name);
@@ -109,6 +110,7 @@ public class SocketServer extends Thread {
 
     private final RejectedExecutionHandler rejectedExecutionHandler = new RejectedExecutionHandler() {
 
+        @Override
         public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
             SocketServerSession session = (SocketServerSession) r;
             if(interrupted()) {

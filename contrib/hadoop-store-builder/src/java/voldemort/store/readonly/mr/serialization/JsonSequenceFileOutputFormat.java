@@ -46,6 +46,7 @@ import voldemort.serialization.json.JsonTypeDefinition;
 public class JsonSequenceFileOutputFormat extends
         SequenceFileOutputFormat<BytesWritable, BytesWritable> {
 
+    @Override
     public RecordWriter<BytesWritable, BytesWritable> getRecordWriter(FileSystem ignored,
                                                                       JobConf job,
                                                                       String name,
@@ -83,11 +84,13 @@ public class JsonSequenceFileOutputFormat extends
 
         return new RecordWriter<BytesWritable, BytesWritable>() {
 
+            @Override
             public void write(BytesWritable key, BytesWritable value) throws IOException {
 
                 out.append(key, value);
             }
 
+            @Override
             public void close(Reporter reporter) throws IOException {
                 out.close();
             }

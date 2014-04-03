@@ -66,11 +66,13 @@ abstract class DataFileChunkSetIterator<T> implements ClosableIterator<T> {
             this.fileModificationLock.readLock().lock();
     }
 
+    @Override
     public void close() {
         if(this.fileModificationLock != null)
             this.fileModificationLock.readLock().unlock();
     }
 
+    @Override
     public abstract T next();
 
     protected DataFileChunk getCurrentChunk() {
@@ -81,6 +83,7 @@ abstract class DataFileChunkSetIterator<T> implements ClosableIterator<T> {
         return this.currentOffsetInChunk;
     }
 
+    @Override
     public boolean hasNext() {
         if(chunksFinished)
             return false;
@@ -125,6 +128,7 @@ abstract class DataFileChunkSetIterator<T> implements ClosableIterator<T> {
         hasNext();
     }
 
+    @Override
     public void remove() {
         throw new UnsupportedOperationException("Cannot remove from these read-only data chunks");
     }

@@ -94,6 +94,7 @@ public class ClientRequestExecutorFactory implements
      * Close the ClientRequestExecutor.
      */
 
+    @Override
     public void destroy(SocketDestination dest, ClientRequestExecutor clientRequestExecutor)
             throws Exception {
         clientRequestExecutor.close();
@@ -113,6 +114,7 @@ public class ClientRequestExecutorFactory implements
      * @param dest {@link SocketDestination}
      */
 
+    @Override
     public ClientRequestExecutor create(SocketDestination dest) throws Exception {
         int numCreated = created.incrementAndGet();
         if(logger.isDebugEnabled())
@@ -233,6 +235,7 @@ public class ClientRequestExecutorFactory implements
         return clientRequestExecutor;
     }
 
+    @Override
     public boolean validate(SocketDestination dest, ClientRequestExecutor clientRequestExecutor) {
         /**
          * Keep track of the last time that we closed the sockets for a specific
@@ -279,6 +282,7 @@ public class ClientRequestExecutorFactory implements
         return this.destroyed.get();
     }
 
+    @Override
     public void close() {
         try {
             // We close instead of interrupting the thread pool. Why? Because as

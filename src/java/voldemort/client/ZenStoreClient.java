@@ -159,6 +159,7 @@ public class ZenStoreClient<K, V> extends DefaultStoreClient<K, V> {
             // Create a callback for re-bootstrapping the client
             Callable<Void> rebootstrapCallback = new Callable<Void>() {
 
+                @Override
                 public Void call() throws Exception {
                     bootStrap();
                     return null;

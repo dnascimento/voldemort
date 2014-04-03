@@ -30,6 +30,7 @@ public class ConstantHashFunction implements HashFunction {
         this.hashCode = hashCode;
     }
 
+    @Override
     public int hash(byte[] key) {
         return hashCode;
     }

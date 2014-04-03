@@ -53,6 +53,7 @@ public class CachingStoreClientFactory implements StoreClientFactory {
         this.cacheStoreClientFactoryStats = new StoreClientFactoryStats();
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <K, V> StoreClient<K, V> getStoreClient(String storeName) {
         return getStoreClient(storeName, null);
@@ -60,6 +61,7 @@ public class CachingStoreClientFactory implements StoreClientFactory {
 
     /* Using synchronized for thread safety. Otherwise, there could be a racing condition
     That caused multiple clients being generated and mess up the JMX and stats object */
+    @Override
     @SuppressWarnings("unchecked")
     public synchronized <K, V> StoreClient<K, V> getStoreClient(String storeName,
                                                    InconsistencyResolver<Versioned<V>> resolver) {
@@ -72,11 +74,13 @@ public class CachingStoreClientFactory implements StoreClientFactory {
         return (StoreClient<K, V>) cache.get(key);
     }
 
+    @Override
     public <K, V, T> Store<K, V, T> getRawStore(String storeName,
                                                 InconsistencyResolver<Versioned<V>> resolver) {
         return inner.getRawStore(storeName, resolver);
     }
 
+    @Override
     public void close() {
         try {
             cache.clear();
@@ -85,6 +89,7 @@ public class CachingStoreClientFactory implements StoreClientFactory {
         }
     }
 
+    @Override
     public FailureDetector getFailureDetector() {
         return inner.getFailureDetector();
     }

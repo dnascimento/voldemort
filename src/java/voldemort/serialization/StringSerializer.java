@@ -35,12 +35,14 @@ public class StringSerializer implements Serializer<String> {
         this.encoding = encoding;
     }
 
+    @Override
     public byte[] toBytes(String string) {
         if(string == null)
             return null;
         return ByteUtils.getBytes(string, encoding);
     }
 
+    @Override
     public String toObject(byte[] bytes) {
         if(bytes == null)
             return null;

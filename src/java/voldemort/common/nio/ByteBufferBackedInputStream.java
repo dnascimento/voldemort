@@ -89,6 +89,7 @@ public class ByteBufferBackedInputStream extends InputStream {
         return len;
     }
 
+    @Override
     public void close() {
         if(sizeTracker != null && this.buffer != null) {
             sizeTracker.subtract(this.buffer.capacity());

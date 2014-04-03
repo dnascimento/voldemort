@@ -42,18 +42,22 @@ public class InMemoryStorageConfiguration implements StorageConfiguration {
     @SuppressWarnings("unused")
     public InMemoryStorageConfiguration(VoldemortConfig config) {}
 
+    @Override
     public StorageEngine<ByteArray, byte[], byte[]> getStore(StoreDefinition storeDef,
                                                              RoutingStrategy strategy) {
         return new InMemoryStorageEngine<ByteArray, byte[], byte[]>(storeDef.getName(),
                                                                     new ConcurrentHashMap<ByteArray, List<Versioned<byte[]>>>());
     }
 
+    @Override
     public String getType() {
         return TYPE_NAME;
     }
 
+    @Override
     public void close() {}
 
+    @Override
     public void update(StoreDefinition storeDef) {
         throw new VoldemortException("Storage config updates not permitted for "
                                      + this.getClass().getCanonicalName());

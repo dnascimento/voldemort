@@ -41,6 +41,7 @@ public class BasicStoreVerifier<K, V, T> implements StoreVerifier {
         this.key = key;
     }
 
+    @Override
     public void verifyStore(Node node) throws UnreachableStoreException, VoldemortException {
         Store<K, V, T> store = stores.get(node.getId());
 
@@ -52,6 +53,7 @@ public class BasicStoreVerifier<K, V, T> implements StoreVerifier {
         store.get(key, null, 0L);
     }
 
+    @Override
     public void flushCachedStores() {
         this.stores.clear();
     }

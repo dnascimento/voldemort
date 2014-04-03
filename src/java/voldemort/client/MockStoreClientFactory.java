@@ -96,15 +96,18 @@ public class MockStoreClientFactory implements StoreClientFactory {
         failureDetector = new NoopFailureDetector();
     }
 
+    @Override
     public <K, V> StoreClient<K, V> getStoreClient(String storeName) {
         return getStoreClient(storeName, new TimeBasedInconsistencyResolver<V>());
     }
 
+    @Override
     public <K, V> StoreClient<K, V> getStoreClient(String storeName,
                                                    InconsistencyResolver<Versioned<V>> resolver) {
         return new DefaultStoreClient(storeName, resolver, this, 3);
     }
 
+    @Override
     public <K1, V1, T1> Store<K1, V1, T1> getRawStore(String storeName,
                                                       InconsistencyResolver<Versioned<V1>> resolver) {
         if(this.storesXml != null)
@@ -198,10 +201,12 @@ public class MockStoreClientFactory implements StoreClientFactory {
         return keySerializer != null && valueSerializer != null;
     }
 
+    @Override
     public void close() {
 
     }
 
+    @Override
     public FailureDetector getFailureDetector() {
         return failureDetector;
     }

@@ -85,7 +85,8 @@ public class ExternalSorter<V> {
         this(serializer,
              new Comparator<V>() {
 
-                 public int compare(V o1, V o2) {
+                 @Override
+                public int compare(V o1, V o2) {
                      Comparable c1 = (Comparable) o1;
                      Comparable c2 = (Comparable) o2;
                      return c1.compareTo(c2);
@@ -183,6 +184,7 @@ public class ExternalSorter<V> {
             // sort and write out asynchronously
             executor.execute(new Runnable() {
 
+                @Override
                 public void run() {
                     logger.info("Segment " + segmentId + ": sorting buffer.");
                     long start = System.currentTimeMillis();
@@ -318,6 +320,7 @@ public class ExternalSorter<V> {
             return this.v;
         }
 
+        @Override
         public int compareTo(Item item) {
             return comparator.compare(v, item.getValue());
         }

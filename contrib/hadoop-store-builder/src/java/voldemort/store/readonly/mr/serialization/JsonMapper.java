@@ -38,6 +38,7 @@ public abstract class JsonMapper extends JsonConfigurable implements
                                     OutputCollector<Object, Object> output,
                                     Reporter reporter) throws IOException;
 
+    @Override
     public void configure(JobConf conf) {
         setInputKeySerializer(getSchemaFromJob(conf, "mapper.input.key.schema"));
         setInputValueSerializer(getSchemaFromJob(conf, "mapper.input.value.schema"));
@@ -52,6 +53,7 @@ public abstract class JsonMapper extends JsonConfigurable implements
         setConfigured(true);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public void map(BytesWritable key,
                     BytesWritable value,

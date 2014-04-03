@@ -33,6 +33,7 @@ public class DefaultIterable<V> implements Iterable<V> {
         this.iterator = iterator;
     }
 
+    @Override
     public Iterator<V> iterator() {
         return this.iterator;
     }

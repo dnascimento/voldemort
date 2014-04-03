@@ -86,6 +86,7 @@ public class HadoopStoreBuilderUtils {
     public static FileStatus[] getDataChunkFiles(FileSystem fs, Path path) throws IOException {
         return fs.listStatus(path, new PathFilter() {
 
+            @Override
             public boolean accept(Path input) {
                 if(input.getName().matches("^[\\d]+_[\\d]+_[\\d]+\\.data")) {
                     return true;
@@ -115,6 +116,7 @@ public class HadoopStoreBuilderUtils {
                                                  final int replicaType) throws IOException {
         return fs.listStatus(path, new PathFilter() {
 
+            @Override
             public boolean accept(Path input) {
                 if(input.getName().matches("^" + Integer.toString(partitionId) + "_"
                                            + Integer.toString(replicaType) + "_[\\d]+\\.data")) {
@@ -147,6 +149,7 @@ public class HadoopStoreBuilderUtils {
                                                  final int chunkId) throws IOException {
         return fs.listStatus(path, new PathFilter() {
 
+            @Override
             public boolean accept(Path input) {
                 if(input.getName().matches("^" + Integer.toString(partitionId) + "_"
                                            + Integer.toString(replicaType) + "_"
@@ -188,6 +191,7 @@ public class HadoopStoreBuilderUtils {
         // Return it in sorted order
         Collections.sort(fileList, new Comparator<FileStatus>() {
 
+            @Override
             public int compare(FileStatus f1, FileStatus f2) {
                 int chunkId1 = ReadOnlyUtils.getChunkId(f1.getPath().getName());
                 int chunkId2 = ReadOnlyUtils.getChunkId(f2.getPath().getName());

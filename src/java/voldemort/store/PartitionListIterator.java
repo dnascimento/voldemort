@@ -44,6 +44,7 @@ public class PartitionListIterator implements ClosableIterator<Pair<ByteArray, V
         this.currentIndex = 0;
     }
 
+    @Override
     public boolean hasNext() {
         // do we have more elements in the current partition we are serving?
         if(this.partitionIterator != null && this.partitionIterator.hasNext())
@@ -62,12 +63,14 @@ public class PartitionListIterator implements ClosableIterator<Pair<ByteArray, V
         return false;
     }
 
+    @Override
     public Pair<ByteArray, Versioned<byte[]>> next() {
         if(!hasNext())
             throw new NoSuchElementException("End of partition entries stream");
         return this.partitionIterator.next();
     }
 
+    @Override
     public void remove() {
         throw new UnsupportedOperationException("Removal not supported");
     }
@@ -77,6 +80,7 @@ public class PartitionListIterator implements ClosableIterator<Pair<ByteArray, V
         close();
     }
 
+    @Override
     public void close() {
         if(partitionIterator != null) {
             partitionIterator.close();

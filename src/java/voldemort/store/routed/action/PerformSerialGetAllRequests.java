@@ -72,6 +72,7 @@ public class PerformSerialGetAllRequests
         this.allowPartial = allowPartial;
     }
 
+    @Override
     public void execute(Pipeline pipeline) {
         Map<ByteArray, List<Versioned<byte[]>>> result = pipelineData.getResult();
 

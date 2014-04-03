@@ -39,6 +39,7 @@ public abstract class JsonConfigurable implements JobConfigurable, Closeable {
     private JsonTypeSerializer _outputKeySerializer;
     private JsonTypeSerializer _outputValueSerializer;
 
+    @Override
     public void close() throws IOException {
 
     }

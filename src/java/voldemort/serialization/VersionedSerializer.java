@@ -36,6 +36,7 @@ public class VersionedSerializer<T> implements Serializer<Versioned<T>> {
         this.innerSerializer = innerSerializer;
     }
 
+    @Override
     public byte[] toBytes(Versioned<T> versioned) {
         byte[] versionBytes = null;
         if(versioned.getVersion() == null)
@@ -46,6 +47,7 @@ public class VersionedSerializer<T> implements Serializer<Versioned<T>> {
         return ByteUtils.cat(versionBytes, objectBytes);
     }
 
+    @Override
     public Versioned<T> toObject(byte[] bytes) {
         VectorClock vectorClock = getVectorClock(bytes);
 

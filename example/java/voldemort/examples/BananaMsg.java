@@ -59,6 +59,7 @@ public final class BananaMsg {
       return defaultInstance;
     }
 
+    @Override
     public Banana getDefaultInstanceForType() {
       return defaultInstance;
     }
@@ -119,6 +120,7 @@ public final class BananaMsg {
       return voldemort.examples.BananaMsg.internal_static_voldemort_examples_Banana_descriptor;
     }
 
+    @Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return voldemort.examples.BananaMsg.internal_static_voldemort_examples_Banana_fieldAccessorTable
@@ -128,7 +130,8 @@ public final class BananaMsg {
 
     public static com.google.protobuf.Parser<Banana> PARSER =
         new com.google.protobuf.AbstractParser<Banana>() {
-      public Banana parsePartialFrom(
+      @Override
+    public Banana parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -148,12 +151,14 @@ public final class BananaMsg {
     /**
      * <code>optional string nome = 1;</code>
      */
+    @Override
     public boolean hasNome() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
      * <code>optional string nome = 1;</code>
      */
+    @Override
     public java.lang.String getNome() {
       java.lang.Object ref = nome_;
       if (ref instanceof java.lang.String) {
@@ -171,6 +176,7 @@ public final class BananaMsg {
     /**
      * <code>optional string nome = 1;</code>
      */
+    @Override
     public com.google.protobuf.ByteString
         getNomeBytes() {
       java.lang.Object ref = nome_;
@@ -191,12 +197,14 @@ public final class BananaMsg {
     /**
      * <code>optional string tipo = 2;</code>
      */
+    @Override
     public boolean hasTipo() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
      * <code>optional string tipo = 2;</code>
      */
+    @Override
     public java.lang.String getTipo() {
       java.lang.Object ref = tipo_;
       if (ref instanceof java.lang.String) {
@@ -214,6 +222,7 @@ public final class BananaMsg {
     /**
      * <code>optional string tipo = 2;</code>
      */
+    @Override
     public com.google.protobuf.ByteString
         getTipoBytes() {
       java.lang.Object ref = tipo_;
@@ -233,6 +242,7 @@ public final class BananaMsg {
       tipo_ = "";
     }
     private byte memoizedIsInitialized = -1;
+    @Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
@@ -241,6 +251,7 @@ public final class BananaMsg {
       return true;
     }
 
+    @Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
@@ -254,6 +265,7 @@ public final class BananaMsg {
     }
 
     private int memoizedSerializedSize = -1;
+    @Override
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
@@ -333,10 +345,12 @@ public final class BananaMsg {
     }
 
     public static Builder newBuilder() { return Builder.create(); }
+    @Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder(voldemort.examples.BananaMsg.Banana prototype) {
       return newBuilder().mergeFrom(prototype);
     }
+    @Override
     public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
@@ -356,7 +370,8 @@ public final class BananaMsg {
         return voldemort.examples.BananaMsg.internal_static_voldemort_examples_Banana_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      @Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return voldemort.examples.BananaMsg.internal_static_voldemort_examples_Banana_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -381,7 +396,8 @@ public final class BananaMsg {
         return new Builder();
       }
 
-      public Builder clear() {
+      @Override
+    public Builder clear() {
         super.clear();
         nome_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -390,20 +406,24 @@ public final class BananaMsg {
         return this;
       }
 
-      public Builder clone() {
+      @Override
+    public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
 
-      public com.google.protobuf.Descriptors.Descriptor
+      @Override
+    public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return voldemort.examples.BananaMsg.internal_static_voldemort_examples_Banana_descriptor;
       }
 
-      public voldemort.examples.BananaMsg.Banana getDefaultInstanceForType() {
+      @Override
+    public voldemort.examples.BananaMsg.Banana getDefaultInstanceForType() {
         return voldemort.examples.BananaMsg.Banana.getDefaultInstance();
       }
 
-      public voldemort.examples.BananaMsg.Banana build() {
+      @Override
+    public voldemort.examples.BananaMsg.Banana build() {
         voldemort.examples.BananaMsg.Banana result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
@@ -411,7 +431,8 @@ public final class BananaMsg {
         return result;
       }
 
-      public voldemort.examples.BananaMsg.Banana buildPartial() {
+      @Override
+    public voldemort.examples.BananaMsg.Banana buildPartial() {
         voldemort.examples.BananaMsg.Banana result = new voldemort.examples.BananaMsg.Banana(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
@@ -428,7 +449,8 @@ public final class BananaMsg {
         return result;
       }
 
-      public Builder mergeFrom(com.google.protobuf.Message other) {
+      @Override
+    public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof voldemort.examples.BananaMsg.Banana) {
           return mergeFrom((voldemort.examples.BananaMsg.Banana)other);
         } else {
@@ -453,11 +475,13 @@ public final class BananaMsg {
         return this;
       }
 
-      public final boolean isInitialized() {
+      @Override
+    public final boolean isInitialized() {
         return true;
       }
 
-      public Builder mergeFrom(
+      @Override
+    public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -481,13 +505,15 @@ public final class BananaMsg {
       /**
        * <code>optional string nome = 1;</code>
        */
-      public boolean hasNome() {
+      @Override
+    public boolean hasNome() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
        * <code>optional string nome = 1;</code>
        */
-      public java.lang.String getNome() {
+      @Override
+    public java.lang.String getNome() {
         java.lang.Object ref = nome_;
         if (!(ref instanceof java.lang.String)) {
           java.lang.String s = ((com.google.protobuf.ByteString) ref)
@@ -501,7 +527,8 @@ public final class BananaMsg {
       /**
        * <code>optional string nome = 1;</code>
        */
-      public com.google.protobuf.ByteString
+      @Override
+    public com.google.protobuf.ByteString
           getNomeBytes() {
         java.lang.Object ref = nome_;
         if (ref instanceof String) {
@@ -555,13 +582,15 @@ public final class BananaMsg {
       /**
        * <code>optional string tipo = 2;</code>
        */
-      public boolean hasTipo() {
+      @Override
+    public boolean hasTipo() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
        * <code>optional string tipo = 2;</code>
        */
-      public java.lang.String getTipo() {
+      @Override
+    public java.lang.String getTipo() {
         java.lang.Object ref = tipo_;
         if (!(ref instanceof java.lang.String)) {
           java.lang.String s = ((com.google.protobuf.ByteString) ref)
@@ -575,7 +604,8 @@ public final class BananaMsg {
       /**
        * <code>optional string tipo = 2;</code>
        */
-      public com.google.protobuf.ByteString
+      @Override
+    public com.google.protobuf.ByteString
           getTipoBytes() {
         java.lang.Object ref = tipo_;
         if (ref instanceof String) {
@@ -654,6 +684,7 @@ public final class BananaMsg {
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
+        @Override
         public com.google.protobuf.ExtensionRegistry assignDescriptors(
             com.google.protobuf.Descriptors.FileDescriptor root) {
           descriptor = root;

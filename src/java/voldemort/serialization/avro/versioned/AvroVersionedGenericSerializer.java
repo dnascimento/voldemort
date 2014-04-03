@@ -71,6 +71,7 @@ public class AvroVersionedGenericSerializer implements Serializer<Object> {
 
     }
 
+    @Override
     public byte[] toBytes(Object object) {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         Encoder encoder = new BinaryEncoder(output);
@@ -143,6 +144,7 @@ public class AvroVersionedGenericSerializer implements Serializer<Object> {
         throw new SerializationException("Writer's schema invalid!");
     }
 
+    @Override
     public Object toObject(byte[] bytes) {
 
         Integer version = Integer.valueOf(bytes[0]);

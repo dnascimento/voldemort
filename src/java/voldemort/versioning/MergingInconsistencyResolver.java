@@ -33,6 +33,7 @@ public class MergingInconsistencyResolver<T> implements InconsistencyResolver<Ve
         this.merger = merger;
     }
 
+    @Override
     public List<Versioned<T>> resolveConflicts(List<Versioned<T>> items) {
         if(items.size() <= 1) {
             return items;

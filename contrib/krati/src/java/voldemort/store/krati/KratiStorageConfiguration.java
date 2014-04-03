@@ -44,8 +44,10 @@ public class KratiStorageConfiguration implements StorageConfiguration {
                                                                    MappedSegmentFactory.class.getName()));
     }
 
+    @Override
     public void close() {}
 
+    @Override
     public StorageEngine<ByteArray, byte[], byte[]> getStore(StoreDefinition storeDef,
                                                              RoutingStrategy strategy) {
         synchronized(lock) {
@@ -66,10 +68,12 @@ public class KratiStorageConfiguration implements StorageConfiguration {
         }
     }
 
+    @Override
     public String getType() {
         return TYPE_NAME;
     }
 
+    @Override
     public void update(StoreDefinition storeDef) {
         throw new VoldemortException("Storage config updates not permitted for "
                                      + this.getClass().getCanonicalName());

@@ -671,6 +671,7 @@ public class JsonStoreBuilder {
 
         private final MessageDigest digest = ByteUtils.getDigest("MD5");
 
+        @Override
         public byte[] toBytes(KeyValuePair pair) {
             byte[] key = pair.getKey();
             byte[] value = pair.getValue();
@@ -683,6 +684,7 @@ public class JsonStoreBuilder {
             return bytes;
         }
 
+        @Override
         public KeyValuePair toObject(byte[] bytes) {
             int keySize = ByteUtils.readInt(bytes, 0);
             int valueSize = ByteUtils.readInt(bytes, 4);
@@ -761,6 +763,7 @@ public class JsonStoreBuilder {
 
     public static class KeyMd5Comparator implements Comparator<KeyValuePair> {
 
+        @Override
         public int compare(KeyValuePair kv1, KeyValuePair kv2) {
             return ByteUtils.compare(kv1.getKeyMd5(), kv2.getKeyMd5());
         }

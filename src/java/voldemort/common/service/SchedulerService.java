@@ -205,6 +205,7 @@ public class SchedulerService extends AbstractService {
         public SchedulerThreadPool(int numThreads) {
             super(numThreads, new ThreadFactory() {
 
+                @Override
                 public Thread newThread(Runnable r) {
                     Thread thread = new Thread(r);
                     thread.setDaemon(true);

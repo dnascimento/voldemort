@@ -29,6 +29,7 @@ public class Closer extends BaseCloser<Closeable> implements Closeable {
         return executed();
     }
 
+    @Override
     protected void onDelegate(Closeable delegate) throws IOException {
         delegate.close();
     }

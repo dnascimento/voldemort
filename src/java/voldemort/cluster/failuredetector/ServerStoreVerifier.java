@@ -57,6 +57,7 @@ public class ServerStoreVerifier implements StoreVerifier {
         stores = new HashMap<Integer, Store<ByteArray, byte[], byte[]>>();
     }
 
+    @Override
     public void verifyStore(Node node) throws UnreachableStoreException, VoldemortException {
         Store<ByteArray, byte[], byte[]> store = null;
 
@@ -80,6 +81,7 @@ public class ServerStoreVerifier implements StoreVerifier {
         store.get(KEY, null, 0L);
     }
 
+    @Override
     public void flushCachedStores() {
         this.stores.clear();
     }

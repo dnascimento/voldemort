@@ -78,6 +78,7 @@ public class SocketStoreClientFactory extends AbstractStoreClientFactory {
         if(getConfig().isLazyEnabled())
             return new LazyStoreClient<K, V>(new Callable<StoreClient<K, V>>() {
 
+                @Override
                 public StoreClient<K, V> call() throws Exception {
                     return getParentStoreClient(storeName, resolver);
                 }
@@ -118,10 +119,12 @@ public class SocketStoreClientFactory extends AbstractStoreClientFactory {
     protected FailureDetector initFailureDetector(final ClientConfig config, Cluster cluster) {
         failureDetectorListener = new FailureDetectorListener() {
 
+            @Override
             public void nodeAvailable(Node node) {
 
             }
 
+            @Override
             public void nodeUnavailable(Node node) {
                 if(logger.isInfoEnabled())
                     logger.info(node + " has been marked as unavailable, destroying socket pool");

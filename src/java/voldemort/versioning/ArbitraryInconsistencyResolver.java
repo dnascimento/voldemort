@@ -34,6 +34,7 @@ public class ArbitraryInconsistencyResolver<T> implements InconsistencyResolver<
      * @param values The list of objects
      * @return A single value, if one exists, taken from the input list.
      */
+    @Override
     public List<T> resolveConflicts(List<T> values) {
         if(values.size() > 1)
             return values;

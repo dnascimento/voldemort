@@ -68,6 +68,7 @@ public class SocketResourceFactory implements ResourceFactory<SocketDestination,
     /**
      * Close the socket
      */
+    @Override
     public void destroy(SocketDestination dest, SocketAndStreams sands) throws Exception {
         sands.getSocket().close();
         int numDestroyed = destroyed.incrementAndGet();
@@ -79,6 +80,7 @@ public class SocketResourceFactory implements ResourceFactory<SocketDestination,
     /**
      * Create a socket for the given host/port
      */
+    @Override
     public SocketAndStreams create(SocketDestination dest) throws Exception {
         Socket socket = new Socket();
         socket.setReceiveBufferSize(this.socketBufferSize);
@@ -132,6 +134,7 @@ public class SocketResourceFactory implements ResourceFactory<SocketDestination,
                          + " bytes but actual size is " + sendBufferSize + " bytes.");
     }
 
+    @Override
     public boolean validate(SocketDestination dest, SocketAndStreams sands) {
         /**
          * Keep track of the last time that we closed the sockets for a specific
@@ -174,6 +177,7 @@ public class SocketResourceFactory implements ResourceFactory<SocketDestination,
         return this.destroyed.get();
     }
 
+    @Override
     public void close() {}
 
     /**

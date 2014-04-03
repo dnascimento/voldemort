@@ -100,6 +100,7 @@ public final class Versioned<T> implements Serializable {
 
     public static final class HappenedBeforeComparator<S> implements Comparator<Versioned<S>> {
 
+        @Override
         public int compare(Versioned<S> v1, Versioned<S> v2) {
             Occurred occurred = v1.getVersion().compare(v2.getVersion());
             if(occurred == Occurred.BEFORE)

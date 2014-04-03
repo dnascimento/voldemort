@@ -144,6 +144,7 @@ public class VoldemortSwapJob extends AbstractJob {
         }
     }
 
+    @Override
     public void run() throws Exception {
         String dataDir = swapConf.getDataDir();
         String storeName = swapConf.getStoreName();

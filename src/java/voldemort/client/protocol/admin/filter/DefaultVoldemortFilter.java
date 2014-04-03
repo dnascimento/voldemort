@@ -21,6 +21,7 @@ import voldemort.versioning.Versioned;
 
 public class DefaultVoldemortFilter implements VoldemortFilter {
 
+    @Override
     public boolean accept(Object key, Versioned<?> value) {
         return true;
     }

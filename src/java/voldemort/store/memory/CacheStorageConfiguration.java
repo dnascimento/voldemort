@@ -46,8 +46,10 @@ public class CacheStorageConfiguration implements StorageConfiguration {
     @SuppressWarnings("unused")
     public CacheStorageConfiguration(VoldemortConfig config) {}
 
+    @Override
     public void close() {}
 
+    @Override
     public StorageEngine<ByteArray, byte[], byte[]> getStore(StoreDefinition storeDef,
                                                              RoutingStrategy strategy) {
         ConcurrentMap<ByteArray, List<Versioned<byte[]>>> backingMap = new MapMaker().softValues()
@@ -55,10 +57,12 @@ public class CacheStorageConfiguration implements StorageConfiguration {
         return new InMemoryStorageEngine<ByteArray, byte[], byte[]>(storeDef.getName(), backingMap);
     }
 
+    @Override
     public String getType() {
         return TYPE_NAME;
     }
 
+    @Override
     public void update(StoreDefinition storeDef) {
         throw new VoldemortException("Storage config updates not permitted for " + this.getType()
                                      + " storage engine");

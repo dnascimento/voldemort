@@ -101,6 +101,7 @@ public class StreamingSlopPusherJob extends SlopPusherJob implements Runnable {
         this.zoneMapping = Maps.newHashMap();
         this.consumerExecutor = Executors.newCachedThreadPool(new ThreadFactory() {
 
+            @Override
             public Thread newThread(Runnable r) {
                 Thread thread = new Thread(r);
                 thread.setName("slop-pusher");
@@ -109,6 +110,7 @@ public class StreamingSlopPusherJob extends SlopPusherJob implements Runnable {
         });
     }
 
+    @Override
     public void run() {
         // load the metadata before each run, in case the cluster is changed
         loadMetadata();
@@ -434,6 +436,7 @@ public class StreamingSlopPusherJob extends SlopPusherJob implements Runnable {
             this.current = Lists.newArrayList();
         }
 
+        @Override
         public void run() {
             try {
                 SlopIterator iterator = null;

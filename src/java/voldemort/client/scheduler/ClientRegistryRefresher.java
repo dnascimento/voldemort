@@ -90,6 +90,7 @@ public class ClientRegistryRefresher implements Runnable {
         }
     }
 
+    @Override
     public void run() {
         publishRegistry();
     }

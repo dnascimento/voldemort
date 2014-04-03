@@ -56,6 +56,7 @@ public class DefaultSerializerFactory implements SerializerFactory {
     // this will break existing clients while looking for the version byte
     public static final String AVRO_GENERIC_VERSIONED_TYPE_NAME = "avro-generic-versioned";
 
+    @Override
     public Serializer<?> getSerializer(SerializerDefinition serializerDef) {
         String name = serializerDef.getName();
         if(name.equals(JAVA_SERIALIZER_TYPE_NAME)) {

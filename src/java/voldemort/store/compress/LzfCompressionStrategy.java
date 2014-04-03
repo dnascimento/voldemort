@@ -11,14 +11,17 @@ import com.ning.compress.lzf.LZFEncoder;
  */
 public class LzfCompressionStrategy implements CompressionStrategy {
 
+    @Override
     public String getType() {
         return "lzf";
     }
 
+    @Override
     public byte[] deflate(byte[] data) throws IOException {
         return LZFEncoder.encode(data);
     }
 
+    @Override
     public byte[] inflate(byte[] data) throws IOException {
         return LZFDecoder.decode(data);
     }

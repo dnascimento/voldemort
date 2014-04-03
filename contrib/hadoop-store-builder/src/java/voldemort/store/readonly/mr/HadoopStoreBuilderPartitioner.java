@@ -30,6 +30,7 @@ import voldemort.utils.ByteUtils;
 public class HadoopStoreBuilderPartitioner extends AbstractStoreBuilderConfigurable implements
         Partitioner<BytesWritable, BytesWritable> {
 
+    @Override
     public int getPartition(BytesWritable key, BytesWritable value, int numReduceTasks) {
         int partitionId = ByteUtils.readInt(value.get(), ByteUtils.SIZE_OF_INT);
         int chunkId = ReadOnlyUtils.chunk(key.get(), getNumChunks());

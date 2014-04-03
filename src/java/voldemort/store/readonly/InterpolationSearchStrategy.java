@@ -14,6 +14,7 @@ import voldemort.utils.ByteUtils;
  */
 public class InterpolationSearchStrategy implements SearchStrategy {
 
+    @Override
     public int indexOf(ByteBuffer index, byte[] key, int indexFileSize) {
         int guess;
         int lowIdx = 0;

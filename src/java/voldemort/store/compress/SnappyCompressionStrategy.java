@@ -19,14 +19,17 @@ import java.io.OutputStream;
 @Experimental
 public class SnappyCompressionStrategy extends StreamCompressionStrategy {
 
+    @Override
     public String getType() {
         return "snappy";
     }
 
+    @Override
     protected OutputStream wrapOutputStream(OutputStream underlying) throws IOException {
         return new SnappyOutputStream(underlying);
     }
 
+    @Override
     protected InputStream wrapInputStream(InputStream underlying) throws IOException {
         return new SnappyInputStream(underlying);
     }

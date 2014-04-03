@@ -18,6 +18,7 @@ abstract class BdbIterator<T> implements ClosableIterator<T> {
 
     }
 
+    @Override
     public final void close() {
         try {
             if(isOpen) {
@@ -29,6 +30,7 @@ abstract class BdbIterator<T> implements ClosableIterator<T> {
         }
     }
 
+    @Override
     public final void remove() {
         throw new UnsupportedOperationException("No removal");
     }

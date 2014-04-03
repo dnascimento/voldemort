@@ -838,10 +838,13 @@ public class ConsistencyCheck {
     public static abstract class Value {
         abstract Occurred compare(Value v);
 
+        @Override
         public abstract boolean equals(Object obj);
 
+        @Override
         public abstract int hashCode();
 
+        @Override
         public abstract String toString();
 
         public abstract boolean isExpired(long expiredTimeMs);
@@ -857,6 +860,7 @@ public class ConsistencyCheck {
             this.version = versioned.getVersion();
         }
 
+        @Override
         public Occurred compare(Value v) {
             if (!(v instanceof VersionValue)) {
                 throw new VoldemortException(" Expected type VersionValue found type " + v.getClass().getCanonicalName());
@@ -892,10 +896,12 @@ public class ConsistencyCheck {
             return record.toString();
         }
 
+        @Override
         public boolean isExpired(long expiredTimeMs) {
             return ((VectorClock) version).getTimestamp() < expiredTimeMs;
         }
 
+        @Override
         public boolean isTimeStampLaterThan(Value currentLatest) {
             if (!(currentLatest instanceof VersionValue)) {
                 throw new VoldemortException(
@@ -944,6 +950,7 @@ public class ConsistencyCheck {
             return result;
         }
 
+        @Override
         public Occurred compare(Value v) {
             // TODO: Return before if they are equal.
             return Occurred.CONCURRENTLY; // always regard as conflict
@@ -954,6 +961,7 @@ public class ConsistencyCheck {
             return valueHash;
         }
 
+        @Override
         public boolean isExpired(long expiredTimeMs) {
             return ((VectorClock) innerVersion).getTimestamp() < expiredTimeMs;
         }
@@ -969,6 +977,7 @@ public class ConsistencyCheck {
         }
 
 
+        @Override
         public boolean isTimeStampLaterThan(Value currentLatest) {
             if (!(currentLatest instanceof HashedValue)) {
                 throw new VoldemortException(

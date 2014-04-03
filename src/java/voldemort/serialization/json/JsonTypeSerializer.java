@@ -74,6 +74,7 @@ public class JsonTypeSerializer implements Serializer<Object> {
         this.typeDefVersions = new TreeMap<Integer, JsonTypeDefinition>(typeDefVersions);
     }
 
+    @Override
     public byte[] toBytes(Object object) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         DataOutputStream output = new DataOutputStream(bytes);
@@ -94,6 +95,7 @@ public class JsonTypeSerializer implements Serializer<Object> {
         write(output, object, typeDef.getType());
     }
 
+    @Override
     public Object toObject(byte[] bytes) {
         DataInputStream input = new DataInputStream(new ByteArrayInputStream(bytes));
         try {

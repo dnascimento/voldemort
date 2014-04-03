@@ -12,6 +12,7 @@ import voldemort.utils.ByteUtils;
  */
 public class BinarySearchStrategy implements SearchStrategy {
 
+    @Override
     public int indexOf(ByteBuffer index, byte[] key, int indexFileSize) {
         byte[] keyBuffer = new byte[key.length];
         int indexSize = ReadOnlyUtils.POSITION_SIZE + key.length;

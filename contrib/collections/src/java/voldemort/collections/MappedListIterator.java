@@ -24,6 +24,7 @@ public interface MappedListIterator<K, E> extends Iterator<E> {
      * 
      * @see java.util.Iterator#hasNext()
      */
+    @Override
     boolean hasNext();
 
     /**
@@ -41,6 +42,7 @@ public interface MappedListIterator<K, E> extends Iterator<E> {
      * 
      * @see java.util.Iterator#next()
      */
+    @Override
     E next();
 
     /**
@@ -88,6 +90,7 @@ public interface MappedListIterator<K, E> extends Iterator<E> {
      * 
      * @see java.util.Iterator#remove()
      */
+    @Override
     void remove();
 
     /**

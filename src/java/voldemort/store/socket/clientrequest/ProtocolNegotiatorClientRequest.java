@@ -33,6 +33,7 @@ public class ProtocolNegotiatorClientRequest extends AbstractClientRequest<Strin
         this.requestFormatType = requestFormatType;
     }
 
+    @Override
     public boolean isCompleteResponse(ByteBuffer buffer) {
         return buffer.remaining() == 2;
     }

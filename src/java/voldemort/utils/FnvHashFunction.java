@@ -31,6 +31,7 @@ public class FnvHashFunction implements HashFunction {
     public static final long FNV_BASIS_64 = 0xCBF29CE484222325L;
     public static final long FNV_PRIME_64 = 1099511628211L;
 
+    @Override
     public int hash(byte[] key) {
         long hash = FNV_BASIS;
         for(int i = 0; i < key.length; i++) {

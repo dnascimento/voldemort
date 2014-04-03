@@ -45,6 +45,7 @@ public class BdbEnvironmentStats {
         this.exposeSpaceStats = exposeSpaceUtil;
         Callable<EnvironmentStats> fastStatsCallable = new Callable<EnvironmentStats>() {
 
+            @Override
             public EnvironmentStats call() throws Exception {
                 return getEnvironmentStats(true);
             }
@@ -53,6 +54,7 @@ public class BdbEnvironmentStats {
 
         Callable<SpaceUtilizationStats> fastDbStatsCallable = new Callable<SpaceUtilizationStats>() {
 
+            @Override
             public SpaceUtilizationStats call() throws Exception {
                 return getSpaceUtilizationStats();
             }
@@ -61,6 +63,7 @@ public class BdbEnvironmentStats {
 
         Callable<Long> entryCountCallable = new Callable<Long>() {
 
+            @Override
             public Long call() throws Exception {
                 return getEntryCountUncached();
             }
@@ -69,6 +72,7 @@ public class BdbEnvironmentStats {
 
         Callable<DatabaseStats> btreeStatsCallable = new Callable<DatabaseStats>() {
 
+            @Override
             public DatabaseStats call() throws Exception {
                 return getBtreeStatsUncached();
             }

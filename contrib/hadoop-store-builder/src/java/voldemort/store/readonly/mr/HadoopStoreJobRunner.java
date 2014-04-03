@@ -96,6 +96,7 @@ public class HadoopStoreJobRunner extends Configured implements Tool {
         return parser;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public int run(String[] args) throws Exception {
 

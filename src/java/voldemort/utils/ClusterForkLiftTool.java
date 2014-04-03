@@ -256,6 +256,7 @@ public class ClusterForkLiftTool implements Runnable {
             super(storeInstance, partitionId, latch);
         }
 
+        @Override
         public void run() {
             String storeName = this.storeInstance.getStoreDefinition().getName();
             long entriesForkLifted = 0;

@@ -64,6 +64,7 @@ public class VListNode<T> extends Identified<T, Integer> {
         return (Boolean) _map.get(STABLE);
     }
 
+    @Override
     public String toString() {
         return _map.toString();
     }

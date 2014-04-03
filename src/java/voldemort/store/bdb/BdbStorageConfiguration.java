@@ -168,6 +168,7 @@ public class BdbStorageConfiguration implements StorageConfiguration {
         }
     }
 
+    @Override
     public StorageEngine<ByteArray, byte[], byte[]> getStore(StoreDefinition storeDef,
                                                              RoutingStrategy strategy) {
         synchronized(lock) {
@@ -307,6 +308,7 @@ public class BdbStorageConfiguration implements StorageConfiguration {
         logger.info("    BDB " + config.toString().replace('\n', ','));
     }
 
+    @Override
     public String getType() {
         return TYPE_NAME;
     }
@@ -373,6 +375,7 @@ public class BdbStorageConfiguration implements StorageConfiguration {
         }
     }
 
+    @Override
     public void close() {
         synchronized(lock) {
             try {
@@ -392,6 +395,7 @@ public class BdbStorageConfiguration implements StorageConfiguration {
      * 
      * @param storeDef updated store definition
      */
+    @Override
     public void update(StoreDefinition storeDef) {
         if(!useOneEnvPerStore)
             throw new VoldemortException("Memory foot print can be set only when using different environments per store");

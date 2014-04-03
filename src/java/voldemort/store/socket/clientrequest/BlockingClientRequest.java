@@ -48,11 +48,13 @@ public class BlockingClientRequest<T> implements ClientRequest<T> {
         latch = new CountDownLatch(1);
     }
 
+    @Override
     public void complete() {
         delegate.complete();
         latch.countDown();
     }
 
+    @Override
     public boolean isComplete() {
         return delegate.isComplete() && latch.getCount() == 0;
     }
@@ -61,26 +63,32 @@ public class BlockingClientRequest<T> implements ClientRequest<T> {
         return latch.await(timeoutMs, TimeUnit.MILLISECONDS);
     }
 
+    @Override
     public T getResult() throws VoldemortException, IOException {
         return delegate.getResult();
     }
 
+    @Override
     public boolean isCompleteResponse(ByteBuffer buffer) {
         return delegate.isCompleteResponse(buffer);
     }
 
+    @Override
     public void parseResponse(DataInputStream inputStream) {
         delegate.parseResponse(inputStream);
     }
 
+    @Override
     public boolean formatRequest(DataOutputStream outputStream) {
         return delegate.formatRequest(outputStream);
     }
 
+    @Override
     public void timeOut() {
         delegate.timeOut();
     }
 
+    @Override
     public boolean isTimedOut() {
         return delegate.isTimedOut();
     }

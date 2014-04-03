@@ -175,14 +175,17 @@ public class StoreUtils {
     public static <K, V> ClosableIterator<K> keys(final ClosableIterator<Pair<K, V>> values) {
         return new ClosableIterator<K>() {
 
+            @Override
             public void close() {
                 values.close();
             }
 
+            @Override
             public boolean hasNext() {
                 return values.hasNext();
             }
 
+            @Override
             public K next() {
                 Pair<K, V> value = values.next();
                 if(value == null)
@@ -190,6 +193,7 @@ public class StoreUtils {
                 return value.getFirst();
             }
 
+            @Override
             public void remove() {
                 values.remove();
             }

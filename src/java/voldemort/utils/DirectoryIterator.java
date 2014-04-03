@@ -44,6 +44,7 @@ public class DirectoryIterator extends AbstractIterator<File> implements Closabl
         return endOfData();
     }
 
+    @Override
     public void close() {}
 
     /**

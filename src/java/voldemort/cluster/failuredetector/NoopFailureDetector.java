@@ -27,36 +27,47 @@ import voldemort.store.UnreachableStoreException;
 
 public class NoopFailureDetector implements FailureDetector {
 
+    @Override
     public long getLastChecked(Node node) {
         return -1;
     }
 
+    @Override
     public boolean isAvailable(Node node) {
         return true;
     }
 
+    @Override
     public FailureDetectorConfig getConfig() {
         return null;
     }
 
+    @Override
     public void recordException(Node node, long requestTime, UnreachableStoreException e) {}
 
+    @Override
     public void recordSuccess(Node node, long requestTime) {}
 
+    @Override
     public void addFailureDetectorListener(FailureDetectorListener failureDetectorListener) {}
 
+    @Override
     public void removeFailureDetectorListener(FailureDetectorListener failureDetectorListener) {}
 
+    @Override
     public int getAvailableNodeCount() {
         return -1;
     }
 
+    @Override
     public int getNodeCount() {
         return -1;
     }
 
+    @Override
     public void waitForAvailability(Node node) {}
 
+    @Override
     public void destroy() {}
 
 }

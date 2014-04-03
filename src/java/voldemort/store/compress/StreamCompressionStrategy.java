@@ -13,6 +13,7 @@ import org.apache.commons.io.IOUtils;
  */
 public abstract class StreamCompressionStrategy implements CompressionStrategy {
 
+    @Override
     public byte[] deflate(byte[] data) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         OutputStream gos = wrapOutputStream(bos);
@@ -25,6 +26,7 @@ public abstract class StreamCompressionStrategy implements CompressionStrategy {
 
     protected abstract InputStream wrapInputStream(InputStream underlying) throws IOException;
 
+    @Override
     public byte[] inflate(byte[] data) throws IOException {
         InputStream is = wrapInputStream(new ByteArrayInputStream(data));
         byte[] inflated = IOUtils.toByteArray(is);

@@ -92,6 +92,7 @@ public class Gossiper implements Runnable {
      * {@link voldemort.store.metadata.MetadataStore#GOSSIP_KEYS} with that peer
      * and then sleep for a specified interval.
      */
+    @Override
     public void run() {
         while(running.get()) {
             try {

@@ -79,6 +79,7 @@ public class Rebalancer implements Runnable {
     /**
      * This is called only once at startup
      */
+    @Override
     public void run() {}
 
     /**

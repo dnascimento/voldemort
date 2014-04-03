@@ -265,6 +265,7 @@ public final class VAdminProto {
     public static final int UPDATE_METADATA_PAIR_VALUE = 32;
 
 
+    @Override
     public final int getNumber() { return value; }
 
     public static AdminRequestType valueOf(int value) {
@@ -310,15 +311,18 @@ public final class VAdminProto {
     private static com.google.protobuf.Internal.EnumLiteMap<AdminRequestType>
         internalValueMap =
           new com.google.protobuf.Internal.EnumLiteMap<AdminRequestType>() {
+            @Override
             public AdminRequestType findValueByNumber(int number) {
               return AdminRequestType.valueOf(number);
             }
           };
 
+    @Override
     public final com.google.protobuf.Descriptors.EnumValueDescriptor
         getValueDescriptor() {
       return getDescriptor().getValues().get(index);
     }
+    @Override
     public final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptorForType() {
       return getDescriptor();
@@ -381,6 +385,7 @@ public final class VAdminProto {
       return defaultInstance;
     }
 
+    @Override
     public GetMetadataRequest getDefaultInstanceForType() {
       return defaultInstance;
     }
@@ -436,6 +441,7 @@ public final class VAdminProto {
       return voldemort.client.protocol.pb.VAdminProto.internal_static_voldemort_GetMetadataRequest_descriptor;
     }
 
+    @Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return voldemort.client.protocol.pb.VAdminProto.internal_static_voldemort_GetMetadataRequest_fieldAccessorTable
@@ -445,7 +451,8 @@ public final class VAdminProto {
 
     public static com.google.protobuf.Parser<GetMetadataRequest> PARSER =
         new com.google.protobuf.AbstractParser<GetMetadataRequest>() {
-      public GetMetadataRequest parsePartialFrom(
+      @Override
+    public GetMetadataRequest parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -465,12 +472,14 @@ public final class VAdminProto {
     /**
      * <code>required bytes key = 1;</code>
      */
+    @Override
     public boolean hasKey() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
      * <code>required bytes key = 1;</code>
      */
+    @Override
     public com.google.protobuf.ByteString getKey() {
       return key_;
     }
@@ -479,6 +488,7 @@ public final class VAdminProto {
       key_ = com.google.protobuf.ByteString.EMPTY;
     }
     private byte memoizedIsInitialized = -1;
+    @Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
@@ -491,6 +501,7 @@ public final class VAdminProto {
       return true;
     }
 
+    @Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
@@ -501,6 +512,7 @@ public final class VAdminProto {
     }
 
     private int memoizedSerializedSize = -1;
+    @Override
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
@@ -576,10 +588,12 @@ public final class VAdminProto {
     }
 
     public static Builder newBuilder() { return Builder.create(); }
+    @Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder(voldemort.client.protocol.pb.VAdminProto.GetMetadataRequest prototype) {
       return newBuilder().mergeFrom(prototype);
     }
+    @Override
     public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
@@ -599,7 +613,8 @@ public final class VAdminProto {
         return voldemort.client.protocol.pb.VAdminProto.internal_static_voldemort_GetMetadataRequest_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      @Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return voldemort.client.protocol.pb.VAdminProto.internal_static_voldemort_GetMetadataRequest_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -624,27 +639,32 @@ public final class VAdminProto {
         return new Builder();
       }
 
-      public Builder clear() {
+      @Override
+    public Builder clear() {
         super.clear();
         key_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
 
-      public Builder clone() {
+      @Override
+    public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
 
-      public com.google.protobuf.Descriptors.Descriptor
+      @Override
+    public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return voldemort.client.protocol.pb.VAdminProto.internal_static_voldemort_GetMetadataRequest_descriptor;
       }
 
-      public voldemort.client.protocol.pb.VAdminProto.GetMetadataRequest getDefaultInstanceForType() {
+      @Override
+    public voldemort.client.protocol.pb.VAdminProto.GetMetadataRequest getDefaultInstanceForType() {
         return voldemort.client.protocol.pb.VAdminProto.GetMetadataRequest.getDefaultInstance();
       }
 
-      public voldemort.client.protocol.pb.VAdminProto.GetMetadataRequest build() {
+      @Override
+    public voldemort.client.protocol.pb.VAdminProto.GetMetadataRequest build() {
         voldemort.client.protocol.pb.VAdminProto.GetMetadataRequest result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
@@ -652,7 +672,8 @@ public final class VAdminProto {
         return result;
       }
 
-      public voldemort.client.protocol.pb.VAdminProto.GetMetadataRequest buildPartial() {
+      @Override
+    public voldemort.client.protocol.pb.VAdminProto.GetMetadataRequest buildPartial() {
         voldemort.client.protocol.pb.VAdminProto.GetMetadataRequest result = new voldemort.client.protocol.pb.VAdminProto.GetMetadataRequest(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
@@ -665,7 +686,8 @@ public final class VAdminProto {
         return result;
       }
 
-      public Builder mergeFrom(com.google.protobuf.Message other) {
+      @Override
+    public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof voldemort.client.protocol.pb.VAdminProto.GetMetadataRequest) {
           return mergeFrom((voldemort.client.protocol.pb.VAdminProto.GetMetadataRequest)other);
         } else {
@@ -683,7 +705,8 @@ public final class VAdminProto {
         return this;
       }
 
-      public final boolean isInitialized() {
+      @Override
+    public final boolean isInitialized() {
         if (!hasKey()) {
           
           return false;
@@ -691,7 +714,8 @@ public final class VAdminProto {
         return true;
       }
 
-      public Builder mergeFrom(
+      @Override
+    public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -715,13 +739,15 @@ public final class VAdminProto {
       /**
        * <code>required bytes key = 1;</code>
        */
-      public boolean hasKey() {
+      @Override
+    public boolean hasKey() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
        * <code>required bytes key = 1;</code>
        */
-      public com.google.protobuf.ByteString getKey() {
+      @Override
+    public com.google.protobuf.ByteString getKey() {
         return key_;
       }
       /**
@@ -806,6 +832,7 @@ public final class VAdminProto {
       return defaultInstance;
     }
 
+    @Override
     public GetMetadataResponse getDefaultInstanceForType() {
       return defaultInstance;
     }
@@ -882,6 +909,7 @@ public final class VAdminProto {
       return voldemort.client.protocol.pb.VAdminProto.internal_static_voldemort_GetMetadataResponse_descriptor;
     }
 
+    @Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return voldemort.client.protocol.pb.VAdminProto.internal_static_voldemort_GetMetadataResponse_fieldAccessorTable
@@ -891,7 +919,8 @@ public final class VAdminProto {
 
     public static com.google.protobuf.Parser<GetMetadataResponse> PARSER =
         new com.google.protobuf.AbstractParser<GetMetadataResponse>() {
-      public GetMetadataResponse parsePartialFrom(
+      @Override
+    public GetMetadataResponse parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -911,18 +940,21 @@ public final class VAdminProto {
     /**
      * <code>optional .voldemort.Versioned version = 1;</code>
      */
+    @Override
     public boolean hasVersion() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
      * <code>optional .voldemort.Versioned version = 1;</code>
      */
+    @Override
     public voldemort.client.protocol.pb.VProto.Versioned getVersion() {
       return version_;
     }
     /**
      * <code>optional .voldemort.Versioned version = 1;</code>
      */
+    @Override
     public voldemort.client.protocol.pb.VProto.VersionedOrBuilder getVersionOrBuilder() {
       return version_;
     }
@@ -933,18 +965,21 @@ public final class VAdminProto {
     /**
      * <code>optional .voldemort.Error error = 2;</code>
      */
+    @Override
     public boolean hasError() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
      * <code>optional .voldemort.Error error = 2;</code>
      */
+    @Override
     public voldemort.client.protocol.pb.VProto.Error getError() {
       return error_;
     }
     /**
      * <code>optional .voldemort.Error error = 2;</code>
      */
+    @Override
     public voldemort.client.protocol.pb.VProto.ErrorOrBuilder getErrorOrBuilder() {
       return error_;
     }
@@ -954,6 +989,7 @@ public final class VAdminProto {
       error_ = voldemort.client.protocol.pb.VProto.Error.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
+    @Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
@@ -974,6 +1010,7 @@ public final class VAdminProto {
       return true;
     }
 
+    @Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
@@ -987,6 +1024,7 @@ public final class VAdminProto {
     }
 
     private int memoizedSerializedSize = -1;
+    @Override
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
@@ -1066,10 +1104,12 @@ public final class VAdminProto {
     }
 
     public static Builder newBuilder() { return Builder.create(); }
+    @Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder(voldemort.client.protocol.pb.VAdminProto.GetMetadataResponse prototype) {
       return newBuilder().mergeFrom(prototype);
     }
+    @Override
     public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
@@ -1089,7 +1129,8 @@ public final class VAdminProto {
         return voldemort.client.protocol.pb.VAdminProto.internal_static_voldemort_GetMetadataResponse_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      @Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return voldemort.client.protocol.pb.VAdminProto.internal_static_voldemort_GetMetadataResponse_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -1116,7 +1157,8 @@ public final class VAdminProto {
         return new Builder();
       }
 
-      public Builder clear() {
+      @Override
+    public Builder clear() {
         super.clear();
         if (versionBuilder_ == null) {
           version_ = voldemort.client.protocol.pb.VProto.Versioned.getDefaultInstance();
@@ -1133,20 +1175,24 @@ public final class VAdminProto {
         return this;
       }
 
-      public Builder clone() {
+      @Override
+    public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
 
-      public com.google.protobuf.Descriptors.Descriptor
+      @Override
+    public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return voldemort.client.protocol.pb.VAdminProto.internal_static_voldemort_GetMetadataResponse_descriptor;
       }
 
-      public voldemort.client.protocol.pb.VAdminProto.GetMetadataResponse getDefaultInstanceForType() {
+      @Override
+    public voldemort.client.protocol.pb.VAdminProto.GetMetadataResponse getDefaultInstanceForType() {
         return voldemort.client.protocol.pb.VAdminProto.GetMetadataResponse.getDefaultInstance();
       }
 
-      public voldemort.client.protocol.pb.VAdminProto.GetMetadataResponse build() {
+      @Override
+    public voldemort.client.protocol.pb.VAdminProto.GetMetadataResponse build() {
         voldemort.client.protocol.pb.VAdminProto.GetMetadataResponse result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
@@ -1154,7 +1200,8 @@ public final class VAdminProto {
         return result;
       }
 
-      public voldemort.client.protocol.pb.VAdminProto.GetMetadataResponse buildPartial() {
+      @Override
+    public voldemort.client.protocol.pb.VAdminProto.GetMetadataResponse buildPartial() {
         voldemort.client.protocol.pb.VAdminProto.GetMetadataResponse result = new voldemort.client.protocol.pb.VAdminProto.GetMetadataResponse(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
@@ -1179,7 +1226,8 @@ public final class VAdminProto {
         return result;
       }
 
-      public Builder mergeFrom(com.google.protobuf.Message other) {
+      @Override
+    public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof voldemort.client.protocol.pb.VAdminProto.GetMetadataResponse) {
           return mergeFrom((voldemort.client.protocol.pb.VAdminProto.GetMetadataResponse)other);
         } else {
@@ -1200,7 +1248,8 @@ public final class VAdminProto {
         return this;
       }
 
-      public final boolean isInitialized() {
+      @Override
+    public final boolean isInitialized() {
         if (hasVersion()) {
           if (!getVersion().isInitialized()) {
             
@@ -1216,7 +1265,8 @@ public final class VAdminProto {
         return true;
       }
 
-      public Builder mergeFrom(
+      @Override
+    public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -1242,13 +1292,15 @@ public final class VAdminProto {
       /**
        * <code>optional .voldemort.Versioned version = 1;</code>
        */
-      public boolean hasVersion() {
+      @Override
+    public boolean hasVersion() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
        * <code>optional .voldemort.Versioned version = 1;</code>
        */
-      public voldemort.client.protocol.pb.VProto.Versioned getVersion() {
+      @Override
+    public voldemort.client.protocol.pb.VProto.Versioned getVersion() {
         if (versionBuilder_ == null) {
           return version_;
         } else {
@@ -1328,7 +1380,8 @@ public final class VAdminProto {
       /**
        * <code>optional .voldemort.Versioned version = 1;</code>
        */
-      public voldemort.client.protocol.pb.VProto.VersionedOrBuilder getVersionOrBuilder() {
+      @Override
+    public voldemort.client.protocol.pb.VProto.VersionedOrBuilder getVersionOrBuilder() {
         if (versionBuilder_ != null) {
           return versionBuilder_.getMessageOrBuilder();
         } else {
@@ -1359,13 +1412,15 @@ public final class VAdminProto {
       /**
        * <code>optional .voldemort.Error error = 2;</code>
        */
-      public boolean hasError() {
+      @Override
+    public boolean hasError() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
        * <code>optional .voldemort.Error error = 2;</code>
        */
-      public voldemort.client.protocol.pb.VProto.Error getError() {
+      @Override
+    public voldemort.client.protocol.pb.VProto.Error getError() {
         if (errorBuilder_ == null) {
           return error_;
         } else {
@@ -1445,7 +1500,8 @@ public final class VAdminProto {
       /**
        * <code>optional .voldemort.Error error = 2;</code>
        */
-      public voldemort.client.protocol.pb.VProto.ErrorOrBuilder getErrorOrBuilder() {
+      @Override
+    public voldemort.client.protocol.pb.VProto.ErrorOrBuilder getErrorOrBuilder() {
         if (errorBuilder_ != null) {
           return errorBuilder_.getMessageOrBuilder();
         } else {
@@ -1525,6 +1581,7 @@ public final class VAdminProto {
       return defaultInstance;
     }
 
+    @Override
     public UpdateMetadataRequest getDefaultInstanceForType() {
       return defaultInstance;
     }
@@ -1593,6 +1650,7 @@ public final class VAdminProto {
       return voldemort.client.protocol.pb.VAdminProto.internal_static_voldemort_UpdateMetadataRequest_descriptor;
     }
 
+    @Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return voldemort.client.protocol.pb.VAdminProto.internal_static_voldemort_UpdateMetadataRequest_fieldAccessorTable
@@ -1602,7 +1660,8 @@ public final class VAdminProto {
 
     public static com.google.protobuf.Parser<UpdateMetadataRequest> PARSER =
         new com.google.protobuf.AbstractParser<UpdateMetadataRequest>() {
-      public UpdateMetadataRequest parsePartialFrom(
+      @Override
+    public UpdateMetadataRequest parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1622,12 +1681,14 @@ public final class VAdminProto {
     /**
      * <code>required bytes key = 1;</code>
      */
+    @Override
     public boolean hasKey() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
      * <code>required bytes key = 1;</code>
      */
+    @Override
     public com.google.protobuf.ByteString getKey() {
       return key_;
     }
@@ -1638,18 +1699,21 @@ public final class VAdminProto {
     /**
      * <code>required .voldemort.Versioned versioned = 2;</code>
      */
+    @Override
     public boolean hasVersioned() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
      * <code>required .voldemort.Versioned versioned = 2;</code>
      */
+    @Override
     public voldemort.client.protocol.pb.VProto.Versioned getVersioned() {
       return versioned_;
     }
     /**
      * <code>required .voldemort.Versioned versioned = 2;</code>
      */
+    @Override
     public voldemort.client.protocol.pb.VProto.VersionedOrBuilder getVersionedOrBuilder() {
       return versioned_;
     }
@@ -1659,6 +1723,7 @@ public final class VAdminProto {
       versioned_ = voldemort.client.protocol.pb.VProto.Versioned.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
+    @Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
@@ -1679,6 +1744,7 @@ public final class VAdminProto {
       return true;
     }
 
+    @Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
@@ -1692,6 +1758,7 @@ public final class VAdminProto {
     }
 
     private int memoizedSerializedSize = -1;
+    @Override
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
@@ -1771,10 +1838,12 @@ public final class VAdminProto {
     }
 
     public static Builder newBuilder() { return Builder.create(); }
+    @Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder(voldemort.client.protocol.pb.VAdminProto.UpdateMetadataRequest prototype) {
       return newBuilder().mergeFrom(prototype);
     }
+    @Override
     public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
@@ -1794,7 +1863,8 @@ public final class VAdminProto {
         return voldemort.client.protocol.pb.VAdminProto.internal_static_voldemort_UpdateMetadataRequest_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      @Override
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return voldemort.client.protocol.pb.VAdminProto.internal_static_voldemort_UpdateMetadataRequest_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -1820,7 +1890,8 @@ public final class VAdminProto {
         return new Builder();
       }
 
-      public Builder clear() {
+      @Override
+    public Builder clear() {
         super.clear();
         key_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -1833,20 +1904,24 @@ public final class VAdminProto {
         return this;
       }
 
-      public Builder clone() {
+      @Override
+    public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
 
-      public com.google.protobuf.Descriptors.Descriptor
+      @Override
+    public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return voldemort.client.protocol.pb.VAdminProto.internal_static_voldemort_UpdateMetadataRequest_descriptor;
       }
 
-      public voldemort.client.protocol.pb.VAdminProto.UpdateMetadataRequest getDefaultInstanceForType() {
+      @Override
+    public voldemort.client.protocol.pb.VAdminProto.UpdateMetadataRequest getDefaultInstanceForType() {
         return voldemort.client.protocol.pb.VAdminProto.UpdateMetadataRequest.getDefaultInstance();
       }
 
-      public voldemort.client.protocol.pb.VAdminProto.UpdateMetadataRequest build() {
+      @Override
+    public voldemort.client.protocol.pb.VAdminProto.UpdateMetadataRequest build() {
         voldemort.client.protocol.pb.VAdminProto.UpdateMetadataRequest result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
@@ -1854,7 +1929,8 @@ public final class VAdminProto {
         return result;
       }
 
-      public voldemort.client.protocol.pb.VAdminProto.UpdateMetadataRequest buildPartial() {
+      @Override
+    public voldemort.client.protocol.pb.VAdminProto.UpdateMetadataRequest buildPartial() {
         voldemort.client.protocol.pb.VAdminProto.UpdateMetadataRequest result = new voldemort.client.protocol.pb.VAdminProto.UpdateMetadataRequest(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
@@ -1875,7 +1951,8 @@ public final class VAdminProto {
         return result;
       }
 
-      public Builder mergeFrom(com.google.protobuf.Message other) {
+      @Override
+    public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof voldemort.client.protocol.pb.VAdminProto.UpdateMetadataRequest) {
           return mergeFrom((voldemort.client.protocol.pb.VAdminProto.UpdateMetadataRequest)other);
         } else {
@@ -1896,7 +1973,8 @@ public final class VAdminProto {
         return this;
       }
 
-      public final boolean isInitialized() {
+      @Override
+    public final boolean isInitialized() {
         if (!hasKey()) {
           
           return false;
@@ -1912,7 +1990,8 @@ public final class VAdminProto {
         return true;
       }
 
-      public Builder mergeFrom(
+      @Override
+    public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -1936,13 +2015,15 @@ public final class VAdminProto {
       /**
        * <code>required bytes key = 1;</code>
        */
-      public boolean hasKey() {
+      @Override
+    public boolean hasKey() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
        * <code>required bytes key = 1;</code>
        */
-      public com.google.protobuf.ByteString getKey() {
+      @Override
+    public com.google.protobuf.ByteString getKey() {
         return key_;
       }
       /**
@@ -1974,13 +2055,15 @@ public final class VAdminProto {
       /**
        * <code>required .voldemort.Versioned versioned = 2;</code>
        */
-      public boolean hasVersioned() {
+      @Override
+    public boolean hasVersioned() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
        * <code>required .voldemort.Versioned versioned = 2;</code>
        */
-      public voldemort.client.protocol.pb.VProto.Versioned getVersioned() {
+      @Override
+    public voldemort.client.protocol.pb.VProto.Versioned getVersioned() {
         if (versionedBuilder_ == null) {
           return versioned_;
         } else {
@@ -2060,7 +2143,8 @@ public final class VAdminProto {
       /**
        * <code>required .voldemort.Versioned versioned = 2;</code>
        */
-      public voldemort.client.protocol.pb.VProto.VersionedOrBuilder getVersionedOrBuilder() {
+      @Override
+    public voldemort.client.protocol.pb.VProto.VersionedOrBuilder getVersionedOrBuilder() {
         if (versionedBuilder_ != null) {
           return versionedBuilder_.getMessageOrBuilder();
         } else {
@@ -2164,6 +2248,7 @@ public final class VAdminProto {
       return defaultInstance;
     }
 
+    @Override
     public UpdateMetadataPairRequest getDefaultInstanceForType() {
       return defaultInstance;
     }
@@ -2250,6 +2335,7 @@ public final class VAdminProto {
       return voldemort.client.protocol.pb.VAdminProto.internal_static_voldemort_UpdateMetadataPairRequest_descriptor;
     }
 
+    @Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return voldemort.client.protocol.pb.VAdminProto.internal_static_voldemort_UpdateMetadataPairRequest_fieldAccessorTable
@@ -2259,7 +2345,8 @@ public final class VAdminProto {
 
     public static com.google.protobuf.Parser<UpdateMetadataPairRequest> PARSER =
         new com.google.protobuf.AbstractParser<UpdateMetadataPairRequest>() {
-      public UpdateMetadataPairRequest parsePartialFrom(
+      @Override
+    public UpdateMetadataPairRequest parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -2279,12 +2366,14 @@ public final class VAdminProto {
     /**
      * <code>required bytes cluster_key = 1;</code>
      */
+    @Override
     public boolean hasClusterKey() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
      * <code>required bytes cluster_key = 1;</code>
      */
+    @Override
     public com.google.protobuf.ByteString getClusterKey() {
       return clusterKey_;
     }
@@ -2295,12 +2384,14 @@ public final class VAdminProto {
     /**
      * <code>required .voldemort.Versioned cluster_value = 2;</code>
      */
+    @Override
     public boolean hasClusterValue() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
      * <code>required .voldemort.Versioned cluster_value = 2;</code>
      */
+    @Override
     public voldemort.client.protocol.pb.VProto.Versioned getClusterValue() {
       return clusterValue_;
     }

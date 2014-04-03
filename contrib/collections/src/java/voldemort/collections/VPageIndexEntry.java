@@ -50,6 +50,7 @@ public class VPageIndexEntry<LK extends Comparable<LK>> {
     }
 
     // copy to tmpMap to get the pretty version of LK instead of bytes
+    @Override
     public String toString() {
         Map<String, Object> tmpMap = new HashMap<String, Object>();
         tmpMap.put(PAGE_ID, getPageId());

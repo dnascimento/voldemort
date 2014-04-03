@@ -80,6 +80,7 @@ public class ThriftSerializer<T extends TBase<?, ?>> implements Serializer<T> {
         }
     }
 
+    @Override
     public byte[] toBytes(T object) {
         MemoryBuffer buffer = new MemoryBuffer();
         TProtocol protocol = createThriftProtocol(buffer);
@@ -91,6 +92,7 @@ public class ThriftSerializer<T extends TBase<?, ?>> implements Serializer<T> {
         return buffer.toByteArray();
     }
 
+    @Override
     public T toObject(byte[] bytes) {
         MemoryBuffer buffer = new MemoryBuffer();
         try {

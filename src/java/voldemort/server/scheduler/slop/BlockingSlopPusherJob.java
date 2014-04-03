@@ -73,6 +73,7 @@ public class BlockingSlopPusherJob extends SlopPusherJob implements Runnable {
      * Loop over entries in the slop table and attempt to push them to the
      * deserving server
      */
+    @Override
     public void run() {
 
         // don't try to run slop pusher job when rebalancing

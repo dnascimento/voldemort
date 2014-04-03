@@ -44,6 +44,7 @@ public class DeleteClientRequest extends AbstractStoreClientRequest<Boolean> {
         this.version = version;
     }
 
+    @Override
     public boolean isCompleteResponse(ByteBuffer buffer) {
         return requestFormat.isCompleteDeleteResponse(buffer);
     }

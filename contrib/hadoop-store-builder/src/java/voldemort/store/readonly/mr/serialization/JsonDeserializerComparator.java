@@ -47,16 +47,19 @@ public class JsonDeserializerComparator implements RawComparator<BytesWritable>,
     private DataInputStream dataInput = new DataInputStream(buffer);
     private JsonTypeSerializer serializer;
 
+    @Override
     public Configuration getConf() {
         return this.config;
     }
 
+    @Override
     public void setConf(Configuration config) {
         if(config.get("json.schema") == null)
             throw new IllegalArgumentException("No schema has been set!");
         this.serializer = new JsonTypeSerializer(config.get("json.schema"));
     }
 
+    @Override
     public int compare(byte[] b1, int s1, int l1, byte[] b2, int s2, int l2) {
         return compareBytes(b1,
                             s1 + LENGTH_BYTES,
@@ -93,6 +96,7 @@ public class JsonDeserializerComparator implements RawComparator<BytesWritable>,
         return BytesWritable.Comparator.compareBytes(b1, 0, b1.length, b2, 0, b2.length);
     }
 
+    @Override
     public int compare(BytesWritable o1, BytesWritable o2) {
         return this.compareBytes(o1.getBytes(), 0, o1.getLength(), o2.getBytes(), 0, o2.getLength());
     }

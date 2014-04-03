@@ -115,6 +115,7 @@ public class ByteBufferBackedOutputStream extends OutputStream {
         return wasExpanded;
     }
 
+    @Override
     public void close() {
         if(sizeTracker != null && this.buffer != null) {
             sizeTracker.subtract(this.buffer.capacity());

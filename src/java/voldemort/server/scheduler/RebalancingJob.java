@@ -52,6 +52,7 @@ public class RebalancingJob implements Runnable {
         this.router = router;
     }
 
+    @Override
     public void run() {
         logger.info("Rebalancing all keys...");
         int totalRebalanced = 0;

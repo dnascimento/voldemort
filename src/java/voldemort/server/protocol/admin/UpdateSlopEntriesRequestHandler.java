@@ -59,14 +59,17 @@ public class UpdateSlopEntriesRequestHandler implements StreamRequestHandler {
         this.isJmxEnabled = voldemortConfig.isJmxEnabled();
     }
 
+    @Override
     public StreamRequestDirection getDirection() {
         return StreamRequestDirection.READING;
     }
 
+    @Override
     public void close(DataOutputStream outputStream) throws IOException {
         ProtoUtils.writeMessage(outputStream, responseBuilder.build());
     }
 
+    @Override
     public void handleError(DataOutputStream outputStream, VoldemortException e) throws IOException {
         responseBuilder.setError(ProtoUtils.encodeError(errorCodeMapper, e));
 
@@ -74,6 +77,7 @@ public class UpdateSlopEntriesRequestHandler implements StreamRequestHandler {
             logger.error("handleUpdateSlopEntries failed for request(" + request + ")", e);
     }
 
+    @Override
     public StreamRequestHandlerState handleRequest(DataInputStream inputStream,
                                                    DataOutputStream outputStream)
             throws IOException {

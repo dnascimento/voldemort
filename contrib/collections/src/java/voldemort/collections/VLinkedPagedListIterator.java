@@ -90,10 +90,12 @@ public class VLinkedPagedListIterator<I, LK extends Comparable<LK>> implements
         }
     }
 
+    @Override
     public void add(LK e) {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public boolean hasNext() {
         // put the cursor in the right position
         if(_indexIterator.nextId() != null && _indexIterator.lastId() != null) {
@@ -114,6 +116,7 @@ public class VLinkedPagedListIterator<I, LK extends Comparable<LK>> implements
         return _keyIterator.hasNext();
     }
 
+    @Override
     public boolean hasPrevious() {
         // put the cursor in the right position
         if(_indexIterator.previousId() != null && _indexIterator.lastId() != null) {
@@ -135,6 +138,7 @@ public class VLinkedPagedListIterator<I, LK extends Comparable<LK>> implements
         return _keyIterator.hasPrevious();
     }
 
+    @Override
     public LK next() {
         if(hasNext()) {
             _lastId = new VLinkedPagedKey(_currentIndexId, _keyIterator.nextIndex());
@@ -144,6 +148,7 @@ public class VLinkedPagedListIterator<I, LK extends Comparable<LK>> implements
         }
     }
 
+    @Override
     public VLinkedPagedKey nextId() {
         if(hasNext())
             return new VLinkedPagedKey(_currentIndexId, _keyIterator.nextIndex());
@@ -151,6 +156,7 @@ public class VLinkedPagedListIterator<I, LK extends Comparable<LK>> implements
             return null;
     }
 
+    @Override
     public LK previous() {
         if(hasPrevious()) {
             _lastId = new VLinkedPagedKey(_currentIndexId, _keyIterator.previousIndex());
@@ -160,6 +166,7 @@ public class VLinkedPagedListIterator<I, LK extends Comparable<LK>> implements
         }
     }
 
+    @Override
     public VLinkedPagedKey previousId() {
         if(hasPrevious())
             return new VLinkedPagedKey(_currentIndexId, _keyIterator.previousIndex());
@@ -167,14 +174,17 @@ public class VLinkedPagedListIterator<I, LK extends Comparable<LK>> implements
             return null;
     }
 
+    @Override
     public VLinkedPagedKey lastId() {
         return _lastId;
     }
 
+    @Override
     public void remove() {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public void set(LK e) {
         throw new UnsupportedOperationException();
     }
@@ -195,6 +205,7 @@ public class VLinkedPagedListIterator<I, LK extends Comparable<LK>> implements
             _serializer = serializer;
         }
 
+        @Override
         public int compare(byte[] arg0, byte[] arg1) {
             LK lk0 = _serializer.toObject(arg0);
             LK lk1 = _serializer.toObject(arg1);

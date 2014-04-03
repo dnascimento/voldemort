@@ -30,6 +30,7 @@ public class CachedCallable<T> implements Callable<T> {
         valueRef = new AtomicReference<T>();
     }
 
+    @Override
     public T call() throws Exception {
         T value = valueRef.get();
         long now = time.getMilliseconds();

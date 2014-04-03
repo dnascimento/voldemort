@@ -218,6 +218,7 @@ public class NioSocketService extends AbstractSocketService {
 
     private class Acceptor implements Runnable {
 
+        @Override
         public void run() {
             if(logger.isInfoEnabled())
                 logger.info("Server now listening for connections on port " + port);

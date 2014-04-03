@@ -100,6 +100,7 @@ public class AdminStoreSwapper extends StoreSwapper {
         for(final Node node: cluster.getNodes()) {
             fetchDirs.put(node.getId(), executor.submit(new Callable<String>() {
 
+                @Override
                 public String call() throws Exception {
                     String storeDir = basePath + "/node-" + node.getId();
                     logger.info("Invoking fetch for node " + node.getId() + " for " + storeDir);
