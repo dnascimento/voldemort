@@ -49,6 +49,7 @@ import voldemort.store.StoreDefinition;
 import voldemort.store.compress.CompressingStore;
 import voldemort.store.compress.CompressionStrategy;
 import voldemort.store.compress.CompressionStrategyFactory;
+import voldemort.store.contained.ContainingStore;
 import voldemort.store.logging.LoggingStore;
 import voldemort.store.metadata.MetadataStore;
 import voldemort.store.nonblockingstore.NonblockingStore;
@@ -394,8 +395,9 @@ public abstract class AbstractStoreClientFactory implements StoreClientFactory {
 
             Serializer<T> transformsSerializer = (Serializer<T>) serializerFactory.getSerializer(storeDef.getTransformsSerializer() != null ? storeDef.getTransformsSerializer()
                                                                                                                                            : new SerializerDefinition("identity"));
+            Store<ByteArray, byte[], byte[]> containingStore = ContainingStore.wrap(store);
 
-            finalStore = SerializingStore.wrap(store,
+            finalStore = SerializingStore.wrap(containingStore,
                                                keySerializer,
                                                valueSerializer,
                                                transformsSerializer);

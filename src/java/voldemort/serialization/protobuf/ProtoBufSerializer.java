@@ -32,6 +32,7 @@ public class ProtoBufSerializer<T extends Message> implements Serializer<T> {
 
     @SuppressWarnings("unchecked")
     public ProtoBufSerializer(String currentSchemaInfo) {
+        System.out.println("ProtoBufSerializer with schema:" + currentSchemaInfo);
         try {
             this.messageClass = (Class<T>) Class.forName(SerializationUtils.getJavaClassFromSchemaInfo(currentSchemaInfo),
                                                          false,
@@ -50,10 +51,12 @@ public class ProtoBufSerializer<T extends Message> implements Serializer<T> {
         }
     }
 
+    @Override
     public byte[] toBytes(T object) {
         return object.toByteArray();
     }
 
+    @Override
     public T toObject(byte[] bytes) {
         try {
             return messageClass.cast(parseFromMethod.invoke(null, bytes));

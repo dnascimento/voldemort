@@ -99,6 +99,11 @@ enum RequestType {
   GET_VERSION = 4;
 }
 
+message Container{
+  required int64 rid = 1;
+  required bytes data = 2;
+}
+
 
 message VoldemortRequest {
   required RequestType type = 1;
