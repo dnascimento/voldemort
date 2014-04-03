@@ -525,6 +525,12 @@
   <target name="deploy" description="Deploy application" depends="war">
     <deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}" path="${tomcat.context}" update="true" war="file:${dist.dir}/${name}.war" />
   </target>
+	
+ <target name="copyToRepo" description="Copy to Repo" depends="war">
+	<delete dir="/Users/darionascimento/.m2/repository/com/voldemort"/>
+	<copy file="${dist.dir}/${name}.war" tofile="../askJava/ask-war/repo/com/voldemort/voldemort/3.0.0/voldemort-3.0.0.jar"/> 		 
+  </target>
+	
 
   <target name="undeploy" description="Undeploy application">
     <undeploy url="${tomcat.manager.url}"

@@ -647,7 +647,8 @@ public class PipelineRoutedStore extends RoutedStore {
             throws VoldemortException {
         return delete(key,
                       version,
-                      timeoutConfig.getOperationTimeout(VoldemortOpCode.DELETE_OP_CODE));
+                      timeoutConfig.getOperationTimeout(VoldemortOpCode.DELETE_OP_CODE),
+                      rid);
     }
 
     protected boolean delete(final ByteArray key,
