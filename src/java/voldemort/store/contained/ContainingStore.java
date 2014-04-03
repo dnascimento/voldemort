@@ -14,7 +14,9 @@ import voldemort.store.AbstractStore;
 import voldemort.store.Store;
 import voldemort.store.StoreCapabilityType;
 import voldemort.store.StoreUtils;
+import voldemort.undoTracker.ClientSideTracker;
 import voldemort.utils.ByteArray;
+import voldemort.utils.Pair;
 import voldemort.utils.Utils;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
@@ -36,6 +38,8 @@ import com.google.common.collect.Maps;
  */
 public class ContainingStore extends AbstractStore<ByteArray, byte[], byte[]> {
 
+    private ClientSideTracker tracker = new ClientSideTracker();
+
     private final Store<ByteArray, byte[], byte[]> store;
     private final Serializer<byte[]> keySerializer;
     private final ContainingSerializer valueSerializer;
@@ -55,7 +59,85 @@ public class ContainingStore extends AbstractStore<ByteArray, byte[], byte[]> {
 
     @Override
     public boolean delete(ByteArray key, Version version, long rid) throws VoldemortException {
+        System.out.println("Client Delete: " + rid);
         return store.delete(keyToBytes(key), version, rid);
+    }
+
+    @Override
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
+            throws VoldemortException {
+        // Invoke
+        List<Versioned<byte[]>> found = store.get(keyToBytes(key),
+                                                  (transformsSerializer != null && transforms != null) ? transformsSerializer.toBytes(transforms)
+                                                                                                      : null,
+                                                  rid);
+        // Retrieve
+        List<Versioned<byte[]>> results = new ArrayList<Versioned<byte[]>>(found.size());
+        for(Versioned<byte[]> versioned: found) {
+            Pair<Long, byte[]> pair = valueSerializer.unpack(versioned.getValue());
+            // Here I track the request
+            if(pair.getFirst() != 0) {
+                tracker.trackGet(rid, pair.getFirst());
+            }
+            results.add(new Versioned<byte[]>(pair.getSecond(), versioned.getVersion()));
+        }
+        return results;
+    }
+
+    @Override
+    public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
+                                                          Map<ByteArray, byte[]> transforms,
+                                                          long rid) throws VoldemortException {
+        StoreUtils.assertValidKeys(keys);
+        Map<ByteArray, ByteArray> byteKeyToKey = keysToBytes(keys);
+        Map<ByteArray, List<Versioned<byte[]>>> storeResult = store.getAll(byteKeyToKey.keySet(),
+                                                                           transformsToBytes(transforms),
+                                                                           rid);
+        Map<ByteArray, List<Versioned<byte[]>>> result = Maps.newHashMapWithExpectedSize(storeResult.size());
+        for(Map.Entry<ByteArray, List<Versioned<byte[]>>> mapEntry: storeResult.entrySet()) {
+            List<Versioned<byte[]>> values = Lists.newArrayListWithExpectedSize(mapEntry.getValue()
+                                                                                        .size());
+            for(Versioned<byte[]> versioned: mapEntry.getValue())
+                values.add(new Versioned<byte[]>(valueSerializer.pack(versioned.getValue(), rid),
+                                                 versioned.getVersion()));
+
+            result.put(byteKeyToKey.get(mapEntry.getKey()), values);
+        }
+        return result;
+    }
+
+    @Override
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, long rid)
+            throws VoldemortException {
+        store.put(keyToBytes(key),
+                  new Versioned<byte[]>(valueSerializer.pack(value.getValue(), rid),
+                                        value.getVersion()),
+                  transformToBytes(transforms),
+                  rid);
+    }
+
+    @Override
+    public List<Version> getVersions(ByteArray key, long rid) {
+        return store.getVersions(keyToBytes(key), rid);
+    }
+
+    // ///////////////////// AUX ///////////////////////
+
+    @Override
+    public void close() {
+        store.close();
+    }
+
+    @Override
+    public Object getCapability(StoreCapabilityType capability) {
+        switch(capability) {
+            case KEY_SERIALIZER:
+                return this.keySerializer;
+            case VALUE_SERIALIZER:
+                return this.valueSerializer;
+            default:
+                return store.getCapability(capability);
+        }
     }
 
     private ByteArray keyToBytes(ByteArray key) {
@@ -81,76 +163,6 @@ public class ContainingStore extends AbstractStore<ByteArray, byte[], byte[]> {
             result.put(keyToBytes(transform.getKey()), transformToBytes(transform.getValue()));
         }
         return result;
-    }
-
-    @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
-            throws VoldemortException {
-        // Invoke
-        List<Versioned<byte[]>> found = store.get(keyToBytes(key),
-                                                  (transformsSerializer != null && transforms != null) ? transformsSerializer.toBytes(transforms)
-                                                                                                      : null,
-                                                  rid);
-        // Retrieve
-        List<Versioned<byte[]>> results = new ArrayList<Versioned<byte[]>>(found.size());
-        for(Versioned<byte[]> versioned: found)
-            results.add(new Versioned<byte[]>(valueSerializer.toObject(versioned.getValue()),
-                                              versioned.getVersion()));
-        return results;
-    }
-
-    @Override
-    public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
-                                                          Map<ByteArray, byte[]> transforms,
-                                                          long rid) throws VoldemortException {
-        StoreUtils.assertValidKeys(keys);
-        Map<ByteArray, ByteArray> byteKeyToKey = keysToBytes(keys);
-        Map<ByteArray, List<Versioned<byte[]>>> storeResult = store.getAll(byteKeyToKey.keySet(),
-                                                                           transformsToBytes(transforms),
-                                                                           rid);
-        Map<ByteArray, List<Versioned<byte[]>>> result = Maps.newHashMapWithExpectedSize(storeResult.size());
-        for(Map.Entry<ByteArray, List<Versioned<byte[]>>> mapEntry: storeResult.entrySet()) {
-            List<Versioned<byte[]>> values = Lists.newArrayListWithExpectedSize(mapEntry.getValue()
-                                                                                        .size());
-            for(Versioned<byte[]> versioned: mapEntry.getValue())
-                values.add(new Versioned<byte[]>(valueSerializer.toObject(versioned.getValue()),
-                                                 versioned.getVersion()));
-
-            result.put(byteKeyToKey.get(mapEntry.getKey()), values);
-        }
-        return result;
-    }
-
-    @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, long rid)
-            throws VoldemortException {
-        store.put(keyToBytes(key),
-                  new Versioned<byte[]>(valueSerializer.toBytes(value.getValue(), rid),
-                                        value.getVersion()),
-                  transformToBytes(transforms),
-                  rid);
-    }
-
-    @Override
-    public List<Version> getVersions(ByteArray key, long rid) {
-        return store.getVersions(keyToBytes(key), rid);
-    }
-
-    @Override
-    public void close() {
-        store.close();
-    }
-
-    @Override
-    public Object getCapability(StoreCapabilityType capability) {
-        switch(capability) {
-            case KEY_SERIALIZER:
-                return this.keySerializer;
-            case VALUE_SERIALIZER:
-                return this.valueSerializer;
-            default:
-                return store.getCapability(capability);
-        }
     }
 
     public Serializer<byte[]> getKeySerializer() {

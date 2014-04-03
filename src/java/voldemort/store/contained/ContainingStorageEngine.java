@@ -126,9 +126,10 @@ public class ContainingStorageEngine extends ContainingStore implements
                 return null;
             } else {
                 Versioned<byte[]> versioned = keyAndVal.getSecond();
+                Pair<Long, byte[]> pair = getValueSerializer().unpack(versioned.getValue());
+                // TODO should I track here too?
                 return Pair.create(keyAndVal.getFirst(),
-                                   new Versioned<byte[]>(getValueSerializer().toObject(versioned.getValue()),
-                                                         versioned.getVersion()));
+                                   new Versioned<byte[]>(pair.getSecond(), versioned.getVersion()));
             }
 
         }

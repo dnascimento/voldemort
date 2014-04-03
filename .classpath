@@ -56,6 +56,6 @@
 	<classpathentry kind="lib" path="lib/tusk-0.0.2.jar"/>
 	<classpathentry kind="var" path="M2_REPO/com/google/protobuf/protobuf-java/2.5.0/protobuf-java-2.5.0.jar" sourcepath="M2_REPO/com/google/protobuf/protobuf-java/2.5.0/protobuf-java-2.5.0-sources.jar"/>
 	<classpathentry kind="lib" path="lib/protobuf-java-2.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/guava-16.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/guava-16.0.1.jar" sourcepath="/Users/darionascimento/.m2/repository/com/google/guava/guava/16.0.1/guava-16.0.1-sources.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

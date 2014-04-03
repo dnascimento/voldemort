@@ -1,21 +1,33 @@
 package voldemort.undoTracker;
 
 import java.io.UnsupportedEncodingException;
-import java.util.LinkedList;
-import java.util.concurrent.ConcurrentHashMap;
 
 import voldemort.utils.ByteArray;
 
-public class UndoStub {
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
 
-    // TODO Check threading
-    private static ConcurrentHashMap<ByteArray, LinkedList<Op>> trackLocalAccess = new ConcurrentHashMap<ByteArray, LinkedList<Op>>();
+public class DBUndoStub {
+
+    private static ListMultimap<ByteArray, Op> trackLocalAccess;
+    private static InvertDependenciesAndSendThread sender;
+
+    private synchronized void init() {
+        if(sender != null)
+            return;
+        sender = new InvertDependenciesAndSendThread(trackLocalAccess);
+        ArrayListMultimap<ByteArray, Op> map = ArrayListMultimap.create();
+        trackLocalAccess = Multimaps.synchronizedListMultimap(map);
+        sender.start();
+    }
 
     /**
      * Each request handler has a UndoStub instance
      */
-    public UndoStub() {
-        SendOpTrack.init(trackLocalAccess);
+    public DBUndoStub() {
+        if(sender == null)
+            init();
     }
 
     public void get(ByteArray key, long rid) {
@@ -43,14 +55,7 @@ public class UndoStub {
         if(rid == 0)
             return;
 
-        LinkedList<Op> list = trackLocalAccess.get(key);
-        // TODO synchronize: if both get the same key at same time
-        if(list == null) {
-            System.out.println("List is null");
-            list = new LinkedList<Op>();
-            trackLocalAccess.put(key, list);
-        }
-        list.addLast(new Op(rid, type));
+        trackLocalAccess.put(key, new Op(rid, type));
     }
 
     private String hexStringToAscii(ByteArray key) {
@@ -62,4 +67,5 @@ public class UndoStub {
         }
         return key.toString();
     }
+
 }

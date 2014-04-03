@@ -21,7 +21,7 @@ import voldemort.server.protocol.AbstractRequestHandler;
 import voldemort.server.protocol.StreamRequestHandler;
 import voldemort.store.ErrorCodeMapper;
 import voldemort.store.Store;
-import voldemort.undoTracker.UndoStub;
+import voldemort.undoTracker.DBUndoStub;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
@@ -36,11 +36,11 @@ import com.google.protobuf.Message;
  */
 public class ProtoBuffRequestHandler extends AbstractRequestHandler {
 
-    UndoStub undoStub = new UndoStub();
+    DBUndoStub undoStub = new DBUndoStub();
 
     public ProtoBuffRequestHandler(ErrorCodeMapper errorMapper, StoreRepository storeRepository) {
         super(errorMapper, storeRepository);
-        undoStub = new UndoStub();
+        undoStub = new DBUndoStub();
     }
 
     @Override
