@@ -658,6 +658,7 @@ public class VoldemortAdminTool {
                 executeDeleteStore(adminClient, storeName, nodeId);
             } else if(options.has("truncate")) {
                 String storeName = (String) options.valueOf("truncate");
+                System.out.println("truncate node:" + nodeId + " store:" + storeName);
                 executeTruncateStore(nodeId, adminClient, storeName);
             } else if(options.has("update-entries")) {
                 String inputDir = (String) options.valueOf("update-entries");

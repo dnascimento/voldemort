@@ -1,6 +1,7 @@
 package voldemort.undoTracker;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
@@ -30,6 +31,27 @@ public class SendDependencies extends Thread {
     }
 
     /**
+     * Convert the hashmap to lists and send
+     * 
+     * @throws IOException
+     */
+    private void send(OpProto.TrackList list) throws IOException {
+        if(list.getEntryCount() == 0) {
+            return;
+        }
+        System.out.println("Sending dependencies to manager");
+        Socket socket = new Socket();
+        try {
+            socket.connect(SERVER_ADDRESS);
+            list.writeTo(socket.getOutputStream());
+        } catch(ConnectException e) {
+            System.out.println("Manager is off");
+        } finally {
+            socket.close();
+        }
+    }
+
+    /**
      * For each key, get the list and convert to tracklist
      * 
      * @return
@@ -43,21 +65,6 @@ public class SendDependencies extends Thread {
             listBuilder.addEntry(entry.build());
         }
         return listBuilder.build();
-    }
-
-    /**
-     * Convert the hashmap to lists and send
-     * 
-     * @throws IOException
-     */
-    private void send(OpProto.TrackList list) throws IOException {
-        if(list.getEntryCount() == 0) {
-            return;
-        }
-        Socket socket = new Socket();
-        socket.connect(SERVER_ADDRESS);
-        list.writeTo(socket.getOutputStream());
-        socket.close();
     }
 
 }

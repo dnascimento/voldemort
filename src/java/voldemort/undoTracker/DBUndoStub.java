@@ -2,23 +2,19 @@ package voldemort.undoTracker;
 
 import java.io.UnsupportedEncodingException;
 
+import voldemort.undoTracker.map.MultimapSync;
 import voldemort.utils.ByteArray;
-
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimaps;
 
 public class DBUndoStub {
 
-    private static ListMultimap<ByteArray, Op> trackLocalAccess;
+    private static MultimapSync<ByteArray, Op> trackLocalAccess;
     private static InvertDependenciesAndSendThread sender;
 
     private synchronized void init() {
         if(sender != null)
             return;
+        trackLocalAccess = new MultimapSync<ByteArray, Op>();
         sender = new InvertDependenciesAndSendThread(trackLocalAccess);
-        ArrayListMultimap<ByteArray, Op> map = ArrayListMultimap.create();
-        trackLocalAccess = Multimaps.synchronizedListMultimap(map);
         sender.start();
     }
 
