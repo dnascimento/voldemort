@@ -7,6 +7,7 @@ import java.net.Socket;
 
 import voldemort.undoTracker.proto.OpProto;
 import voldemort.undoTracker.proto.OpProto.TrackEntry;
+import voldemort.undoTracker.proto.OpProto.TrackList;
 
 import com.google.common.collect.Multimap;
 
@@ -45,10 +46,16 @@ public class SendDependencies extends Thread {
             socket.connect(SERVER_ADDRESS);
             list.writeTo(socket.getOutputStream());
         } catch(ConnectException e) {
-            System.out.println("Manager is off");
+            System.out.println("Manager is off, the package is:");
+            show(list);
         } finally {
             socket.close();
         }
+    }
+
+    private void show(TrackList list) {
+        // TODO maybe improve
+        System.out.println(list.toString());
     }
 
     /**

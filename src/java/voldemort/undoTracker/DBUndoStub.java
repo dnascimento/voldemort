@@ -1,67 +1,104 @@
 package voldemort.undoTracker;
 
 import java.io.UnsupportedEncodingException;
+import java.util.concurrent.atomic.AtomicLong;
 
-import voldemort.undoTracker.map.MultimapSync;
+import voldemort.undoTracker.map.OpMultimap;
+import voldemort.undoTracker.schedulers.AccessSchedule;
+import voldemort.undoTracker.schedulers.CurrentSnapshotScheduler;
+import voldemort.undoTracker.schedulers.PastSnapshotScheduler;
 import voldemort.utils.ByteArray;
 
-public class DBUndoStub {
+public class DBUndoStub implements AccessSchedule {
 
-    private static MultimapSync<ByteArray, Op> trackLocalAccess;
-    private static InvertDependenciesAndSendThread sender;
-
-    private synchronized void init() {
-        if(sender != null)
-            return;
-        trackLocalAccess = new MultimapSync<ByteArray, Op>();
-        sender = new InvertDependenciesAndSendThread(trackLocalAccess);
-        sender.start();
-    }
+    AtomicLong snapshotRid = new AtomicLong(0);
+    PastSnapshotScheduler past;
+    CurrentSnapshotScheduler current;
 
     /**
      * Each request handler has a UndoStub instance
      */
     public DBUndoStub() {
-        if(sender == null)
-            init();
+        this(new OpMultimap());
     }
 
-    public void get(ByteArray key, long rid) {
+    /**
+     * Each request handler has a UndoStub instance
+     */
+    public DBUndoStub(OpMultimap archive) {
+        past = new PastSnapshotScheduler(archive);
+        current = new CurrentSnapshotScheduler(archive);
+    }
+
+    @Override
+    public void getStart(ByteArray key, long rid) {
         if(rid != 0) {
-            trackRequest(key, Op.OpType.Read, rid);
+            if(rid < snapshotRid.get()) {
+                past.getStart(key, rid);
+            } else {
+                current.getStart(key, rid);
+            }
         }
         System.out.println(rid + " : get key: " + hexStringToAscii(key));
     }
 
-    public void put(ByteArray key, long rid) {
-        if(rid != 0) {
-            trackRequest(key, Op.OpType.Write, rid);
+    @Override
+    public void putStart(ByteArray key, long rid) {
+        if(rid < snapshotRid.get()) {
+            past.putStart(key, rid);
+        } else {
+            current.putStart(key, rid);
         }
         System.out.println(rid + " : put key: " + hexStringToAscii(key));
     }
 
-    public void delete(ByteArray key, long rid) {
-        if(rid != 0) {
-            trackRequest(key, Op.OpType.Delete, rid);
+    @Override
+    public void deleteStart(ByteArray key, long rid) {
+        if(rid < snapshotRid.get()) {
+            past.deleteStart(key, rid);
+        } else {
+            current.deleteStart(key, rid);
         }
         System.out.println(rid + " : delete key: " + hexStringToAscii(key));
     }
 
-    private void trackRequest(ByteArray key, Op.OpType type, long rid) {
-        if(rid == 0)
-            return;
+    @Override
+    public void getEnd(ByteArray key, long rid) {
+        if(rid < snapshotRid.get()) {
+            past.getEnd(key, rid);
+        } else {
+            current.getEnd(key, rid);
+        }
+    }
 
-        trackLocalAccess.put(key, new Op(rid, type));
+    @Override
+    public void putEnd(ByteArray key, long rid) {
+        if(rid < snapshotRid.get()) {
+            past.putEnd(key, rid);
+        } else {
+            current.putEnd(key, rid);
+        }
+
+    }
+
+    @Override
+    public void deleteEnd(ByteArray key, long rid) {
+        if(rid < snapshotRid.get()) {
+            past.deleteEnd(key, rid);
+        } else {
+            current.deleteEnd(key, rid);
+        }
     }
 
     private String hexStringToAscii(ByteArray key) {
         try {
             return new String(key.get(), "UTF-8");
-        } catch(UnsupportedEncodingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        } catch(UnsupportedEncodingException e) {}
         return key.toString();
+    }
+
+    public void setNewSnapshotRid(long newRid) {
+        snapshotRid.set(newRid);
     }
 
 }

@@ -5,12 +5,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import voldemort.undoTracker.Op.OpType;
-import voldemort.undoTracker.map.MultimapSync;
-import voldemort.undoTracker.map.MultimapSyncView;
+import voldemort.undoTracker.map.Op;
+import voldemort.undoTracker.map.Op.OpType;
+import voldemort.undoTracker.map.OpMultimap;
+import voldemort.undoTracker.map.OpMultimapView;
 import voldemort.utils.ByteArray;
 
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.LinkedListMultimap;
 
 /**
@@ -20,14 +20,15 @@ import com.google.common.collect.LinkedListMultimap;
  * @author darionascimento
  * 
  */
-public class InvertDependenciesAndSendThread extends Thread {
+public class InvertDependencies extends Thread {
 
-    private ArrayListMultimap<ByteArray, Op> archive = ArrayListMultimap.create();
-    private MultimapSync<ByteArray, Op> currentRegistry;
+    private OpMultimap archive;
+    private OpMultimap currentRegistry;
     private long REFRESH_PERIOD = 5000;
 
-    public InvertDependenciesAndSendThread(MultimapSync<ByteArray, Op> trackLocalAccess) {
+    public InvertDependencies(OpMultimap trackLocalAccess, OpMultimap archive) {
         this.currentRegistry = trackLocalAccess;
+        this.archive = archive;
     }
 
     @Override
@@ -42,7 +43,6 @@ public class InvertDependenciesAndSendThread extends Thread {
                 e.printStackTrace();
             }
         }
-
     }
 
     /**
@@ -52,9 +52,10 @@ public class InvertDependenciesAndSendThread extends Thread {
      * @throws IOException
      */
     private void extractOperations() throws IOException {
-        MultimapSyncView<ByteArray, Op> view = currentRegistry.renew();
+        OpMultimapView view = currentRegistry.renew();
         if(view.isEmpty())
             return;
+
         LinkedListMultimap<Long, Long> dependencyPerRid = LinkedListMultimap.create();
         for(ByteArray key: view.keySet()) {
             invertDependency(key, view.get(key), dependencyPerRid);
@@ -63,6 +64,7 @@ public class InvertDependenciesAndSendThread extends Thread {
         }
         SendDependencies d = new SendDependencies(dependencyPerRid);
         d.start();
+
     }
 
     /**
@@ -83,10 +85,11 @@ public class InvertDependenciesAndSendThread extends Thread {
         if(lastWrite == null) {
             lastWrite = it.next();
         }
-        assert (lastWrite.type != OpType.Read);
+        System.out.println("LAST WRITE:" + lastWrite.type);
+        assert (lastWrite.type != OpType.Get);
         while(it.hasNext()) {
             Op op = it.next();
-            if(op.type == Op.OpType.Read) {
+            if(op.type == Op.OpType.Get) {
                 dependencyPerRid.put(op.rid, lastWrite.rid);
             } else {
                 lastWrite = op;
@@ -96,12 +99,21 @@ public class InvertDependenciesAndSendThread extends Thread {
     }
 
     private Op getLastWrite(ByteArray key) {
-        List<Op> array = archive.get(key);
-        for(int i = array.size() - 1; i >= 0; i--) {
-            if(array.get(i).type != OpType.Read) {
-                return array.get(i);
+        return archive.getLastWrite(key);
+    }
+
+    @SuppressWarnings("unused")
+    private void show(LinkedListMultimap<Long, Long> map) {
+        System.out.println("---- New Dependencies ----");
+        for(Long rid: map.keySet()) {
+            List<Long> deps = map.get(rid);
+            System.out.print("Rid: ");
+            System.out.print(rid);
+            for(Long dep: deps) {
+                System.out.print(dep);
+                System.out.print(" ,");
             }
+            System.out.print("\n");
         }
-        return null;
     }
 }

@@ -14,7 +14,7 @@ import voldemort.store.AbstractStore;
 import voldemort.store.Store;
 import voldemort.store.StoreCapabilityType;
 import voldemort.store.StoreUtils;
-import voldemort.undoTracker.ClientSideTracker;
+import voldemort.undoTracker.clientSide.ClientSideTracker;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Pair;
 import voldemort.utils.Utils;
