@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import voldemort.undoTracker.map.Op.OpType;
 import voldemort.utils.ByteArray;
 
@@ -16,6 +19,7 @@ import voldemort.utils.ByteArray;
  */
 public class OpMultimap {
 
+    private final Logger log = LogManager.getLogger("OpMultimap");
     private final int N_PARTITIONS = 16;
     /**
      * The hash table
@@ -85,7 +89,7 @@ public class OpMultimap {
         }
 
         mutex.lock(key);
-        System.out.println("TrackAccess " + key + " " + type + " " + rid);
+        log.info("TrackAccess " + key + " " + type + " " + rid);
         entry.addLast(new Op(rid, type));
 
         mutex.release(key);
@@ -119,10 +123,10 @@ public class OpMultimap {
             mutex.lock(k);
             OpMultimapEntry entry = map.get(k);
             if(entry.hasLocked()) {
-                System.out.println("Has locked");
+                log.debug("Has locked");
                 copy.put(k, new OpMultimapEntry(entry.extractAll()));
             } else {
-                System.out.println("No locked Pendents");
+                log.debug("No locked Pendents");
                 copy.put(k, map.remove(k));
             }
             mutex.release(k);

@@ -13,3 +13,7 @@ message TrackList{
   repeated TrackEntry entry = 1;
   optional string nodeId = 2;
 }
+
+message Snapshot{
+	required int64 seasonId = 1;
+}

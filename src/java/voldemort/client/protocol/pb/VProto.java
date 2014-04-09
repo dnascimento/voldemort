@@ -57,7 +57,6 @@ public final class VProto {
     public static final int GET_VERSION_VALUE = 4;
 
 
-    @Override
     public final int getNumber() { return value; }
 
     public static RequestType valueOf(int value) {
@@ -78,18 +77,15 @@ public final class VProto {
     private static com.google.protobuf.Internal.EnumLiteMap<RequestType>
         internalValueMap =
           new com.google.protobuf.Internal.EnumLiteMap<RequestType>() {
-            @Override
             public RequestType findValueByNumber(int number) {
               return RequestType.valueOf(number);
             }
           };
 
-    @Override
     public final com.google.protobuf.Descriptors.EnumValueDescriptor
         getValueDescriptor() {
       return getDescriptor().getValues().get(index);
     }
-    @Override
     public final com.google.protobuf.Descriptors.EnumDescriptor
         getDescriptorForType() {
       return getDescriptor();
@@ -162,7 +158,6 @@ public final class VProto {
       return defaultInstance;
     }
 
-    @Override
     public ClockEntry getDefaultInstanceForType() {
       return defaultInstance;
     }
@@ -223,7 +218,6 @@ public final class VProto {
       return voldemort.client.protocol.pb.VProto.internal_static_voldemort_ClockEntry_descriptor;
     }
 
-    @Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return voldemort.client.protocol.pb.VProto.internal_static_voldemort_ClockEntry_fieldAccessorTable
@@ -233,8 +227,7 @@ public final class VProto {
 
     public static com.google.protobuf.Parser<ClockEntry> PARSER =
         new com.google.protobuf.AbstractParser<ClockEntry>() {
-      @Override
-    public ClockEntry parsePartialFrom(
+      public ClockEntry parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -254,14 +247,12 @@ public final class VProto {
     /**
      * <code>required int32 node_id = 1;</code>
      */
-    @Override
     public boolean hasNodeId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
      * <code>required int32 node_id = 1;</code>
      */
-    @Override
     public int getNodeId() {
       return nodeId_;
     }
@@ -272,14 +263,12 @@ public final class VProto {
     /**
      * <code>required int64 version = 2;</code>
      */
-    @Override
     public boolean hasVersion() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
      * <code>required int64 version = 2;</code>
      */
-    @Override
     public long getVersion() {
       return version_;
     }
@@ -289,7 +278,6 @@ public final class VProto {
       version_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
-    @Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
@@ -306,7 +294,6 @@ public final class VProto {
       return true;
     }
 
-    @Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
@@ -320,7 +307,6 @@ public final class VProto {
     }
 
     private int memoizedSerializedSize = -1;
-    @Override
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
@@ -400,12 +386,10 @@ public final class VProto {
     }
 
     public static Builder newBuilder() { return Builder.create(); }
-    @Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder(voldemort.client.protocol.pb.VProto.ClockEntry prototype) {
       return newBuilder().mergeFrom(prototype);
     }
-    @Override
     public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
@@ -425,8 +409,7 @@ public final class VProto {
         return voldemort.client.protocol.pb.VProto.internal_static_voldemort_ClockEntry_descriptor;
       }
 
-      @Override
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return voldemort.client.protocol.pb.VProto.internal_static_voldemort_ClockEntry_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -451,8 +434,7 @@ public final class VProto {
         return new Builder();
       }
 
-      @Override
-    public Builder clear() {
+      public Builder clear() {
         super.clear();
         nodeId_ = 0;
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -461,24 +443,20 @@ public final class VProto {
         return this;
       }
 
-      @Override
-    public Builder clone() {
+      public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
 
-      @Override
-    public com.google.protobuf.Descriptors.Descriptor
+      public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return voldemort.client.protocol.pb.VProto.internal_static_voldemort_ClockEntry_descriptor;
       }
 
-      @Override
-    public voldemort.client.protocol.pb.VProto.ClockEntry getDefaultInstanceForType() {
+      public voldemort.client.protocol.pb.VProto.ClockEntry getDefaultInstanceForType() {
         return voldemort.client.protocol.pb.VProto.ClockEntry.getDefaultInstance();
       }
 
-      @Override
-    public voldemort.client.protocol.pb.VProto.ClockEntry build() {
+      public voldemort.client.protocol.pb.VProto.ClockEntry build() {
         voldemort.client.protocol.pb.VProto.ClockEntry result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
@@ -486,8 +464,7 @@ public final class VProto {
         return result;
       }
 
-      @Override
-    public voldemort.client.protocol.pb.VProto.ClockEntry buildPartial() {
+      public voldemort.client.protocol.pb.VProto.ClockEntry buildPartial() {
         voldemort.client.protocol.pb.VProto.ClockEntry result = new voldemort.client.protocol.pb.VProto.ClockEntry(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
@@ -504,8 +481,7 @@ public final class VProto {
         return result;
       }
 
-      @Override
-    public Builder mergeFrom(com.google.protobuf.Message other) {
+      public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof voldemort.client.protocol.pb.VProto.ClockEntry) {
           return mergeFrom((voldemort.client.protocol.pb.VProto.ClockEntry)other);
         } else {
@@ -526,8 +502,7 @@ public final class VProto {
         return this;
       }
 
-      @Override
-    public final boolean isInitialized() {
+      public final boolean isInitialized() {
         if (!hasNodeId()) {
           
           return false;
@@ -539,8 +514,7 @@ public final class VProto {
         return true;
       }
 
-      @Override
-    public Builder mergeFrom(
+      public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -564,15 +538,13 @@ public final class VProto {
       /**
        * <code>required int32 node_id = 1;</code>
        */
-      @Override
-    public boolean hasNodeId() {
+      public boolean hasNodeId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
        * <code>required int32 node_id = 1;</code>
        */
-      @Override
-    public int getNodeId() {
+      public int getNodeId() {
         return nodeId_;
       }
       /**
@@ -599,15 +571,13 @@ public final class VProto {
       /**
        * <code>required int64 version = 2;</code>
        */
-      @Override
-    public boolean hasVersion() {
+      public boolean hasVersion() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
        * <code>required int64 version = 2;</code>
        */
-      @Override
-    public long getVersion() {
+      public long getVersion() {
         return version_;
       }
       /**
@@ -696,7 +666,6 @@ public final class VProto {
       return defaultInstance;
     }
 
-    @Override
     public VectorClock getDefaultInstanceForType() {
       return defaultInstance;
     }
@@ -763,7 +732,6 @@ public final class VProto {
       return voldemort.client.protocol.pb.VProto.internal_static_voldemort_VectorClock_descriptor;
     }
 
-    @Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return voldemort.client.protocol.pb.VProto.internal_static_voldemort_VectorClock_fieldAccessorTable
@@ -773,8 +741,7 @@ public final class VProto {
 
     public static com.google.protobuf.Parser<VectorClock> PARSER =
         new com.google.protobuf.AbstractParser<VectorClock>() {
-      @Override
-    public VectorClock parsePartialFrom(
+      public VectorClock parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -794,14 +761,12 @@ public final class VProto {
     /**
      * <code>repeated .voldemort.ClockEntry entries = 1;</code>
      */
-    @Override
     public java.util.List<voldemort.client.protocol.pb.VProto.ClockEntry> getEntriesList() {
       return entries_;
     }
     /**
      * <code>repeated .voldemort.ClockEntry entries = 1;</code>
      */
-    @Override
     public java.util.List<? extends voldemort.client.protocol.pb.VProto.ClockEntryOrBuilder> 
         getEntriesOrBuilderList() {
       return entries_;
@@ -809,21 +774,18 @@ public final class VProto {
     /**
      * <code>repeated .voldemort.ClockEntry entries = 1;</code>
      */
-    @Override
     public int getEntriesCount() {
       return entries_.size();
     }
     /**
      * <code>repeated .voldemort.ClockEntry entries = 1;</code>
      */
-    @Override
     public voldemort.client.protocol.pb.VProto.ClockEntry getEntries(int index) {
       return entries_.get(index);
     }
     /**
      * <code>repeated .voldemort.ClockEntry entries = 1;</code>
      */
-    @Override
     public voldemort.client.protocol.pb.VProto.ClockEntryOrBuilder getEntriesOrBuilder(
         int index) {
       return entries_.get(index);
@@ -835,14 +797,12 @@ public final class VProto {
     /**
      * <code>optional int64 timestamp = 2;</code>
      */
-    @Override
     public boolean hasTimestamp() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
      * <code>optional int64 timestamp = 2;</code>
      */
-    @Override
     public long getTimestamp() {
       return timestamp_;
     }
@@ -852,7 +812,6 @@ public final class VProto {
       timestamp_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
-    @Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
@@ -867,7 +826,6 @@ public final class VProto {
       return true;
     }
 
-    @Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
@@ -881,7 +839,6 @@ public final class VProto {
     }
 
     private int memoizedSerializedSize = -1;
-    @Override
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
@@ -961,12 +918,10 @@ public final class VProto {
     }
 
     public static Builder newBuilder() { return Builder.create(); }
-    @Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder(voldemort.client.protocol.pb.VProto.VectorClock prototype) {
       return newBuilder().mergeFrom(prototype);
     }
-    @Override
     public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
@@ -986,8 +941,7 @@ public final class VProto {
         return voldemort.client.protocol.pb.VProto.internal_static_voldemort_VectorClock_descriptor;
       }
 
-      @Override
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return voldemort.client.protocol.pb.VProto.internal_static_voldemort_VectorClock_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -1013,8 +967,7 @@ public final class VProto {
         return new Builder();
       }
 
-      @Override
-    public Builder clear() {
+      public Builder clear() {
         super.clear();
         if (entriesBuilder_ == null) {
           entries_ = java.util.Collections.emptyList();
@@ -1027,24 +980,20 @@ public final class VProto {
         return this;
       }
 
-      @Override
-    public Builder clone() {
+      public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
 
-      @Override
-    public com.google.protobuf.Descriptors.Descriptor
+      public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return voldemort.client.protocol.pb.VProto.internal_static_voldemort_VectorClock_descriptor;
       }
 
-      @Override
-    public voldemort.client.protocol.pb.VProto.VectorClock getDefaultInstanceForType() {
+      public voldemort.client.protocol.pb.VProto.VectorClock getDefaultInstanceForType() {
         return voldemort.client.protocol.pb.VProto.VectorClock.getDefaultInstance();
       }
 
-      @Override
-    public voldemort.client.protocol.pb.VProto.VectorClock build() {
+      public voldemort.client.protocol.pb.VProto.VectorClock build() {
         voldemort.client.protocol.pb.VProto.VectorClock result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
@@ -1052,8 +1001,7 @@ public final class VProto {
         return result;
       }
 
-      @Override
-    public voldemort.client.protocol.pb.VProto.VectorClock buildPartial() {
+      public voldemort.client.protocol.pb.VProto.VectorClock buildPartial() {
         voldemort.client.protocol.pb.VProto.VectorClock result = new voldemort.client.protocol.pb.VProto.VectorClock(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
@@ -1075,8 +1023,7 @@ public final class VProto {
         return result;
       }
 
-      @Override
-    public Builder mergeFrom(com.google.protobuf.Message other) {
+      public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof voldemort.client.protocol.pb.VProto.VectorClock) {
           return mergeFrom((voldemort.client.protocol.pb.VProto.VectorClock)other);
         } else {
@@ -1120,8 +1067,7 @@ public final class VProto {
         return this;
       }
 
-      @Override
-    public final boolean isInitialized() {
+      public final boolean isInitialized() {
         for (int i = 0; i < getEntriesCount(); i++) {
           if (!getEntries(i).isInitialized()) {
             
@@ -1131,8 +1077,7 @@ public final class VProto {
         return true;
       }
 
-      @Override
-    public Builder mergeFrom(
+      public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -1167,8 +1112,7 @@ public final class VProto {
       /**
        * <code>repeated .voldemort.ClockEntry entries = 1;</code>
        */
-      @Override
-    public java.util.List<voldemort.client.protocol.pb.VProto.ClockEntry> getEntriesList() {
+      public java.util.List<voldemort.client.protocol.pb.VProto.ClockEntry> getEntriesList() {
         if (entriesBuilder_ == null) {
           return java.util.Collections.unmodifiableList(entries_);
         } else {
@@ -1178,8 +1122,7 @@ public final class VProto {
       /**
        * <code>repeated .voldemort.ClockEntry entries = 1;</code>
        */
-      @Override
-    public int getEntriesCount() {
+      public int getEntriesCount() {
         if (entriesBuilder_ == null) {
           return entries_.size();
         } else {
@@ -1189,8 +1132,7 @@ public final class VProto {
       /**
        * <code>repeated .voldemort.ClockEntry entries = 1;</code>
        */
-      @Override
-    public voldemort.client.protocol.pb.VProto.ClockEntry getEntries(int index) {
+      public voldemort.client.protocol.pb.VProto.ClockEntry getEntries(int index) {
         if (entriesBuilder_ == null) {
           return entries_.get(index);
         } else {
@@ -1339,8 +1281,7 @@ public final class VProto {
       /**
        * <code>repeated .voldemort.ClockEntry entries = 1;</code>
        */
-      @Override
-    public voldemort.client.protocol.pb.VProto.ClockEntryOrBuilder getEntriesOrBuilder(
+      public voldemort.client.protocol.pb.VProto.ClockEntryOrBuilder getEntriesOrBuilder(
           int index) {
         if (entriesBuilder_ == null) {
           return entries_.get(index);  } else {
@@ -1350,8 +1291,7 @@ public final class VProto {
       /**
        * <code>repeated .voldemort.ClockEntry entries = 1;</code>
        */
-      @Override
-    public java.util.List<? extends voldemort.client.protocol.pb.VProto.ClockEntryOrBuilder> 
+      public java.util.List<? extends voldemort.client.protocol.pb.VProto.ClockEntryOrBuilder> 
            getEntriesOrBuilderList() {
         if (entriesBuilder_ != null) {
           return entriesBuilder_.getMessageOrBuilderList();
@@ -1401,15 +1341,13 @@ public final class VProto {
       /**
        * <code>optional int64 timestamp = 2;</code>
        */
-      @Override
-    public boolean hasTimestamp() {
+      public boolean hasTimestamp() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
        * <code>optional int64 timestamp = 2;</code>
        */
-      @Override
-    public long getTimestamp() {
+      public long getTimestamp() {
         return timestamp_;
       }
       /**
@@ -1487,7 +1425,6 @@ public final class VProto {
       return defaultInstance;
     }
 
-    @Override
     public Versioned getDefaultInstanceForType() {
       return defaultInstance;
     }
@@ -1556,7 +1493,6 @@ public final class VProto {
       return voldemort.client.protocol.pb.VProto.internal_static_voldemort_Versioned_descriptor;
     }
 
-    @Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return voldemort.client.protocol.pb.VProto.internal_static_voldemort_Versioned_fieldAccessorTable
@@ -1566,8 +1502,7 @@ public final class VProto {
 
     public static com.google.protobuf.Parser<Versioned> PARSER =
         new com.google.protobuf.AbstractParser<Versioned>() {
-      @Override
-    public Versioned parsePartialFrom(
+      public Versioned parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1587,14 +1522,12 @@ public final class VProto {
     /**
      * <code>required bytes value = 1;</code>
      */
-    @Override
     public boolean hasValue() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
      * <code>required bytes value = 1;</code>
      */
-    @Override
     public com.google.protobuf.ByteString getValue() {
       return value_;
     }
@@ -1605,21 +1538,18 @@ public final class VProto {
     /**
      * <code>required .voldemort.VectorClock version = 2;</code>
      */
-    @Override
     public boolean hasVersion() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
      * <code>required .voldemort.VectorClock version = 2;</code>
      */
-    @Override
     public voldemort.client.protocol.pb.VProto.VectorClock getVersion() {
       return version_;
     }
     /**
      * <code>required .voldemort.VectorClock version = 2;</code>
      */
-    @Override
     public voldemort.client.protocol.pb.VProto.VectorClockOrBuilder getVersionOrBuilder() {
       return version_;
     }
@@ -1629,7 +1559,6 @@ public final class VProto {
       version_ = voldemort.client.protocol.pb.VProto.VectorClock.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
-    @Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
@@ -1650,7 +1579,6 @@ public final class VProto {
       return true;
     }
 
-    @Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
@@ -1664,7 +1592,6 @@ public final class VProto {
     }
 
     private int memoizedSerializedSize = -1;
-    @Override
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
@@ -1744,12 +1671,10 @@ public final class VProto {
     }
 
     public static Builder newBuilder() { return Builder.create(); }
-    @Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder(voldemort.client.protocol.pb.VProto.Versioned prototype) {
       return newBuilder().mergeFrom(prototype);
     }
-    @Override
     public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
@@ -1769,8 +1694,7 @@ public final class VProto {
         return voldemort.client.protocol.pb.VProto.internal_static_voldemort_Versioned_descriptor;
       }
 
-      @Override
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return voldemort.client.protocol.pb.VProto.internal_static_voldemort_Versioned_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -1796,8 +1720,7 @@ public final class VProto {
         return new Builder();
       }
 
-      @Override
-    public Builder clear() {
+      public Builder clear() {
         super.clear();
         value_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -1810,24 +1733,20 @@ public final class VProto {
         return this;
       }
 
-      @Override
-    public Builder clone() {
+      public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
 
-      @Override
-    public com.google.protobuf.Descriptors.Descriptor
+      public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return voldemort.client.protocol.pb.VProto.internal_static_voldemort_Versioned_descriptor;
       }
 
-      @Override
-    public voldemort.client.protocol.pb.VProto.Versioned getDefaultInstanceForType() {
+      public voldemort.client.protocol.pb.VProto.Versioned getDefaultInstanceForType() {
         return voldemort.client.protocol.pb.VProto.Versioned.getDefaultInstance();
       }
 
-      @Override
-    public voldemort.client.protocol.pb.VProto.Versioned build() {
+      public voldemort.client.protocol.pb.VProto.Versioned build() {
         voldemort.client.protocol.pb.VProto.Versioned result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
@@ -1835,8 +1754,7 @@ public final class VProto {
         return result;
       }
 
-      @Override
-    public voldemort.client.protocol.pb.VProto.Versioned buildPartial() {
+      public voldemort.client.protocol.pb.VProto.Versioned buildPartial() {
         voldemort.client.protocol.pb.VProto.Versioned result = new voldemort.client.protocol.pb.VProto.Versioned(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
@@ -1857,8 +1775,7 @@ public final class VProto {
         return result;
       }
 
-      @Override
-    public Builder mergeFrom(com.google.protobuf.Message other) {
+      public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof voldemort.client.protocol.pb.VProto.Versioned) {
           return mergeFrom((voldemort.client.protocol.pb.VProto.Versioned)other);
         } else {
@@ -1879,8 +1796,7 @@ public final class VProto {
         return this;
       }
 
-      @Override
-    public final boolean isInitialized() {
+      public final boolean isInitialized() {
         if (!hasValue()) {
           
           return false;
@@ -1896,8 +1812,7 @@ public final class VProto {
         return true;
       }
 
-      @Override
-    public Builder mergeFrom(
+      public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -1921,15 +1836,13 @@ public final class VProto {
       /**
        * <code>required bytes value = 1;</code>
        */
-      @Override
-    public boolean hasValue() {
+      public boolean hasValue() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
        * <code>required bytes value = 1;</code>
        */
-      @Override
-    public com.google.protobuf.ByteString getValue() {
+      public com.google.protobuf.ByteString getValue() {
         return value_;
       }
       /**
@@ -1961,15 +1874,13 @@ public final class VProto {
       /**
        * <code>required .voldemort.VectorClock version = 2;</code>
        */
-      @Override
-    public boolean hasVersion() {
+      public boolean hasVersion() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
        * <code>required .voldemort.VectorClock version = 2;</code>
        */
-      @Override
-    public voldemort.client.protocol.pb.VProto.VectorClock getVersion() {
+      public voldemort.client.protocol.pb.VProto.VectorClock getVersion() {
         if (versionBuilder_ == null) {
           return version_;
         } else {
@@ -2049,8 +1960,7 @@ public final class VProto {
       /**
        * <code>required .voldemort.VectorClock version = 2;</code>
        */
-      @Override
-    public voldemort.client.protocol.pb.VProto.VectorClockOrBuilder getVersionOrBuilder() {
+      public voldemort.client.protocol.pb.VProto.VectorClockOrBuilder getVersionOrBuilder() {
         if (versionBuilder_ != null) {
           return versionBuilder_.getMessageOrBuilder();
         } else {
@@ -2131,7 +2041,6 @@ public final class VProto {
       return defaultInstance;
     }
 
-    @Override
     public Error getDefaultInstanceForType() {
       return defaultInstance;
     }

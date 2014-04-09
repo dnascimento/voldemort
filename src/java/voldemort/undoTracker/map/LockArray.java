@@ -2,8 +2,12 @@ package voldemort.undoTracker.map;
 
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 public class LockArray<K> {
 
+    private final Logger log = LogManager.getLogger("LockArray");
     public final ReentrantLock[] partitionMutex;
     public final int N_PARTITIONS;
 
@@ -16,12 +20,12 @@ public class LockArray<K> {
     }
 
     public void lock(K key) {
-        int p = key.hashCode() % N_PARTITIONS;
+        int p = Math.abs(key.hashCode()) % N_PARTITIONS;
         partitionMutex[p].lock();
     }
 
     public void release(K key) {
-        int p = key.hashCode() % N_PARTITIONS;
+        int p = Math.abs(key.hashCode()) % N_PARTITIONS;
         partitionMutex[p].unlock();
     }
 

@@ -13,7 +13,7 @@ from google.protobuf import descriptor_pb2
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='dbNode-undo.proto',
   package='voldemort',
-  serialized_pb='\n\x11\x64\x62Node-undo.proto\x12\tvoldemort\"/\n\nTrackEntry\x12\x0b\n\x03rid\x18\x01 \x02(\x03\x12\x14\n\x0c\x64\x65pendencies\x18\x02 \x03(\x03\"A\n\tTrackList\x12$\n\x05\x65ntry\x18\x01 \x03(\x0b\x32\x15.voldemort.TrackEntry\x12\x0e\n\x06nodeId\x18\x02 \x01(\tB(\n\x1bvoldemort.undoTracker.protoB\x07OpProtoH\x01')
+  serialized_pb='\n\x11\x64\x62Node-undo.proto\x12\tvoldemort\"/\n\nTrackEntry\x12\x0b\n\x03rid\x18\x01 \x02(\x03\x12\x14\n\x0c\x64\x65pendencies\x18\x02 \x03(\x03\"A\n\tTrackList\x12$\n\x05\x65ntry\x18\x01 \x03(\x0b\x32\x15.voldemort.TrackEntry\x12\x0e\n\x06nodeId\x18\x02 \x01(\t\"\x1c\n\x08Snapshot\x12\x10\n\x08seasonId\x18\x01 \x02(\x03\x42(\n\x1bvoldemort.undoTracker.protoB\x07OpProtoH\x01')
 
 
 
@@ -87,9 +87,38 @@ _TRACKLIST = _descriptor.Descriptor(
   serialized_end=146,
 )
 
+
+_SNAPSHOT = _descriptor.Descriptor(
+  name='Snapshot',
+  full_name='voldemort.Snapshot',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='seasonId', full_name='voldemort.Snapshot.seasonId', index=0,
+      number=1, type=3, cpp_type=2, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=148,
+  serialized_end=176,
+)
+
 _TRACKLIST.fields_by_name['entry'].message_type = _TRACKENTRY
 DESCRIPTOR.message_types_by_name['TrackEntry'] = _TRACKENTRY
 DESCRIPTOR.message_types_by_name['TrackList'] = _TRACKLIST
+DESCRIPTOR.message_types_by_name['Snapshot'] = _SNAPSHOT
 
 class TrackEntry(_message.Message):
   __metaclass__ = _reflection.GeneratedProtocolMessageType
@@ -102,6 +131,12 @@ class TrackList(_message.Message):
   DESCRIPTOR = _TRACKLIST
 
   # @@protoc_insertion_point(class_scope:voldemort.TrackList)
+
+class Snapshot(_message.Message):
+  __metaclass__ = _reflection.GeneratedProtocolMessageType
+  DESCRIPTOR = _SNAPSHOT
+
+  # @@protoc_insertion_point(class_scope:voldemort.Snapshot)
 
 
 DESCRIPTOR.has_options = True

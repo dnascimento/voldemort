@@ -1,5 +1,8 @@
 package voldemort.undoTracker.schedulers;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import voldemort.undoTracker.InvertDependencies;
 import voldemort.undoTracker.map.Op;
 import voldemort.undoTracker.map.Op.OpType;
@@ -8,6 +11,7 @@ import voldemort.utils.ByteArray;
 
 public class CurrentSnapshotScheduler implements AccessSchedule {
 
+    private final Logger log = LogManager.getLogger("CurrentSnapshotScheduler");
     private static OpMultimap keyAccessLists;
     private static InvertDependencies sender;
 

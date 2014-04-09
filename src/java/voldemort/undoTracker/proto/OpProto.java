@@ -53,7 +53,6 @@ public final class OpProto {
       return defaultInstance;
     }
 
-    @Override
     public TrackEntry getDefaultInstanceForType() {
       return defaultInstance;
     }
@@ -133,7 +132,6 @@ public final class OpProto {
       return voldemort.undoTracker.proto.OpProto.internal_static_voldemort_TrackEntry_descriptor;
     }
 
-    @Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return voldemort.undoTracker.proto.OpProto.internal_static_voldemort_TrackEntry_fieldAccessorTable
@@ -143,8 +141,7 @@ public final class OpProto {
 
     public static com.google.protobuf.Parser<TrackEntry> PARSER =
         new com.google.protobuf.AbstractParser<TrackEntry>() {
-      @Override
-    public TrackEntry parsePartialFrom(
+      public TrackEntry parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -164,14 +161,12 @@ public final class OpProto {
     /**
      * <code>required int64 rid = 1;</code>
      */
-    @Override
     public boolean hasRid() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
      * <code>required int64 rid = 1;</code>
      */
-    @Override
     public long getRid() {
       return rid_;
     }
@@ -182,7 +177,6 @@ public final class OpProto {
     /**
      * <code>repeated int64 dependencies = 2;</code>
      */
-    @Override
     public java.util.List<java.lang.Long>
         getDependenciesList() {
       return dependencies_;
@@ -190,14 +184,12 @@ public final class OpProto {
     /**
      * <code>repeated int64 dependencies = 2;</code>
      */
-    @Override
     public int getDependenciesCount() {
       return dependencies_.size();
     }
     /**
      * <code>repeated int64 dependencies = 2;</code>
      */
-    @Override
     public long getDependencies(int index) {
       return dependencies_.get(index);
     }
@@ -207,7 +199,6 @@ public final class OpProto {
       dependencies_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
-    @Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
@@ -220,7 +211,6 @@ public final class OpProto {
       return true;
     }
 
-    @Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
@@ -234,7 +224,6 @@ public final class OpProto {
     }
 
     private int memoizedSerializedSize = -1;
-    @Override
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
@@ -319,12 +308,10 @@ public final class OpProto {
     }
 
     public static Builder newBuilder() { return Builder.create(); }
-    @Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder(voldemort.undoTracker.proto.OpProto.TrackEntry prototype) {
       return newBuilder().mergeFrom(prototype);
     }
-    @Override
     public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
@@ -344,8 +331,7 @@ public final class OpProto {
         return voldemort.undoTracker.proto.OpProto.internal_static_voldemort_TrackEntry_descriptor;
       }
 
-      @Override
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return voldemort.undoTracker.proto.OpProto.internal_static_voldemort_TrackEntry_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -370,8 +356,7 @@ public final class OpProto {
         return new Builder();
       }
 
-      @Override
-    public Builder clear() {
+      public Builder clear() {
         super.clear();
         rid_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -380,24 +365,20 @@ public final class OpProto {
         return this;
       }
 
-      @Override
-    public Builder clone() {
+      public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
 
-      @Override
-    public com.google.protobuf.Descriptors.Descriptor
+      public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return voldemort.undoTracker.proto.OpProto.internal_static_voldemort_TrackEntry_descriptor;
       }
 
-      @Override
-    public voldemort.undoTracker.proto.OpProto.TrackEntry getDefaultInstanceForType() {
+      public voldemort.undoTracker.proto.OpProto.TrackEntry getDefaultInstanceForType() {
         return voldemort.undoTracker.proto.OpProto.TrackEntry.getDefaultInstance();
       }
 
-      @Override
-    public voldemort.undoTracker.proto.OpProto.TrackEntry build() {
+      public voldemort.undoTracker.proto.OpProto.TrackEntry build() {
         voldemort.undoTracker.proto.OpProto.TrackEntry result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
@@ -405,8 +386,7 @@ public final class OpProto {
         return result;
       }
 
-      @Override
-    public voldemort.undoTracker.proto.OpProto.TrackEntry buildPartial() {
+      public voldemort.undoTracker.proto.OpProto.TrackEntry buildPartial() {
         voldemort.undoTracker.proto.OpProto.TrackEntry result = new voldemort.undoTracker.proto.OpProto.TrackEntry(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
@@ -424,8 +404,7 @@ public final class OpProto {
         return result;
       }
 
-      @Override
-    public Builder mergeFrom(com.google.protobuf.Message other) {
+      public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof voldemort.undoTracker.proto.OpProto.TrackEntry) {
           return mergeFrom((voldemort.undoTracker.proto.OpProto.TrackEntry)other);
         } else {
@@ -453,8 +432,7 @@ public final class OpProto {
         return this;
       }
 
-      @Override
-    public final boolean isInitialized() {
+      public final boolean isInitialized() {
         if (!hasRid()) {
           
           return false;
@@ -462,8 +440,7 @@ public final class OpProto {
         return true;
       }
 
-      @Override
-    public Builder mergeFrom(
+      public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -487,15 +464,13 @@ public final class OpProto {
       /**
        * <code>required int64 rid = 1;</code>
        */
-      @Override
-    public boolean hasRid() {
+      public boolean hasRid() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
        * <code>required int64 rid = 1;</code>
        */
-      @Override
-    public long getRid() {
+      public long getRid() {
         return rid_;
       }
       /**
@@ -528,23 +503,20 @@ public final class OpProto {
       /**
        * <code>repeated int64 dependencies = 2;</code>
        */
-      @Override
-    public java.util.List<java.lang.Long>
+      public java.util.List<java.lang.Long>
           getDependenciesList() {
         return java.util.Collections.unmodifiableList(dependencies_);
       }
       /**
        * <code>repeated int64 dependencies = 2;</code>
        */
-      @Override
-    public int getDependenciesCount() {
+      public int getDependenciesCount() {
         return dependencies_.size();
       }
       /**
        * <code>repeated int64 dependencies = 2;</code>
        */
-      @Override
-    public long getDependencies(int index) {
+      public long getDependencies(int index) {
         return dependencies_.get(index);
       }
       /**
@@ -658,7 +630,6 @@ public final class OpProto {
       return defaultInstance;
     }
 
-    @Override
     public TrackList getDefaultInstanceForType() {
       return defaultInstance;
     }
@@ -725,7 +696,6 @@ public final class OpProto {
       return voldemort.undoTracker.proto.OpProto.internal_static_voldemort_TrackList_descriptor;
     }
 
-    @Override
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return voldemort.undoTracker.proto.OpProto.internal_static_voldemort_TrackList_fieldAccessorTable
@@ -735,8 +705,7 @@ public final class OpProto {
 
     public static com.google.protobuf.Parser<TrackList> PARSER =
         new com.google.protobuf.AbstractParser<TrackList>() {
-      @Override
-    public TrackList parsePartialFrom(
+      public TrackList parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -756,14 +725,12 @@ public final class OpProto {
     /**
      * <code>repeated .voldemort.TrackEntry entry = 1;</code>
      */
-    @Override
     public java.util.List<voldemort.undoTracker.proto.OpProto.TrackEntry> getEntryList() {
       return entry_;
     }
     /**
      * <code>repeated .voldemort.TrackEntry entry = 1;</code>
      */
-    @Override
     public java.util.List<? extends voldemort.undoTracker.proto.OpProto.TrackEntryOrBuilder> 
         getEntryOrBuilderList() {
       return entry_;
@@ -771,21 +738,18 @@ public final class OpProto {
     /**
      * <code>repeated .voldemort.TrackEntry entry = 1;</code>
      */
-    @Override
     public int getEntryCount() {
       return entry_.size();
     }
     /**
      * <code>repeated .voldemort.TrackEntry entry = 1;</code>
      */
-    @Override
     public voldemort.undoTracker.proto.OpProto.TrackEntry getEntry(int index) {
       return entry_.get(index);
     }
     /**
      * <code>repeated .voldemort.TrackEntry entry = 1;</code>
      */
-    @Override
     public voldemort.undoTracker.proto.OpProto.TrackEntryOrBuilder getEntryOrBuilder(
         int index) {
       return entry_.get(index);
@@ -797,14 +761,12 @@ public final class OpProto {
     /**
      * <code>optional string nodeId = 2;</code>
      */
-    @Override
     public boolean hasNodeId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
      * <code>optional string nodeId = 2;</code>
      */
-    @Override
     public java.lang.String getNodeId() {
       java.lang.Object ref = nodeId_;
       if (ref instanceof java.lang.String) {
@@ -822,7 +784,6 @@ public final class OpProto {
     /**
      * <code>optional string nodeId = 2;</code>
      */
-    @Override
     public com.google.protobuf.ByteString
         getNodeIdBytes() {
       java.lang.Object ref = nodeId_;
@@ -842,7 +803,6 @@ public final class OpProto {
       nodeId_ = "";
     }
     private byte memoizedIsInitialized = -1;
-    @Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
@@ -857,7 +817,6 @@ public final class OpProto {
       return true;
     }
 
-    @Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
@@ -871,7 +830,6 @@ public final class OpProto {
     }
 
     private int memoizedSerializedSize = -1;
-    @Override
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
@@ -951,12 +909,10 @@ public final class OpProto {
     }
 
     public static Builder newBuilder() { return Builder.create(); }
-    @Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder(voldemort.undoTracker.proto.OpProto.TrackList prototype) {
       return newBuilder().mergeFrom(prototype);
     }
-    @Override
     public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
@@ -976,8 +932,7 @@ public final class OpProto {
         return voldemort.undoTracker.proto.OpProto.internal_static_voldemort_TrackList_descriptor;
       }
 
-      @Override
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return voldemort.undoTracker.proto.OpProto.internal_static_voldemort_TrackList_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -1003,8 +958,7 @@ public final class OpProto {
         return new Builder();
       }
 
-      @Override
-    public Builder clear() {
+      public Builder clear() {
         super.clear();
         if (entryBuilder_ == null) {
           entry_ = java.util.Collections.emptyList();
@@ -1017,24 +971,20 @@ public final class OpProto {
         return this;
       }
 
-      @Override
-    public Builder clone() {
+      public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
 
-      @Override
-    public com.google.protobuf.Descriptors.Descriptor
+      public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return voldemort.undoTracker.proto.OpProto.internal_static_voldemort_TrackList_descriptor;
       }
 
-      @Override
-    public voldemort.undoTracker.proto.OpProto.TrackList getDefaultInstanceForType() {
+      public voldemort.undoTracker.proto.OpProto.TrackList getDefaultInstanceForType() {
         return voldemort.undoTracker.proto.OpProto.TrackList.getDefaultInstance();
       }
 
-      @Override
-    public voldemort.undoTracker.proto.OpProto.TrackList build() {
+      public voldemort.undoTracker.proto.OpProto.TrackList build() {
         voldemort.undoTracker.proto.OpProto.TrackList result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
@@ -1042,8 +992,7 @@ public final class OpProto {
         return result;
       }
 
-      @Override
-    public voldemort.undoTracker.proto.OpProto.TrackList buildPartial() {
+      public voldemort.undoTracker.proto.OpProto.TrackList buildPartial() {
         voldemort.undoTracker.proto.OpProto.TrackList result = new voldemort.undoTracker.proto.OpProto.TrackList(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
@@ -1065,8 +1014,7 @@ public final class OpProto {
         return result;
       }
 
-      @Override
-    public Builder mergeFrom(com.google.protobuf.Message other) {
+      public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof voldemort.undoTracker.proto.OpProto.TrackList) {
           return mergeFrom((voldemort.undoTracker.proto.OpProto.TrackList)other);
         } else {
@@ -1112,8 +1060,7 @@ public final class OpProto {
         return this;
       }
 
-      @Override
-    public final boolean isInitialized() {
+      public final boolean isInitialized() {
         for (int i = 0; i < getEntryCount(); i++) {
           if (!getEntry(i).isInitialized()) {
             
@@ -1123,8 +1070,7 @@ public final class OpProto {
         return true;
       }
 
-      @Override
-    public Builder mergeFrom(
+      public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
@@ -1159,8 +1105,7 @@ public final class OpProto {
       /**
        * <code>repeated .voldemort.TrackEntry entry = 1;</code>
        */
-      @Override
-    public java.util.List<voldemort.undoTracker.proto.OpProto.TrackEntry> getEntryList() {
+      public java.util.List<voldemort.undoTracker.proto.OpProto.TrackEntry> getEntryList() {
         if (entryBuilder_ == null) {
           return java.util.Collections.unmodifiableList(entry_);
         } else {
@@ -1170,8 +1115,7 @@ public final class OpProto {
       /**
        * <code>repeated .voldemort.TrackEntry entry = 1;</code>
        */
-      @Override
-    public int getEntryCount() {
+      public int getEntryCount() {
         if (entryBuilder_ == null) {
           return entry_.size();
         } else {
@@ -1181,8 +1125,7 @@ public final class OpProto {
       /**
        * <code>repeated .voldemort.TrackEntry entry = 1;</code>
        */
-      @Override
-    public voldemort.undoTracker.proto.OpProto.TrackEntry getEntry(int index) {
+      public voldemort.undoTracker.proto.OpProto.TrackEntry getEntry(int index) {
         if (entryBuilder_ == null) {
           return entry_.get(index);
         } else {
@@ -1331,8 +1274,7 @@ public final class OpProto {
       /**
        * <code>repeated .voldemort.TrackEntry entry = 1;</code>
        */
-      @Override
-    public voldemort.undoTracker.proto.OpProto.TrackEntryOrBuilder getEntryOrBuilder(
+      public voldemort.undoTracker.proto.OpProto.TrackEntryOrBuilder getEntryOrBuilder(
           int index) {
         if (entryBuilder_ == null) {
           return entry_.get(index);  } else {
@@ -1342,8 +1284,7 @@ public final class OpProto {
       /**
        * <code>repeated .voldemort.TrackEntry entry = 1;</code>
        */
-      @Override
-    public java.util.List<? extends voldemort.undoTracker.proto.OpProto.TrackEntryOrBuilder> 
+      public java.util.List<? extends voldemort.undoTracker.proto.OpProto.TrackEntryOrBuilder> 
            getEntryOrBuilderList() {
         if (entryBuilder_ != null) {
           return entryBuilder_.getMessageOrBuilderList();
@@ -1393,15 +1334,13 @@ public final class OpProto {
       /**
        * <code>optional string nodeId = 2;</code>
        */
-      @Override
-    public boolean hasNodeId() {
+      public boolean hasNodeId() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
        * <code>optional string nodeId = 2;</code>
        */
-      @Override
-    public java.lang.String getNodeId() {
+      public java.lang.String getNodeId() {
         java.lang.Object ref = nodeId_;
         if (!(ref instanceof java.lang.String)) {
           java.lang.String s = ((com.google.protobuf.ByteString) ref)
@@ -1415,8 +1354,7 @@ public final class OpProto {
       /**
        * <code>optional string nodeId = 2;</code>
        */
-      @Override
-    public com.google.protobuf.ByteString
+      public com.google.protobuf.ByteString
           getNodeIdBytes() {
         java.lang.Object ref = nodeId_;
         if (ref instanceof String) {
@@ -1476,6 +1414,410 @@ public final class OpProto {
     // @@protoc_insertion_point(class_scope:voldemort.TrackList)
   }
 
+  public interface SnapshotOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+
+    // required int64 seasonId = 1;
+    /**
+     * <code>required int64 seasonId = 1;</code>
+     */
+    boolean hasSeasonId();
+    /**
+     * <code>required int64 seasonId = 1;</code>
+     */
+    long getSeasonId();
+  }
+  /**
+   * Protobuf type {@code voldemort.Snapshot}
+   */
+  public static final class Snapshot extends
+      com.google.protobuf.GeneratedMessage
+      implements SnapshotOrBuilder {
+    // Use Snapshot.newBuilder() to construct.
+    private Snapshot(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private Snapshot(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final Snapshot defaultInstance;
+    public static Snapshot getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public Snapshot getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private Snapshot(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              seasonId_ = input.readInt64();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return voldemort.undoTracker.proto.OpProto.internal_static_voldemort_Snapshot_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return voldemort.undoTracker.proto.OpProto.internal_static_voldemort_Snapshot_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              voldemort.undoTracker.proto.OpProto.Snapshot.class, voldemort.undoTracker.proto.OpProto.Snapshot.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<Snapshot> PARSER =
+        new com.google.protobuf.AbstractParser<Snapshot>() {
+      public Snapshot parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Snapshot(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Snapshot> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    // required int64 seasonId = 1;
+    public static final int SEASONID_FIELD_NUMBER = 1;
+    private long seasonId_;
+    /**
+     * <code>required int64 seasonId = 1;</code>
+     */
+    public boolean hasSeasonId() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required int64 seasonId = 1;</code>
+     */
+    public long getSeasonId() {
+      return seasonId_;
+    }
+
+    private void initFields() {
+      seasonId_ = 0L;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+
+      if (!hasSeasonId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeInt64(1, seasonId_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(1, seasonId_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static voldemort.undoTracker.proto.OpProto.Snapshot parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static voldemort.undoTracker.proto.OpProto.Snapshot parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static voldemort.undoTracker.proto.OpProto.Snapshot parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static voldemort.undoTracker.proto.OpProto.Snapshot parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static voldemort.undoTracker.proto.OpProto.Snapshot parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static voldemort.undoTracker.proto.OpProto.Snapshot parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static voldemort.undoTracker.proto.OpProto.Snapshot parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static voldemort.undoTracker.proto.OpProto.Snapshot parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static voldemort.undoTracker.proto.OpProto.Snapshot parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static voldemort.undoTracker.proto.OpProto.Snapshot parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(voldemort.undoTracker.proto.OpProto.Snapshot prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code voldemort.Snapshot}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements voldemort.undoTracker.proto.OpProto.SnapshotOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return voldemort.undoTracker.proto.OpProto.internal_static_voldemort_Snapshot_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return voldemort.undoTracker.proto.OpProto.internal_static_voldemort_Snapshot_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                voldemort.undoTracker.proto.OpProto.Snapshot.class, voldemort.undoTracker.proto.OpProto.Snapshot.Builder.class);
+      }
+
+      // Construct using voldemort.undoTracker.proto.OpProto.Snapshot.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        seasonId_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return voldemort.undoTracker.proto.OpProto.internal_static_voldemort_Snapshot_descriptor;
+      }
+
+      public voldemort.undoTracker.proto.OpProto.Snapshot getDefaultInstanceForType() {
+        return voldemort.undoTracker.proto.OpProto.Snapshot.getDefaultInstance();
+      }
+
+      public voldemort.undoTracker.proto.OpProto.Snapshot build() {
+        voldemort.undoTracker.proto.OpProto.Snapshot result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public voldemort.undoTracker.proto.OpProto.Snapshot buildPartial() {
+        voldemort.undoTracker.proto.OpProto.Snapshot result = new voldemort.undoTracker.proto.OpProto.Snapshot(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.seasonId_ = seasonId_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof voldemort.undoTracker.proto.OpProto.Snapshot) {
+          return mergeFrom((voldemort.undoTracker.proto.OpProto.Snapshot)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(voldemort.undoTracker.proto.OpProto.Snapshot other) {
+        if (other == voldemort.undoTracker.proto.OpProto.Snapshot.getDefaultInstance()) return this;
+        if (other.hasSeasonId()) {
+          setSeasonId(other.getSeasonId());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasSeasonId()) {
+          
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        voldemort.undoTracker.proto.OpProto.Snapshot parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (voldemort.undoTracker.proto.OpProto.Snapshot) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      // required int64 seasonId = 1;
+      private long seasonId_ ;
+      /**
+       * <code>required int64 seasonId = 1;</code>
+       */
+      public boolean hasSeasonId() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required int64 seasonId = 1;</code>
+       */
+      public long getSeasonId() {
+        return seasonId_;
+      }
+      /**
+       * <code>required int64 seasonId = 1;</code>
+       */
+      public Builder setSeasonId(long value) {
+        bitField0_ |= 0x00000001;
+        seasonId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int64 seasonId = 1;</code>
+       */
+      public Builder clearSeasonId() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        seasonId_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:voldemort.Snapshot)
+    }
+
+    static {
+      defaultInstance = new Snapshot(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:voldemort.Snapshot)
+  }
+
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_voldemort_TrackEntry_descriptor;
   private static
@@ -1486,6 +1828,11 @@ public final class OpProto {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_voldemort_TrackList_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_voldemort_Snapshot_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_voldemort_Snapshot_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1498,12 +1845,12 @@ public final class OpProto {
       "\n\021dbNode-undo.proto\022\tvoldemort\"/\n\nTrackE" +
       "ntry\022\013\n\003rid\030\001 \002(\003\022\024\n\014dependencies\030\002 \003(\003\"" +
       "A\n\tTrackList\022$\n\005entry\030\001 \003(\0132\025.voldemort." +
-      "TrackEntry\022\016\n\006nodeId\030\002 \001(\tB(\n\033voldemort." +
-      "undoTracker.protoB\007OpProtoH\001"
+      "TrackEntry\022\016\n\006nodeId\030\002 \001(\t\"\034\n\010Snapshot\022\020" +
+      "\n\010seasonId\030\001 \002(\003B(\n\033voldemort.undoTracke" +
+      "r.protoB\007OpProtoH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
-        @Override
         public com.google.protobuf.ExtensionRegistry assignDescriptors(
             com.google.protobuf.Descriptors.FileDescriptor root) {
           descriptor = root;
@@ -1519,6 +1866,12 @@ public final class OpProto {
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_TrackList_descriptor,
               new java.lang.String[] { "Entry", "NodeId", });
+          internal_static_voldemort_Snapshot_descriptor =
+            getDescriptor().getMessageTypes().get(2);
+          internal_static_voldemort_Snapshot_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_voldemort_Snapshot_descriptor,
+              new java.lang.String[] { "SeasonId", });
           return null;
         }
       };

@@ -3,6 +3,10 @@ package voldemort.undoTracker;
 import java.io.UnsupportedEncodingException;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.xml.DOMConfigurator;
+
 import voldemort.undoTracker.map.OpMultimap;
 import voldemort.undoTracker.schedulers.AccessSchedule;
 import voldemort.undoTracker.schedulers.CurrentSnapshotScheduler;
@@ -11,6 +15,7 @@ import voldemort.utils.ByteArray;
 
 public class DBUndoStub implements AccessSchedule {
 
+    private final Logger log = LogManager.getLogger("LockArray");
     AtomicLong snapshotRid = new AtomicLong(0);
     PastSnapshotScheduler past;
     CurrentSnapshotScheduler current;
@@ -26,6 +31,9 @@ public class DBUndoStub implements AccessSchedule {
      * Each request handler has a UndoStub instance
      */
     public DBUndoStub(OpMultimap archive) {
+        DOMConfigurator.configure("log4j.xml");
+
+        ManagerCommands.register(this);
         past = new PastSnapshotScheduler(archive);
         current = new CurrentSnapshotScheduler(archive);
     }
@@ -90,7 +98,7 @@ public class DBUndoStub implements AccessSchedule {
         }
     }
 
-    private String hexStringToAscii(ByteArray key) {
+    public static String hexStringToAscii(ByteArray key) {
         try {
             return new String(key.get(), "UTF-8");
         } catch(UnsupportedEncodingException e) {}
@@ -98,6 +106,7 @@ public class DBUndoStub implements AccessSchedule {
     }
 
     public void setNewSnapshotRid(long newRid) {
+        System.out.println("New SnapshotRid: " + newRid);
         snapshotRid.set(newRid);
     }
 
