@@ -9,6 +9,14 @@ import voldemort.undoTracker.map.Op.OpType;
 import voldemort.undoTracker.map.OpMultimap;
 import voldemort.utils.ByteArray;
 
+/**
+ * Read the biggest TS
+ * Write:
+ * (currentKey < STS)? Write in a new branch ? Write in the current branch
+ * 
+ * @author darionascimento
+ * 
+ */
 public class CurrentSnapshotScheduler implements AccessSchedule {
 
     private final Logger log = LogManager.getLogger("CurrentSnapshotScheduler");

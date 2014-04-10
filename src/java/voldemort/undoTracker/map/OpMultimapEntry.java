@@ -6,9 +6,20 @@ import java.util.List;
 
 import voldemort.undoTracker.map.Op.OpType;
 
+/**
+ * 
+ * @author darionascimento
+ * 
+ */
 public class OpMultimapEntry {
 
+    /**
+     * Entry RWLock: not related with list access. It is the key locker.
+     */
     private RWLock lock = new RWLock();
+    /**
+     * Use synchronized(this) to access the list.
+     */
     private LinkedList<Op> list = new LinkedList<Op>();
 
     public OpMultimapEntry(LinkedList<Op> list) {
@@ -168,4 +179,37 @@ public class OpMultimapEntry {
         return lock.hasPendent();
     }
 
+    /**
+     * Get the biggest write RID (the latest version of value) which value is
+     * lower than sts
+     * 
+     * @param sts: season timestamp: -1 if wants the latest
+     * @return season timestamp of latest version which value is lower than sts
+     *         or -1 if the entry is deleted or not-exists
+     */
+    public long getBiggestVersion(long sts) {
+        // TODO optimized version could use binary search but the list would
+        // need to be an array.
+        synchronized(this) {
+            if(sts == -1) {
+                return (list.isEmpty()) ? -1 : list.peekFirst().rid;
+            }
+            Iterator<Op> i = list.descendingIterator();
+            while(i.hasNext()) {
+                Op op = i.next();
+                if(op.rid >= sts)
+                    continue;
+                switch(op.type) {
+                    case Put:
+                        return op.rid;
+                    case Delete:
+                        return -1;
+                    default:
+                        break;
+                }
+            }
+            return -1;
+
+        }
+    }
 }

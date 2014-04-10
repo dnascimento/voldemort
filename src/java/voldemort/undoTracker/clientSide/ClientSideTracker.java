@@ -1,20 +1,70 @@
 package voldemort.undoTracker.clientSide;
 
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
-public class ClientSideTracker {
+import voldemort.undoTracker.proto.ToManagerProto;
+import voldemort.undoTracker.proto.ToManagerProto.TrackEntry;
+import voldemort.undoTracker.proto.ToManagerProto.TrackMsg;
 
-    private Multimap<Long, Long> dependencyPerRid;
+import com.google.common.collect.ArrayListMultimap;
+
+public class ClientSideTracker extends Thread {
+
+    int period = 5000;
+    private ArrayListMultimap<Long, Long> dependencyPerRid = ArrayListMultimap.create();
 
     public ClientSideTracker() {
         super();
-        LinkedListMultimap<Long, Long> map = LinkedListMultimap.create();
-        this.dependencyPerRid = Multimaps.synchronizedListMultimap(map);
     }
 
-    public void trackGet(long rid, long dependentRid) {
+    public synchronized void trackGet(long rid, long dependentRid) {
         dependencyPerRid.put(rid, dependentRid);
+    }
+
+    public synchronized ArrayListMultimap<Long, Long> extractDependencies() {
+        if(dependencyPerRid.size() != 0) {
+            ArrayListMultimap<Long, Long> old = dependencyPerRid;
+            dependencyPerRid = ArrayListMultimap.create();
+            return old;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void run() {
+        while(true) {
+            ArrayListMultimap<Long, Long> map = extractDependencies();
+            try {
+                if(map != null)
+                    send(map);
+                sleep(period);
+            } catch(UnknownHostException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch(IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch(InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void send(ArrayListMultimap<Long, Long> map) throws UnknownHostException, IOException {
+        Socket s = new Socket("localhost", 9090);
+        TrackMsg.Builder mB = ToManagerProto.TrackMsg.newBuilder();
+        for(Long k: map.keySet()) {
+            TrackEntry t = TrackEntry.newBuilder().setRid(k).addAllDependency(map.get(k)).build();
+            mB.addEntry(t);
+        }
+        ToManagerProto.MsgToManager m = ToManagerProto.MsgToManager.newBuilder()
+                                                                   .setTrackMsgFromClients(mB)
+                                                                   .build();
+        m.writeTo(s.getOutputStream());
+        s.close();
     }
 }

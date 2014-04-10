@@ -1,9 +1,16 @@
 package voldemort.undoTracker.schedulers;
 
-import voldemort.undoTracker.map.OpMultimapEntry;
 import voldemort.undoTracker.map.OpMultimap;
+import voldemort.undoTracker.map.OpMultimapEntry;
 import voldemort.utils.ByteArray;
 
+/**
+ * Read only values with TS < STS
+ * Write over values with TS < STS
+ * 
+ * @author darionascimento
+ * 
+ */
 public class PastSnapshotScheduler implements AccessSchedule {
 
     OpMultimap archive;

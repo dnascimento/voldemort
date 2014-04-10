@@ -5,9 +5,9 @@ import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-import voldemort.undoTracker.proto.OpProto;
-import voldemort.undoTracker.proto.OpProto.TrackEntry;
-import voldemort.undoTracker.proto.OpProto.TrackList;
+import voldemort.undoTracker.proto.ToManagerProto;
+import voldemort.undoTracker.proto.ToManagerProto.TrackEntry;
+import voldemort.undoTracker.proto.ToManagerProto.TrackMsg;
 
 import com.google.common.collect.Multimap;
 
@@ -22,7 +22,7 @@ public class SendDependencies extends Thread {
 
     @Override
     public void run() {
-        OpProto.TrackList list = convertToList();
+        TrackMsg list = convertToList();
         try {
             send(list);
         } catch(IOException e) {
@@ -36,7 +36,7 @@ public class SendDependencies extends Thread {
      * 
      * @throws IOException
      */
-    private void send(OpProto.TrackList list) throws IOException {
+    private void send(TrackMsg list) throws IOException {
         if(list.getEntryCount() == 0) {
             return;
         }
@@ -53,7 +53,7 @@ public class SendDependencies extends Thread {
         }
     }
 
-    private void show(TrackList list) {
+    private void show(TrackMsg list) {
         // TODO maybe improve
         System.out.println(list.toString());
     }
@@ -63,12 +63,12 @@ public class SendDependencies extends Thread {
      * 
      * @return
      */
-    private OpProto.TrackList convertToList() {
-        OpProto.TrackList.Builder listBuilder = OpProto.TrackList.newBuilder();
+    private ToManagerProto.TrackMsg convertToList() {
+        TrackMsg.Builder listBuilder = TrackMsg.newBuilder();
         for(Long key: dependencies.keySet()) {
-            OpProto.TrackEntry.Builder entry = TrackEntry.newBuilder();
+            TrackEntry.Builder entry = TrackEntry.newBuilder();
             entry.setRid(key);
-            entry.addAllDependencies(dependencies.get(key));
+            entry.addAllDependency(dependencies.get(key));
             listBuilder.addEntry(entry.build());
         }
         return listBuilder.build();

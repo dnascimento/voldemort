@@ -117,10 +117,10 @@ public class OpMultimap {
      */
     public OpMultimapView renew() {
         HashMap<ByteArray, OpMultimapEntry> copy = new HashMap<ByteArray, OpMultimapEntry>();
+        mutex.lockAllMutex();
         Iterator<ByteArray> i = map.keySet().iterator();
         while(i.hasNext()) {
             ByteArray k = i.next();
-            mutex.lock(k);
             OpMultimapEntry entry = map.get(k);
             if(entry.hasLocked()) {
                 log.debug("Has locked");
@@ -129,8 +129,8 @@ public class OpMultimap {
                 log.debug("No locked Pendents");
                 copy.put(k, map.remove(k));
             }
-            mutex.release(k);
         }
+        mutex.releaseAllMutex();
 
         return new OpMultimapView(copy);
     }

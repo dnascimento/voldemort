@@ -9,8 +9,7 @@ import java.util.List;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import voldemort.undoTracker.proto.OpProto;
-import voldemort.undoTracker.proto.OpProto.Snapshot;
+import voldemort.undoTracker.proto.FromManagerProto.Snapshot;
 
 public class ManagerCommands extends Thread {
 
@@ -37,7 +36,7 @@ public class ManagerCommands extends Thread {
     }
 
     private void processRequest(Socket s) throws IOException {
-        Snapshot cmd = OpProto.Snapshot.parseFrom(s.getInputStream());
+        Snapshot cmd = Snapshot.parseFrom(s.getInputStream());
         for(DBUndoStub stub: stubs) {
             stub.setNewSnapshotRid(cmd.getSeasonId());
         }
