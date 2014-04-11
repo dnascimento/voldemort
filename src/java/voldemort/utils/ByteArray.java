@@ -14,7 +14,7 @@ public final class ByteArray implements Serializable {
 
     public static final ByteArray EMPTY = new ByteArray();
 
-    private final byte[] underlying;
+    private byte[] underlying;
 
     public ByteArray(byte... underlying) {
         this.underlying = Utils.notNull(underlying, "underlying");
@@ -59,5 +59,14 @@ public final class ByteArray implements Serializable {
 
     public int length() {
         return underlying.length;
+    }
+
+    @Override
+    public ByteArray clone() {
+        return new ByteArray(Arrays.copyOf(underlying, underlying.length));
+    }
+
+    public void set(byte[] data) {
+        this.underlying = Utils.notNull(data, "underlying");
     }
 }

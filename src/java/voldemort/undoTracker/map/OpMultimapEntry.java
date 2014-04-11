@@ -1,10 +1,14 @@
 package voldemort.undoTracker.map;
 
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import voldemort.undoTracker.map.Op.OpType;
+
+import com.google.common.collect.HashMultimap;
 
 /**
  * 
@@ -13,6 +17,12 @@ import voldemort.undoTracker.map.Op.OpType;
  */
 public class OpMultimapEntry {
 
+    private final Logger log = LogManager.getLogger("OpMultimapEntry");
+
+    /**
+     * Avoid re-size version array, average number of version per key
+     */
+    public final int INIT_ARRAY_SIZE = 16;
     /**
      * Entry RWLock: not related with list access. It is the key locker.
      */
@@ -20,26 +30,42 @@ public class OpMultimapEntry {
     /**
      * Use synchronized(this) to access the list.
      */
-    private LinkedList<Op> list = new LinkedList<Op>();
+    private ArrayList<Op> list = new ArrayList<Op>(INIT_ARRAY_SIZE);
 
-    public OpMultimapEntry(LinkedList<Op> list) {
+    /**
+     * Keep track of next or last write
+     */
+    private int redoPos = 0;
+    /**
+     * Keep track of last sent dependency
+     */
+    private int sentDependency = 0;
+
+    public OpMultimapEntry(ArrayList<Op> list) {
         this.list = list;
     }
 
-    public OpMultimapEntry() {}
+    public OpMultimapEntry() {
 
+    }
+
+    /**
+     * 
+     * @param rid
+     */
     public void isNextGet(long rid) {
         while(true) {
             synchronized(this) {
-                Iterator<Op> i = list.iterator();
-                while(i.hasNext()) {
-                    Op op = i.next();
+                int p = redoPos;
+                while(p < list.size()) {
+                    Op op = list.get(p);
                     if(!op.type.equals(OpType.Get)) {
                         break;
                     }
                     if(op.rid == rid) {
                         return;
                     }
+                    p++;
                 }
             }
             readWait();
@@ -54,9 +80,10 @@ public class OpMultimapEntry {
     public void isNextPut(long rid) {
         while(true) {
             synchronized(this) {
-                Op op = list.getFirst();
-                if(op.rid == rid)
+                Op op = list.get(redoPos);
+                if(op.rid == rid) {
                     return;
+                }
             }
             writeWait();
         }
@@ -65,26 +92,30 @@ public class OpMultimapEntry {
     public void isNextDelete(long rid) {
         while(true) {
             synchronized(this) {
-                Op op = list.getFirst();
-                if(op.rid == rid)
+                Op op = list.get(redoPos);
+                if(op.rid == rid) {
                     return;
+                }
             }
             writeWait();
         }
     }
 
-    public void remove(long rid) {
+    public void endOp(OpType type) {
         synchronized(this) {
-            Iterator<Op> i = list.iterator();
-            while(i.hasNext()) {
-                if(i.next().rid == rid) {
-                    i.remove();
-                    break;
-                }
+            if(list.size() == redoPos + 1) {
+                return;
             }
-            if(!list.isEmpty()) {
-                OpType nextType = list.getFirst().type;
-                if(nextType.equals(OpType.Get)) {
+
+            Op next = list.get(++redoPos);
+            if(type.equals(OpType.Get)) {
+                if(!next.type.equals(OpType.Get)) {
+                    // read and next is a write
+                    notifyWrites();
+                }
+            } else {
+                // write, then unlock the next
+                if(next.type.equals(OpType.Get)) {
                     notifyReads();
                 } else {
                     notifyWrites();
@@ -101,9 +132,8 @@ public class OpMultimapEntry {
 
     public synchronized Op getLastWrite() {
         synchronized(this) {
-            Iterator<Op> i = list.descendingIterator();
-            while(i.hasNext()) {
-                Op op = i.next();
+            for(int i = list.size() - 1; i > 0; i--) {
+                Op op = list.get(i);
                 if(op.type != OpType.Get) {
                     return op;
                 }
@@ -120,18 +150,18 @@ public class OpMultimapEntry {
 
     public void addLast(Op op) {
         synchronized(this) {
-            list.addLast(op);
+            list.add(op);
         }
     }
 
-    public LinkedList<Op> getAll() {
+    public ArrayList<Op> getAll() {
         return list;
     }
 
-    public LinkedList<Op> extractAll() {
+    public ArrayList<Op> extractAll() {
         synchronized(this) {
-            LinkedList<Op> data = list;
-            list = new LinkedList<Op>();
+            ArrayList<Op> data = list;
+            list = new ArrayList<Op>();
             return data;
         }
     }
@@ -185,31 +215,128 @@ public class OpMultimapEntry {
      * 
      * @param sts: season timestamp: -1 if wants the latest
      * @return season timestamp of latest version which value is lower than sts
-     *         or -1 if the entry is deleted or not-exists
      */
-    public long getBiggestVersion(long sts) {
-        // TODO optimized version could use binary search but the list would
-        // need to be an array.
-        synchronized(this) {
-            if(sts == -1) {
-                return (list.isEmpty()) ? -1 : list.peekFirst().rid;
+    private long getBiggestVersion(long sts) {
+        for(int i = list.size() - 1; i >= 0; i--) {
+            Op op = list.get(i);
+            if(op.rid > sts)
+                continue;
+            switch(op.type) {
+                case Put:
+                    return op.sts;
+                case Delete:
+                    return sts;
+                default:
+                    break;
             }
-            Iterator<Op> i = list.descendingIterator();
-            while(i.hasNext()) {
-                Op op = i.next();
-                if(op.rid >= sts)
-                    continue;
-                switch(op.type) {
-                    case Put:
-                        return op.rid;
-                    case Delete:
-                        return -1;
-                    default:
-                        break;
-                }
-            }
-            return -1;
 
         }
+        // if empty entry, write sts=0
+        return 0;
     }
+
+    public void updateDependencies(HashMultimap<Long, Long> dependencyPerRid) {
+        // 1st get previous write
+        synchronized(this) {
+            synchronized(dependencyPerRid) {
+                assert (list.size() > 0);
+                long lastWrite = -1;
+                for(int i = sentDependency; i >= 0; i--) {
+                    if(list.get(i).type != OpType.Get) {
+                        lastWrite = list.get(i).rid;
+                        break;
+                    }
+                }
+                assert (lastWrite != -1);
+                log.debug("LAST WRITE:" + lastWrite);
+
+                for(int i = sentDependency + 1; i < list.size(); i++) {
+                    Op op = list.get(i);
+                    if(op.type == Op.OpType.Get) {
+                        dependencyPerRid.put(op.rid, lastWrite);
+                    } else {
+                        lastWrite = op.rid;
+                    }
+                }
+                sentDependency = list.size() - 1;
+            }
+        }
+    }
+
+    /**
+     * Choose the correct snapshot to access in reads and which will write
+     * 
+     * @param type
+     * @param rid
+     * @param sts
+     * @return
+     */
+    public long trackAccessNewRequest(OpType type, long rid, long sts) {
+        long snapshotAccess;
+        // Store the sts of write (version of entry)
+        Op op = new Op(rid, type);
+
+        if(rid < sts) {
+            // read only old values
+            snapshotAccess = getBiggestVersion(sts);
+            if(!type.equals(Op.OpType.Get)) {
+                op.sts = snapshotAccess;
+            }
+        } else {
+            // read the most recent
+            if(type.equals(Op.OpType.Get)) {
+                snapshotAccess = getBiggestVersion(Long.MAX_VALUE);
+            } else {
+                snapshotAccess = sts;
+                op.sts = sts;
+            }
+        }
+        assert (snapshotAccess != -1);
+
+        addLast(op);
+        return snapshotAccess;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((list == null) ? 0 : list.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        synchronized(this) {
+            if(this == obj)
+                return true;
+            if(obj == null)
+                return false;
+            if(getClass() != obj.getClass())
+                return false;
+            OpMultimapEntry other = (OpMultimapEntry) obj;
+            if(list == null) {
+                if(other.list != null)
+                    return false;
+            } else if(!list.equals(other.list))
+                return false;
+            return true;
+        }
+    }
+
+    @Override
+    public String toString() {
+        synchronized(this) {
+
+            return "[Entry:" + list + ", redoPos=" + redoPos + ", sentDependency=" + sentDependency
+                   + "]";
+        }
+    }
+
+    public int size() {
+        synchronized(this) {
+            return list.size();
+        }
+    }
+
 }

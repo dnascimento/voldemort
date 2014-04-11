@@ -22,10 +22,12 @@ public class LockArray<K> {
     public void lock(K key) {
         int p = Math.abs(key.hashCode()) % N_PARTITIONS;
         partitionMutex[p].lock();
+        log.debug("lock: " + p);
     }
 
     public void release(K key) {
         int p = Math.abs(key.hashCode()) % N_PARTITIONS;
+        log.debug("release: " + p);
         partitionMutex[p].unlock();
     }
 

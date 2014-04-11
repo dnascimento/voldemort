@@ -4,6 +4,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 /**
  * Read/Write lock ordered by arrival time.
  * 
@@ -32,9 +35,10 @@ public class RWLock {
     private final ReentrantLock lock = new ReentrantLock();
 
     private final LinkedList<LockOp> opsQueue = new LinkedList<LockOp>();
+    private final Logger log = LogManager.getLogger("LockArray");
 
     public RWLock() {
-        System.out.println("New lock");
+        log.debug("New lock");
     }
 
     public void notifyWrites() {

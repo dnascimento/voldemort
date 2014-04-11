@@ -9,6 +9,7 @@ public class Op {
     }
 
     public long rid;
+    public long sts;
     public OpType type;
 
     public Op(long rid, OpType type) {
@@ -42,4 +43,8 @@ public class Op {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "[" + type + " " + "rid=" + rid + ", sts=" + sts + "]";
+    }
 }

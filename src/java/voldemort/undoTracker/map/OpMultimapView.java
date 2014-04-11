@@ -1,7 +1,7 @@
 package voldemort.undoTracker.map;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Set;
 
 import voldemort.utils.ByteArray;
@@ -29,7 +29,7 @@ public class OpMultimapView {
         return map.keySet();
     }
 
-    public LinkedList<Op> get(ByteArray key) {
+    public ArrayList<Op> get(ByteArray key) {
         OpMultimapEntry e = map.get(key);
         if(e == null)
             return null;
