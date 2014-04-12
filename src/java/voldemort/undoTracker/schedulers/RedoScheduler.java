@@ -55,4 +55,9 @@ public class RedoScheduler implements AccessSchedule {
     public void deleteEnd(ByteArray key, RUD rud) {
         archive.get(key).endOp(OpType.Delete);
     }
+
+    @Override
+    public long getVersionStart(ByteArray clone, RUD rud, long sts) {
+        return sts;
+    }
 }

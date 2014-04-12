@@ -214,7 +214,7 @@ public class OpMultimapEntry {
      * Get the biggest write rud (the latest version of value) which value is
      * lower than sts
      * 
-     * @param sts: season timestamp: -1 if wants the latest
+     * @param sts: season timestamp:
      * @return season timestamp of latest version which value is lower than sts
      */
     private long getBiggestVersion(long sts) {
@@ -265,10 +265,31 @@ public class OpMultimapEntry {
     }
 
     /**
+     * Voldemort client gets the version of current entry before PUT. The method
+     * returns the correct branch to use. The client can query the branch to
+     * know the version
+     * 
+     * @param rud
+     * @param sts
+     * @return
+     */
+    public long getVersionToPut(RUD rud, long sts) {
+        long snapshotAccess;
+        if(rud.rid < sts) {
+            // read only old values
+            snapshotAccess = getBiggestVersion(sts);
+        } else {
+            // read the most recent
+            snapshotAccess = sts;
+        }
+        return snapshotAccess;
+    }
+
+    /**
      * Choose the correct snapshot to access in reads and which will write
      * 
      * @param type
-     * @paramrud
+     * @param rid
      * @param sts
      * @return
      */
@@ -292,8 +313,6 @@ public class OpMultimapEntry {
                 op.sts = sts;
             }
         }
-        assert (snapshotAccess != -1);
-
         addLast(op);
         return snapshotAccess;
     }

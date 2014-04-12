@@ -4,9 +4,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
 import voldemort.undoTracker.RUD;
 import voldemort.undoTracker.map.Op.OpType;
 import voldemort.utils.ByteArray;
@@ -22,7 +19,6 @@ import com.google.common.collect.HashMultimap;
  */
 public class OpMultimap {
 
-    private final Logger log = LogManager.getLogger("OpMultimap");
     /**
      * The hash table
      */
@@ -66,20 +62,19 @@ public class OpMultimap {
      * 
      * @param key
      * @param type
-     * @paramrud
+     * @param rud
      * @param sts
      * @return
      */
     public long trackAccess(ByteArray key, OpType type, RUD rud, long sts) {
         OpMultimapEntry entry = getOrCreate(key);
-        // TODO tem de haver um lock para redo e para nao redo, certo?
         if(type.equals(Op.OpType.Get)) {
             entry.lockRead();
         } else {
             entry.lockWrite();
         }
 
-        return entry.trackAccessNewRequest(type,rud, sts);
+        return entry.trackAccessNewRequest(type, rud, sts);
     }
 
     public void endAccess(ByteArray key, OpType type) {
@@ -140,6 +135,11 @@ public class OpMultimap {
 
     public int size() {
         return map.size();
+    }
+
+    public long getVersionToPut(ByteArray key, RUD rud, long sts) {
+        OpMultimapEntry entry = getOrCreate(key);
+        return entry.getVersionToPut(rud, sts);
     }
 
 }

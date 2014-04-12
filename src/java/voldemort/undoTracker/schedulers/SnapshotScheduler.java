@@ -31,17 +31,17 @@ public class SnapshotScheduler implements AccessSchedule {
      */
     @Override
     public long getStart(ByteArray key, RUD rud, long sts) {
-        return keyAccessLists.trackAccess(key, Op.OpType.Get,rud, sts);
+        return keyAccessLists.trackAccess(key, Op.OpType.Get, rud, sts);
     }
 
     @Override
     public long putStart(ByteArray key, RUD rud, long sts) {
-        return keyAccessLists.trackAccess(key, Op.OpType.Put,rud, sts);
+        return keyAccessLists.trackAccess(key, Op.OpType.Put, rud, sts);
     }
 
     @Override
     public long deleteStart(ByteArray key, RUD rud, long sts) {
-        return keyAccessLists.trackAccess(key, Op.OpType.Delete,rud, sts);
+        return keyAccessLists.trackAccess(key, Op.OpType.Delete, rud, sts);
     }
 
     @Override
@@ -57,6 +57,11 @@ public class SnapshotScheduler implements AccessSchedule {
     @Override
     public void deleteEnd(ByteArray key, RUD rud) {
         keyAccessLists.endAccess(key, OpType.Delete);
+    }
+
+    @Override
+    public long getVersionStart(ByteArray key, RUD rud, long sts) {
+        return keyAccessLists.getVersionToPut(key, rud, sts);
     }
 
 }

@@ -72,4 +72,16 @@ public class RestrainScheduler implements AccessSchedule {
         return 0;
     }
 
+    @Override
+    public long getVersionStart(ByteArray clone, RUD rud, long sts) {
+        synchronized(flag) {
+            try {
+                flag.wait();
+            } catch(InterruptedException e) {
+                log.error("Restrain Wait in flag", e);
+            }
+        }
+        return 0;
+    }
+
 }

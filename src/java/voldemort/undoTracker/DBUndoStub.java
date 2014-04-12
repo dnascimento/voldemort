@@ -95,6 +95,8 @@ public class DBUndoStub {
             log.info(rud.rid + " : get key: " + hexStringToAscii(key) + " branch: " + rud.branch
                      + " snapshot: " + snapshotVersion);
             modifyKey(key, rud.branch, snapshotVersion);
+        } else {
+            log.info(rud.rid + " : get key: " + hexStringToAscii(key) + " branch: " + rud.branch);
         }
     }
 
@@ -123,6 +125,8 @@ public class DBUndoStub {
             log.info(rud.rid + " : put key: " + hexStringToAscii(key) + " branch: " + rud.branch
                      + " snapshot: " + snapshotVersion);
             modifyKey(key, rud.branch, snapshotVersion);
+        } else {
+            log.info(rud.rid + " : put key: " + hexStringToAscii(key) + " branch: " + rud.branch);
         }
     }
 
@@ -150,6 +154,8 @@ public class DBUndoStub {
             log.info(rud.rid + " : delete key: " + hexStringToAscii(key) + " branch: " + rud.branch
                      + " snapshot: " + snapshotVersion);
             modifyKey(key, rud.branch, snapshotVersion);
+        } else {
+            log.info(rud.rid + " : delete key: " + hexStringToAscii(key) + " branch: " + rud.branch);
         }
     }
 
@@ -274,6 +280,40 @@ public class DBUndoStub {
         // execute all pendent requests
         synchronized(restrainAtomic) {
             restrainAtomic.notifyAll();
+        }
+    }
+
+    /**
+     * Invoked before PUT to check the proper version.
+     * 
+     * @param key
+     * @param rud
+     */
+    public void getVersion(ByteArray key, RUD rud) {
+        if(rud.rid != 0) {
+            long sts = stsAtomic.get(); // season
+            short bid = (short) bidAtomic.get();
+            long snapshotVersion;
+            if(rud.branch <= bid) {
+                snapshotVersion = newRequestsScheduler.getVersionStart(key.clone(), rud, sts);
+            } else {
+                boolean isContaining = restrainAtomic.get();
+                if(rud.restrain) {
+                    assert (isContaining == true);
+                    snapshotVersion = restrainScheduler.getVersionStart(key.clone(), rud, sts);
+                    bid = (short) bidAtomic.get();
+                    snapshotVersion = newRequestsScheduler.getVersionStart(key.clone(), rud, sts);
+                } else {
+                    snapshotVersion = redoScheduler.getVersionStart(key.clone(), rud, sts);
+
+                }
+            }
+            log.info(rud.rid + " : getVersion key: " + hexStringToAscii(key) + " branch: "
+                     + rud.branch + " snapshot: " + snapshotVersion);
+            modifyKey(key, rud.branch, snapshotVersion);
+        } else {
+            log.info(rud.rid + " : getVersion key: " + hexStringToAscii(key) + " branch: "
+                     + rud.branch);
         }
     }
 }

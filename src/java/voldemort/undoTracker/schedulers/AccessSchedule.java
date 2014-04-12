@@ -17,4 +17,6 @@ public interface AccessSchedule {
 
     public long deleteStart(ByteArray key, RUD rud, long sts);
 
+    long getVersionStart(ByteArray clone, RUD rud, long sts);
+
 }

@@ -87,10 +87,11 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
 
     private Message handleGetVersion(GetRequest request, Store<ByteArray, byte[], byte[]> store) {
         VProto.GetVersionResponse.Builder response = VProto.GetVersionResponse.newBuilder();
+        ByteArray key = ProtoUtils.decodeBytes(request.getKey());
+        RUD rud = new RUD(request.getRud());
+        undoStub.getVersion(key, rud);
         try {
-            RUD rud = new RUD(request.getRud());
-            List<Version> versions = store.getVersions(ProtoUtils.decodeBytes(request.getKey()),
-                                                       rud);
+            List<Version> versions = store.getVersions(key, rud);
             for(Version version: versions)
                 response.addVersions(ProtoUtils.encodeClock(version));
         } catch(VoldemortException e) {
@@ -134,6 +135,7 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
                                                Store<ByteArray, byte[], byte[]> store) {
 
         VProto.GetAllResponse.Builder response = VProto.GetAllResponse.newBuilder();
+        // TODO
         try {
             List<ByteArray> keys = new ArrayList<ByteArray>(request.getKeysCount());
             for(ByteString string: request.getKeysList())
@@ -181,6 +183,7 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
                                                           .get() : null,
                       rud);
         } catch(VoldemortException e) {
+            System.out.println("EXCEPTION");
             response.setError(ProtoUtils.encodeError(getErrorMapper(), e));
         }
         undoStub.putEnd(key, rud);
