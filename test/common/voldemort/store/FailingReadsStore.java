@@ -5,6 +5,7 @@ import java.util.Map;
 
 import voldemort.VoldemortException;
 import voldemort.store.memory.InMemoryStorageEngine;
+import voldemort.undoTracker.RUD;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
 
@@ -18,28 +19,28 @@ public class FailingReadsStore<K, V, T> extends AbstractStore<K, V, T> {
     }
 
     @Override
-    public boolean delete(K key, Version version, long rid) throws VoldemortException {
-        return engine.delete(key, version, rid);
+    public boolean delete(K key, Version version, RUD rud) throws VoldemortException {
+        return engine.delete(key, version,rud);
     }
 
     @Override
-    public List<Versioned<V>> get(K key, T transforms, long rid) throws VoldemortException {
+    public List<Versioned<V>> get(K key, T transforms, RUD rud) throws VoldemortException {
         throw new VoldemortException("Operation failed");
     }
 
     @Override
-    public java.util.List<Version> getVersions(K key, long rid) {
+    public java.util.List<Version> getVersions(K key, RUD rud) {
         throw new VoldemortException("Operation failed");
     }
 
     @Override
-    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, long rid)
+    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, RUD rud)
             throws VoldemortException {
         throw new VoldemortException("Operation failed");
     }
 
     @Override
-    public void put(K key, Versioned<V> value, T transforms, long rid) throws VoldemortException {
-        engine.put(key, value, transforms, rid);
+    public void put(K key, Versioned<V> value, T transforms, RUD rud) throws VoldemortException {
+        engine.put(key, value, transforms,rud);
     }
 }

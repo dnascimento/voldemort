@@ -45,6 +45,7 @@ import voldemort.store.Store;
 import voldemort.store.StoreDefinition;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Time;
 import voldemort.versioning.ClockEntry;
@@ -144,7 +145,7 @@ public class VersionedPutPruneJobTest {
                                                                      makeVersionedPutClock(oldRoutingPlan,
                                                                                            key.get(),
                                                                                            now));
-            storeClient.put(entry.getKey(), fetchedVersion, 0L);
+            storeClient.put(entry.getKey(), fetchedVersion, new RUD());
             if(recordCount < 50) {
                 // let the first 50 keys be active ones that received some
                 // online writes before the prune job
@@ -153,7 +154,7 @@ public class VersionedPutPruneJobTest {
                                                                                               key.get(),
                                                                                               now
                                                                                                       + Time.MS_PER_SECOND));
-                storeClient.put(entry.getKey(), onlineVersion, 0L);
+                storeClient.put(entry.getKey(), onlineVersion, new RUD());
             }
             recordCount++;
         }
@@ -173,7 +174,7 @@ public class VersionedPutPruneJobTest {
             ByteArray key = new ByteArray(entry.getKey().getBytes());
             List<Integer> replicas = currentRoutingPlan.getReplicationNodeList(key.get());
 
-            Versioned<Object> val = storeClient.get(entry.getKey(), 0L);
+            Versioned<Object> val = storeClient.get(entry.getKey(), new RUD());
             // check vector clock does not contain non replicas
             assertFalse("Clock must not contain any non replicas",
                         clockContainsNonReplicas((VectorClock) val.getVersion(), replicas));
@@ -197,10 +198,10 @@ public class VersionedPutPruneJobTest {
                                                                                          now
                                                                                                  + 2
                                                                                                  * Time.MS_PER_SECOND));
-            storeClient.put(entry.getKey(), finalVersion, 0L);
+            storeClient.put(entry.getKey(), finalVersion, new RUD());
             for(Integer replica: replicas) {
                 Store<ByteArray, byte[], byte[]> socketStore = socketStoreMap.get(replica);
-                List<Versioned<byte[]>> vals = socketStore.get(key, null, 0L);
+                List<Versioned<byte[]>> vals = socketStore.get(key, null, new RUD());
                 assertEquals("No more conflicts expected", 1, vals.size());
                 assertEquals("Key should have the final value",
                              finalValue,

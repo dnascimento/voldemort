@@ -104,7 +104,7 @@ public class Repartitioner {
      * 
      * The algorithms (in order):
      * <ul>
-     * <li>Get rid of contiguous runs of partition IDs within a zone. Such runs
+     * <li>Getrud of contiguous runs of partition IDs within a zone. Such runs
      * make balancing load overall more difficult.
      * <li>Balance partition IDs among zones and/or among nodes within zones.
      * <li>Randomly swap partition IDs among nodes to improve overall balance.

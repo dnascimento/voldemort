@@ -18,6 +18,7 @@ import voldemort.client.protocol.RequestFormatType;
 import voldemort.client.protocol.admin.AdminClient;
 import voldemort.client.protocol.admin.AdminClientConfig;
 import voldemort.store.StoreDefinition;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.Pair;
 import voldemort.utils.Utils;
 
@@ -157,7 +158,7 @@ public class VoldemortAvroClientShell {
                         continue;
                     }
 
-                    System.out.println("Value - " + client.get(key, 0L));
+                    System.out.println("Value - " + client.get(key, new RUD()));
                 } else if(line.toLowerCase().startsWith("put")) {
 
                     String keyString = null;
@@ -194,7 +195,7 @@ public class VoldemortAvroClientShell {
                         continue;
                     }
 
-                    System.out.println("Put - " + client.put(key, value, 0L));
+                    System.out.println("Put - " + client.put(key, value, new RUD()));
                 } else if(line.startsWith("quit") || line.startsWith("exit")) {
                     System.out.println("k k thx bye.");
                     System.exit(0);

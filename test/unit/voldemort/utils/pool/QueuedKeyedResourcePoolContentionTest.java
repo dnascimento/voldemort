@@ -46,7 +46,7 @@ public class QueuedKeyedResourcePoolContentionTest extends KeyedResourcePoolCont
 
     @Test
     public void contendForQueue() throws Exception {
-        // Over ride some set up
+        // Overrude some set up
         super.config = new ResourcePoolConfig().setMaxPoolSize(POOL_SIZE)
                                                .setTimeout(TIMEOUT_MS * 50, TimeUnit.MILLISECONDS);
         this.queuedPool = new QueuedKeyedResourcePool<String, TestResource>(factory, config);
@@ -84,7 +84,7 @@ public class QueuedKeyedResourcePoolContentionTest extends KeyedResourcePoolCont
 
     @Test
     public void contendForQueueAndPool() throws Exception {
-        // Over ride some set up
+        // Overrude some set up
         super.config = new ResourcePoolConfig().setMaxPoolSize(POOL_SIZE)
                                                .setTimeout(TIMEOUT_MS * 100, TimeUnit.MILLISECONDS);
         this.queuedPool = new QueuedKeyedResourcePool<String, TestResource>(factory, config);

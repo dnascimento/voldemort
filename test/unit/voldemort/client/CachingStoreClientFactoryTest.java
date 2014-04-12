@@ -16,19 +16,25 @@
 
 package voldemort.client;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import voldemort.serialization.StringSerializer;
-import voldemort.versioning.TimeBasedInconsistencyResolver;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import voldemort.serialization.StringSerializer;
+import voldemort.versioning.TimeBasedInconsistencyResolver;
 
 @RunWith(Parameterized.class)
 public class CachingStoreClientFactoryTest {

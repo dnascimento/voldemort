@@ -28,6 +28,7 @@ import voldemort.store.Store;
 import voldemort.store.configuration.FileBackedCachingStorageEngine;
 import voldemort.store.stats.StoreStats;
 import voldemort.store.stats.Tracked;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
@@ -99,30 +100,30 @@ public class QuotaLimitingStore extends DelegatingStore<ByteArray, byte[], byte[
     }
 
     @Override
-    public boolean delete(ByteArray key, Version version, long rid) throws VoldemortException {
+    public boolean delete(ByteArray key, Version version, RUD rud) throws VoldemortException {
         checkRateLimit(deleteQuotaKey, Tracked.DELETE);
-        return super.delete(key, version, rid);
+        return super.delete(key, version,rud);
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, RUD rud)
             throws VoldemortException {
         checkRateLimit(getQuotaKey, Tracked.GET);
-        return super.get(key, transforms, rid);
+        return super.get(key, transforms,rud);
     }
 
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
                                                           Map<ByteArray, byte[]> transforms,
-                                                          long rid) throws VoldemortException {
+                                                          RUD rud) throws VoldemortException {
         checkRateLimit(getAllQuotaKey, Tracked.GET_ALL);
-        return super.getAll(keys, transforms, rid);
+        return super.getAll(keys, transforms,rud);
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, long rid)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, RUD rud)
             throws VoldemortException {
         checkRateLimit(putQuotaKey, Tracked.PUT);
-        super.put(key, value, transforms, rid);
+        super.put(key, value, transforms,rud);
     }
 }

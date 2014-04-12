@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 
 import voldemort.VoldemortException;
 import voldemort.cluster.Node;
+import voldemort.undoTracker.RUD;
 import voldemort.versioning.ObsoleteVersionException;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
@@ -86,78 +87,78 @@ public class LazyStoreClient<K, V> implements StoreClient<K, V> {
     }
 
     @Override
-    public V getValue(K key, long rid) {
-        return getStoreClient().getValue(key, rid);
+    public V getValue(K key, RUD rud) {
+        return getStoreClient().getValue(key,rud);
     }
 
     @Override
-    public V getValue(K key, V defaultValue, long rid) {
-        return getStoreClient().getValue(key, defaultValue, rid);
+    public V getValue(K key, V defaultValue, RUD rud) {
+        return getStoreClient().getValue(key, defaultValue,rud);
     }
 
     @Override
-    public Versioned<V> get(K key, long rid) {
-        return getStoreClient().get(key, rid);
+    public Versioned<V> get(K key, RUD rud) {
+        return getStoreClient().get(key,rud);
     }
 
     @Override
-    public Versioned<V> get(K key, Object transforms, long rid) {
-        return getStoreClient().get(key, transforms, rid);
+    public Versioned<V> get(K key, Object transforms, RUD rud) {
+        return getStoreClient().get(key, transforms,rud);
     }
 
     @Override
-    public Map<K, Versioned<V>> getAll(Iterable<K> keys, long rid) {
-        return getStoreClient().getAll(keys, rid);
+    public Map<K, Versioned<V>> getAll(Iterable<K> keys, RUD rud) {
+        return getStoreClient().getAll(keys,rud);
     }
 
     @Override
-    public Map<K, Versioned<V>> getAll(Iterable<K> keys, Map<K, Object> transforms, long rid) {
-        return getStoreClient().getAll(keys, transforms, rid);
+    public Map<K, Versioned<V>> getAll(Iterable<K> keys, Map<K, Object> transforms, RUD rud) {
+        return getStoreClient().getAll(keys, transforms,rud);
     }
 
     @Override
-    public Versioned<V> get(K key, Versioned<V> defaultValue, long rid) {
-        return getStoreClient().get(key, defaultValue, rid);
+    public Versioned<V> get(K key, Versioned<V> defaultValue, RUD rud) {
+        return getStoreClient().get(key, defaultValue,rud);
     }
 
     @Override
-    public Version put(K key, V value, long rid) {
-        return getStoreClient().put(key, value, rid);
+    public Version put(K key, V value, RUD rud) {
+        return getStoreClient().put(key, value,rud);
     }
 
     @Override
-    public Version put(K key, V value, Object transforms, long rid) {
-        return getStoreClient().put(key, value, transforms, rid);
+    public Version put(K key, V value, Object transforms, RUD rud) {
+        return getStoreClient().put(key, value, transforms,rud);
     }
 
     @Override
-    public Version put(K key, Versioned<V> versioned, long rid) throws ObsoleteVersionException {
-        return getStoreClient().put(key, versioned, rid);
+    public Version put(K key, Versioned<V> versioned, RUD rud) throws ObsoleteVersionException {
+        return getStoreClient().put(key, versioned,rud);
     }
 
     @Override
-    public boolean putIfNotObsolete(K key, Versioned<V> versioned, long rid) {
-        return getStoreClient().putIfNotObsolete(key, versioned, rid);
+    public boolean putIfNotObsolete(K key, Versioned<V> versioned, RUD rud) {
+        return getStoreClient().putIfNotObsolete(key, versioned,rud);
     }
 
     @Override
-    public boolean applyUpdate(UpdateAction<K, V> action, long rid) {
-        return getStoreClient().applyUpdate(action, rid);
+    public boolean applyUpdate(UpdateAction<K, V> action, RUD rud) {
+        return getStoreClient().applyUpdate(action,rud);
     }
 
     @Override
-    public boolean applyUpdate(UpdateAction<K, V> action, int maxTries, long rid) {
-        return getStoreClient().applyUpdate(action, maxTries, rid);
+    public boolean applyUpdate(UpdateAction<K, V> action, int maxTries, RUD rud) {
+        return getStoreClient().applyUpdate(action, maxTries,rud);
     }
 
     @Override
-    public boolean delete(K key, long rid) {
-        return getStoreClient().delete(key, rid);
+    public boolean delete(K key, RUD rud) {
+        return getStoreClient().delete(key,rud);
     }
 
     @Override
-    public boolean delete(K key, Version version, long rid) {
-        return getStoreClient().delete(key, version, rid);
+    public boolean delete(K key, Version version, RUD rud) {
+        return getStoreClient().delete(key, version,rud);
     }
 
     @Override

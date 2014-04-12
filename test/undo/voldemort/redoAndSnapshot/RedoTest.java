@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import voldemort.undoTracker.DBUndoStub;
+import voldemort.undoTracker.RUD;
 import voldemort.undoTracker.map.Op;
 import voldemort.undoTracker.map.Op.OpType;
 import voldemort.undoTracker.map.OpMultimap;
@@ -119,26 +120,30 @@ public class RedoTest {
 
         stub = new DBUndoStub();
 
-        new ExecOpT(k1.clone(), 1, OpType.Put, stub, db, false, 1).exec();
-        new ExecOpT(k1.clone(), 2, OpType.Put, stub, db, false, 1).exec();
-        new ExecOpT(k1.clone(), 3, OpType.Put, stub, db, false, 1).exec();
-        new ExecOpT(k1.clone(), 1, OpType.Put, stub, db, false, 2).exec();
-        new ExecOpT(k1.clone(), 4, OpType.Put, stub, db, false, 1).exec();
-        new ExecOpT(k1.clone(), 2, OpType.Put, stub, db, false, 2).exec();
-        new ExecOpT(k1.clone(), 3, OpType.Put, stub, db, false, 2).exec();
-        new ExecOpT(k1.clone(), 5, OpType.Put, stub, db, false, 1).exec();
-        new ExecOpT(k1.clone(), 4, OpType.Put, stub, db, false, 2).exec();
+        new ExecOpT(k1.clone(), new RUD(1, (short) 1, false), OpType.Put, stub, db).exec();
+        new ExecOpT(k1.clone(), new RUD(2, (short) 1, false), OpType.Put, stub, db).exec();
+        new ExecOpT(k1.clone(), new RUD(3, (short) 1, false), OpType.Put, stub, db).exec();
+        new ExecOpT(k1.clone(), new RUD(1, (short) 2, false), OpType.Put, stub, db).exec();
+        new ExecOpT(k1.clone(), new RUD(4, (short) 1, false), OpType.Put, stub, db).exec();
+        new ExecOpT(k1.clone(), new RUD(2, (short) 2, false), OpType.Put, stub, db).exec();
+        new ExecOpT(k1.clone(), new RUD(3, (short) 2, false), OpType.Put, stub, db).exec();
+        new ExecOpT(k1.clone(), new RUD(5, (short) 1, false), OpType.Put, stub, db).exec();
+        new ExecOpT(k1.clone(), new RUD(4, (short) 2, false), OpType.Put, stub, db).exec();
 
         stub.restrainEnable();
-        new ExecOpT(k1.clone(), 6, OpType.Put, stub, db, false, 1).exec();
+        new ExecOpT(k1.clone(), new RUD(6, (short) 1, false), OpType.Put, stub, db).exec();
         // restrain 7:2
-        Thread t1 = new ExecOpT(k1.clone(), 7, OpType.Put, stub, db, true, 2);
+
+        Thread t1 = new ExecOpT(k1.clone(), new RUD(7, (short) 2, false), OpType.Put, stub, db);
         t1.start();
-        new ExecOpT(k1.clone(), 5, OpType.Put, stub, db, false, 2).exec();
+        new ExecOpT(k1.clone(), new RUD(5, (short) 2, false), OpType.Put, stub, db).exec();
+
         // restrain 8:2
-        Thread t2 = new ExecOpT(k1.clone(), 8, OpType.Put, stub, db, true, 2);
+        Thread t2 = new ExecOpT(k1.clone(), new RUD(8, (short) 2, false), OpType.Put, stub, db);
+
         t2.start();
-        new ExecOpT(k1.clone(), 6, OpType.Put, stub, db, false, 2).exec();
+        new ExecOpT(k1.clone(), new RUD(6, (short) 2, false), OpType.Put, stub, db).exec();
+
         stub.restrainDisable();
 
         t1.join();
@@ -160,7 +165,7 @@ public class RedoTest {
             OpType t = order.get(i);
             Op o = new Op(i + 1, t);
             opList.add(o);
-            tList.add(new ExecOpT(k1.clone(), i + 1, t, stub, db, contained, branch));
+            tList.add(new ExecOpT(k1.clone(), new RUD(i + 1, branch, contained), t, stub, db));
         }
 
         // Populate the stub to set the ordering in archive

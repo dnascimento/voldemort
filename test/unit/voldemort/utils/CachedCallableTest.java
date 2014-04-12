@@ -1,16 +1,19 @@
 package voldemort.utils;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.concurrent.Callable;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
 import voldemort.MockTime;
-
-import java.util.concurrent.Callable;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 public class CachedCallableTest {
 

@@ -19,6 +19,7 @@ import voldemort.store.StoreDefinitionBuilder;
 import voldemort.store.bdb.BdbStorageConfiguration;
 import voldemort.store.memory.InMemoryStorageEngine;
 import voldemort.store.metadata.MetadataStore;
+import voldemort.undoTracker.RUD;
 import voldemort.versioning.Versioned;
 import voldemort.xml.ClusterMapper;
 import voldemort.xml.StoreDefinitionsMapper;
@@ -97,11 +98,11 @@ public class RebalanceMetadataConsistencyTest {
         innerStore.put(MetadataStore.CLUSTER_KEY,
                        new Versioned<String>(new ClusterMapper().writeCluster(currentCluster)),
                        null,
-                       0L);
+                       new RUD());
         innerStore.put(MetadataStore.STORES_KEY,
                        new Versioned<String>(new StoreDefinitionsMapper().writeStoreList(Lists.newArrayList(rwStoreDefWithReplication))),
                        null,
-                       0L);
+                       new RUD());
 
         rwStoreDefWithReplication2 = new StoreDefinitionBuilder().setName(testStoreNameRW2)
                                                                  .setType(BdbStorageConfiguration.TYPE_NAME)

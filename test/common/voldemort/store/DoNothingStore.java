@@ -17,6 +17,7 @@
 package voldemort.store;
 
 import voldemort.VoldemortException;
+import voldemort.undoTracker.RUD;
 import voldemort.versioning.Version;
 
 /**
@@ -31,7 +32,7 @@ public class DoNothingStore<K, V, T> extends AbstractStore<K, V, T> {
     }
 
     @Override
-    public boolean delete(K key, Version value, long rid) throws VoldemortException {
+    public boolean delete(K key, Version value, RUD rud) throws VoldemortException {
         // Do nothing
         return true;
     }

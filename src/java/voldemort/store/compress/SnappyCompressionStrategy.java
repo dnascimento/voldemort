@@ -1,12 +1,13 @@
 package voldemort.store.compress;
 
-import org.iq80.snappy.SnappyInputStream;
-import org.iq80.snappy.SnappyOutputStream;
-import voldemort.annotations.Experimental;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import org.iq80.snappy.SnappyInputStream;
+import org.iq80.snappy.SnappyOutputStream;
+
+import voldemort.annotations.Experimental;
 
 /**
  * Implementation of CompressionStrategy for the Snappy format. Snappy is optimized

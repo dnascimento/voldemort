@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import voldemort.VoldemortException;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.Utils;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
@@ -47,28 +48,28 @@ public class DelegatingStore<K, V, T> extends AbstractStore<K, V, T> {
     }
 
     @Override
-    public boolean delete(K key, Version version, long rid) throws VoldemortException {
+    public boolean delete(K key, Version version, RUD rud) throws VoldemortException {
         StoreUtils.assertValidKey(key);
-        return innerStore.delete(key, version, rid);
+        return innerStore.delete(key, version,rud);
     }
 
     @Override
-    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, long rid)
+    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, RUD rud)
             throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
-        return innerStore.getAll(keys, transforms, rid);
+        return innerStore.getAll(keys, transforms,rud);
     }
 
     @Override
-    public List<Versioned<V>> get(K key, T transform, long rid) throws VoldemortException {
+    public List<Versioned<V>> get(K key, T transform, RUD rud) throws VoldemortException {
         StoreUtils.assertValidKey(key);
-        return innerStore.get(key, transform, rid);
+        return innerStore.get(key, transform,rud);
     }
 
     @Override
-    public void put(K key, Versioned<V> value, T transform, long rid) throws VoldemortException {
+    public void put(K key, Versioned<V> value, T transform, RUD rud) throws VoldemortException {
         StoreUtils.assertValidKey(key);
-        innerStore.put(key, value, transform, rid);
+        innerStore.put(key, value, transform,rud);
     }
 
     public Store<K, V, T> getInnerStore() {
@@ -86,8 +87,8 @@ public class DelegatingStore<K, V, T> extends AbstractStore<K, V, T> {
     }
 
     @Override
-    public List<Version> getVersions(K key, long rid) {
-        return innerStore.getVersions(key, rid);
+    public List<Version> getVersions(K key, RUD rud) {
+        return innerStore.getVersions(key,rud);
     }
 
     @Override

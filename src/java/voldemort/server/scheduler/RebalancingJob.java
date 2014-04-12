@@ -25,6 +25,7 @@ import voldemort.routing.RoutingStrategy;
 import voldemort.server.StoreRepository;
 import voldemort.store.StorageEngine;
 import voldemort.store.Store;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.Pair;
@@ -66,8 +67,8 @@ public class RebalancingJob implements Runnable {
             while(iterator.hasNext()) {
                 Pair<ByteArray, Versioned<byte[]>> keyAndVal = iterator.next();
                 if(needsRebalancing(keyAndVal.getFirst())) {
-                    remote.put(keyAndVal.getFirst(), keyAndVal.getSecond(), null, 0L);
-                    engine.delete(keyAndVal.getFirst(), keyAndVal.getSecond().getVersion(), 0L);
+                    remote.put(keyAndVal.getFirst(), keyAndVal.getSecond(), null, new RUD());
+                    engine.delete(keyAndVal.getFirst(), keyAndVal.getSecond().getVersion(), new RUD());
                     rebalanced++;
                 }
             }

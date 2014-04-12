@@ -49,6 +49,7 @@ import voldemort.store.metadata.MetadataStore;
 import voldemort.store.slop.Slop;
 import voldemort.store.slop.SlopStorageEngine;
 import voldemort.store.stats.StreamingStats;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.EventThrottler;
@@ -444,7 +445,9 @@ public class StreamingSlopPusherJob extends SlopPusherJob implements Runnable {
                     if(!current.isEmpty()) {
                         if(!previous.isEmpty()) {
                             for(Pair<ByteArray, Version> entry: previous) {
-                                slopStorageEngine.delete(entry.getFirst(), entry.getSecond(), 0L);
+                                slopStorageEngine.delete(entry.getFirst(),
+                                                         entry.getSecond(),
+                                                         new RUD());
                             }
                             Long succeeded = succeededByNode.get(nodeId);
                             succeeded += previous.size();
@@ -463,7 +466,7 @@ public class StreamingSlopPusherJob extends SlopPusherJob implements Runnable {
                 // Clear up both previous and current
                 if(!previous.isEmpty()) {
                     for(Pair<ByteArray, Version> entry: previous)
-                        slopStorageEngine.delete(entry.getFirst(), entry.getSecond(), 0L);
+                        slopStorageEngine.delete(entry.getFirst(), entry.getSecond(), new RUD());
                     Long succeeded = succeededByNode.get(nodeId);
                     succeeded += previous.size();
                     succeededByNode.put(nodeId, succeeded);
@@ -471,7 +474,7 @@ public class StreamingSlopPusherJob extends SlopPusherJob implements Runnable {
                 }
                 if(!current.isEmpty()) {
                     for(Pair<ByteArray, Version> entry: current)
-                        slopStorageEngine.delete(entry.getFirst(), entry.getSecond(), 0L);
+                        slopStorageEngine.delete(entry.getFirst(), entry.getSecond(), new RUD());
                     Long succeeded = succeededByNode.get(nodeId);
                     succeeded += current.size();
                     succeededByNode.put(nodeId, succeeded);

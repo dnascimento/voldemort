@@ -30,6 +30,7 @@ import voldemort.store.StorageEngine;
 import voldemort.store.StoreCapabilityType;
 import voldemort.store.serialized.SerializingStorageEngine;
 import voldemort.store.stats.SlopStats;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.Pair;
@@ -109,27 +110,27 @@ public class SlopStorageEngine extends AbstractStorageEngine<ByteArray, byte[], 
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, RUD rud)
             throws VoldemortException {
-        return slopEngine.get(key, transforms, rid);
+        return slopEngine.get(key, transforms,rud);
     }
 
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
                                                           Map<ByteArray, byte[]> transforms,
-                                                          long rid) throws VoldemortException {
-        return slopEngine.getAll(keys, transforms, rid);
+                                                          RUD rud) throws VoldemortException {
+        return slopEngine.getAll(keys, transforms,rud);
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, long rid)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, RUD rud)
             throws VoldemortException {
-        slopEngine.put(key, value, transforms, rid);
+        slopEngine.put(key, value, transforms,rud);
     }
 
     @Override
-    public boolean delete(ByteArray key, Version version, long rid) throws VoldemortException {
-        return slopEngine.delete(key, version, rid);
+    public boolean delete(ByteArray key, Version version, RUD rud) throws VoldemortException {
+        return slopEngine.delete(key, version,rud);
     }
 
     @Override
@@ -143,8 +144,8 @@ public class SlopStorageEngine extends AbstractStorageEngine<ByteArray, byte[], 
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key, long rid) {
-        return slopEngine.getVersions(key, rid);
+    public List<Version> getVersions(ByteArray key, RUD rud) {
+        return slopEngine.getVersions(key,rud);
     }
 
     @Override

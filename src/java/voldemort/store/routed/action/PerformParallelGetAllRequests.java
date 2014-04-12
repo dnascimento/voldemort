@@ -36,6 +36,7 @@ import voldemort.store.routed.GetAllPipelineData;
 import voldemort.store.routed.Pipeline;
 import voldemort.store.routed.Pipeline.Event;
 import voldemort.store.routed.Response;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.Versioned;
 
@@ -50,19 +51,19 @@ public class PerformParallelGetAllRequests
     private final Map<Integer, NonblockingStore> nonblockingStores;
 
     private final FailureDetector failureDetector;
-    private final long rid;
+    private final RUD rud;
 
     public PerformParallelGetAllRequests(GetAllPipelineData pipelineData,
                                          Event completeEvent,
                                          FailureDetector failureDetector,
                                          long timeoutMs,
                                          Map<Integer, NonblockingStore> nonblockingStores,
-                                         long rid) {
+                                         RUD rud) {
         super(pipelineData, completeEvent);
         this.failureDetector = failureDetector;
         this.timeoutMs = timeoutMs;
         this.nonblockingStores = nonblockingStores;
-        this.rid = rid;
+        this.rud = rud;
     }
 
     @Override
@@ -119,7 +120,7 @@ public class PerformParallelGetAllRequests
                              + " request on node " + node.getId());
 
             NonblockingStore store = nonblockingStores.get(node.getId());
-            store.submitGetAllRequest(keys, transforms, callback, timeoutMs, rid);
+            store.submitGetAllRequest(keys, transforms, callback, timeoutMs, rud);
         }
 
         try {

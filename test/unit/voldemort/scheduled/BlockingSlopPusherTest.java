@@ -38,6 +38,7 @@ import voldemort.store.metadata.MetadataStore;
 import voldemort.store.slop.Slop;
 import voldemort.store.slop.Slop.Operation;
 import voldemort.store.slop.SlopStorageEngine;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Props;
 import voldemort.versioning.Versioned;
@@ -92,7 +93,7 @@ public class BlockingSlopPusherTest extends TestCase {
     private void pushSlop(Versioned<Slop>... slops) {
         // put all the slop in the slop store
         for(Versioned<Slop> s: slops)
-            repo.getSlopStore().asSlopStore().put(s.getValue().makeKey(), s, null, 0L);
+            repo.getSlopStore().asSlopStore().put(s.getValue().makeKey(), s, null, new RUD());
 
         // run the pusher
         pusher.run();
@@ -107,20 +108,21 @@ public class BlockingSlopPusherTest extends TestCase {
             // and no new slops have appeared
             // and the SloppyStore is now empty
             Slop slop = vs.getValue();
-            assertEquals("Slop remains.", 0, repo.getSlopStore()
-                                                 .get(slop.makeKey(), null, 0L)
-                                                 .size());
+            assertEquals("Slop remains.",
+                         0,
+                         repo.getSlopStore().get(slop.makeKey(), null, new RUD()).size());
             assertTrue(bytesEqual(slop.getValue(), repo.getNodeStore(STORE_NAME, slop.getNodeId())
-                                                       .get(slop.getKey(), null, 0L)
+                                                       .get(slop.getKey(), null, new RUD())
                                                        .get(0)
                                                        .getValue()));
         }
         // check that all undelivered slop is undelivered
         for(Versioned<Slop> vs: undelivered) {
             Slop slop = vs.getValue();
-            assertEquals("Slop is gone!", 1, repo.getSlopStore()
-                                                 .get(slop.makeKey(), null, 0L)
-                                                 .size(), 0L);
+            assertEquals("Slop is gone!",
+                         1,
+                         repo.getSlopStore().get(slop.makeKey(), null, new RUD()).size(),
+                         0L);
         }
     }
 

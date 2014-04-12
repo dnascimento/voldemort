@@ -14,6 +14,7 @@ import voldemort.store.AbstractStore;
 import voldemort.store.Store;
 import voldemort.store.StoreCapabilityType;
 import voldemort.store.StoreUtils;
+import voldemort.undoTracker.RUD;
 import voldemort.undoTracker.clientSide.ClientSideTracker;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Pair;
@@ -28,7 +29,7 @@ import com.google.common.collect.Maps;
  * A store that transforms requests to a Store<ByteArray,byte[], byte[]> to a
  * Store<ByteArray,byte[],byte[]> (identity transformation from black-box
  * perspective).
- * However, the new byte[] is a protobuff message container which attach the rid
+ * However, the new byte[] is a protobuff message container which attach therud
  * to user data to store it.
  * 
  * 
@@ -58,26 +59,26 @@ public class ContainingStore extends AbstractStore<ByteArray, byte[], byte[]> {
     }
 
     @Override
-    public boolean delete(ByteArray key, Version version, long rid) throws VoldemortException {
-        System.out.println("Client Delete: " + rid);
-        return store.delete(keyToBytes(key), version, rid);
+    public boolean delete(ByteArray key, Version version, RUD rud) throws VoldemortException {
+        System.out.println("Client Delete: " +rud);
+        return store.delete(keyToBytes(key), version,rud);
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, RUD rud)
             throws VoldemortException {
         // Invoke
         List<Versioned<byte[]>> found = store.get(keyToBytes(key),
                                                   (transformsSerializer != null && transforms != null) ? transformsSerializer.toBytes(transforms)
                                                                                                       : null,
-                                                  rid);
+                                                  rud);
         // Retrieve
         List<Versioned<byte[]>> results = new ArrayList<Versioned<byte[]>>(found.size());
         for(Versioned<byte[]> versioned: found) {
-            Pair<Long, byte[]> pair = valueSerializer.unpack(versioned.getValue());
+            Pair<RUD, byte[]> pair = valueSerializer.unpack(versioned.getValue());
             // Here I track the request
-            if(pair.getFirst() != 0) {
-                tracker.trackGet(rid, pair.getFirst());
+            if(pair.getFirst() != null) {
+                tracker.trackGet(rud, pair.getFirst());
             }
             results.add(new Versioned<byte[]>(pair.getSecond(), versioned.getVersion()));
         }
@@ -87,18 +88,18 @@ public class ContainingStore extends AbstractStore<ByteArray, byte[], byte[]> {
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
                                                           Map<ByteArray, byte[]> transforms,
-                                                          long rid) throws VoldemortException {
+                                                          RUD rud) throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
         Map<ByteArray, ByteArray> byteKeyToKey = keysToBytes(keys);
         Map<ByteArray, List<Versioned<byte[]>>> storeResult = store.getAll(byteKeyToKey.keySet(),
                                                                            transformsToBytes(transforms),
-                                                                           rid);
+                                                                          rud);
         Map<ByteArray, List<Versioned<byte[]>>> result = Maps.newHashMapWithExpectedSize(storeResult.size());
         for(Map.Entry<ByteArray, List<Versioned<byte[]>>> mapEntry: storeResult.entrySet()) {
             List<Versioned<byte[]>> values = Lists.newArrayListWithExpectedSize(mapEntry.getValue()
                                                                                         .size());
             for(Versioned<byte[]> versioned: mapEntry.getValue())
-                values.add(new Versioned<byte[]>(valueSerializer.pack(versioned.getValue(), rid),
+                values.add(new Versioned<byte[]>(valueSerializer.pack(versioned.getValue(),rud),
                                                  versioned.getVersion()));
 
             result.put(byteKeyToKey.get(mapEntry.getKey()), values);
@@ -107,18 +108,18 @@ public class ContainingStore extends AbstractStore<ByteArray, byte[], byte[]> {
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, long rid)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, RUD rud)
             throws VoldemortException {
         store.put(keyToBytes(key),
-                  new Versioned<byte[]>(valueSerializer.pack(value.getValue(), rid),
+                  new Versioned<byte[]>(valueSerializer.pack(value.getValue(),rud),
                                         value.getVersion()),
                   transformToBytes(transforms),
-                  rid);
+                 rud);
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key, long rid) {
-        return store.getVersions(keyToBytes(key), rid);
+    public List<Version> getVersions(ByteArray key, RUD rud) {
+        return store.getVersions(keyToBytes(key),rud);
     }
 
     // ///////////////////// AUX ///////////////////////

@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import voldemort.server.storage.KeyLockHandle;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.Pair;
 import voldemort.versioning.Occurred;
@@ -56,7 +57,7 @@ public class AbstractStorageEngine<K, V, T> extends AbstractStore<K, V, T> imple
     }
 
     @Override
-    public List<Versioned<V>> multiVersionPut(K key, List<Versioned<V>> values, long rid) {
+    public List<Versioned<V>> multiVersionPut(K key, List<Versioned<V>> values, RUD rud) {
         KeyLockHandle<V> handle = null;
         try {
             handle = getAndLock(key);

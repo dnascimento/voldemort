@@ -20,6 +20,7 @@ import java.util.List;
 
 import voldemort.server.storage.KeyLockHandle;
 import voldemort.store.StorageEngine;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.Pair;
@@ -126,7 +127,7 @@ public class ContainingStorageEngine extends ContainingStore implements
                 return null;
             } else {
                 Versioned<byte[]> versioned = keyAndVal.getSecond();
-                Pair<Long, byte[]> pair = getValueSerializer().unpack(versioned.getValue());
+                Pair<RUD, byte[]> pair = getValueSerializer().unpack(versioned.getValue());
                 // TODO should I track here too?
                 return Pair.create(keyAndVal.getFirst(),
                                    new Versioned<byte[]>(pair.getSecond(), versioned.getVersion()));
@@ -168,7 +169,7 @@ public class ContainingStorageEngine extends ContainingStore implements
     @Override
     public List<Versioned<byte[]>> multiVersionPut(ByteArray key,
                                                    List<Versioned<byte[]>> values,
-                                                   long rid) {
+                                                   RUD rud) {
         throw new UnsupportedOperationException("multiVersionPut is not supported for "
                                                 + this.getClass().getName());
     }

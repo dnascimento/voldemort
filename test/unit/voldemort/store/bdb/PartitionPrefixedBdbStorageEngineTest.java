@@ -40,6 +40,7 @@ import voldemort.routing.RoutingStrategyFactory;
 import voldemort.server.VoldemortConfig;
 import voldemort.store.StoreBinaryFormat;
 import voldemort.store.StoreDefinition;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.ClosableIterator;
@@ -133,15 +134,19 @@ public class PartitionPrefixedBdbStorageEngineTest {
             assertEquals(cStrategy.getPartitionList(key.get()).get(0),
                          zStrategy.getPartitionList(key.get()).get(0));
 
-            cPrefixedBdbStore.put(key, new Versioned<byte[]>(kvpairs.get(key)), null, 0L);
-            zPrefixedBdbStore.put(key, new Versioned<byte[]>(kvpairs.get(key)), null, 0L);
+            cPrefixedBdbStore.put(key, new Versioned<byte[]>(kvpairs.get(key)), null, new RUD());
+            zPrefixedBdbStore.put(key, new Versioned<byte[]>(kvpairs.get(key)), null, new RUD());
         }
 
         for(ByteArray key: kvpairs.keySet()) {
             assertEquals("Values read back does not match up",
                          0,
-                         ByteUtils.compare(cPrefixedBdbStore.get(key, null, 0L).get(0).getValue(),
-                                           zPrefixedBdbStore.get(key, null, 0L).get(0).getValue()));
+                         ByteUtils.compare(cPrefixedBdbStore.get(key, null, new RUD())
+                                                            .get(0)
+                                                            .getValue(),
+                                           zPrefixedBdbStore.get(key, null, new RUD())
+                                                            .get(0)
+                                                            .getValue()));
         }
         cPrefixedBdbStore.close();
         zPrefixedBdbStore.close();
@@ -195,7 +200,7 @@ public class PartitionPrefixedBdbStorageEngineTest {
                 prefixedBdbStore.put(new ByteArray(bkey),
                                      new Versioned<byte[]>(("value" + i).getBytes()),
                                      null,
-                                     0L);
+                                     new RUD());
             }
 
             // check if they are properly retrieved by that partition id

@@ -28,6 +28,7 @@ import voldemort.store.routed.BasicPipelineData;
 import voldemort.store.routed.Pipeline;
 import voldemort.store.routed.Pipeline.Event;
 import voldemort.store.routed.Response;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Time;
 
@@ -46,8 +47,8 @@ public class PerformZoneSerialRequests<V, PD extends BasicPipelineData<V>> exten
                                      FailureDetector failureDetector,
                                      Map<Integer, Store<ByteArray, byte[], byte[]>> stores,
                                      StoreRequest<V> storeRequest,
-                                     long rid) {
-        super(pipelineData, completeEvent, key, rid);
+                                     RUD rud) {
+        super(pipelineData, completeEvent, key,rud);
         this.failureDetector = failureDetector;
         this.stores = stores;
         this.storeRequest = storeRequest;

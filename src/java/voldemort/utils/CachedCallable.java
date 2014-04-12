@@ -1,10 +1,10 @@
 package voldemort.utils;
 
 
-import voldemort.annotations.concurrency.Threadsafe;
-
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
+
+import voldemort.annotations.concurrency.Threadsafe;
 
 @Threadsafe
 public class CachedCallable<T> implements Callable<T> {

@@ -16,9 +16,9 @@
 
 package voldemort.server;
 
+import junit.framework.TestCase;
 import voldemort.common.service.AbstractService;
 import voldemort.common.service.ServiceType;
-import junit.framework.TestCase;
 
 /**
  * 

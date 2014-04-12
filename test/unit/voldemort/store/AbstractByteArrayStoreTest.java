@@ -21,6 +21,7 @@ import java.util.List;
 import org.junit.Test;
 
 import voldemort.TestUtils;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.Versioned;
 
@@ -54,8 +55,8 @@ public abstract class AbstractByteArrayStoreTest extends
     public void testEmptyByteArray() throws Exception {
         Store<ByteArray, byte[], byte[]> store = getStore();
         Versioned<byte[]> bytes = new Versioned<byte[]>(new byte[0]);
-        store.put(new ByteArray(new byte[0]), bytes, null, 0L);
-        List<Versioned<byte[]>> found = store.get(new ByteArray(new byte[0]), null, 0L);
+        store.put(new ByteArray(new byte[0]), bytes, null, new RUD());
+        List<Versioned<byte[]>> found = store.get(new ByteArray(new byte[0]), null, new RUD());
         assertEquals("Incorrect number of results.", 1, found.size());
         assertEquals("Get doesn't equal put.", bytes, found.get(0));
     }

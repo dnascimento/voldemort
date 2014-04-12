@@ -24,6 +24,7 @@ import voldemort.store.CompositeVoldemortRequest;
 import voldemort.store.DelegatingStore;
 import voldemort.store.Store;
 import voldemort.store.StoreCapabilityType;
+import voldemort.undoTracker.RUD;
 import voldemort.versioning.InconsistencyResolver;
 import voldemort.versioning.Versioned;
 
@@ -47,14 +48,14 @@ public class InconsistencyResolvingStore<K, V, T> extends DelegatingStore<K, V, 
     }
 
     @Override
-    public List<Versioned<V>> get(K key, T transforms, long rid) throws VoldemortException {
-        return resolver.resolveConflicts(super.get(key, transforms, rid));
+    public List<Versioned<V>> get(K key, T transforms, RUD rud) throws VoldemortException {
+        return resolver.resolveConflicts(super.get(key, transforms,rud));
     }
 
     @Override
-    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, long rid)
+    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, RUD rud)
             throws VoldemortException {
-        Map<K, List<Versioned<V>>> m = super.getAll(keys, transforms, rid);
+        Map<K, List<Versioned<V>>> m = super.getAll(keys, transforms,rud);
         for(Map.Entry<K, List<Versioned<V>>> entry: m.entrySet())
             m.put(entry.getKey(), resolver.resolveConflicts(entry.getValue()));
         return m;

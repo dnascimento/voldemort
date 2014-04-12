@@ -48,6 +48,7 @@ import voldemort.store.StorageEngine;
 import voldemort.store.StoreDefinition;
 import voldemort.store.UnreachableStoreException;
 import voldemort.store.memory.InMemoryStorageEngine;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Pair;
 import voldemort.versioning.Versioned;
@@ -234,7 +235,7 @@ public class AdminServiceFailureTest extends TestCase {
                 failingStorageEngine.put(entry.getKey(),
                                          new Versioned<byte[]>(entry.getValue()),
                                          null,
-                                         0L);
+                                         new RUD());
             } catch(Exception e) {
                 // ignore
             }

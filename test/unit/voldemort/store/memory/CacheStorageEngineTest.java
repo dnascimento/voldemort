@@ -20,6 +20,7 @@ import java.util.List;
 
 import voldemort.TestUtils;
 import voldemort.store.StorageEngine;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.Versioned;
 
@@ -49,8 +50,8 @@ public class CacheStorageEngineTest extends InMemoryStorageEngineTest {
         StorageEngine<ByteArray, byte[], byte[]> engine = getStorageEngine();
         byte[] bytes = "abc".getBytes();
         ByteArray key = new ByteArray(bytes);
-        engine.put(key, new Versioned<byte[]>(bytes), null, 0L);
-        List<Versioned<byte[]>> found = engine.get(key, null, 0L);
+        engine.put(key, new Versioned<byte[]>(bytes), null, new RUD());
+        List<Versioned<byte[]>> found = engine.get(key, null, new RUD());
         assertEquals(1, found.size());
     }
 
@@ -62,7 +63,7 @@ public class CacheStorageEngineTest extends InMemoryStorageEngineTest {
             engine.put(TestUtils.toByteArray(Integer.toString(i)),
                        new Versioned<byte[]>(TestUtils.randomBytes(objectSize)),
                        null,
-                       0L);
+                       new RUD());
     }
 
 }

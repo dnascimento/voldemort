@@ -19,6 +19,7 @@ import voldemort.server.AbstractSocketService;
 import voldemort.store.AbstractByteArrayStoreTest;
 import voldemort.store.Store;
 import voldemort.store.memory.InMemoryStorageEngine;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 
 @RunWith(Parameterized.class)
@@ -74,8 +75,8 @@ public class CompressingStoreTest extends AbstractByteArrayStoreTest {
                                                                                                                        + freePort)
                                                                                                      .setMaxBootstrapRetries(10));
         StoreClient<String, String> storeClient = storeClientFactory.getStoreClient("test");
-        storeClient.put("someKey", "someValue", 0L);
-        assertEquals(storeClient.getValue("someKey", 0L), "someValue");
+        storeClient.put("someKey", "someValue", new RUD());
+        assertEquals(storeClient.getValue("someKey", new RUD()), "someValue");
         socketService.stop();
     }
 

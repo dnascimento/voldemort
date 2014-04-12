@@ -15,6 +15,14 @@
  */
 package voldemort.tools;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Properties;
+import java.util.concurrent.Callable;
+
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import voldemort.server.VoldemortConfig;
@@ -27,11 +35,6 @@ import voldemort.utils.ClosableIterator;
 import voldemort.utils.Pair;
 import voldemort.versioning.VectorClock;
 import voldemort.versioning.Versioned;
-
-import java.io.*;
-import java.util.Arrays;
-import java.util.Properties;
-import java.util.concurrent.Callable;
 
 public class ExportBDBToTextDump {
     static long SPLIT_SIZE = 1000000L;

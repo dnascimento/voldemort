@@ -57,7 +57,7 @@ public class InvertDependencies extends Thread {
     @SuppressWarnings("unused")
     private void show(LinkedListMultimap<Long, Long> map) {
         System.out.println("---- New Dependencies ----");
-        for(Long rid: map.keySet()) {
+        for(long rid: map.keySet()) {
             List<Long> deps = map.get(rid);
             System.out.print("Rid: ");
             System.out.print(rid);

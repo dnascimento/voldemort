@@ -2601,15 +2601,19 @@ public final class VProto {
     voldemort.client.protocol.pb.VProto.VersionedOrBuilder getVersionsOrBuilder(
         int index);
 
-    // optional int64 rid = 3;
+    // optional .voldemort.RUD rud = 3;
     /**
-     * <code>optional int64 rid = 3;</code>
+     * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    boolean hasRid();
+    boolean hasRud();
     /**
-     * <code>optional int64 rid = 3;</code>
+     * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    long getRid();
+    voldemort.undoTracker.proto.ToManagerProto.RUD getRud();
+    /**
+     * <code>optional .voldemort.RUD rud = 3;</code>
+     */
+    voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
   }
   /**
    * Protobuf type {@code voldemort.KeyedVersions}
@@ -2675,9 +2679,17 @@ public final class VProto {
               versions_.add(input.readMessage(voldemort.client.protocol.pb.VProto.Versioned.PARSER, extensionRegistry));
               break;
             }
-            case 24: {
+            case 26: {
+              voldemort.undoTracker.proto.ToManagerProto.RUD.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = rud_.toBuilder();
+              }
+              rud_ = input.readMessage(voldemort.undoTracker.proto.ToManagerProto.RUD.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(rud_);
+                rud_ = subBuilder.buildPartial();
+              }
               bitField0_ |= 0x00000002;
-              rid_ = input.readInt64();
               break;
             }
           }
@@ -2775,26 +2787,32 @@ public final class VProto {
       return versions_.get(index);
     }
 
-    // optional int64 rid = 3;
-    public static final int RID_FIELD_NUMBER = 3;
-    private long rid_;
+    // optional .voldemort.RUD rud = 3;
+    public static final int RUD_FIELD_NUMBER = 3;
+    private voldemort.undoTracker.proto.ToManagerProto.RUD rud_;
     /**
-     * <code>optional int64 rid = 3;</code>
+     * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    public boolean hasRid() {
+    public boolean hasRud() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>optional int64 rid = 3;</code>
+     * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    public long getRid() {
-      return rid_;
+    public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+      return rud_;
+    }
+    /**
+     * <code>optional .voldemort.RUD rud = 3;</code>
+     */
+    public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+      return rud_;
     }
 
     private void initFields() {
       key_ = com.google.protobuf.ByteString.EMPTY;
       versions_ = java.util.Collections.emptyList();
-      rid_ = 0L;
+      rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -2825,7 +2843,7 @@ public final class VProto {
         output.writeMessage(2, versions_.get(i));
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeInt64(3, rid_);
+        output.writeMessage(3, rud_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -2846,7 +2864,7 @@ public final class VProto {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(3, rid_);
+          .computeMessageSize(3, rud_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -2957,6 +2975,7 @@ public final class VProto {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getVersionsFieldBuilder();
+          getRudFieldBuilder();
         }
       }
       private static Builder create() {
@@ -2973,7 +2992,11 @@ public final class VProto {
         } else {
           versionsBuilder_.clear();
         }
-        rid_ = 0L;
+        if (rudBuilder_ == null) {
+          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+        } else {
+          rudBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
@@ -3019,7 +3042,11 @@ public final class VProto {
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.rid_ = rid_;
+        if (rudBuilder_ == null) {
+          result.rud_ = rud_;
+        } else {
+          result.rud_ = rudBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -3065,8 +3092,8 @@ public final class VProto {
             }
           }
         }
-        if (other.hasRid()) {
-          setRid(other.getRid());
+        if (other.hasRud()) {
+          mergeRud(other.getRud());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -3381,37 +3408,121 @@ public final class VProto {
         return versionsBuilder_;
       }
 
-      // optional int64 rid = 3;
-      private long rid_ ;
+      // optional .voldemort.RUD rud = 3;
+      private voldemort.undoTracker.proto.ToManagerProto.RUD rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
       /**
-       * <code>optional int64 rid = 3;</code>
+       * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public boolean hasRid() {
+      public boolean hasRud() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>optional int64 rid = 3;</code>
+       * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public long getRid() {
-        return rid_;
+      public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+        if (rudBuilder_ == null) {
+          return rud_;
+        } else {
+          return rudBuilder_.getMessage();
+        }
       }
       /**
-       * <code>optional int64 rid = 3;</code>
+       * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public Builder setRid(long value) {
+      public Builder setRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+        if (rudBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          rud_ = value;
+          onChanged();
+        } else {
+          rudBuilder_.setMessage(value);
+        }
         bitField0_ |= 0x00000004;
-        rid_ = value;
-        onChanged();
         return this;
       }
       /**
-       * <code>optional int64 rid = 3;</code>
+       * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public Builder clearRid() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        rid_ = 0L;
-        onChanged();
+      public Builder setRud(
+          voldemort.undoTracker.proto.ToManagerProto.RUD.Builder builderForValue) {
+        if (rudBuilder_ == null) {
+          rud_ = builderForValue.build();
+          onChanged();
+        } else {
+          rudBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
         return this;
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      public Builder mergeRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+        if (rudBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004) &&
+              rud_ != voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance()) {
+            rud_ =
+              voldemort.undoTracker.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
+          } else {
+            rud_ = value;
+          }
+          onChanged();
+        } else {
+          rudBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      public Builder clearRud() {
+        if (rudBuilder_ == null) {
+          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+          onChanged();
+        } else {
+          rudBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      public voldemort.undoTracker.proto.ToManagerProto.RUD.Builder getRudBuilder() {
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return getRudFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+        if (rudBuilder_ != null) {
+          return rudBuilder_.getMessageOrBuilder();
+        } else {
+          return rud_;
+        }
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> 
+          getRudFieldBuilder() {
+        if (rudBuilder_ == null) {
+          rudBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder>(
+                  rud_,
+                  getParentForChildren(),
+                  isClean());
+          rud_ = null;
+        }
+        return rudBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:voldemort.KeyedVersions)
@@ -3448,15 +3559,19 @@ public final class VProto {
      */
     com.google.protobuf.ByteString getTransforms();
 
-    // optional int64 rid = 3;
+    // optional .voldemort.RUD rud = 3;
     /**
-     * <code>optional int64 rid = 3;</code>
+     * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    boolean hasRid();
+    boolean hasRud();
     /**
-     * <code>optional int64 rid = 3;</code>
+     * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    long getRid();
+    voldemort.undoTracker.proto.ToManagerProto.RUD getRud();
+    /**
+     * <code>optional .voldemort.RUD rud = 3;</code>
+     */
+    voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
   }
   /**
    * Protobuf type {@code voldemort.GetRequest}
@@ -3519,9 +3634,17 @@ public final class VProto {
               transforms_ = input.readBytes();
               break;
             }
-            case 24: {
+            case 26: {
+              voldemort.undoTracker.proto.ToManagerProto.RUD.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000004) == 0x00000004)) {
+                subBuilder = rud_.toBuilder();
+              }
+              rud_ = input.readMessage(voldemort.undoTracker.proto.ToManagerProto.RUD.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(rud_);
+                rud_ = subBuilder.buildPartial();
+              }
               bitField0_ |= 0x00000004;
-              rid_ = input.readInt64();
               break;
             }
           }
@@ -3596,26 +3719,32 @@ public final class VProto {
       return transforms_;
     }
 
-    // optional int64 rid = 3;
-    public static final int RID_FIELD_NUMBER = 3;
-    private long rid_;
+    // optional .voldemort.RUD rud = 3;
+    public static final int RUD_FIELD_NUMBER = 3;
+    private voldemort.undoTracker.proto.ToManagerProto.RUD rud_;
     /**
-     * <code>optional int64 rid = 3;</code>
+     * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    public boolean hasRid() {
+    public boolean hasRud() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>optional int64 rid = 3;</code>
+     * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    public long getRid() {
-      return rid_;
+    public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+      return rud_;
+    }
+    /**
+     * <code>optional .voldemort.RUD rud = 3;</code>
+     */
+    public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+      return rud_;
     }
 
     private void initFields() {
       key_ = com.google.protobuf.ByteString.EMPTY;
       transforms_ = com.google.protobuf.ByteString.EMPTY;
-      rid_ = 0L;
+      rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -3636,7 +3765,7 @@ public final class VProto {
         output.writeBytes(2, transforms_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeInt64(3, rid_);
+        output.writeMessage(3, rud_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -3657,7 +3786,7 @@ public final class VProto {
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(3, rid_);
+          .computeMessageSize(3, rud_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -3767,6 +3896,7 @@ public final class VProto {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getRudFieldBuilder();
         }
       }
       private static Builder create() {
@@ -3779,7 +3909,11 @@ public final class VProto {
         bitField0_ = (bitField0_ & ~0x00000001);
         transforms_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000002);
-        rid_ = 0L;
+        if (rudBuilder_ == null) {
+          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+        } else {
+          rudBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
@@ -3820,7 +3954,11 @@ public final class VProto {
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
-        result.rid_ = rid_;
+        if (rudBuilder_ == null) {
+          result.rud_ = rud_;
+        } else {
+          result.rud_ = rudBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -3843,8 +3981,8 @@ public final class VProto {
         if (other.hasTransforms()) {
           setTransforms(other.getTransforms());
         }
-        if (other.hasRid()) {
-          setRid(other.getRid());
+        if (other.hasRud()) {
+          mergeRud(other.getRud());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -3945,37 +4083,121 @@ public final class VProto {
         return this;
       }
 
-      // optional int64 rid = 3;
-      private long rid_ ;
+      // optional .voldemort.RUD rud = 3;
+      private voldemort.undoTracker.proto.ToManagerProto.RUD rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
       /**
-       * <code>optional int64 rid = 3;</code>
+       * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public boolean hasRid() {
+      public boolean hasRud() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>optional int64 rid = 3;</code>
+       * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public long getRid() {
-        return rid_;
+      public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+        if (rudBuilder_ == null) {
+          return rud_;
+        } else {
+          return rudBuilder_.getMessage();
+        }
       }
       /**
-       * <code>optional int64 rid = 3;</code>
+       * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public Builder setRid(long value) {
+      public Builder setRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+        if (rudBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          rud_ = value;
+          onChanged();
+        } else {
+          rudBuilder_.setMessage(value);
+        }
         bitField0_ |= 0x00000004;
-        rid_ = value;
-        onChanged();
         return this;
       }
       /**
-       * <code>optional int64 rid = 3;</code>
+       * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public Builder clearRid() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        rid_ = 0L;
-        onChanged();
+      public Builder setRud(
+          voldemort.undoTracker.proto.ToManagerProto.RUD.Builder builderForValue) {
+        if (rudBuilder_ == null) {
+          rud_ = builderForValue.build();
+          onChanged();
+        } else {
+          rudBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
         return this;
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      public Builder mergeRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+        if (rudBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004) &&
+              rud_ != voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance()) {
+            rud_ =
+              voldemort.undoTracker.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
+          } else {
+            rud_ = value;
+          }
+          onChanged();
+        } else {
+          rudBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      public Builder clearRud() {
+        if (rudBuilder_ == null) {
+          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+          onChanged();
+        } else {
+          rudBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      public voldemort.undoTracker.proto.ToManagerProto.RUD.Builder getRudBuilder() {
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return getRudFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+        if (rudBuilder_ != null) {
+          return rudBuilder_.getMessageOrBuilder();
+        } else {
+          return rud_;
+        }
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> 
+          getRudFieldBuilder() {
+        if (rudBuilder_ == null) {
+          rudBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder>(
+                  rud_,
+                  getParentForChildren(),
+                  isClean());
+          rud_ = null;
+        }
+        return rudBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:voldemort.GetRequest)
@@ -4031,15 +4253,19 @@ public final class VProto {
      */
     voldemort.client.protocol.pb.VProto.ErrorOrBuilder getErrorOrBuilder();
 
-    // optional int64 rid = 3;
+    // optional .voldemort.RUD rud = 3;
     /**
-     * <code>optional int64 rid = 3;</code>
+     * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    boolean hasRid();
+    boolean hasRud();
     /**
-     * <code>optional int64 rid = 3;</code>
+     * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    long getRid();
+    voldemort.undoTracker.proto.ToManagerProto.RUD getRud();
+    /**
+     * <code>optional .voldemort.RUD rud = 3;</code>
+     */
+    voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
   }
   /**
    * Protobuf type {@code voldemort.GetResponse}
@@ -4113,9 +4339,17 @@ public final class VProto {
               bitField0_ |= 0x00000001;
               break;
             }
-            case 24: {
+            case 26: {
+              voldemort.undoTracker.proto.ToManagerProto.RUD.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = rud_.toBuilder();
+              }
+              rud_ = input.readMessage(voldemort.undoTracker.proto.ToManagerProto.RUD.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(rud_);
+                rud_ = subBuilder.buildPartial();
+              }
               bitField0_ |= 0x00000002;
-              rid_ = input.readInt64();
               break;
             }
           }
@@ -4219,26 +4453,32 @@ public final class VProto {
       return error_;
     }
 
-    // optional int64 rid = 3;
-    public static final int RID_FIELD_NUMBER = 3;
-    private long rid_;
+    // optional .voldemort.RUD rud = 3;
+    public static final int RUD_FIELD_NUMBER = 3;
+    private voldemort.undoTracker.proto.ToManagerProto.RUD rud_;
     /**
-     * <code>optional int64 rid = 3;</code>
+     * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    public boolean hasRid() {
+    public boolean hasRud() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>optional int64 rid = 3;</code>
+     * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    public long getRid() {
-      return rid_;
+    public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+      return rud_;
+    }
+    /**
+     * <code>optional .voldemort.RUD rud = 3;</code>
+     */
+    public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+      return rud_;
     }
 
     private void initFields() {
       versioned_ = java.util.Collections.emptyList();
       error_ = voldemort.client.protocol.pb.VProto.Error.getDefaultInstance();
-      rid_ = 0L;
+      rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -4271,7 +4511,7 @@ public final class VProto {
         output.writeMessage(2, error_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeInt64(3, rid_);
+        output.writeMessage(3, rud_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -4292,7 +4532,7 @@ public final class VProto {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(3, rid_);
+          .computeMessageSize(3, rud_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -4404,6 +4644,7 @@ public final class VProto {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getVersionedFieldBuilder();
           getErrorFieldBuilder();
+          getRudFieldBuilder();
         }
       }
       private static Builder create() {
@@ -4424,7 +4665,11 @@ public final class VProto {
           errorBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000002);
-        rid_ = 0L;
+        if (rudBuilder_ == null) {
+          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+        } else {
+          rudBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
@@ -4474,7 +4719,11 @@ public final class VProto {
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.rid_ = rid_;
+        if (rudBuilder_ == null) {
+          result.rud_ = rud_;
+        } else {
+          result.rud_ = rudBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -4520,8 +4769,8 @@ public final class VProto {
         if (other.hasError()) {
           mergeError(other.getError());
         }
-        if (other.hasRid()) {
-          setRid(other.getRid());
+        if (other.hasRud()) {
+          mergeRud(other.getRud());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -4919,37 +5168,121 @@ public final class VProto {
         return errorBuilder_;
       }
 
-      // optional int64 rid = 3;
-      private long rid_ ;
+      // optional .voldemort.RUD rud = 3;
+      private voldemort.undoTracker.proto.ToManagerProto.RUD rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
       /**
-       * <code>optional int64 rid = 3;</code>
+       * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public boolean hasRid() {
+      public boolean hasRud() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>optional int64 rid = 3;</code>
+       * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public long getRid() {
-        return rid_;
+      public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+        if (rudBuilder_ == null) {
+          return rud_;
+        } else {
+          return rudBuilder_.getMessage();
+        }
       }
       /**
-       * <code>optional int64 rid = 3;</code>
+       * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public Builder setRid(long value) {
+      public Builder setRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+        if (rudBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          rud_ = value;
+          onChanged();
+        } else {
+          rudBuilder_.setMessage(value);
+        }
         bitField0_ |= 0x00000004;
-        rid_ = value;
-        onChanged();
         return this;
       }
       /**
-       * <code>optional int64 rid = 3;</code>
+       * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public Builder clearRid() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        rid_ = 0L;
-        onChanged();
+      public Builder setRud(
+          voldemort.undoTracker.proto.ToManagerProto.RUD.Builder builderForValue) {
+        if (rudBuilder_ == null) {
+          rud_ = builderForValue.build();
+          onChanged();
+        } else {
+          rudBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
         return this;
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      public Builder mergeRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+        if (rudBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004) &&
+              rud_ != voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance()) {
+            rud_ =
+              voldemort.undoTracker.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
+          } else {
+            rud_ = value;
+          }
+          onChanged();
+        } else {
+          rudBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      public Builder clearRud() {
+        if (rudBuilder_ == null) {
+          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+          onChanged();
+        } else {
+          rudBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      public voldemort.undoTracker.proto.ToManagerProto.RUD.Builder getRudBuilder() {
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return getRudFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+        if (rudBuilder_ != null) {
+          return rudBuilder_.getMessageOrBuilder();
+        } else {
+          return rud_;
+        }
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> 
+          getRudFieldBuilder() {
+        if (rudBuilder_ == null) {
+          rudBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder>(
+                  rud_,
+                  getParentForChildren(),
+                  isClean());
+          rud_ = null;
+        }
+        return rudBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:voldemort.GetResponse)
@@ -5005,15 +5338,19 @@ public final class VProto {
      */
     voldemort.client.protocol.pb.VProto.ErrorOrBuilder getErrorOrBuilder();
 
-    // optional int64 rid = 3;
+    // optional .voldemort.RUD rud = 3;
     /**
-     * <code>optional int64 rid = 3;</code>
+     * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    boolean hasRid();
+    boolean hasRud();
     /**
-     * <code>optional int64 rid = 3;</code>
+     * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    long getRid();
+    voldemort.undoTracker.proto.ToManagerProto.RUD getRud();
+    /**
+     * <code>optional .voldemort.RUD rud = 3;</code>
+     */
+    voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
   }
   /**
    * Protobuf type {@code voldemort.GetVersionResponse}
@@ -5087,9 +5424,17 @@ public final class VProto {
               bitField0_ |= 0x00000001;
               break;
             }
-            case 24: {
+            case 26: {
+              voldemort.undoTracker.proto.ToManagerProto.RUD.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = rud_.toBuilder();
+              }
+              rud_ = input.readMessage(voldemort.undoTracker.proto.ToManagerProto.RUD.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(rud_);
+                rud_ = subBuilder.buildPartial();
+              }
               bitField0_ |= 0x00000002;
-              rid_ = input.readInt64();
               break;
             }
           }
@@ -5193,26 +5538,32 @@ public final class VProto {
       return error_;
     }
 
-    // optional int64 rid = 3;
-    public static final int RID_FIELD_NUMBER = 3;
-    private long rid_;
+    // optional .voldemort.RUD rud = 3;
+    public static final int RUD_FIELD_NUMBER = 3;
+    private voldemort.undoTracker.proto.ToManagerProto.RUD rud_;
     /**
-     * <code>optional int64 rid = 3;</code>
+     * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    public boolean hasRid() {
+    public boolean hasRud() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>optional int64 rid = 3;</code>
+     * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    public long getRid() {
-      return rid_;
+    public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+      return rud_;
+    }
+    /**
+     * <code>optional .voldemort.RUD rud = 3;</code>
+     */
+    public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+      return rud_;
     }
 
     private void initFields() {
       versions_ = java.util.Collections.emptyList();
       error_ = voldemort.client.protocol.pb.VProto.Error.getDefaultInstance();
-      rid_ = 0L;
+      rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -5245,7 +5596,7 @@ public final class VProto {
         output.writeMessage(2, error_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeInt64(3, rid_);
+        output.writeMessage(3, rud_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -5266,7 +5617,7 @@ public final class VProto {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(3, rid_);
+          .computeMessageSize(3, rud_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -5378,6 +5729,7 @@ public final class VProto {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getVersionsFieldBuilder();
           getErrorFieldBuilder();
+          getRudFieldBuilder();
         }
       }
       private static Builder create() {
@@ -5398,7 +5750,11 @@ public final class VProto {
           errorBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000002);
-        rid_ = 0L;
+        if (rudBuilder_ == null) {
+          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+        } else {
+          rudBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
@@ -5448,7 +5804,11 @@ public final class VProto {
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.rid_ = rid_;
+        if (rudBuilder_ == null) {
+          result.rud_ = rud_;
+        } else {
+          result.rud_ = rudBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -5494,8 +5854,8 @@ public final class VProto {
         if (other.hasError()) {
           mergeError(other.getError());
         }
-        if (other.hasRid()) {
-          setRid(other.getRid());
+        if (other.hasRud()) {
+          mergeRud(other.getRud());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -5893,37 +6253,121 @@ public final class VProto {
         return errorBuilder_;
       }
 
-      // optional int64 rid = 3;
-      private long rid_ ;
+      // optional .voldemort.RUD rud = 3;
+      private voldemort.undoTracker.proto.ToManagerProto.RUD rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
       /**
-       * <code>optional int64 rid = 3;</code>
+       * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public boolean hasRid() {
+      public boolean hasRud() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>optional int64 rid = 3;</code>
+       * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public long getRid() {
-        return rid_;
+      public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+        if (rudBuilder_ == null) {
+          return rud_;
+        } else {
+          return rudBuilder_.getMessage();
+        }
       }
       /**
-       * <code>optional int64 rid = 3;</code>
+       * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public Builder setRid(long value) {
+      public Builder setRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+        if (rudBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          rud_ = value;
+          onChanged();
+        } else {
+          rudBuilder_.setMessage(value);
+        }
         bitField0_ |= 0x00000004;
-        rid_ = value;
-        onChanged();
         return this;
       }
       /**
-       * <code>optional int64 rid = 3;</code>
+       * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public Builder clearRid() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        rid_ = 0L;
-        onChanged();
+      public Builder setRud(
+          voldemort.undoTracker.proto.ToManagerProto.RUD.Builder builderForValue) {
+        if (rudBuilder_ == null) {
+          rud_ = builderForValue.build();
+          onChanged();
+        } else {
+          rudBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
         return this;
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      public Builder mergeRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+        if (rudBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004) &&
+              rud_ != voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance()) {
+            rud_ =
+              voldemort.undoTracker.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
+          } else {
+            rud_ = value;
+          }
+          onChanged();
+        } else {
+          rudBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      public Builder clearRud() {
+        if (rudBuilder_ == null) {
+          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+          onChanged();
+        } else {
+          rudBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      public voldemort.undoTracker.proto.ToManagerProto.RUD.Builder getRudBuilder() {
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return getRudFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+        if (rudBuilder_ != null) {
+          return rudBuilder_.getMessageOrBuilder();
+        } else {
+          return rud_;
+        }
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> 
+          getRudFieldBuilder() {
+        if (rudBuilder_ == null) {
+          rudBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder>(
+                  rud_,
+                  getParentForChildren(),
+                  isClean());
+          rud_ = null;
+        }
+        return rudBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:voldemort.GetVersionResponse)
@@ -5979,15 +6423,19 @@ public final class VProto {
     voldemort.client.protocol.pb.VProto.GetAllRequest.GetAllTransformOrBuilder getTransformsOrBuilder(
         int index);
 
-    // optional int64 rid = 3;
+    // optional .voldemort.RUD rud = 3;
     /**
-     * <code>optional int64 rid = 3;</code>
+     * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    boolean hasRid();
+    boolean hasRud();
     /**
-     * <code>optional int64 rid = 3;</code>
+     * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    long getRid();
+    voldemort.undoTracker.proto.ToManagerProto.RUD getRud();
+    /**
+     * <code>optional .voldemort.RUD rud = 3;</code>
+     */
+    voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
   }
   /**
    * Protobuf type {@code voldemort.GetAllRequest}
@@ -6056,9 +6504,17 @@ public final class VProto {
               transforms_.add(input.readMessage(voldemort.client.protocol.pb.VProto.GetAllRequest.GetAllTransform.PARSER, extensionRegistry));
               break;
             }
-            case 24: {
+            case 26: {
+              voldemort.undoTracker.proto.ToManagerProto.RUD.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                subBuilder = rud_.toBuilder();
+              }
+              rud_ = input.readMessage(voldemort.undoTracker.proto.ToManagerProto.RUD.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(rud_);
+                rud_ = subBuilder.buildPartial();
+              }
               bitField0_ |= 0x00000001;
-              rid_ = input.readInt64();
               break;
             }
           }
@@ -6665,26 +7121,32 @@ public final class VProto {
       return transforms_.get(index);
     }
 
-    // optional int64 rid = 3;
-    public static final int RID_FIELD_NUMBER = 3;
-    private long rid_;
+    // optional .voldemort.RUD rud = 3;
+    public static final int RUD_FIELD_NUMBER = 3;
+    private voldemort.undoTracker.proto.ToManagerProto.RUD rud_;
     /**
-     * <code>optional int64 rid = 3;</code>
+     * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    public boolean hasRid() {
+    public boolean hasRud() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>optional int64 rid = 3;</code>
+     * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    public long getRid() {
-      return rid_;
+    public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+      return rud_;
+    }
+    /**
+     * <code>optional .voldemort.RUD rud = 3;</code>
+     */
+    public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+      return rud_;
     }
 
     private void initFields() {
       keys_ = java.util.Collections.emptyList();
       transforms_ = java.util.Collections.emptyList();
-      rid_ = 0L;
+      rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -6711,7 +7173,7 @@ public final class VProto {
         output.writeMessage(2, transforms_.get(i));
       }
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeInt64(3, rid_);
+        output.writeMessage(3, rud_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -6737,7 +7199,7 @@ public final class VProto {
       }
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(3, rid_);
+          .computeMessageSize(3, rud_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -6848,6 +7310,7 @@ public final class VProto {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getTransformsFieldBuilder();
+          getRudFieldBuilder();
         }
       }
       private static Builder create() {
@@ -6864,7 +7327,11 @@ public final class VProto {
         } else {
           transformsBuilder_.clear();
         }
-        rid_ = 0L;
+        if (rudBuilder_ == null) {
+          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+        } else {
+          rudBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
@@ -6911,7 +7378,11 @@ public final class VProto {
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000001;
         }
-        result.rid_ = rid_;
+        if (rudBuilder_ == null) {
+          result.rud_ = rud_;
+        } else {
+          result.rud_ = rudBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -6964,8 +7435,8 @@ public final class VProto {
             }
           }
         }
-        if (other.hasRid()) {
-          setRid(other.getRid());
+        if (other.hasRud()) {
+          mergeRud(other.getRud());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -7312,37 +7783,121 @@ public final class VProto {
         return transformsBuilder_;
       }
 
-      // optional int64 rid = 3;
-      private long rid_ ;
+      // optional .voldemort.RUD rud = 3;
+      private voldemort.undoTracker.proto.ToManagerProto.RUD rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
       /**
-       * <code>optional int64 rid = 3;</code>
+       * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public boolean hasRid() {
+      public boolean hasRud() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>optional int64 rid = 3;</code>
+       * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public long getRid() {
-        return rid_;
+      public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+        if (rudBuilder_ == null) {
+          return rud_;
+        } else {
+          return rudBuilder_.getMessage();
+        }
       }
       /**
-       * <code>optional int64 rid = 3;</code>
+       * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public Builder setRid(long value) {
+      public Builder setRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+        if (rudBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          rud_ = value;
+          onChanged();
+        } else {
+          rudBuilder_.setMessage(value);
+        }
         bitField0_ |= 0x00000004;
-        rid_ = value;
-        onChanged();
         return this;
       }
       /**
-       * <code>optional int64 rid = 3;</code>
+       * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public Builder clearRid() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        rid_ = 0L;
-        onChanged();
+      public Builder setRud(
+          voldemort.undoTracker.proto.ToManagerProto.RUD.Builder builderForValue) {
+        if (rudBuilder_ == null) {
+          rud_ = builderForValue.build();
+          onChanged();
+        } else {
+          rudBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
         return this;
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      public Builder mergeRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+        if (rudBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004) &&
+              rud_ != voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance()) {
+            rud_ =
+              voldemort.undoTracker.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
+          } else {
+            rud_ = value;
+          }
+          onChanged();
+        } else {
+          rudBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      public Builder clearRud() {
+        if (rudBuilder_ == null) {
+          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+          onChanged();
+        } else {
+          rudBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      public voldemort.undoTracker.proto.ToManagerProto.RUD.Builder getRudBuilder() {
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return getRudFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+        if (rudBuilder_ != null) {
+          return rudBuilder_.getMessageOrBuilder();
+        } else {
+          return rud_;
+        }
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> 
+          getRudFieldBuilder() {
+        if (rudBuilder_ == null) {
+          rudBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder>(
+                  rud_,
+                  getParentForChildren(),
+                  isClean());
+          rud_ = null;
+        }
+        return rudBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:voldemort.GetAllRequest)
@@ -8286,15 +8841,19 @@ public final class VProto {
      */
     com.google.protobuf.ByteString getTransforms();
 
-    // optional int64 rid = 4;
+    // optional .voldemort.RUD rud = 4;
     /**
-     * <code>optional int64 rid = 4;</code>
+     * <code>optional .voldemort.RUD rud = 4;</code>
      */
-    boolean hasRid();
+    boolean hasRud();
     /**
-     * <code>optional int64 rid = 4;</code>
+     * <code>optional .voldemort.RUD rud = 4;</code>
      */
-    long getRid();
+    voldemort.undoTracker.proto.ToManagerProto.RUD getRud();
+    /**
+     * <code>optional .voldemort.RUD rud = 4;</code>
+     */
+    voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
   }
   /**
    * Protobuf type {@code voldemort.PutRequest}
@@ -8370,9 +8929,17 @@ public final class VProto {
               transforms_ = input.readBytes();
               break;
             }
-            case 32: {
+            case 34: {
+              voldemort.undoTracker.proto.ToManagerProto.RUD.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000008) == 0x00000008)) {
+                subBuilder = rud_.toBuilder();
+              }
+              rud_ = input.readMessage(voldemort.undoTracker.proto.ToManagerProto.RUD.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(rud_);
+                rud_ = subBuilder.buildPartial();
+              }
               bitField0_ |= 0x00000008;
-              rid_ = input.readInt64();
               break;
             }
           }
@@ -8469,27 +9036,33 @@ public final class VProto {
       return transforms_;
     }
 
-    // optional int64 rid = 4;
-    public static final int RID_FIELD_NUMBER = 4;
-    private long rid_;
+    // optional .voldemort.RUD rud = 4;
+    public static final int RUD_FIELD_NUMBER = 4;
+    private voldemort.undoTracker.proto.ToManagerProto.RUD rud_;
     /**
-     * <code>optional int64 rid = 4;</code>
+     * <code>optional .voldemort.RUD rud = 4;</code>
      */
-    public boolean hasRid() {
+    public boolean hasRud() {
       return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
-     * <code>optional int64 rid = 4;</code>
+     * <code>optional .voldemort.RUD rud = 4;</code>
      */
-    public long getRid() {
-      return rid_;
+    public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+      return rud_;
+    }
+    /**
+     * <code>optional .voldemort.RUD rud = 4;</code>
+     */
+    public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+      return rud_;
     }
 
     private void initFields() {
       key_ = com.google.protobuf.ByteString.EMPTY;
       versioned_ = voldemort.client.protocol.pb.VProto.Versioned.getDefaultInstance();
       transforms_ = com.google.protobuf.ByteString.EMPTY;
-      rid_ = 0L;
+      rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -8525,7 +9098,7 @@ public final class VProto {
         output.writeBytes(3, transforms_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeInt64(4, rid_);
+        output.writeMessage(4, rud_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -8550,7 +9123,7 @@ public final class VProto {
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(4, rid_);
+          .computeMessageSize(4, rud_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -8661,6 +9234,7 @@ public final class VProto {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getVersionedFieldBuilder();
+          getRudFieldBuilder();
         }
       }
       private static Builder create() {
@@ -8679,7 +9253,11 @@ public final class VProto {
         bitField0_ = (bitField0_ & ~0x00000002);
         transforms_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000004);
-        rid_ = 0L;
+        if (rudBuilder_ == null) {
+          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+        } else {
+          rudBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
@@ -8728,7 +9306,11 @@ public final class VProto {
         if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
           to_bitField0_ |= 0x00000008;
         }
-        result.rid_ = rid_;
+        if (rudBuilder_ == null) {
+          result.rud_ = rud_;
+        } else {
+          result.rud_ = rudBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -8754,8 +9336,8 @@ public final class VProto {
         if (other.hasTransforms()) {
           setTransforms(other.getTransforms());
         }
-        if (other.hasRid()) {
-          setRid(other.getRid());
+        if (other.hasRud()) {
+          mergeRud(other.getRud());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -8985,37 +9567,121 @@ public final class VProto {
         return this;
       }
 
-      // optional int64 rid = 4;
-      private long rid_ ;
+      // optional .voldemort.RUD rud = 4;
+      private voldemort.undoTracker.proto.ToManagerProto.RUD rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
       /**
-       * <code>optional int64 rid = 4;</code>
+       * <code>optional .voldemort.RUD rud = 4;</code>
        */
-      public boolean hasRid() {
+      public boolean hasRud() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
-       * <code>optional int64 rid = 4;</code>
+       * <code>optional .voldemort.RUD rud = 4;</code>
        */
-      public long getRid() {
-        return rid_;
+      public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+        if (rudBuilder_ == null) {
+          return rud_;
+        } else {
+          return rudBuilder_.getMessage();
+        }
       }
       /**
-       * <code>optional int64 rid = 4;</code>
+       * <code>optional .voldemort.RUD rud = 4;</code>
        */
-      public Builder setRid(long value) {
+      public Builder setRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+        if (rudBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          rud_ = value;
+          onChanged();
+        } else {
+          rudBuilder_.setMessage(value);
+        }
         bitField0_ |= 0x00000008;
-        rid_ = value;
-        onChanged();
         return this;
       }
       /**
-       * <code>optional int64 rid = 4;</code>
+       * <code>optional .voldemort.RUD rud = 4;</code>
        */
-      public Builder clearRid() {
-        bitField0_ = (bitField0_ & ~0x00000008);
-        rid_ = 0L;
-        onChanged();
+      public Builder setRud(
+          voldemort.undoTracker.proto.ToManagerProto.RUD.Builder builderForValue) {
+        if (rudBuilder_ == null) {
+          rud_ = builderForValue.build();
+          onChanged();
+        } else {
+          rudBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000008;
         return this;
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 4;</code>
+       */
+      public Builder mergeRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+        if (rudBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) == 0x00000008) &&
+              rud_ != voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance()) {
+            rud_ =
+              voldemort.undoTracker.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
+          } else {
+            rud_ = value;
+          }
+          onChanged();
+        } else {
+          rudBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 4;</code>
+       */
+      public Builder clearRud() {
+        if (rudBuilder_ == null) {
+          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+          onChanged();
+        } else {
+          rudBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
+        return this;
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 4;</code>
+       */
+      public voldemort.undoTracker.proto.ToManagerProto.RUD.Builder getRudBuilder() {
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return getRudFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 4;</code>
+       */
+      public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+        if (rudBuilder_ != null) {
+          return rudBuilder_.getMessageOrBuilder();
+        } else {
+          return rud_;
+        }
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 4;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> 
+          getRudFieldBuilder() {
+        if (rudBuilder_ == null) {
+          rudBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder>(
+                  rud_,
+                  getParentForChildren(),
+                  isClean());
+          rud_ = null;
+        }
+        return rudBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:voldemort.PutRequest)
@@ -9575,15 +10241,19 @@ public final class VProto {
      */
     voldemort.client.protocol.pb.VProto.VectorClockOrBuilder getVersionOrBuilder();
 
-    // optional int64 rid = 3;
+    // optional .voldemort.RUD rud = 3;
     /**
-     * <code>optional int64 rid = 3;</code>
+     * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    boolean hasRid();
+    boolean hasRud();
     /**
-     * <code>optional int64 rid = 3;</code>
+     * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    long getRid();
+    voldemort.undoTracker.proto.ToManagerProto.RUD getRud();
+    /**
+     * <code>optional .voldemort.RUD rud = 3;</code>
+     */
+    voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
   }
   /**
    * Protobuf type {@code voldemort.DeleteRequest}
@@ -9654,9 +10324,17 @@ public final class VProto {
               bitField0_ |= 0x00000002;
               break;
             }
-            case 24: {
+            case 26: {
+              voldemort.undoTracker.proto.ToManagerProto.RUD.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000004) == 0x00000004)) {
+                subBuilder = rud_.toBuilder();
+              }
+              rud_ = input.readMessage(voldemort.undoTracker.proto.ToManagerProto.RUD.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(rud_);
+                rud_ = subBuilder.buildPartial();
+              }
               bitField0_ |= 0x00000004;
-              rid_ = input.readInt64();
               break;
             }
           }
@@ -9737,26 +10415,32 @@ public final class VProto {
       return version_;
     }
 
-    // optional int64 rid = 3;
-    public static final int RID_FIELD_NUMBER = 3;
-    private long rid_;
+    // optional .voldemort.RUD rud = 3;
+    public static final int RUD_FIELD_NUMBER = 3;
+    private voldemort.undoTracker.proto.ToManagerProto.RUD rud_;
     /**
-     * <code>optional int64 rid = 3;</code>
+     * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    public boolean hasRid() {
+    public boolean hasRud() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>optional int64 rid = 3;</code>
+     * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    public long getRid() {
-      return rid_;
+    public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+      return rud_;
+    }
+    /**
+     * <code>optional .voldemort.RUD rud = 3;</code>
+     */
+    public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+      return rud_;
     }
 
     private void initFields() {
       key_ = com.google.protobuf.ByteString.EMPTY;
       version_ = voldemort.client.protocol.pb.VProto.VectorClock.getDefaultInstance();
-      rid_ = 0L;
+      rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -9789,7 +10473,7 @@ public final class VProto {
         output.writeMessage(2, version_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeInt64(3, rid_);
+        output.writeMessage(3, rud_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -9810,7 +10494,7 @@ public final class VProto {
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(3, rid_);
+          .computeMessageSize(3, rud_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -9921,6 +10605,7 @@ public final class VProto {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getVersionFieldBuilder();
+          getRudFieldBuilder();
         }
       }
       private static Builder create() {
@@ -9937,7 +10622,11 @@ public final class VProto {
           versionBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000002);
-        rid_ = 0L;
+        if (rudBuilder_ == null) {
+          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+        } else {
+          rudBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
@@ -9982,7 +10671,11 @@ public final class VProto {
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
-        result.rid_ = rid_;
+        if (rudBuilder_ == null) {
+          result.rud_ = rud_;
+        } else {
+          result.rud_ = rudBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -10005,8 +10698,8 @@ public final class VProto {
         if (other.hasVersion()) {
           mergeVersion(other.getVersion());
         }
-        if (other.hasRid()) {
-          setRid(other.getRid());
+        if (other.hasRud()) {
+          mergeRud(other.getRud());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -10200,37 +10893,121 @@ public final class VProto {
         return versionBuilder_;
       }
 
-      // optional int64 rid = 3;
-      private long rid_ ;
+      // optional .voldemort.RUD rud = 3;
+      private voldemort.undoTracker.proto.ToManagerProto.RUD rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
       /**
-       * <code>optional int64 rid = 3;</code>
+       * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public boolean hasRid() {
+      public boolean hasRud() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>optional int64 rid = 3;</code>
+       * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public long getRid() {
-        return rid_;
+      public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+        if (rudBuilder_ == null) {
+          return rud_;
+        } else {
+          return rudBuilder_.getMessage();
+        }
       }
       /**
-       * <code>optional int64 rid = 3;</code>
+       * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public Builder setRid(long value) {
+      public Builder setRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+        if (rudBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          rud_ = value;
+          onChanged();
+        } else {
+          rudBuilder_.setMessage(value);
+        }
         bitField0_ |= 0x00000004;
-        rid_ = value;
-        onChanged();
         return this;
       }
       /**
-       * <code>optional int64 rid = 3;</code>
+       * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public Builder clearRid() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        rid_ = 0L;
-        onChanged();
+      public Builder setRud(
+          voldemort.undoTracker.proto.ToManagerProto.RUD.Builder builderForValue) {
+        if (rudBuilder_ == null) {
+          rud_ = builderForValue.build();
+          onChanged();
+        } else {
+          rudBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000004;
         return this;
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      public Builder mergeRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+        if (rudBuilder_ == null) {
+          if (((bitField0_ & 0x00000004) == 0x00000004) &&
+              rud_ != voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance()) {
+            rud_ =
+              voldemort.undoTracker.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
+          } else {
+            rud_ = value;
+          }
+          onChanged();
+        } else {
+          rudBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000004;
+        return this;
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      public Builder clearRud() {
+        if (rudBuilder_ == null) {
+          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+          onChanged();
+        } else {
+          rudBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      public voldemort.undoTracker.proto.ToManagerProto.RUD.Builder getRudBuilder() {
+        bitField0_ |= 0x00000004;
+        onChanged();
+        return getRudFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+        if (rudBuilder_ != null) {
+          return rudBuilder_.getMessageOrBuilder();
+        } else {
+          return rud_;
+        }
+      }
+      /**
+       * <code>optional .voldemort.RUD rud = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> 
+          getRudFieldBuilder() {
+        if (rudBuilder_ == null) {
+          rudBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder>(
+                  rud_,
+                  getParentForChildren(),
+                  isClean());
+          rud_ = null;
+        }
+        return rudBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:voldemort.DeleteRequest)
@@ -10855,15 +11632,19 @@ public final class VProto {
   public interface ContainerOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
-    // required int64 rid = 1;
+    // required .voldemort.RUD rud = 1;
     /**
-     * <code>required int64 rid = 1;</code>
+     * <code>required .voldemort.RUD rud = 1;</code>
      */
-    boolean hasRid();
+    boolean hasRud();
     /**
-     * <code>required int64 rid = 1;</code>
+     * <code>required .voldemort.RUD rud = 1;</code>
      */
-    long getRid();
+    voldemort.undoTracker.proto.ToManagerProto.RUD getRud();
+    /**
+     * <code>required .voldemort.RUD rud = 1;</code>
+     */
+    voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
 
     // required bytes data = 2;
     /**
@@ -10926,9 +11707,17 @@ public final class VProto {
               }
               break;
             }
-            case 8: {
+            case 10: {
+              voldemort.undoTracker.proto.ToManagerProto.RUD.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                subBuilder = rud_.toBuilder();
+              }
+              rud_ = input.readMessage(voldemort.undoTracker.proto.ToManagerProto.RUD.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(rud_);
+                rud_ = subBuilder.buildPartial();
+              }
               bitField0_ |= 0x00000001;
-              rid_ = input.readInt64();
               break;
             }
             case 18: {
@@ -10976,20 +11765,26 @@ public final class VProto {
     }
 
     private int bitField0_;
-    // required int64 rid = 1;
-    public static final int RID_FIELD_NUMBER = 1;
-    private long rid_;
+    // required .voldemort.RUD rud = 1;
+    public static final int RUD_FIELD_NUMBER = 1;
+    private voldemort.undoTracker.proto.ToManagerProto.RUD rud_;
     /**
-     * <code>required int64 rid = 1;</code>
+     * <code>required .voldemort.RUD rud = 1;</code>
      */
-    public boolean hasRid() {
+    public boolean hasRud() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required int64 rid = 1;</code>
+     * <code>required .voldemort.RUD rud = 1;</code>
      */
-    public long getRid() {
-      return rid_;
+    public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+      return rud_;
+    }
+    /**
+     * <code>required .voldemort.RUD rud = 1;</code>
+     */
+    public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+      return rud_;
     }
 
     // required bytes data = 2;
@@ -11009,7 +11804,7 @@ public final class VProto {
     }
 
     private void initFields() {
-      rid_ = 0L;
+      rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
       data_ = com.google.protobuf.ByteString.EMPTY;
     }
     private byte memoizedIsInitialized = -1;
@@ -11017,7 +11812,7 @@ public final class VProto {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
 
-      if (!hasRid()) {
+      if (!hasRud()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -11033,7 +11828,7 @@ public final class VProto {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeInt64(1, rid_);
+        output.writeMessage(1, rud_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeBytes(2, data_);
@@ -11049,7 +11844,7 @@ public final class VProto {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, rid_);
+          .computeMessageSize(1, rud_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
@@ -11163,6 +11958,7 @@ public final class VProto {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getRudFieldBuilder();
         }
       }
       private static Builder create() {
@@ -11171,7 +11967,11 @@ public final class VProto {
 
       public Builder clear() {
         super.clear();
-        rid_ = 0L;
+        if (rudBuilder_ == null) {
+          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+        } else {
+          rudBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000001);
         data_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -11206,7 +12006,11 @@ public final class VProto {
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
-        result.rid_ = rid_;
+        if (rudBuilder_ == null) {
+          result.rud_ = rud_;
+        } else {
+          result.rud_ = rudBuilder_.build();
+        }
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
@@ -11227,8 +12031,8 @@ public final class VProto {
 
       public Builder mergeFrom(voldemort.client.protocol.pb.VProto.Container other) {
         if (other == voldemort.client.protocol.pb.VProto.Container.getDefaultInstance()) return this;
-        if (other.hasRid()) {
-          setRid(other.getRid());
+        if (other.hasRud()) {
+          mergeRud(other.getRud());
         }
         if (other.hasData()) {
           setData(other.getData());
@@ -11238,7 +12042,7 @@ public final class VProto {
       }
 
       public final boolean isInitialized() {
-        if (!hasRid()) {
+        if (!hasRud()) {
           
           return false;
         }
@@ -11268,37 +12072,121 @@ public final class VProto {
       }
       private int bitField0_;
 
-      // required int64 rid = 1;
-      private long rid_ ;
+      // required .voldemort.RUD rud = 1;
+      private voldemort.undoTracker.proto.ToManagerProto.RUD rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
       /**
-       * <code>required int64 rid = 1;</code>
+       * <code>required .voldemort.RUD rud = 1;</code>
        */
-      public boolean hasRid() {
+      public boolean hasRud() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required int64 rid = 1;</code>
+       * <code>required .voldemort.RUD rud = 1;</code>
        */
-      public long getRid() {
-        return rid_;
+      public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+        if (rudBuilder_ == null) {
+          return rud_;
+        } else {
+          return rudBuilder_.getMessage();
+        }
       }
       /**
-       * <code>required int64 rid = 1;</code>
+       * <code>required .voldemort.RUD rud = 1;</code>
        */
-      public Builder setRid(long value) {
+      public Builder setRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+        if (rudBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          rud_ = value;
+          onChanged();
+        } else {
+          rudBuilder_.setMessage(value);
+        }
         bitField0_ |= 0x00000001;
-        rid_ = value;
-        onChanged();
         return this;
       }
       /**
-       * <code>required int64 rid = 1;</code>
+       * <code>required .voldemort.RUD rud = 1;</code>
        */
-      public Builder clearRid() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        rid_ = 0L;
-        onChanged();
+      public Builder setRud(
+          voldemort.undoTracker.proto.ToManagerProto.RUD.Builder builderForValue) {
+        if (rudBuilder_ == null) {
+          rud_ = builderForValue.build();
+          onChanged();
+        } else {
+          rudBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
         return this;
+      }
+      /**
+       * <code>required .voldemort.RUD rud = 1;</code>
+       */
+      public Builder mergeRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+        if (rudBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001) &&
+              rud_ != voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance()) {
+            rud_ =
+              voldemort.undoTracker.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
+          } else {
+            rud_ = value;
+          }
+          onChanged();
+        } else {
+          rudBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>required .voldemort.RUD rud = 1;</code>
+       */
+      public Builder clearRud() {
+        if (rudBuilder_ == null) {
+          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+          onChanged();
+        } else {
+          rudBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      /**
+       * <code>required .voldemort.RUD rud = 1;</code>
+       */
+      public voldemort.undoTracker.proto.ToManagerProto.RUD.Builder getRudBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getRudFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>required .voldemort.RUD rud = 1;</code>
+       */
+      public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+        if (rudBuilder_ != null) {
+          return rudBuilder_.getMessageOrBuilder();
+        } else {
+          return rud_;
+        }
+      }
+      /**
+       * <code>required .voldemort.RUD rud = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> 
+          getRudFieldBuilder() {
+        if (rudBuilder_ == null) {
+          rudBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder>(
+                  rud_,
+                  getParentForChildren(),
+                  isClean());
+          rud_ = null;
+        }
+        return rudBuilder_;
       }
 
       // required bytes data = 2;
@@ -12993,47 +13881,51 @@ public final class VProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\026voldemort-client.proto\022\tvoldemort\".\n\nC" +
-      "lockEntry\022\017\n\007node_id\030\001 \002(\005\022\017\n\007version\030\002 " +
-      "\002(\003\"H\n\013VectorClock\022&\n\007entries\030\001 \003(\0132\025.vo" +
-      "ldemort.ClockEntry\022\021\n\ttimestamp\030\002 \001(\003\"C\n" +
-      "\tVersioned\022\r\n\005value\030\001 \002(\014\022\'\n\007version\030\002 \002" +
-      "(\0132\026.voldemort.VectorClock\"2\n\005Error\022\022\n\ne" +
-      "rror_code\030\001 \002(\005\022\025\n\rerror_message\030\002 \002(\t\"Q" +
-      "\n\rKeyedVersions\022\013\n\003key\030\001 \002(\014\022&\n\010versions" +
-      "\030\002 \003(\0132\024.voldemort.Versioned\022\013\n\003rid\030\003 \001(" +
-      "\003\":\n\nGetRequest\022\013\n\003key\030\001 \001(\014\022\022\n\ntransfor",
-      "ms\030\002 \001(\014\022\013\n\003rid\030\003 \001(\003\"d\n\013GetResponse\022\'\n\t" +
-      "versioned\030\001 \003(\0132\024.voldemort.Versioned\022\037\n" +
-      "\005error\030\002 \001(\0132\020.voldemort.Error\022\013\n\003rid\030\003 " +
-      "\001(\003\"l\n\022GetVersionResponse\022(\n\010versions\030\001 " +
-      "\003(\0132\026.voldemort.VectorClock\022\037\n\005error\030\002 \001" +
-      "(\0132\020.voldemort.Error\022\013\n\003rid\030\003 \001(\003\"\233\001\n\rGe" +
-      "tAllRequest\022\014\n\004keys\030\001 \003(\014\022<\n\ntransforms\030" +
-      "\002 \003(\0132(.voldemort.GetAllRequest.GetAllTr" +
-      "ansform\022\013\n\003rid\030\003 \001(\003\0321\n\017GetAllTransform\022" +
-      "\013\n\003key\030\001 \002(\014\022\021\n\ttransform\030\002 \002(\014\"[\n\016GetAl",
-      "lResponse\022(\n\006values\030\001 \003(\0132\030.voldemort.Ke" +
-      "yedVersions\022\037\n\005error\030\002 \001(\0132\020.voldemort.E" +
-      "rror\"c\n\nPutRequest\022\013\n\003key\030\001 \002(\014\022\'\n\tversi" +
-      "oned\030\002 \002(\0132\024.voldemort.Versioned\022\022\n\ntran" +
-      "sforms\030\003 \001(\014\022\013\n\003rid\030\004 \001(\003\".\n\013PutResponse" +
-      "\022\037\n\005error\030\001 \001(\0132\020.voldemort.Error\"R\n\rDel" +
-      "eteRequest\022\013\n\003key\030\001 \002(\014\022\'\n\007version\030\002 \002(\013" +
-      "2\026.voldemort.VectorClock\022\013\n\003rid\030\003 \001(\003\"B\n" +
-      "\016DeleteResponse\022\017\n\007success\030\001 \002(\010\022\037\n\005erro" +
-      "r\030\002 \001(\0132\020.voldemort.Error\"&\n\tContainer\022\013",
-      "\n\003rid\030\001 \002(\003\022\014\n\004data\030\002 \002(\014\"\232\002\n\020VoldemortR" +
-      "equest\022$\n\004type\030\001 \002(\0162\026.voldemort.Request" +
-      "Type\022\033\n\014should_route\030\002 \002(\010:\005false\022\r\n\005sto" +
-      "re\030\003 \002(\t\022\"\n\003get\030\004 \001(\0132\025.voldemort.GetReq" +
-      "uest\022(\n\006getAll\030\005 \001(\0132\030.voldemort.GetAllR" +
-      "equest\022\"\n\003put\030\006 \001(\0132\025.voldemort.PutReque" +
-      "st\022(\n\006delete\030\007 \001(\0132\030.voldemort.DeleteReq" +
-      "uest\022\030\n\020requestRouteType\030\010 \001(\005*I\n\013Reques" +
-      "tType\022\007\n\003GET\020\000\022\013\n\007GET_ALL\020\001\022\007\n\003PUT\020\002\022\n\n\006" +
-      "DELETE\020\003\022\017\n\013GET_VERSION\020\004B(\n\034voldemort.c",
-      "lient.protocol.pbB\006VProtoH\001"
+      "\n\026voldemort-client.proto\022\tvoldemort\032\020to-" +
+      "manager.proto\".\n\nClockEntry\022\017\n\007node_id\030\001" +
+      " \002(\005\022\017\n\007version\030\002 \002(\003\"H\n\013VectorClock\022&\n\007" +
+      "entries\030\001 \003(\0132\025.voldemort.ClockEntry\022\021\n\t" +
+      "timestamp\030\002 \001(\003\"C\n\tVersioned\022\r\n\005value\030\001 " +
+      "\002(\014\022\'\n\007version\030\002 \002(\0132\026.voldemort.VectorC" +
+      "lock\"2\n\005Error\022\022\n\nerror_code\030\001 \002(\005\022\025\n\rerr" +
+      "or_message\030\002 \002(\t\"a\n\rKeyedVersions\022\013\n\003key" +
+      "\030\001 \002(\014\022&\n\010versions\030\002 \003(\0132\024.voldemort.Ver" +
+      "sioned\022\033\n\003rud\030\003 \001(\0132\016.voldemort.RUD\"J\n\nG",
+      "etRequest\022\013\n\003key\030\001 \001(\014\022\022\n\ntransforms\030\002 \001" +
+      "(\014\022\033\n\003rud\030\003 \001(\0132\016.voldemort.RUD\"t\n\013GetRe" +
+      "sponse\022\'\n\tversioned\030\001 \003(\0132\024.voldemort.Ve" +
+      "rsioned\022\037\n\005error\030\002 \001(\0132\020.voldemort.Error" +
+      "\022\033\n\003rud\030\003 \001(\0132\016.voldemort.RUD\"|\n\022GetVers" +
+      "ionResponse\022(\n\010versions\030\001 \003(\0132\026.voldemor" +
+      "t.VectorClock\022\037\n\005error\030\002 \001(\0132\020.voldemort" +
+      ".Error\022\033\n\003rud\030\003 \001(\0132\016.voldemort.RUD\"\253\001\n\r" +
+      "GetAllRequest\022\014\n\004keys\030\001 \003(\014\022<\n\ntransform" +
+      "s\030\002 \003(\0132(.voldemort.GetAllRequest.GetAll",
+      "Transform\022\033\n\003rud\030\003 \001(\0132\016.voldemort.RUD\0321" +
+      "\n\017GetAllTransform\022\013\n\003key\030\001 \002(\014\022\021\n\ttransf" +
+      "orm\030\002 \002(\014\"[\n\016GetAllResponse\022(\n\006values\030\001 " +
+      "\003(\0132\030.voldemort.KeyedVersions\022\037\n\005error\030\002" +
+      " \001(\0132\020.voldemort.Error\"s\n\nPutRequest\022\013\n\003" +
+      "key\030\001 \002(\014\022\'\n\tversioned\030\002 \002(\0132\024.voldemort" +
+      ".Versioned\022\022\n\ntransforms\030\003 \001(\014\022\033\n\003rud\030\004 " +
+      "\001(\0132\016.voldemort.RUD\".\n\013PutResponse\022\037\n\005er" +
+      "ror\030\001 \001(\0132\020.voldemort.Error\"b\n\rDeleteReq" +
+      "uest\022\013\n\003key\030\001 \002(\014\022\'\n\007version\030\002 \002(\0132\026.vol",
+      "demort.VectorClock\022\033\n\003rud\030\003 \001(\0132\016.voldem" +
+      "ort.RUD\"B\n\016DeleteResponse\022\017\n\007success\030\001 \002" +
+      "(\010\022\037\n\005error\030\002 \001(\0132\020.voldemort.Error\"6\n\tC" +
+      "ontainer\022\033\n\003rud\030\001 \002(\0132\016.voldemort.RUD\022\014\n" +
+      "\004data\030\002 \002(\014\"\232\002\n\020VoldemortRequest\022$\n\004type" +
+      "\030\001 \002(\0162\026.voldemort.RequestType\022\033\n\014should" +
+      "_route\030\002 \002(\010:\005false\022\r\n\005store\030\003 \002(\t\022\"\n\003ge" +
+      "t\030\004 \001(\0132\025.voldemort.GetRequest\022(\n\006getAll" +
+      "\030\005 \001(\0132\030.voldemort.GetAllRequest\022\"\n\003put\030" +
+      "\006 \001(\0132\025.voldemort.PutRequest\022(\n\006delete\030\007",
+      " \001(\0132\030.voldemort.DeleteRequest\022\030\n\020reques" +
+      "tRouteType\030\010 \001(\005*I\n\013RequestType\022\007\n\003GET\020\000" +
+      "\022\013\n\007GET_ALL\020\001\022\007\n\003PUT\020\002\022\n\n\006DELETE\020\003\022\017\n\013GE" +
+      "T_VERSION\020\004B(\n\034voldemort.client.protocol" +
+      ".pbB\006VProtoH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -13069,31 +13961,31 @@ public final class VProto {
           internal_static_voldemort_KeyedVersions_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_KeyedVersions_descriptor,
-              new java.lang.String[] { "Key", "Versions", "Rid", });
+              new java.lang.String[] { "Key", "Versions", "Rud", });
           internal_static_voldemort_GetRequest_descriptor =
             getDescriptor().getMessageTypes().get(5);
           internal_static_voldemort_GetRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_GetRequest_descriptor,
-              new java.lang.String[] { "Key", "Transforms", "Rid", });
+              new java.lang.String[] { "Key", "Transforms", "Rud", });
           internal_static_voldemort_GetResponse_descriptor =
             getDescriptor().getMessageTypes().get(6);
           internal_static_voldemort_GetResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_GetResponse_descriptor,
-              new java.lang.String[] { "Versioned", "Error", "Rid", });
+              new java.lang.String[] { "Versioned", "Error", "Rud", });
           internal_static_voldemort_GetVersionResponse_descriptor =
             getDescriptor().getMessageTypes().get(7);
           internal_static_voldemort_GetVersionResponse_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_GetVersionResponse_descriptor,
-              new java.lang.String[] { "Versions", "Error", "Rid", });
+              new java.lang.String[] { "Versions", "Error", "Rud", });
           internal_static_voldemort_GetAllRequest_descriptor =
             getDescriptor().getMessageTypes().get(8);
           internal_static_voldemort_GetAllRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_GetAllRequest_descriptor,
-              new java.lang.String[] { "Keys", "Transforms", "Rid", });
+              new java.lang.String[] { "Keys", "Transforms", "Rud", });
           internal_static_voldemort_GetAllRequest_GetAllTransform_descriptor =
             internal_static_voldemort_GetAllRequest_descriptor.getNestedTypes().get(0);
           internal_static_voldemort_GetAllRequest_GetAllTransform_fieldAccessorTable = new
@@ -13111,7 +14003,7 @@ public final class VProto {
           internal_static_voldemort_PutRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_PutRequest_descriptor,
-              new java.lang.String[] { "Key", "Versioned", "Transforms", "Rid", });
+              new java.lang.String[] { "Key", "Versioned", "Transforms", "Rud", });
           internal_static_voldemort_PutResponse_descriptor =
             getDescriptor().getMessageTypes().get(11);
           internal_static_voldemort_PutResponse_fieldAccessorTable = new
@@ -13123,7 +14015,7 @@ public final class VProto {
           internal_static_voldemort_DeleteRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_DeleteRequest_descriptor,
-              new java.lang.String[] { "Key", "Version", "Rid", });
+              new java.lang.String[] { "Key", "Version", "Rud", });
           internal_static_voldemort_DeleteResponse_descriptor =
             getDescriptor().getMessageTypes().get(13);
           internal_static_voldemort_DeleteResponse_fieldAccessorTable = new
@@ -13135,7 +14027,7 @@ public final class VProto {
           internal_static_voldemort_Container_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_Container_descriptor,
-              new java.lang.String[] { "Rid", "Data", });
+              new java.lang.String[] { "Rud", "Data", });
           internal_static_voldemort_VoldemortRequest_descriptor =
             getDescriptor().getMessageTypes().get(15);
           internal_static_voldemort_VoldemortRequest_fieldAccessorTable = new
@@ -13148,6 +14040,7 @@ public final class VProto {
     com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          voldemort.undoTracker.proto.ToManagerProto.getDescriptor(),
         }, assigner);
   }
 

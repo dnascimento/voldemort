@@ -29,6 +29,7 @@ import voldemort.server.VoldemortConfig;
 import voldemort.store.ErrorCodeMapper;
 import voldemort.store.metadata.MetadataStore;
 import voldemort.store.stats.StreamingStats.Operation;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.NetworkClassLoader;
 import voldemort.versioning.Versioned;
@@ -82,7 +83,7 @@ public class FullScanFetchEntriesRequestHandler extends FullScanFetchStreamReque
         // that would affect timing measurements of storage operations.
 
         if(isItemAccepted(key.get())) {
-            List<Versioned<byte[]>> values = storageEngine.get(key, null, 0L);
+            List<Versioned<byte[]>> values = storageEngine.get(key, null, new RUD());
             reportStorageOpTime(startNs);
             throttler.maybeThrottle(key.length());
             for(Versioned<byte[]> value: values) {

@@ -30,6 +30,7 @@ import junit.framework.TestCase;
 import org.junit.Test;
 
 import voldemort.TestUtils;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.ObsoleteVersionException;
 import voldemort.versioning.VectorClock;
@@ -107,19 +108,19 @@ public abstract class AbstractStoreTest<K, V, T> extends TestCase {
     public void testNullKeys() throws Exception {
         Store<K, V, T> store = getStore();
         try {
-            store.put(null, new Versioned<V>(getValue()), null, 0L);
+            store.put(null, new Versioned<V>(getValue()), null, new RUD());
             fail("Store should not put null keys!");
         } catch(IllegalArgumentException e) {
             // this is good
         }
         try {
-            store.get(null, null, 0L);
+            store.get(null, null, new RUD());
             fail("Store should not get null keys!");
         } catch(IllegalArgumentException e) {
             // this is good
         }
         try {
-            store.getAll(null, null, 0L);
+            store.getAll(null, null, new RUD());
             fail("Store should not getAll null keys!");
         } catch(IllegalArgumentException e) {
             // this is good
@@ -127,13 +128,13 @@ public abstract class AbstractStoreTest<K, V, T> extends TestCase {
         try {
             store.getAll(Collections.<K> singleton(null),
                          Collections.<K, T> singletonMap(null, null),
-                         0L);
+                         new RUD());
             fail("Store should not getAll null keys!");
         } catch(IllegalArgumentException e) {
             // this is good
         }
         try {
-            store.delete(null, new VectorClock(), 0L);
+            store.delete(null, new VectorClock(), new RUD());
             fail("Store should not delete null keys!");
         } catch(IllegalArgumentException e) {
             // this is good
@@ -155,10 +156,10 @@ public abstract class AbstractStoreTest<K, V, T> extends TestCase {
     public void testGetAndDeleteNonExistentKey() throws Exception {
         K key = getKey();
         Store<K, V, T> store = getStore();
-        List<Versioned<V>> found = store.get(key, null, 0L);
+        List<Versioned<V>> found = store.get(key, null, new RUD());
         assertEquals("Found non-existent key: " + found, 0, found.size());
         assertTrue("Delete of non-existent key succeeded.",
-                   !store.delete(key, getClock(1, 1, 2, 2, 3, 3), 0L));
+                   !store.delete(key, getClock(1, 1, 2, 2, 3, 3), new RUD()));
     }
 
     private void testObsoletePutFails(String message,
@@ -168,7 +169,7 @@ public abstract class AbstractStoreTest<K, V, T> extends TestCase {
         VectorClock clock = (VectorClock) versioned.getVersion();
         clock = clock.clone();
         try {
-            store.put(key, versioned, null, 0L);
+            store.put(key, versioned, null, new RUD());
             fail(message);
         } catch(ObsoleteVersionException e) {
             // this is good, but check that we didn't fuck with the version
@@ -182,10 +183,10 @@ public abstract class AbstractStoreTest<K, V, T> extends TestCase {
         Store<K, V, T> store = getStore();
         VectorClock clock = getClock(1, 1, 2, 3, 3, 4);
         V value = getValue();
-        assertEquals("Store not empty at start!", 0, store.get(key, null, 0L).size());
+        assertEquals("Store not empty at start!", 0, store.get(key, null, new RUD()).size());
         Versioned<V> versioned = new Versioned<V>(value, clock);
-        store.put(key, versioned, null, 0L);
-        List<Versioned<V>> found = store.get(key, null, 0L);
+        store.put(key, versioned, null, new RUD());
+        List<Versioned<V>> found = store.get(key, null, new RUD());
         assertEquals("Should only be one version stored.", 1, found.size());
         assertTrue("Values not equal!", valuesEqual(versioned.getValue(), found.get(0).getValue()));
     }
@@ -197,12 +198,12 @@ public abstract class AbstractStoreTest<K, V, T> extends TestCase {
         VectorClock clock = getClock(1, 1);
         VectorClock clockCopy = clock.clone();
         V value = getValue();
-        assertEquals("Store not empty at start!", 0, store.get(key, null, 0L).size());
+        assertEquals("Store not empty at start!", 0, store.get(key, null, new RUD()).size());
         Versioned<V> versioned = new Versioned<V>(value, clock);
 
         // put initial version
-        store.put(key, versioned, null, 0L);
-        assertContains(store.get(key, null, 0L), versioned);
+        store.put(key, versioned, null, new RUD());
+        assertContains(store.get(key, null, new RUD()), versioned);
 
         // test that putting obsolete versions fails
         testObsoletePutFails("Put of identical version/value succeeded.",
@@ -217,18 +218,17 @@ public abstract class AbstractStoreTest<K, V, T> extends TestCase {
                              store,
                              key,
                              new Versioned<V>(getValue(), getClock(1)));
-        assertEquals("Should still only be one version in store.",
-                     store.get(key, null, 0L).size(),
-                     1);
-        assertContains(store.get(key, null, 0L), versioned);
+        assertEquals("Should still only be one version in store.", store.get(key, null, new RUD())
+                                                                        .size(), 1);
+        assertContains(store.get(key, null, new RUD()), versioned);
 
         // test that putting a concurrent version succeeds
         if(allowConcurrentOperations()) {
-            store.put(key, new Versioned<V>(getValue(), getClock(1, 2)), null, 0L);
-            assertEquals(2, store.get(key, null, 0L).size());
+            store.put(key, new Versioned<V>(getValue(), getClock(1, 2)), null, new RUD());
+            assertEquals(2, store.get(key, null, new RUD()).size());
         } else {
             try {
-                store.put(key, new Versioned<V>(getValue(), getClock(1, 2)), null, 0L);
+                store.put(key, new Versioned<V>(getValue(), getClock(1, 2)), null, new RUD());
                 fail();
             } catch(ObsoleteVersionException e) {
                 // expected
@@ -237,8 +237,8 @@ public abstract class AbstractStoreTest<K, V, T> extends TestCase {
 
         // test that putting an incremented version succeeds
         Versioned<V> newest = new Versioned<V>(getValue(), getClock(1, 1, 2, 2));
-        store.put(key, newest, null, 0L);
-        assertContains(store.get(key, null, 0L), newest);
+        store.put(key, newest, null, new RUD());
+        assertContains(store.get(key, null, new RUD()), newest);
     }
 
     @Test
@@ -250,15 +250,15 @@ public abstract class AbstractStoreTest<K, V, T> extends TestCase {
         V value = getValue();
 
         // can't delete something that isn't there
-        assertTrue(!store.delete(key, c1, 0L));
+        assertTrue(!store.delete(key, c1, new RUD()));
 
         // put two conflicting versions, then delete one
         Versioned<V> v1 = new Versioned<V>(value, c1);
         Versioned<V> v2 = new Versioned<V>(value, c2);
-        store.put(key, v1, null, 0L);
-        store.put(key, v2, null, 0L);
-        assertTrue("Delete failed!", store.delete(key, v1.getVersion(), 0L));
-        List<Versioned<V>> found = store.get(key, null, 0L);
+        store.put(key, v1, null, new RUD());
+        store.put(key, v2, null, new RUD());
+        assertTrue("Delete failed!", store.delete(key, v1.getVersion(), new RUD()));
+        List<Versioned<V>> found = store.get(key, null, new RUD());
 
         // check that there is a single remaining version, namely the
         // non-deleted
@@ -267,8 +267,8 @@ public abstract class AbstractStoreTest<K, V, T> extends TestCase {
         assertTrue(valuesEqual(v2.getValue(), found.get(0).getValue()));
 
         // now delete that version too
-        assertTrue("Delete failed!", store.delete(key, c2, 0L));
-        assertEquals(0, store.get(key, null, 0L).size());
+        assertTrue("Delete failed!", store.delete(key, c2, new RUD()));
+        assertEquals(0, store.get(key, null, new RUD()).size());
     }
 
     @Test
@@ -277,15 +277,15 @@ public abstract class AbstractStoreTest<K, V, T> extends TestCase {
         K key = keys.get(0);
         V value = getValue();
         Store<K, V, T> store = getStore();
-        store.put(key, Versioned.value(value), null, 0L);
-        List<Versioned<V>> versioneds = store.get(key, null, 0L);
-        List<Version> versions = store.getVersions(key, 0L);
+        store.put(key, Versioned.value(value), null, new RUD());
+        List<Versioned<V>> versioneds = store.get(key, null, new RUD());
+        List<Version> versions = store.getVersions(key, new RUD());
         assertEquals(1, versioneds.size());
         assertTrue(versions.size() > 0);
         for(int i = 0; i < versions.size(); i++)
             assertEquals(versioneds.get(0).getVersion(), versions.get(i));
 
-        assertEquals(0, store.getVersions(keys.get(1), 0L).size());
+        assertEquals(0, store.getVersions(keys.get(1), new RUD()).size());
     }
 
     @Test
@@ -296,12 +296,12 @@ public abstract class AbstractStoreTest<K, V, T> extends TestCase {
         List<V> values = getValues(putCount);
         assertEquals(putCount, values.size());
         for(int i = 0; i < putCount; i++)
-            store.put(keys.get(i), new Versioned<V>(values.get(i)), null, 0L);
+            store.put(keys.get(i), new Versioned<V>(values.get(i)), null, new RUD());
 
         int countForGet = putCount / 2;
         List<K> keysForGet = keys.subList(0, countForGet);
         List<V> valuesForGet = values.subList(0, countForGet);
-        Map<K, List<Versioned<V>>> result = store.getAll(keysForGet, null, 0L);
+        Map<K, List<Versioned<V>>> result = store.getAll(keysForGet, null, new RUD());
         assertEquals(countForGet, result.size());
         for(int i = 0; i < keysForGet.size(); ++i) {
             K key = keysForGet.get(i);
@@ -314,7 +314,7 @@ public abstract class AbstractStoreTest<K, V, T> extends TestCase {
     @Test
     public void testGetAllWithAbsentKeys() throws Exception {
         Store<K, V, T> store = getStore();
-        Map<K, List<Versioned<V>>> result = store.getAll(getKeys(3), null, 0L);
+        Map<K, List<Versioned<V>>> result = store.getAll(getKeys(3), null, new RUD());
         assertEquals(0, result.size());
     }
 

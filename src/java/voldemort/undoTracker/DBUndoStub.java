@@ -68,144 +68,143 @@ public class DBUndoStub {
     /**
      * 
      * @param key
-     * @param rid
+     * @paramrud
      * @param reqBid: Request Branch ID (separate redo attempts)
-     * @param contained
      */
-    public void getStart(ByteArray key, long rid, short branch, boolean contained) {
-        if(rid != 0) {
+    public void getStart(ByteArray key, RUD rud) {
+        if(rud.rid != 0) {
             long sts = stsAtomic.get(); // season
             short bid = (short) bidAtomic.get();
             long snapshotVersion;
-            if(branch <= bid) {
+            if(rud.branch <= bid) {
                 // new request for old branch - read old branch (req. BranchId)
-                snapshotVersion = newRequestsScheduler.getStart(key.clone(), rid, sts);
+                snapshotVersion = newRequestsScheduler.getStart(key.clone(), rud, sts);
             } else {
                 boolean isContaining = restrainAtomic.get();
-                if(contained) {
+                if(rud.restrain) {
                     assert (isContaining == true);
                     // new request but may need to wait to avoid dirty reads
-                    snapshotVersion = restrainScheduler.getStart(key.clone(), rid, sts);
+                    snapshotVersion = restrainScheduler.getStart(key.clone(), rud, sts);
                     bid = (short) bidAtomic.get();
-                    snapshotVersion = newRequestsScheduler.getStart(key.clone(), rid, sts);
+                    snapshotVersion = newRequestsScheduler.getStart(key.clone(), rud, sts);
                 } else {
                     // redo requests: any change is performed in newest branch
-                    snapshotVersion = redoScheduler.getStart(key.clone(), rid, sts);
+                    snapshotVersion = redoScheduler.getStart(key.clone(), rud, sts);
                 }
             }
-            log.info(rid + " : get key: " + hexStringToAscii(key) + " branch: " + branch
+            log.info(rud.rid + " : get key: " + hexStringToAscii(key) + " branch: " + rud.branch
                      + " snapshot: " + snapshotVersion);
-            modifyKey(key, branch, snapshotVersion);
+            modifyKey(key, rud.branch, snapshotVersion);
         }
     }
 
-    public void putStart(ByteArray key, long rid, short branch, boolean contained) {
-        if(rid != 0) {
+    public void putStart(ByteArray key, RUD rud) {
+        if(rud.rid != 0) {
             long sts = stsAtomic.get(); // season
             short bid = (short) bidAtomic.get();
             long snapshotVersion;
-            if(branch <= bid) {
+            if(rud.branch <= bid) {
                 // new request for old branch - read old branch (req. BranchId)
-                snapshotVersion = newRequestsScheduler.putStart(key.clone(), rid, sts);
+                snapshotVersion = newRequestsScheduler.putStart(key.clone(), rud, sts);
             } else {
                 boolean isContaining = restrainAtomic.get();
-                if(contained) {
+                if(rud.restrain) {
                     assert (isContaining == true);
                     // new request but may need to wait to avoid dirty reads
-                    snapshotVersion = restrainScheduler.putStart(key.clone(), rid, sts);
+                    snapshotVersion = restrainScheduler.putStart(key.clone(), rud, sts);
                     bid = (short) bidAtomic.get();
-                    snapshotVersion = newRequestsScheduler.putStart(key.clone(), rid, sts);
+                    snapshotVersion = newRequestsScheduler.putStart(key.clone(), rud, sts);
                 } else {
                     // redo requests: any change is performed in newest branch
-                    snapshotVersion = redoScheduler.putStart(key.clone(), rid, sts);
+                    snapshotVersion = redoScheduler.putStart(key.clone(), rud, sts);
 
                 }
             }
-            log.info(rid + " : put key: " + hexStringToAscii(key) + " branch: " + branch
+            log.info(rud.rid + " : put key: " + hexStringToAscii(key) + " branch: " + rud.branch
                      + " snapshot: " + snapshotVersion);
-            modifyKey(key, branch, snapshotVersion);
+            modifyKey(key, rud.branch, snapshotVersion);
         }
     }
 
-    public void deleteStart(ByteArray key, long rid, short branch, boolean contained) {
-        if(rid != 0) {
+    public void deleteStart(ByteArray key, RUD rud) {
+        if(rud.rid != 0) {
             long sts = stsAtomic.get(); // season
             short bid = (short) bidAtomic.get();
             long snapshotVersion;
-            if(branch <= bid) {
+            if(rud.branch <= bid) {
                 // new request for old branch - read old branch (req. BranchId)
-                snapshotVersion = newRequestsScheduler.deleteStart(key.clone(), rid, sts);
+                snapshotVersion = newRequestsScheduler.deleteStart(key.clone(), rud, sts);
             } else {
                 boolean isContaining = restrainAtomic.get();
-                if(contained) {
+                if(rud.restrain) {
                     assert (isContaining == true);
                     // new request but may need to wait to avoid dirty reads
-                    snapshotVersion = restrainScheduler.deleteStart(key.clone(), rid, sts);
+                    snapshotVersion = restrainScheduler.deleteStart(key.clone(), rud, sts);
                     bid = (short) bidAtomic.get();
-                    snapshotVersion = newRequestsScheduler.deleteStart(key.clone(), rid, sts);
+                    snapshotVersion = newRequestsScheduler.deleteStart(key.clone(), rud, sts);
                 } else {
                     // redo requests: any change is performed in newest branch
-                    snapshotVersion = redoScheduler.deleteStart(key.clone(), rid, sts);
+                    snapshotVersion = redoScheduler.deleteStart(key.clone(), rud, sts);
                 }
             }
-            log.info(rid + " : delete key: " + hexStringToAscii(key) + " branch: " + branch
+            log.info(rud.rid + " : delete key: " + hexStringToAscii(key) + " branch: " + rud.branch
                      + " snapshot: " + snapshotVersion);
-            modifyKey(key, branch, snapshotVersion);
+            modifyKey(key, rud.branch, snapshotVersion);
         }
     }
 
-    public void getEnd(ByteArray key, long rid, short reqBid, boolean contained) {
-        if(rid != 0) {
+    public void getEnd(ByteArray key, RUD rud) {
+        if(rud.rid != 0) {
             removeKeyVersion(key);
             short bid = (short) bidAtomic.get();
-            if(reqBid <= bid) {
-                newRequestsScheduler.getEnd(key.clone(), rid);
+            if(rud.branch <= bid) {
+                newRequestsScheduler.getEnd(key.clone(), rud);
             } else {
                 boolean isContaining = restrainAtomic.get();
-                if(contained) {
+                if(rud.restrain) {
                     assert (isContaining == true);
-                    restrainScheduler.getEnd(key.clone(), rid);
-                    newRequestsScheduler.getEnd(key.clone(), rid);
+                    restrainScheduler.getEnd(key.clone(), rud);
+                    newRequestsScheduler.getEnd(key.clone(), rud);
                 } else {
-                    redoScheduler.getEnd(key.clone(), rid);
+                    redoScheduler.getEnd(key.clone(), rud);
                 }
             }
         }
     }
 
-    public void putEnd(ByteArray key, long rid, short reqBid, boolean contained) {
-        if(rid != 0) {
+    public void putEnd(ByteArray key, RUD rud) {
+        if(rud.rid != 0) {
             removeKeyVersion(key);
             short bid = (short) bidAtomic.get();
-            if(reqBid <= bid) {
-                newRequestsScheduler.putEnd(key.clone(), rid);
+            if(rud.branch <= bid) {
+                newRequestsScheduler.putEnd(key.clone(), rud);
             } else {
                 boolean isContaining = restrainAtomic.get();
-                if(contained) {
+                if(rud.restrain) {
                     assert (isContaining == true);
-                    restrainScheduler.putEnd(key.clone(), rid);
-                    newRequestsScheduler.putEnd(key.clone(), rid);
+                    restrainScheduler.putEnd(key.clone(), rud);
+                    newRequestsScheduler.putEnd(key.clone(), rud);
                 } else {
-                    redoScheduler.putEnd(key.clone(), rid);
+                    redoScheduler.putEnd(key.clone(), rud);
                 }
             }
         }
     }
 
-    public void deleteEnd(ByteArray key, long rid, short reqBid, boolean contained) {
-        if(rid != 0) {
+    public void deleteEnd(ByteArray key, RUD rud) {
+        if(rud.rid != 0) {
             removeKeyVersion(key);
             short bid = (short) bidAtomic.get();
-            if(reqBid <= bid) {
-                newRequestsScheduler.deleteEnd(key.clone(), rid);
+            if(rud.branch <= bid) {
+                newRequestsScheduler.deleteEnd(key.clone(), rud);
             } else {
                 boolean isContaining = restrainAtomic.get();
-                if(contained) {
+                if(rud.restrain) {
                     assert (isContaining == true);
-                    restrainScheduler.deleteEnd(key.clone(), rid);
-                    newRequestsScheduler.deleteEnd(key.clone(), rid);
+                    restrainScheduler.deleteEnd(key.clone(), rud);
+                    newRequestsScheduler.deleteEnd(key.clone(), rud);
                 } else {
-                    redoScheduler.deleteEnd(key.clone(), rid);
+                    redoScheduler.deleteEnd(key.clone(), rud);
                 }
             }
 
@@ -271,7 +270,7 @@ public class DBUndoStub {
         restrainAtomic.set(false);
         // done, increase the bid, the redo is over
         bidAtomic.incrementAndGet();
-        System.out.println("Retrain phase is over");
+        System.out.println("restrain phase is over");
         // execute all pendent requests
         synchronized(restrainAtomic) {
             restrainAtomic.notifyAll();

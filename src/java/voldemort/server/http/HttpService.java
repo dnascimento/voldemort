@@ -17,7 +17,6 @@
 package voldemort.server.http;
 
 import org.apache.log4j.Logger;
-import org.mortbay.jetty.AbstractConnector;
 import org.mortbay.jetty.Connector;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.nio.SelectChannelConnector;

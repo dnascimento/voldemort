@@ -25,6 +25,7 @@ import voldemort.server.storage.ScanPermitWrapper;
 import voldemort.store.StorageEngine;
 import voldemort.store.metadata.MetadataStore;
 import voldemort.store.metadata.MetadataStore.VoldemortState;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.EventThrottler;
 import voldemort.utils.Pair;
@@ -99,7 +100,7 @@ public class DataCleanupJob<K, V, T> implements Runnable {
                 Pair<K, Versioned<V>> keyAndVal = iterator.next();
                 VectorClock clock = (VectorClock) keyAndVal.getSecond().getVersion();
                 if(now - clock.getTimestamp() > maxAgeMs) {
-                    store.delete(keyAndVal.getFirst(), clock, 0L);
+                    store.delete(keyAndVal.getFirst(), clock, new RUD());
                     this.deleteProgressThisRun.incrementAndGet();
                     if(this.deleteProgressThisRun.get() % 10000 == 0)
                         logger.debug("Deleted item " + this.deleteProgressThisRun.get());

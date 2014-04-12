@@ -11,6 +11,7 @@ import voldemort.client.ClientConfig;
 import voldemort.client.SocketStoreClientFactory;
 import voldemort.client.StoreClient;
 import voldemort.client.StoreClientFactory;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.CmdUtils;
 
 /**
@@ -72,7 +73,7 @@ public class RemoteDataGenerator {
                 keyBuilder.append(postfix);
             }
             try {
-                client.put(keyBuilder.toString(), valueBuilder.toString(), 0L);
+                client.put(keyBuilder.toString(), valueBuilder.toString(), new RUD());
             } catch(Exception e) {
                 e.printStackTrace();
             }

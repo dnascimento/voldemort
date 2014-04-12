@@ -24,6 +24,7 @@ import voldemort.VoldemortException;
 import voldemort.store.InvalidMetadataException;
 import voldemort.store.Store;
 import voldemort.store.system.SystemStoreConstants;
+import voldemort.undoTracker.RUD;
 import voldemort.versioning.InconsistentDataException;
 import voldemort.versioning.VectorClock;
 import voldemort.versioning.Version;
@@ -67,18 +68,18 @@ public class SystemStoreClient<K, V> {
         }
     }
 
-    public Version putSysStore(K key, V value, long rid) {
+    public Version putSysStore(K key, V value, RUD rud) {
         Version version = null;
         try {
             if(logger.isDebugEnabled()) {
                 logger.debug("Invoking Put for key : " + key + " on store name : " + this.storeName);
             }
-            Versioned<V> versioned = getSysStore(key, rid);
+            Versioned<V> versioned = getSysStore(key,rud);
             if(versioned == null)
                 versioned = Versioned.value(value, new VectorClock());
             else
                 versioned.setObject(value);
-            this.sysStore.put(key, versioned, null, rid);
+            this.sysStore.put(key, versioned, null,rud);
             version = versioned.getVersion();
         } catch(Exception e) {
             if(logger.isDebugEnabled()) {
@@ -88,13 +89,13 @@ public class SystemStoreClient<K, V> {
         return version;
     }
 
-    public Version putSysStore(K key, Versioned<V> value, long rid) {
+    public Version putSysStore(K key, Versioned<V> value, RUD rud) {
         Version version = null;
         try {
             if(logger.isDebugEnabled()) {
                 logger.debug("Invoking Put for key : " + key + " on store name : " + this.storeName);
             }
-            this.sysStore.put(key, value, null, rid);
+            this.sysStore.put(key, value, null,rud);
             version = value.getVersion();
         } catch(Exception e) {
             if(logger.isDebugEnabled()) {
@@ -105,18 +106,18 @@ public class SystemStoreClient<K, V> {
         return version;
     }
 
-    public boolean deleteSysStore(K key, long rid) {
+    public boolean deleteSysStore(K key, RUD rud) {
         try {
             if(logger.isDebugEnabled()) {
                 logger.debug("Invoking Delete for key : " + key + " on store name : "
                              + this.storeName);
             }
-            Versioned<V> versioned = getSysStore(key, rid);
+            Versioned<V> versioned = getSysStore(key,rud);
             if(versioned == null) {
                 // Nothing to delete
                 return true;
             }
-            return this.sysStore.delete(key, versioned.getVersion(), rid);
+            return this.sysStore.delete(key, versioned.getVersion(),rud);
         } catch(Exception e) {
             if(logger.isDebugEnabled()) {
                 logger.debug("Exception caught during deleteSysStore: " + e);
@@ -126,11 +127,11 @@ public class SystemStoreClient<K, V> {
         }
     }
 
-    public Versioned<V> getSysStore(K key, long rid) {
+    public Versioned<V> getSysStore(K key, RUD rud) {
         logger.debug("Invoking Get for key : " + key + " on store name : " + this.storeName);
         Versioned<V> versioned = null;
         try {
-            List<Versioned<V>> items = this.sysStore.get(key, null, rid);
+            List<Versioned<V>> items = this.sysStore.get(key, null,rud);
 
             if(items.size() == 1)
                 versioned = items.get(0);
@@ -152,11 +153,11 @@ public class SystemStoreClient<K, V> {
         return versioned;
     }
 
-    public V getValueSysStore(K key, long rid) {
+    public V getValueSysStore(K key, RUD rud) {
         V value = null;
         try {
             logger.debug("Invoking Get for key : " + key + " on store name : " + this.storeName);
-            Versioned<V> versioned = getSysStore(key, rid);
+            Versioned<V> versioned = getSysStore(key,rud);
             if(versioned != null) {
                 logger.debug("Value for key : " + key + " = " + versioned.getValue()
                              + " on store name : " + this.storeName);

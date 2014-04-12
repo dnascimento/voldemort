@@ -1,5 +1,7 @@
 package voldemort.client.protocol.admin;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,15 +43,12 @@ import voldemort.store.compress.CompressionStrategyFactory;
 import voldemort.store.slop.strategy.HintedHandoffStrategyType;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.TestSocketStoreFactory;
-import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Props;
 import voldemort.versioning.Versioned;
 import voldemort.xml.StoreDefinitionsMapper;
 
 import com.google.common.collect.Lists;
-
-import static org.junit.Assert.assertEquals;
 
 /*
  * Starts a streaming session and inserts some keys Using fetchKeys we check if

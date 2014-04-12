@@ -39,6 +39,7 @@ import voldemort.server.AbstractSocketService;
 import voldemort.store.AbstractByteArrayStoreTest;
 import voldemort.store.Store;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.Versioned;
 
@@ -109,9 +110,9 @@ public abstract class AbstractSocketStoreTest extends AbstractByteArrayStoreTest
         for(int i = 0; i < 10; i++) {
             rand.nextBytes(biggie);
             Versioned<byte[]> versioned = new Versioned<byte[]>(biggie);
-            store.put(key, versioned, null, 0L);
-            assertNotNull(store.get(key, null, 0L));
-            assertTrue(store.delete(key, versioned.getVersion(), 0L));
+            store.put(key, versioned, null, new RUD());
+            assertNotNull(store.get(key, null, new RUD()));
+            assertTrue(store.delete(key, versioned.getVersion(), new RUD()));
         }
     }
 
@@ -129,7 +130,7 @@ public abstract class AbstractSocketStoreTest extends AbstractByteArrayStoreTest
                                                                            10)),
                               new Versioned<byte[]>(TestUtils.randomBytes(8)),
                               null,
-                              0L);
+                              new RUD());
                     latch.countDown();
                 }
             });

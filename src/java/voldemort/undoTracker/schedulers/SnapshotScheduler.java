@@ -1,5 +1,6 @@
 package voldemort.undoTracker.schedulers;
 
+import voldemort.undoTracker.RUD;
 import voldemort.undoTracker.map.Op;
 import voldemort.undoTracker.map.Op.OpType;
 import voldemort.undoTracker.map.OpMultimap;
@@ -23,38 +24,38 @@ public class SnapshotScheduler implements AccessSchedule {
     /**
      * 
      * @param key
-     * @param rid
+     * @paramrud
      * @param sts
      * @param branch
      * @return the key version to access
      */
     @Override
-    public long getStart(ByteArray key, long rid, long sts) {
-        return keyAccessLists.trackAccess(key, Op.OpType.Get, rid, sts);
+    public long getStart(ByteArray key, RUD rud, long sts) {
+        return keyAccessLists.trackAccess(key, Op.OpType.Get,rud, sts);
     }
 
     @Override
-    public long putStart(ByteArray key, long rid, long sts) {
-        return keyAccessLists.trackAccess(key, Op.OpType.Put, rid, sts);
+    public long putStart(ByteArray key, RUD rud, long sts) {
+        return keyAccessLists.trackAccess(key, Op.OpType.Put,rud, sts);
     }
 
     @Override
-    public long deleteStart(ByteArray key, long rid, long sts) {
-        return keyAccessLists.trackAccess(key, Op.OpType.Delete, rid, sts);
+    public long deleteStart(ByteArray key, RUD rud, long sts) {
+        return keyAccessLists.trackAccess(key, Op.OpType.Delete,rud, sts);
     }
 
     @Override
-    public void getEnd(ByteArray key, long rid) {
+    public void getEnd(ByteArray key, RUD rud) {
         keyAccessLists.endAccess(key, OpType.Get);
     }
 
     @Override
-    public void putEnd(ByteArray key, long rid) {
+    public void putEnd(ByteArray key, RUD rud) {
         keyAccessLists.endAccess(key, OpType.Put);
     }
 
     @Override
-    public void deleteEnd(ByteArray key, long rid) {
+    public void deleteEnd(ByteArray key, RUD rud) {
         keyAccessLists.endAccess(key, OpType.Delete);
     }
 

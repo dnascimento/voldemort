@@ -12,6 +12,7 @@ import voldemort.server.storage.ScanPermitWrapper;
 import voldemort.store.metadata.MetadataStore;
 import voldemort.store.slop.Slop;
 import voldemort.store.slop.SlopStorageEngine;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Pair;
 import voldemort.utils.Utils;
@@ -73,7 +74,7 @@ public abstract class SlopPusherJob {
         Versioned<Slop> versioned = keyAndVal.getSecond();
         // If configured to delete the dead slop
         if(voldemortConfig.getAutoPurgeDeadSlops()) {
-            slopStorageEngine.delete(keyAndVal.getFirst(), versioned.getVersion(), 0L);
+            slopStorageEngine.delete(keyAndVal.getFirst(), versioned.getVersion(), new RUD());
 
             if(getLogger().isDebugEnabled()) {
                 getLogger().debug("Auto purging dead slop :" + versioned.getValue());

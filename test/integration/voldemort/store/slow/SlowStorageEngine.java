@@ -26,6 +26,7 @@ import voldemort.common.VoldemortOpCode;
 import voldemort.store.AbstractStorageEngine;
 import voldemort.store.StorageEngine;
 import voldemort.store.StoreCapabilityType;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.Pair;
 import voldemort.versioning.Version;
@@ -91,44 +92,44 @@ public class SlowStorageEngine<K, V, T> extends AbstractStorageEngine<K, V, T> {
     }
 
     public boolean delete(K key) {
-        return delete(key, null, 0L);
+        return delete(key, null, new RUD());
     }
 
     @Override
-    public boolean delete(K key, Version version, long rid) {
+    public boolean delete(K key, Version version, RUD rud) {
         delayByOp(VoldemortOpCode.DELETE_OP_CODE);
-        return innerStorageEngine.delete(key, version, 0L);
+        return innerStorageEngine.delete(key, version, new RUD());
     }
 
     @Override
-    public List<Version> getVersions(K key, long rid) {
+    public List<Version> getVersions(K key, RUD rud) {
         delayByOp(VoldemortOpCode.GET_VERSION_OP_CODE);
-        return innerStorageEngine.getVersions(key, rid);
+        return innerStorageEngine.getVersions(key,rud);
     }
 
     @Override
-    public List<Versioned<V>> get(K key, T transform, long rid) throws VoldemortException {
+    public List<Versioned<V>> get(K key, T transform, RUD rud) throws VoldemortException {
         delayByOp(VoldemortOpCode.GET_OP_CODE);
-        return innerStorageEngine.get(key, transform, rid);
+        return innerStorageEngine.get(key, transform,rud);
     }
 
     @Override
-    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, long rid)
+    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, RUD rud)
             throws VoldemortException {
         delayByOp(VoldemortOpCode.GET_ALL_OP_CODE);
-        return innerStorageEngine.getAll(keys, transforms, rid);
+        return innerStorageEngine.getAll(keys, transforms,rud);
     }
 
     @Override
-    public void put(K key, Versioned<V> value, T transforms, long rid) throws VoldemortException {
+    public void put(K key, Versioned<V> value, T transforms, RUD rud) throws VoldemortException {
         delayByOp(VoldemortOpCode.PUT_OP_CODE);
-        innerStorageEngine.put(key, value, transforms, rid);
+        innerStorageEngine.put(key, value, transforms,rud);
     }
 
     @Override
-    public List<Versioned<V>> multiVersionPut(K key, final List<Versioned<V>> values, long rid) {
+    public List<Versioned<V>> multiVersionPut(K key, final List<Versioned<V>> values, RUD rud) {
         delayByOp(VoldemortOpCode.PUT_OP_CODE);
-        return innerStorageEngine.multiVersionPut(key, values, rid);
+        return innerStorageEngine.multiVersionPut(key, values,rud);
     }
 
     @Override

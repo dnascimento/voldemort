@@ -19,6 +19,7 @@ import voldemort.store.ErrorCodeMapper;
 import voldemort.store.StorageEngine;
 import voldemort.store.stats.StreamingStats;
 import voldemort.store.stats.StreamingStats.Operation;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.Utils;
@@ -146,7 +147,7 @@ public class UpdateSlopEntriesRequestHandler implements StreamRequestHandler {
                     byte[] value = ProtoUtils.decodeBytes(request.getValue()).get();
                     startNs = System.nanoTime();
                     // TODO Pode receber o RID
-                    storageEngine.put(key, Versioned.value(value, vectorClock), transforms, 0L);
+                    storageEngine.put(key, Versioned.value(value, vectorClock), transforms, new RUD());
                     if(isJmxEnabled)
                         streamStats.reportStorageTime(Operation.SLOP_UPDATE,
                                                       Utils.elapsedTimeNs(startNs,
@@ -164,7 +165,7 @@ public class UpdateSlopEntriesRequestHandler implements StreamRequestHandler {
                 try {
                     startNs = System.nanoTime();
                     // TODO Pode receber o RID
-                    storageEngine.delete(key, vectorClock, 0L);
+                    storageEngine.delete(key, vectorClock, new RUD());
                     if(isJmxEnabled)
                         streamStats.reportStorageTime(Operation.SLOP_UPDATE, System.nanoTime()
                                                                              - startNs);

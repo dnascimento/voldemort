@@ -31,6 +31,7 @@ import voldemort.store.StoreUtils;
 import voldemort.store.routed.NodeValue;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
+import voldemort.undoTracker.RUD;
 import voldemort.versioning.ClockEntry;
 import voldemort.versioning.VectorClock;
 import voldemort.versioning.Versioned;
@@ -168,7 +169,7 @@ public class ClusterForkLiftToolTest {
 
         // populate data on the source cluster..
         for(Map.Entry<String, String> entry: kvPairs.entrySet()) {
-            srcPrimaryResolvingStoreClient.put(entry.getKey(), entry.getValue(), 0L);
+            srcPrimaryResolvingStoreClient.put(entry.getKey(), entry.getValue(), new RUD());
         }
 
         // generate a conflict on the master partition
@@ -189,7 +190,7 @@ public class ClusterForkLiftToolTest {
                                                                                                        winningClock)));
 
         // do a write to destination cluster
-        dstPrimaryResolvingStoreClient.put(firstKey, "before forklift", 0L);
+        dstPrimaryResolvingStoreClient.put(firstKey, "before forklift", new RUD());
 
         // perform the forklifting..
         ClusterForkLiftTool forkLiftTool = new ClusterForkLiftTool(srcBootStrapUrl,
@@ -203,25 +204,25 @@ public class ClusterForkLiftToolTest {
         forkLiftTool.run();
 
         // do a write to destination cluster
-        dstPrimaryResolvingStoreClient.put(lastKey, "after forklift", 0L);
+        dstPrimaryResolvingStoreClient.put(lastKey, "after forklift", new RUD());
 
         // verify data on the destination is as expected
         for(Map.Entry<String, String> entry: kvPairs.entrySet()) {
             if(entry.getKey().equals(firstKey)) {
                 assertEquals("Online write overwritten",
-                             dstPrimaryResolvingStoreClient.get(firstKey, 0L).getValue(),
+                             dstPrimaryResolvingStoreClient.get(firstKey, new RUD()).getValue(),
                              "before forklift");
             } else if(entry.getKey().equals(lastKey)) {
                 assertEquals("Online write overwritten",
-                             dstPrimaryResolvingStoreClient.get(lastKey, 0L).getValue(),
+                             dstPrimaryResolvingStoreClient.get(lastKey, new RUD()).getValue(),
                              "after forklift");
             } else if(entry.getKey().equals(conflictKey)) {
                 assertEquals("Conflict resolution incorrect",
-                             dstPrimaryResolvingStoreClient.get(conflictKey, 0L).getValue(),
+                             dstPrimaryResolvingStoreClient.get(conflictKey, new RUD()).getValue(),
                              "winning value");
             } else {
                 assertEquals("fork lift data missing",
-                             dstPrimaryResolvingStoreClient.get(entry.getKey(), 0L).getValue(),
+                             dstPrimaryResolvingStoreClient.get(entry.getKey(), new RUD()).getValue(),
                              entry.getValue());
             }
         }
@@ -235,7 +236,7 @@ public class ClusterForkLiftToolTest {
 
         // populate data on the source cluster..
         for(Map.Entry<String, String> entry: kvPairs.entrySet()) {
-            srcGloballyResolvingStoreClient.put(entry.getKey(), entry.getValue(), 0L);
+            srcGloballyResolvingStoreClient.put(entry.getKey(), entry.getValue(), new RUD());
         }
 
         // generate a conflict on the primary and a secondary
@@ -256,7 +257,7 @@ public class ClusterForkLiftToolTest {
                                                                                                        winningClock)));
 
         // do a write to destination cluster
-        dstGloballyResolvingStoreClient.put(firstKey, "before forklift", 0L);
+        dstGloballyResolvingStoreClient.put(firstKey, "before forklift", new RUD());
 
         // perform the forklifting..
         ClusterForkLiftTool forkLiftTool = new ClusterForkLiftTool(srcBootStrapUrl,
@@ -270,25 +271,25 @@ public class ClusterForkLiftToolTest {
         forkLiftTool.run();
 
         // do a write to destination cluster
-        dstGloballyResolvingStoreClient.put(lastKey, "after forklift", 0L);
+        dstGloballyResolvingStoreClient.put(lastKey, "after forklift", new RUD());
 
         // verify data on the destination is as expected
         for(Map.Entry<String, String> entry: kvPairs.entrySet()) {
             if(entry.getKey().equals(firstKey)) {
                 assertEquals("Online write overwritten",
-                             dstGloballyResolvingStoreClient.get(firstKey, 0L).getValue(),
+                             dstGloballyResolvingStoreClient.get(firstKey, new RUD()).getValue(),
                              "before forklift");
             } else if(entry.getKey().equals(lastKey)) {
                 assertEquals("Online write overwritten",
-                             dstGloballyResolvingStoreClient.get(lastKey, 0L).getValue(),
+                             dstGloballyResolvingStoreClient.get(lastKey, new RUD()).getValue(),
                              "after forklift");
             } else if(entry.getKey().equals(conflictKey)) {
                 assertEquals("Conflict resolution incorrect",
-                             dstGloballyResolvingStoreClient.get(conflictKey, 0L).getValue(),
+                             dstGloballyResolvingStoreClient.get(conflictKey, new RUD()).getValue(),
                              "winning value");
             } else {
                 assertEquals("fork lift data missing",
-                             dstGloballyResolvingStoreClient.get(entry.getKey(), 0L).getValue(),
+                             dstGloballyResolvingStoreClient.get(entry.getKey(), new RUD()).getValue(),
                              entry.getValue());
             }
         }

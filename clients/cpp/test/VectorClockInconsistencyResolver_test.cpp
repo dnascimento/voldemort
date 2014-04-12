@@ -29,43 +29,43 @@ using namespace std;
 struct VectorClockFixture {
     VectorClockFixture() {
         std::list<std::pair<short, uint64_t> > versions;
-        earlier.setVersion(new VectorClock(&versions, 0L));
+        earlier.setVersion(new VectorClock(&versions, new RUD()));
 
         versions.push_back(make_pair((short)1, 2));
         versions.push_back(make_pair((short)2, 1));
         versions.push_back(make_pair((short)3, 1));
-        current.setVersion(new VectorClock(&versions, 0L));
+        current.setVersion(new VectorClock(&versions, new RUD()));
 
         versions.clear();
         versions.push_back(make_pair((short)1, 1));
         versions.push_back(make_pair((short)2, 1));
         versions.push_back(make_pair((short)3, 1));
-        prior.setVersion(new VectorClock(&versions, 0L));
+        prior.setVersion(new VectorClock(&versions, new RUD()));
 
         versions.clear();
         versions.push_back(make_pair((short)1, 1));
         versions.push_back(make_pair((short)2, 1));
         versions.push_back(make_pair((short)3, 2));
-        concurrent.setVersion(new VectorClock(&versions, 0L));
+        concurrent.setVersion(new VectorClock(&versions, new RUD()));
 
         versions.clear();
         versions.push_back(make_pair((short)1, 1));
         versions.push_back(make_pair((short)2, 1));
         versions.push_back(make_pair((short)3, 1));
         versions.push_back(make_pair((short)4, 1));
-        concurrent2.setVersion(new VectorClock(&versions, 0L));
+        concurrent2.setVersion(new VectorClock(&versions, new RUD()));
 
         versions.clear();
         versions.push_back(make_pair((short)1, 2));
         versions.push_back(make_pair((short)2, 2));
         versions.push_back(make_pair((short)3, 1));
-        later.setVersion(new VectorClock(&versions, 0L));
+        later.setVersion(new VectorClock(&versions, new RUD()));
 
         versions.clear();
         versions.push_back(make_pair((short)1, 3));
         versions.push_back(make_pair((short)2, 3));
         versions.push_back(make_pair((short)3, 3));
-        much_later.setVersion(new VectorClock(&versions, 0L));
+        much_later.setVersion(new VectorClock(&versions, new RUD()));
     }
 
     std::list<VersionedValue> items;

@@ -65,6 +65,7 @@ import voldemort.store.slop.HintedHandoff;
 import voldemort.store.slop.Slop;
 import voldemort.store.slop.strategy.HintedHandoffStrategy;
 import voldemort.store.slop.strategy.HintedHandoffStrategyFactory;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.JmxUtils;
@@ -247,17 +248,17 @@ public class PipelineRoutedStore extends RoutedStore {
     }
 
     @Override
-    public List<Versioned<byte[]>> get(final ByteArray key, final byte[] transforms, long rid) {
+    public List<Versioned<byte[]>> get(final ByteArray key, final byte[] transforms, RUD rud) {
         return get(key,
                    transforms,
                    timeoutConfig.getOperationTimeout(VoldemortOpCode.GET_OP_CODE),
-                   rid);
+                  rud);
     }
 
     public List<Versioned<byte[]>> get(final ByteArray key,
                                        final byte[] transforms,
                                        final long getOpTimeout,
-                                       final long rid) {
+                                       final RUD rud) {
         StoreUtils.assertValidKey(key);
 
         long startTimeMs = -1;
@@ -282,7 +283,7 @@ public class PipelineRoutedStore extends RoutedStore {
 
             @Override
             public List<Versioned<byte[]>> request(Store<ByteArray, byte[], byte[]> store) {
-                return store.get(key, transforms, rid);
+                return store.get(key, transforms,rud);
             }
 
         };
@@ -307,7 +308,7 @@ public class PipelineRoutedStore extends RoutedStore {
                                                                                                                                  nonblockingStores,
                                                                                                                                  Event.INSUFFICIENT_SUCCESSES,
                                                                                                                                  Event.INSUFFICIENT_ZONES,
-                                                                                                                                 rid));
+                                                                                                                                rud));
         pipeline.addEventAction(Event.INSUFFICIENT_SUCCESSES,
                                 new PerformSerialRequests<List<Versioned<byte[]>>, BasicPipelineData<List<Versioned<byte[]>>>>(pipelineData,
                                                                                                                                allowReadRepair ? Event.RESPONSES_RECEIVED
@@ -319,7 +320,7 @@ public class PipelineRoutedStore extends RoutedStore {
                                                                                                                                storeDef.getRequiredReads(),
                                                                                                                                blockingStoreRequest,
                                                                                                                                null,
-                                                                                                                               rid));
+                                                                                                                              rud));
 
         if(allowReadRepair)
             pipeline.addEventAction(Event.RESPONSES_RECEIVED,
@@ -339,7 +340,7 @@ public class PipelineRoutedStore extends RoutedStore {
                                                                                                                                        failureDetector,
                                                                                                                                        innerStores,
                                                                                                                                        blockingStoreRequest,
-                                                                                                                                       rid));
+                                                                                                                                      rud));
 
         pipeline.addEvent(Event.STARTED);
 
@@ -394,17 +395,17 @@ public class PipelineRoutedStore extends RoutedStore {
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
                                                           Map<ByteArray, byte[]> transforms,
-                                                          long rid) throws VoldemortException {
+                                                          RUD rud) throws VoldemortException {
         return getAll(keys,
                       transforms,
                       timeoutConfig.getOperationTimeout(VoldemortOpCode.GET_ALL_OP_CODE),
-                      rid);
+                     rud);
     }
 
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
                                                           Map<ByteArray, byte[]> transforms,
                                                           long getAllOpTimeoutInMs,
-                                                          long rid) throws VoldemortException {
+                                                          RUD rud) throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
 
         long startTimeMs = -1;
@@ -444,7 +445,7 @@ public class PipelineRoutedStore extends RoutedStore {
                                                                   failureDetector,
                                                                   getAllOpTimeoutInMs,
                                                                   nonblockingStores,
-                                                                  rid));
+                                                                 rud));
         pipeline.addEventAction(Event.INSUFFICIENT_SUCCESSES,
                                 new PerformSerialGetAllRequests(pipelineData,
                                                                 allowReadRepair ? Event.RESPONSES_RECEIVED
@@ -512,7 +513,7 @@ public class PipelineRoutedStore extends RoutedStore {
     }
 
     @Override
-    public List<Version> getVersions(final ByteArray key, final long rid) {
+    public List<Version> getVersions(final ByteArray key, final RUD rud) {
         StoreUtils.assertValidKey(key);
 
         long startTimeMs = -1;
@@ -537,7 +538,7 @@ public class PipelineRoutedStore extends RoutedStore {
 
             @Override
             public List<Version> request(Store<ByteArray, byte[], byte[]> store) {
-                return store.getVersions(key, rid);
+                return store.getVersions(key,rud);
             }
 
         };
@@ -573,7 +574,7 @@ public class PipelineRoutedStore extends RoutedStore {
                                                                                                              nonblockingStores,
                                                                                                              Event.INSUFFICIENT_SUCCESSES,
                                                                                                              Event.INSUFFICIENT_ZONES,
-                                                                                                             rid));
+                                                                                                            rud));
 
         pipeline.addEventAction(Event.INSUFFICIENT_SUCCESSES,
                                 new PerformSerialRequests<List<Version>, BasicPipelineData<List<Version>>>(pipelineData,
@@ -585,7 +586,7 @@ public class PipelineRoutedStore extends RoutedStore {
                                                                                                            storeDef.getRequiredReads(),
                                                                                                            blockingStoreRequest,
                                                                                                            null,
-                                                                                                           rid));
+                                                                                                          rud));
 
         if(zoneRoutingEnabled)
             pipeline.addEventAction(Event.INSUFFICIENT_ZONES,
@@ -595,7 +596,7 @@ public class PipelineRoutedStore extends RoutedStore {
                                                                                                                    failureDetector,
                                                                                                                    innerStores,
                                                                                                                    blockingStoreRequest,
-                                                                                                                   rid));
+                                                                                                                  rud));
 
         pipeline.addEvent(Event.STARTED);
         if(logger.isDebugEnabled()) {
@@ -643,18 +644,18 @@ public class PipelineRoutedStore extends RoutedStore {
     }
 
     @Override
-    public boolean delete(final ByteArray key, final Version version, long rid)
+    public boolean delete(final ByteArray key, final Version version, RUD rud)
             throws VoldemortException {
         return delete(key,
                       version,
                       timeoutConfig.getOperationTimeout(VoldemortOpCode.DELETE_OP_CODE),
-                      rid);
+                     rud);
     }
 
     protected boolean delete(final ByteArray key,
                              final Version version,
                              long deleteOpTimeout,
-                             long rid) throws VoldemortException {
+                             RUD rud) throws VoldemortException {
         StoreUtils.assertValidKey(key);
 
         long startTimeMs = -1;
@@ -706,7 +707,7 @@ public class PipelineRoutedStore extends RoutedStore {
                                                                                                        nonblockingStores,
                                                                                                        hintedHandoff,
                                                                                                        version,
-                                                                                                       rid));
+                                                                                                      rud));
 
         if(isHintedHandoffEnabled()) {
             pipeline.addEventAction(Event.RESPONSES_RECEIVED,
@@ -715,13 +716,13 @@ public class PipelineRoutedStore extends RoutedStore {
                                                                    key,
                                                                    version,
                                                                    hintedHandoff,
-                                                                   rid));
+                                                                  rud));
             pipeline.addEventAction(Event.ABORTED, new PerformDeleteHintedHandoff(pipelineData,
                                                                                   Event.ERROR,
                                                                                   key,
                                                                                   version,
                                                                                   hintedHandoff,
-                                                                                  rid));
+                                                                                 rud));
 
         }
 
@@ -799,20 +800,20 @@ public class PipelineRoutedStore extends RoutedStore {
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> versioned, byte[] transforms, long rid)
+    public void put(ByteArray key, Versioned<byte[]> versioned, byte[] transforms, RUD rud)
             throws VoldemortException {
         put(key,
             versioned,
             transforms,
             timeoutConfig.getOperationTimeout(VoldemortOpCode.PUT_OP_CODE),
-            rid);
+           rud);
     }
 
     public void put(ByteArray key,
                     Versioned<byte[]> versioned,
                     byte[] transforms,
                     long putOpTimeoutInMs,
-                    long rid) throws VoldemortException {
+                    RUD rud) throws VoldemortException {
 
         long startTimeMs = -1;
         long startTimeNs = -1;
@@ -864,7 +865,7 @@ public class PipelineRoutedStore extends RoutedStore {
                                                              versioned,
                                                              time,
                                                              Event.MASTER_DETERMINED,
-                                                             rid));
+                                                            rud));
         pipeline.addEventAction(Event.MASTER_DETERMINED,
                                 new PerformParallelPutRequests(pipelineData,
                                                                Event.RESPONSES_RECEIVED,
@@ -876,7 +877,7 @@ public class PipelineRoutedStore extends RoutedStore {
                                                                putOpTimeoutInMs,
                                                                nonblockingStores,
                                                                hintedHandoff,
-                                                               rid));
+                                                              rud));
         if(isHintedHandoffEnabled()) {
             pipeline.addEventAction(Event.ABORTED, new PerformPutHintedHandoff(pipelineData,
                                                                                Event.ERROR,
@@ -885,7 +886,7 @@ public class PipelineRoutedStore extends RoutedStore {
                                                                                transforms,
                                                                                hintedHandoff,
                                                                                time,
-                                                                               rid));
+                                                                              rud));
             pipeline.addEventAction(Event.RESPONSES_RECEIVED,
                                     new PerformPutHintedHandoff(pipelineData,
                                                                 Event.HANDOFF_FINISHED,
@@ -894,7 +895,7 @@ public class PipelineRoutedStore extends RoutedStore {
                                                                 transforms,
                                                                 hintedHandoff,
                                                                 time,
-                                                                rid));
+                                                               rud));
             pipeline.addEventAction(Event.HANDOFF_FINISHED, new IncrementClock(pipelineData,
                                                                                Event.COMPLETED,
                                                                                versioned,
@@ -955,24 +956,27 @@ public class PipelineRoutedStore extends RoutedStore {
     @Override
     public List<Versioned<byte[]>> get(CompositeVoldemortRequest<ByteArray, byte[]> request)
             throws VoldemortException {
-        return get(request.getKey(), null, request.getRoutingTimeoutInMs());
+        return get(request.getKey(), null, request.getRoutingTimeoutInMs(), new RUD());
     }
 
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(CompositeVoldemortRequest<ByteArray, byte[]> request)
             throws VoldemortException {
-        return getAll(request.getIterableKeys(), null, request.getRoutingTimeoutInMs());
+        return getAll(request.getIterableKeys(), null, request.getRoutingTimeoutInMs(), new RUD());
     }
 
     @Override
     public void put(CompositeVoldemortRequest<ByteArray, byte[]> request) throws VoldemortException {
-        put(request.getKey(), request.getValue(), null, request.getRoutingTimeoutInMs());
+        put(request.getKey(), request.getValue(), null, request.getRoutingTimeoutInMs(), new RUD());
     }
 
     @Override
     public boolean delete(CompositeVoldemortRequest<ByteArray, byte[]> request)
             throws VoldemortException {
-        return delete(request.getKey(), request.getVersion(), request.getRoutingTimeoutInMs());
+        return delete(request.getKey(),
+                      request.getVersion(),
+                      request.getRoutingTimeoutInMs(),
+                      new RUD());
     }
 
     public static boolean isSlopableFailure(Object response) {

@@ -10,8 +10,6 @@ import org.junit.Test;
 import voldemort.VoldemortTestConstants;
 import voldemort.cluster.Cluster;
 import voldemort.cluster.Node;
-import voldemort.store.slop.strategy.HandoffToAnyStrategy;
-import voldemort.store.slop.strategy.HintedHandoffStrategy;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import voldemort.server.RequestRoutingType;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.VectorClock;
 import voldemort.versioning.Version;
@@ -43,7 +44,7 @@ public interface RequestFormat {
                                 ByteArray key,
                                 byte[] transforms,
                                 RequestRoutingType routingType,
-                                long rid) throws IOException;
+                                RUD rud) throws IOException;
 
     public boolean isCompleteGetResponse(ByteBuffer buffer);
 
@@ -53,7 +54,7 @@ public interface RequestFormat {
                                        String storeName,
                                        ByteArray key,
                                        RequestRoutingType routingType,
-                                       long rid) throws IOException;
+                                       RUD rud) throws IOException;
 
     public boolean isCompleteGetVersionResponse(ByteBuffer buffer);
 
@@ -64,7 +65,7 @@ public interface RequestFormat {
                                    Iterable<ByteArray> key,
                                    Map<ByteArray, byte[]> transforms,
                                    RequestRoutingType routingType,
-                                   long rid) throws IOException;
+                                   RUD rud) throws IOException;
 
     public boolean isCompleteGetAllResponse(ByteBuffer buffer);
 
@@ -78,7 +79,7 @@ public interface RequestFormat {
                                 byte[] transforms,
                                 VectorClock version,
                                 RequestRoutingType routingType,
-                                long rid) throws IOException;
+                                RUD rud) throws IOException;
 
     public boolean isCompletePutResponse(ByteBuffer buffer);
 
@@ -89,7 +90,7 @@ public interface RequestFormat {
                                    ByteArray key,
                                    VectorClock version,
                                    RequestRoutingType routingType,
-                                   long rid) throws IOException;
+                                   RUD rud) throws IOException;
 
     public boolean isCompleteDeleteResponse(ByteBuffer buffer);
 

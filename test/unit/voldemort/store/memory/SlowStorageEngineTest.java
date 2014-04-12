@@ -31,6 +31,7 @@ import voldemort.common.VoldemortOpCode;
 import voldemort.store.AbstractStorageEngineTest;
 import voldemort.store.StorageEngine;
 import voldemort.store.slow.SlowStorageEngine;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.pool.KeyedResourcePool;
@@ -118,29 +119,29 @@ public class SlowStorageEngineTest extends AbstractStorageEngineTest {
         }
 
         private void doGet() {
-            store.get(key, null, 0L);
+            store.get(key, null, new RUD());
         }
 
         private void doGetAll() {
             List<ByteArray> keys = new ArrayList<ByteArray>();
             keys.add(key);
-            store.getAll(keys, null, 0L);
+            store.getAll(keys, null, new RUD());
         }
 
         private void doGetVersion() {
-            store.getVersions(key, 0L);
+            store.getVersions(key, new RUD());
         }
 
         private void doPut() {
             try {
-                store.put(key, new Versioned<byte[]>(value), null, 0L);
+                store.put(key, new Versioned<byte[]>(value), null, new RUD());
             } catch(ObsoleteVersionException e) {
                 // This exception is expected in some tests.
             }
         }
 
         private void doDelete() {
-            store.delete(key, new VectorClock(), 0L);
+            store.delete(key, new VectorClock(), new RUD());
         }
 
         public void run() {

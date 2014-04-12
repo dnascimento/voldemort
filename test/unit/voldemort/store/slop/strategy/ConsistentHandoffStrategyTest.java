@@ -1,13 +1,14 @@
 package voldemort.store.slop.strategy;
 
-import org.junit.Test;
-import voldemort.cluster.Cluster;
-import voldemort.cluster.Node;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+
+import voldemort.cluster.Cluster;
+import voldemort.cluster.Node;
 
 public class ConsistentHandoffStrategyTest {
 

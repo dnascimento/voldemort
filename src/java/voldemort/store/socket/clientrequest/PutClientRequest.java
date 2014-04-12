@@ -23,6 +23,7 @@ import java.nio.ByteBuffer;
 
 import voldemort.client.protocol.RequestFormat;
 import voldemort.server.RequestRoutingType;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.VectorClock;
 import voldemort.versioning.Versioned;
@@ -41,8 +42,8 @@ public class PutClientRequest extends AbstractStoreClientRequest<Void> {
                             ByteArray key,
                             Versioned<byte[]> versioned,
                             byte[] transforms,
-                            long rid) {
-        super(storeName, requestFormat, requestRoutingType, rid);
+                            RUD rud) {
+        super(storeName, requestFormat, requestRoutingType,rud);
         this.key = key;
         this.versioned = versioned;
         this.transforms = transforms;
@@ -62,7 +63,7 @@ public class PutClientRequest extends AbstractStoreClientRequest<Void> {
                                       transforms,
                                       (VectorClock) versioned.getVersion(),
                                       requestRoutingType,
-                                      rid);
+                                     rud);
     }
 
     @Override

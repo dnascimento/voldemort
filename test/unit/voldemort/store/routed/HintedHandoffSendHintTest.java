@@ -63,6 +63,7 @@ import voldemort.store.slop.strategy.HintedHandoffStrategyType;
 import voldemort.store.socket.SocketStore;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.versioning.Versioned;
@@ -341,7 +342,7 @@ public class HintedHandoffSendHintTest {
         for(Store<ByteArray, Slop, byte[]> slopStore: slopStores.values()) {
             Map<ByteArray, List<Versioned<Slop>>> getAllResult = slopStore.getAll(slopKeys,
                                                                                   null,
-                                                                                  0L);
+                                                                                  new RUD());
             for(Map.Entry<ByteArray, List<Versioned<Slop>>> entry: getAllResult.entrySet()) {
                 Slop slop = entry.getValue().get(0).getValue();
                 Integer nodeId = slop.getNodeId();
@@ -455,7 +456,7 @@ public class HintedHandoffSendHintTest {
                 Versioned<byte[]> versioned = new Versioned<byte[]>(keyValues.get(key).get());
                 if(logger.isTraceEnabled())
                     logger.trace("PUT key [" + key + "] to store");
-                routedStore.put(key, versioned, null, 0L);
+                routedStore.put(key, versioned, null, new RUD());
             } catch(Exception e) {
                 if(logger.isTraceEnabled())
                     logger.trace(e, e);

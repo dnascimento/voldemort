@@ -24,6 +24,7 @@ import voldemort.restclient.RESTClientFactory;
 import voldemort.server.VoldemortServer;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.SystemTime;
 import voldemort.versioning.ObsoleteVersionException;
 import voldemort.versioning.VectorClock;
@@ -113,16 +114,16 @@ public class RestClientTest extends DefaultStoreClientTest {
     public void testGetWithDefault() {
         assertEquals("GET of missing key should return default.",
                      new Versioned<String>("v"),
-                     client.get("k", new Versioned<String>("v"), 0L));
+                     client.get("k", new Versioned<String>("v"), new RUD()));
         assertEquals("null should be an acceptable default value.",
                      null,
-                     client.getValue("k", null, 0L));
-        client.put("k", "v", 0L);
+                     client.getValue("k", null, new RUD()));
+        client.put("k", "v", new RUD());
         VectorClock expectedVC = new VectorClock().incremented(nodeId, time.getMilliseconds());
         assertEquals("If there is a value for k, get(k) should return it.",
                      "v",
-                     client.get("k", new Versioned<String>("v2"), 0L).getValue());
-        assertNotNull(client.get("k", 0L).getVersion());
+                     client.get("k", new Versioned<String>("v2"), new RUD()).getValue());
+        assertNotNull(client.get("k", new RUD()).getVersion());
     }
 
     @Override
@@ -132,8 +133,8 @@ public class RestClientTest extends DefaultStoreClientTest {
         vc.incrementVersion(this.nodeId, System.currentTimeMillis());
         VectorClock initialVC = vc.clone();
 
-        client.put("k", new Versioned<String>("v", vc), 0L);
-        Versioned<String> v = client.get("k", 0L);
+        client.put("k", new Versioned<String>("v", vc), new RUD());
+        Versioned<String> v = client.get("k", new RUD());
         assertEquals("GET should return the version set by PUT.", "v", v.getValue());
 
         VectorClock expected = initialVC.clone();
@@ -142,7 +143,7 @@ public class RestClientTest extends DefaultStoreClientTest {
                      expected.getEntries(),
                      ((VectorClock) v.getVersion()).getEntries());
         try {
-            client.put("k", new Versioned<String>("v", initialVC), 0L);
+            client.put("k", new Versioned<String>("v", initialVC), new RUD());
             fail("Put of obsolete version should throw exception.");
         } catch(ObsoleteVersionException e) {
             // this is good
@@ -152,11 +153,13 @@ public class RestClientTest extends DefaultStoreClientTest {
                    new Versioned<String>("v2",
                                          new VectorClock().incremented(nodeId + 1,
                                                                        time.getMilliseconds())),
-                   0L);
-        assertEquals("GET should return the new value set by PUT.", "v2", client.getValue("k", 0L));
+                   new RUD());
+        assertEquals("GET should return the new value set by PUT.",
+                     "v2",
+                     client.getValue("k", new RUD()));
         assertEquals("GET should return the new version set by PUT.",
                      expected.incremented(nodeId + 1, time.getMilliseconds()),
-                     client.get("k", 0L).getVersion());
+                     client.get("k", new RUD()).getVersion());
     }
 
     @Override
@@ -166,12 +169,14 @@ public class RestClientTest extends DefaultStoreClientTest {
         vc.incrementVersion(this.nodeId, System.currentTimeMillis());
         VectorClock initialVC = vc.clone();
 
-        client.putIfNotObsolete("k", new Versioned<String>("v", vc), 0L);
-        assertEquals("PUT of non-obsolete version should succeed.", "v", client.getValue("k", 0L));
-        assertFalse(client.putIfNotObsolete("k", new Versioned<String>("v2", initialVC), 0L));
+        client.putIfNotObsolete("k", new Versioned<String>("v", vc), new RUD());
+        assertEquals("PUT of non-obsolete version should succeed.",
+                     "v",
+                     client.getValue("k", new RUD()));
+        assertFalse(client.putIfNotObsolete("k", new Versioned<String>("v2", initialVC), new RUD()));
         assertEquals("Failed PUT should not change the value stored.",
                      "v",
-                     client.getValue("k", 0L));
+                     client.getValue("k", new RUD()));
     }
 
     @Override
@@ -181,15 +186,18 @@ public class RestClientTest extends DefaultStoreClientTest {
         vc.incrementVersion(this.nodeId, System.currentTimeMillis());
         VectorClock initialVC = vc.clone();
 
-        assertFalse("Delete of non-existant key should be false.", client.delete("k", vc, 0L));
-        client.put("k", new Versioned<String>("v", vc), 0L);
+        assertFalse("Delete of non-existant key should be false.",
+                    client.delete("k", vc, new RUD()));
+        client.put("k", new Versioned<String>("v", vc), new RUD());
         assertFalse("Delete of a lesser version should be false.",
-                    client.delete("k", initialVC, 0L));
-        assertNotNull("After failed delete, value should still be there.", client.get("k", 0L));
+                    client.delete("k", initialVC, new RUD()));
+        assertNotNull("After failed delete, value should still be there.",
+                      client.get("k", new RUD()));
         assertTrue("Delete of k, with the current version should succeed.",
                    client.delete("k",
                                  initialVC.incremented(this.nodeId, time.getMilliseconds()),
-                                 0L));
-        assertNull("After a successful delete(k), get(k) should return null.", client.get("k", 0L));
+                                 new RUD()));
+        assertNull("After a successful delete(k), get(k) should return null.",
+                   client.get("k", new RUD()));
     }
 }

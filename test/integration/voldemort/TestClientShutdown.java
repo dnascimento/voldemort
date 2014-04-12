@@ -20,6 +20,7 @@ import voldemort.client.ClientConfig;
 import voldemort.client.DefaultStoreClient;
 import voldemort.client.SocketStoreClientFactory;
 import voldemort.client.StoreClientFactory;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.Utils;
 
 /**
@@ -48,7 +49,7 @@ public class TestClientShutdown {
 
         System.out.println("Established connection to " + storeName + " via " + bootstrapUrl);
 
-        client.get("hello", 0L);
+        client.get("hello", new RUD());
 
         System.out.println("Got value");
     }

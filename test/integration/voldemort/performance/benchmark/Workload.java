@@ -38,6 +38,7 @@ import voldemort.performance.benchmark.generator.IntegerGenerator;
 import voldemort.performance.benchmark.generator.ScrambledZipfianGenerator;
 import voldemort.performance.benchmark.generator.SkewedLatestGenerator;
 import voldemort.performance.benchmark.generator.UniformIntegerGenerator;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.Props;
 import voldemort.utils.UndefinedPropertyException;
 import voldemort.versioning.Versioned;
@@ -439,7 +440,7 @@ public class Workload {
             sampleValues = Lists.newArrayList();
             for(int i = 0; i < sampleSize; i++) {
                 Object key = keyProvider.next();
-                Versioned<Object> versioned = client.get(key, 0L);
+                Versioned<Object> versioned = client.get(key, new RUD());
                 if(null == versioned) {
                     logger.error("NULL is sampled for key " + key);
                     System.err.println("NULL is sampled for key " + key);

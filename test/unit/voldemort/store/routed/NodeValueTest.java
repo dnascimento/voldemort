@@ -1,16 +1,20 @@
 package voldemort.store.routed;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.apache.log4j.Logger;
 import org.junit.Test;
+
 import voldemort.TestUtils;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.VectorClock;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
 
-import static org.junit.Assert.*;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 public class NodeValueTest {
     private final static Logger logger = Logger.getLogger(NodeValueTest.class);

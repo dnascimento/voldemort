@@ -22,6 +22,7 @@ import voldemort.cluster.Node;
 import voldemort.store.Store;
 import voldemort.store.UnreachableStoreException;
 import voldemort.store.metadata.MetadataStore;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.versioning.ObsoleteVersionException;
@@ -77,7 +78,7 @@ public class AsyncProxyPutTask implements Runnable {
             Store<ByteArray, byte[], byte[]> socketStore = redirectingStore.getRedirectingSocketStore(redirectingStore.getName(),
                                                                                                       destinationNode);
 
-            socketStore.put(key, value, transforms, 0L);
+            socketStore.put(key, value, transforms, new RUD());
             redirectingStore.recordSuccess(proxyNode, startNs);
             redirectingStore.reportProxyPutSuccess();
             if(logger.isTraceEnabled()) {

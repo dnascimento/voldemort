@@ -19,6 +19,7 @@ import voldemort.server.RequestRoutingType;
 import voldemort.server.StoreRepository;
 import voldemort.server.protocol.RequestHandler;
 import voldemort.store.memory.InMemoryStorageEngine;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.ObsoleteVersionException;
 import voldemort.versioning.VectorClock;
@@ -92,14 +93,14 @@ public abstract class AbstractRequestFormatTest extends TestCase {
                                boolean isPresent) throws Exception {
         try {
             if(isPresent)
-                store.put(key, Versioned.value(value, version), null, 0L);
+                store.put(key, Versioned.value(value, version), null, new RUD());
             ByteArrayOutputStream getRequest = new ByteArrayOutputStream();
             this.clientWireFormat.writeGetRequest(new DataOutputStream(getRequest),
                                                   storeName,
                                                   key,
                                                   transforms,
                                                   RequestRoutingType.NORMAL,
-                                                  0L);
+                                                  new RUD());
             ByteArrayOutputStream getResponse = new ByteArrayOutputStream();
             this.serverWireFormat.handleRequest(inputStream(getRequest),
                                                 new DataOutputStream(getResponse));
@@ -152,7 +153,7 @@ public abstract class AbstractRequestFormatTest extends TestCase {
         try {
             for(int i = 0; i < keys.length; i++) {
                 if(isFound[i])
-                    store.put(keys[i], Versioned.value(values[i], versions[i]), null, 0L);
+                    store.put(keys[i], Versioned.value(values[i], versions[i]), null, new RUD());
             }
             ByteArrayOutputStream getAllRequest = new ByteArrayOutputStream();
             this.clientWireFormat.writeGetAllRequest(new DataOutputStream(getAllRequest),
@@ -160,7 +161,7 @@ public abstract class AbstractRequestFormatTest extends TestCase {
                                                      Arrays.asList(keys),
                                                      transforms,
                                                      RequestRoutingType.NORMAL,
-                                                     0L);
+                                                     new RUD());
             ByteArrayOutputStream getAllResponse = new ByteArrayOutputStream();
             this.serverWireFormat.handleRequest(inputStream(getAllRequest),
                                                 new DataOutputStream(getAllResponse));
@@ -194,7 +195,7 @@ public abstract class AbstractRequestFormatTest extends TestCase {
         this.store.put(TestUtils.toByteArray("hello"),
                        new Versioned<byte[]>("world".getBytes(), new VectorClock()),
                        null,
-                       0L);
+                       new RUD());
         testPutRequest(TestUtils.toByteArray("hello"),
                        "world".getBytes(),
                        null,
@@ -216,7 +217,7 @@ public abstract class AbstractRequestFormatTest extends TestCase {
                                                   transforms,
                                                   version,
                                                   RequestRoutingType.NORMAL,
-                                                  0L);
+                                                  new RUD());
             ByteArrayOutputStream putResponse = new ByteArrayOutputStream();
             this.serverWireFormat.handleRequest(inputStream(putRequest),
                                                 new DataOutputStream(putResponse));
@@ -252,14 +253,14 @@ public abstract class AbstractRequestFormatTest extends TestCase {
                                   boolean isDeleted) throws Exception {
         try {
             if(existingValue != null)
-                this.store.put(key, existingValue, null, 0L);
+                this.store.put(key, existingValue, null, new RUD());
             ByteArrayOutputStream delRequest = new ByteArrayOutputStream();
             this.clientWireFormat.writeDeleteRequest(new DataOutputStream(delRequest),
                                                      storeName,
                                                      key,
                                                      version,
                                                      RequestRoutingType.NORMAL,
-                                                     0L);
+                                                     new RUD());
             ByteArrayOutputStream delResponse = new ByteArrayOutputStream();
             this.serverWireFormat.handleRequest(inputStream(delRequest),
                                                 new DataOutputStream(delResponse));

@@ -28,6 +28,7 @@ import voldemort.server.storage.ScanPermitWrapper;
 import voldemort.store.StorageEngine;
 import voldemort.store.StoreDefinition;
 import voldemort.store.metadata.MetadataStore;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 
 /**
@@ -72,7 +73,7 @@ public class RepairJob extends DataMaintenanceJob {
                         /**
                          * Blow away the entire key with all its versions..
                          */
-                        engine.delete(key, null, 0L);
+                        engine.delete(key, null, new RUD());
                         numDeletedKeys = this.numKeysUpdatedThisRun.incrementAndGet();
                     }
                     itemsScanned = this.numKeysScannedThisRun.incrementAndGet();

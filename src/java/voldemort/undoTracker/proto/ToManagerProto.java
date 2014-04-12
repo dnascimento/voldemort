@@ -39,19 +39,19 @@ public final class ToManagerProto {
      */
     voldemort.undoTracker.proto.ToManagerProto.StartEndMsgOrBuilder getStartEndMsgOrBuilder();
 
-    // optional .voldemort.TrackMsg trackMsgFromClients = 3;
+    // optional .voldemort.TrackMsg trackMsgFromClient = 3;
     /**
-     * <code>optional .voldemort.TrackMsg trackMsgFromClients = 3;</code>
+     * <code>optional .voldemort.TrackMsg trackMsgFromClient = 3;</code>
      */
-    boolean hasTrackMsgFromClients();
+    boolean hasTrackMsgFromClient();
     /**
-     * <code>optional .voldemort.TrackMsg trackMsgFromClients = 3;</code>
+     * <code>optional .voldemort.TrackMsg trackMsgFromClient = 3;</code>
      */
-    voldemort.undoTracker.proto.ToManagerProto.TrackMsg getTrackMsgFromClients();
+    voldemort.undoTracker.proto.ToManagerProto.TrackMsg getTrackMsgFromClient();
     /**
-     * <code>optional .voldemort.TrackMsg trackMsgFromClients = 3;</code>
+     * <code>optional .voldemort.TrackMsg trackMsgFromClient = 3;</code>
      */
-    voldemort.undoTracker.proto.ToManagerProto.TrackMsgOrBuilder getTrackMsgFromClientsOrBuilder();
+    voldemort.undoTracker.proto.ToManagerProto.TrackMsgOrBuilder getTrackMsgFromClientOrBuilder();
   }
   /**
    * Protobuf type {@code voldemort.MsgToManager}
@@ -133,12 +133,12 @@ public final class ToManagerProto {
             case 26: {
               voldemort.undoTracker.proto.ToManagerProto.TrackMsg.Builder subBuilder = null;
               if (((bitField0_ & 0x00000004) == 0x00000004)) {
-                subBuilder = trackMsgFromClients_.toBuilder();
+                subBuilder = trackMsgFromClient_.toBuilder();
               }
-              trackMsgFromClients_ = input.readMessage(voldemort.undoTracker.proto.ToManagerProto.TrackMsg.PARSER, extensionRegistry);
+              trackMsgFromClient_ = input.readMessage(voldemort.undoTracker.proto.ToManagerProto.TrackMsg.PARSER, extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom(trackMsgFromClients_);
-                trackMsgFromClients_ = subBuilder.buildPartial();
+                subBuilder.mergeFrom(trackMsgFromClient_);
+                trackMsgFromClient_ = subBuilder.buildPartial();
               }
               bitField0_ |= 0x00000004;
               break;
@@ -227,32 +227,32 @@ public final class ToManagerProto {
       return startEndMsg_;
     }
 
-    // optional .voldemort.TrackMsg trackMsgFromClients = 3;
-    public static final int TRACKMSGFROMCLIENTS_FIELD_NUMBER = 3;
-    private voldemort.undoTracker.proto.ToManagerProto.TrackMsg trackMsgFromClients_;
+    // optional .voldemort.TrackMsg trackMsgFromClient = 3;
+    public static final int TRACKMSGFROMCLIENT_FIELD_NUMBER = 3;
+    private voldemort.undoTracker.proto.ToManagerProto.TrackMsg trackMsgFromClient_;
     /**
-     * <code>optional .voldemort.TrackMsg trackMsgFromClients = 3;</code>
+     * <code>optional .voldemort.TrackMsg trackMsgFromClient = 3;</code>
      */
-    public boolean hasTrackMsgFromClients() {
+    public boolean hasTrackMsgFromClient() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>optional .voldemort.TrackMsg trackMsgFromClients = 3;</code>
+     * <code>optional .voldemort.TrackMsg trackMsgFromClient = 3;</code>
      */
-    public voldemort.undoTracker.proto.ToManagerProto.TrackMsg getTrackMsgFromClients() {
-      return trackMsgFromClients_;
+    public voldemort.undoTracker.proto.ToManagerProto.TrackMsg getTrackMsgFromClient() {
+      return trackMsgFromClient_;
     }
     /**
-     * <code>optional .voldemort.TrackMsg trackMsgFromClients = 3;</code>
+     * <code>optional .voldemort.TrackMsg trackMsgFromClient = 3;</code>
      */
-    public voldemort.undoTracker.proto.ToManagerProto.TrackMsgOrBuilder getTrackMsgFromClientsOrBuilder() {
-      return trackMsgFromClients_;
+    public voldemort.undoTracker.proto.ToManagerProto.TrackMsgOrBuilder getTrackMsgFromClientOrBuilder() {
+      return trackMsgFromClient_;
     }
 
     private void initFields() {
       trackMsg_ = voldemort.undoTracker.proto.ToManagerProto.TrackMsg.getDefaultInstance();
       startEndMsg_ = voldemort.undoTracker.proto.ToManagerProto.StartEndMsg.getDefaultInstance();
-      trackMsgFromClients_ = voldemort.undoTracker.proto.ToManagerProto.TrackMsg.getDefaultInstance();
+      trackMsgFromClient_ = voldemort.undoTracker.proto.ToManagerProto.TrackMsg.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -271,8 +271,8 @@ public final class ToManagerProto {
           return false;
         }
       }
-      if (hasTrackMsgFromClients()) {
-        if (!getTrackMsgFromClients().isInitialized()) {
+      if (hasTrackMsgFromClient()) {
+        if (!getTrackMsgFromClient().isInitialized()) {
           memoizedIsInitialized = 0;
           return false;
         }
@@ -291,7 +291,7 @@ public final class ToManagerProto {
         output.writeMessage(2, startEndMsg_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeMessage(3, trackMsgFromClients_);
+        output.writeMessage(3, trackMsgFromClient_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -312,7 +312,7 @@ public final class ToManagerProto {
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, trackMsgFromClients_);
+          .computeMessageSize(3, trackMsgFromClient_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -424,7 +424,7 @@ public final class ToManagerProto {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getTrackMsgFieldBuilder();
           getStartEndMsgFieldBuilder();
-          getTrackMsgFromClientsFieldBuilder();
+          getTrackMsgFromClientFieldBuilder();
         }
       }
       private static Builder create() {
@@ -445,10 +445,10 @@ public final class ToManagerProto {
           startEndMsgBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000002);
-        if (trackMsgFromClientsBuilder_ == null) {
-          trackMsgFromClients_ = voldemort.undoTracker.proto.ToManagerProto.TrackMsg.getDefaultInstance();
+        if (trackMsgFromClientBuilder_ == null) {
+          trackMsgFromClient_ = voldemort.undoTracker.proto.ToManagerProto.TrackMsg.getDefaultInstance();
         } else {
-          trackMsgFromClientsBuilder_.clear();
+          trackMsgFromClientBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
@@ -498,10 +498,10 @@ public final class ToManagerProto {
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
-        if (trackMsgFromClientsBuilder_ == null) {
-          result.trackMsgFromClients_ = trackMsgFromClients_;
+        if (trackMsgFromClientBuilder_ == null) {
+          result.trackMsgFromClient_ = trackMsgFromClient_;
         } else {
-          result.trackMsgFromClients_ = trackMsgFromClientsBuilder_.build();
+          result.trackMsgFromClient_ = trackMsgFromClientBuilder_.build();
         }
         result.bitField0_ = to_bitField0_;
         onBuilt();
@@ -525,8 +525,8 @@ public final class ToManagerProto {
         if (other.hasStartEndMsg()) {
           mergeStartEndMsg(other.getStartEndMsg());
         }
-        if (other.hasTrackMsgFromClients()) {
-          mergeTrackMsgFromClients(other.getTrackMsgFromClients());
+        if (other.hasTrackMsgFromClient()) {
+          mergeTrackMsgFromClient(other.getTrackMsgFromClient());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -545,8 +545,8 @@ public final class ToManagerProto {
             return false;
           }
         }
-        if (hasTrackMsgFromClients()) {
-          if (!getTrackMsgFromClients().isInitialized()) {
+        if (hasTrackMsgFromClient()) {
+          if (!getTrackMsgFromClient().isInitialized()) {
             
             return false;
           }
@@ -807,121 +807,121 @@ public final class ToManagerProto {
         return startEndMsgBuilder_;
       }
 
-      // optional .voldemort.TrackMsg trackMsgFromClients = 3;
-      private voldemort.undoTracker.proto.ToManagerProto.TrackMsg trackMsgFromClients_ = voldemort.undoTracker.proto.ToManagerProto.TrackMsg.getDefaultInstance();
+      // optional .voldemort.TrackMsg trackMsgFromClient = 3;
+      private voldemort.undoTracker.proto.ToManagerProto.TrackMsg trackMsgFromClient_ = voldemort.undoTracker.proto.ToManagerProto.TrackMsg.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          voldemort.undoTracker.proto.ToManagerProto.TrackMsg, voldemort.undoTracker.proto.ToManagerProto.TrackMsg.Builder, voldemort.undoTracker.proto.ToManagerProto.TrackMsgOrBuilder> trackMsgFromClientsBuilder_;
+          voldemort.undoTracker.proto.ToManagerProto.TrackMsg, voldemort.undoTracker.proto.ToManagerProto.TrackMsg.Builder, voldemort.undoTracker.proto.ToManagerProto.TrackMsgOrBuilder> trackMsgFromClientBuilder_;
       /**
-       * <code>optional .voldemort.TrackMsg trackMsgFromClients = 3;</code>
+       * <code>optional .voldemort.TrackMsg trackMsgFromClient = 3;</code>
        */
-      public boolean hasTrackMsgFromClients() {
+      public boolean hasTrackMsgFromClient() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>optional .voldemort.TrackMsg trackMsgFromClients = 3;</code>
+       * <code>optional .voldemort.TrackMsg trackMsgFromClient = 3;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.TrackMsg getTrackMsgFromClients() {
-        if (trackMsgFromClientsBuilder_ == null) {
-          return trackMsgFromClients_;
+      public voldemort.undoTracker.proto.ToManagerProto.TrackMsg getTrackMsgFromClient() {
+        if (trackMsgFromClientBuilder_ == null) {
+          return trackMsgFromClient_;
         } else {
-          return trackMsgFromClientsBuilder_.getMessage();
+          return trackMsgFromClientBuilder_.getMessage();
         }
       }
       /**
-       * <code>optional .voldemort.TrackMsg trackMsgFromClients = 3;</code>
+       * <code>optional .voldemort.TrackMsg trackMsgFromClient = 3;</code>
        */
-      public Builder setTrackMsgFromClients(voldemort.undoTracker.proto.ToManagerProto.TrackMsg value) {
-        if (trackMsgFromClientsBuilder_ == null) {
+      public Builder setTrackMsgFromClient(voldemort.undoTracker.proto.ToManagerProto.TrackMsg value) {
+        if (trackMsgFromClientBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          trackMsgFromClients_ = value;
+          trackMsgFromClient_ = value;
           onChanged();
         } else {
-          trackMsgFromClientsBuilder_.setMessage(value);
+          trackMsgFromClientBuilder_.setMessage(value);
         }
         bitField0_ |= 0x00000004;
         return this;
       }
       /**
-       * <code>optional .voldemort.TrackMsg trackMsgFromClients = 3;</code>
+       * <code>optional .voldemort.TrackMsg trackMsgFromClient = 3;</code>
        */
-      public Builder setTrackMsgFromClients(
+      public Builder setTrackMsgFromClient(
           voldemort.undoTracker.proto.ToManagerProto.TrackMsg.Builder builderForValue) {
-        if (trackMsgFromClientsBuilder_ == null) {
-          trackMsgFromClients_ = builderForValue.build();
+        if (trackMsgFromClientBuilder_ == null) {
+          trackMsgFromClient_ = builderForValue.build();
           onChanged();
         } else {
-          trackMsgFromClientsBuilder_.setMessage(builderForValue.build());
+          trackMsgFromClientBuilder_.setMessage(builderForValue.build());
         }
         bitField0_ |= 0x00000004;
         return this;
       }
       /**
-       * <code>optional .voldemort.TrackMsg trackMsgFromClients = 3;</code>
+       * <code>optional .voldemort.TrackMsg trackMsgFromClient = 3;</code>
        */
-      public Builder mergeTrackMsgFromClients(voldemort.undoTracker.proto.ToManagerProto.TrackMsg value) {
-        if (trackMsgFromClientsBuilder_ == null) {
+      public Builder mergeTrackMsgFromClient(voldemort.undoTracker.proto.ToManagerProto.TrackMsg value) {
+        if (trackMsgFromClientBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004) &&
-              trackMsgFromClients_ != voldemort.undoTracker.proto.ToManagerProto.TrackMsg.getDefaultInstance()) {
-            trackMsgFromClients_ =
-              voldemort.undoTracker.proto.ToManagerProto.TrackMsg.newBuilder(trackMsgFromClients_).mergeFrom(value).buildPartial();
+              trackMsgFromClient_ != voldemort.undoTracker.proto.ToManagerProto.TrackMsg.getDefaultInstance()) {
+            trackMsgFromClient_ =
+              voldemort.undoTracker.proto.ToManagerProto.TrackMsg.newBuilder(trackMsgFromClient_).mergeFrom(value).buildPartial();
           } else {
-            trackMsgFromClients_ = value;
+            trackMsgFromClient_ = value;
           }
           onChanged();
         } else {
-          trackMsgFromClientsBuilder_.mergeFrom(value);
+          trackMsgFromClientBuilder_.mergeFrom(value);
         }
         bitField0_ |= 0x00000004;
         return this;
       }
       /**
-       * <code>optional .voldemort.TrackMsg trackMsgFromClients = 3;</code>
+       * <code>optional .voldemort.TrackMsg trackMsgFromClient = 3;</code>
        */
-      public Builder clearTrackMsgFromClients() {
-        if (trackMsgFromClientsBuilder_ == null) {
-          trackMsgFromClients_ = voldemort.undoTracker.proto.ToManagerProto.TrackMsg.getDefaultInstance();
+      public Builder clearTrackMsgFromClient() {
+        if (trackMsgFromClientBuilder_ == null) {
+          trackMsgFromClient_ = voldemort.undoTracker.proto.ToManagerProto.TrackMsg.getDefaultInstance();
           onChanged();
         } else {
-          trackMsgFromClientsBuilder_.clear();
+          trackMsgFromClientBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
       /**
-       * <code>optional .voldemort.TrackMsg trackMsgFromClients = 3;</code>
+       * <code>optional .voldemort.TrackMsg trackMsgFromClient = 3;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.TrackMsg.Builder getTrackMsgFromClientsBuilder() {
+      public voldemort.undoTracker.proto.ToManagerProto.TrackMsg.Builder getTrackMsgFromClientBuilder() {
         bitField0_ |= 0x00000004;
         onChanged();
-        return getTrackMsgFromClientsFieldBuilder().getBuilder();
+        return getTrackMsgFromClientFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .voldemort.TrackMsg trackMsgFromClients = 3;</code>
+       * <code>optional .voldemort.TrackMsg trackMsgFromClient = 3;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.TrackMsgOrBuilder getTrackMsgFromClientsOrBuilder() {
-        if (trackMsgFromClientsBuilder_ != null) {
-          return trackMsgFromClientsBuilder_.getMessageOrBuilder();
+      public voldemort.undoTracker.proto.ToManagerProto.TrackMsgOrBuilder getTrackMsgFromClientOrBuilder() {
+        if (trackMsgFromClientBuilder_ != null) {
+          return trackMsgFromClientBuilder_.getMessageOrBuilder();
         } else {
-          return trackMsgFromClients_;
+          return trackMsgFromClient_;
         }
       }
       /**
-       * <code>optional .voldemort.TrackMsg trackMsgFromClients = 3;</code>
+       * <code>optional .voldemort.TrackMsg trackMsgFromClient = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           voldemort.undoTracker.proto.ToManagerProto.TrackMsg, voldemort.undoTracker.proto.ToManagerProto.TrackMsg.Builder, voldemort.undoTracker.proto.ToManagerProto.TrackMsgOrBuilder> 
-          getTrackMsgFromClientsFieldBuilder() {
-        if (trackMsgFromClientsBuilder_ == null) {
-          trackMsgFromClientsBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+          getTrackMsgFromClientFieldBuilder() {
+        if (trackMsgFromClientBuilder_ == null) {
+          trackMsgFromClientBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               voldemort.undoTracker.proto.ToManagerProto.TrackMsg, voldemort.undoTracker.proto.ToManagerProto.TrackMsg.Builder, voldemort.undoTracker.proto.ToManagerProto.TrackMsgOrBuilder>(
-                  trackMsgFromClients_,
+                  trackMsgFromClient_,
                   getParentForChildren(),
                   isClean());
-          trackMsgFromClients_ = null;
+          trackMsgFromClient_ = null;
         }
-        return trackMsgFromClientsBuilder_;
+        return trackMsgFromClientBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:voldemort.MsgToManager)
@@ -3536,6 +3536,564 @@ public final class ToManagerProto {
     // @@protoc_insertion_point(class_scope:voldemort.StartEndEntry)
   }
 
+  public interface RUDOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+
+    // optional int64 rid = 1;
+    /**
+     * <code>optional int64 rid = 1;</code>
+     */
+    boolean hasRid();
+    /**
+     * <code>optional int64 rid = 1;</code>
+     */
+    long getRid();
+
+    // optional int32 branch = 2;
+    /**
+     * <code>optional int32 branch = 2;</code>
+     */
+    boolean hasBranch();
+    /**
+     * <code>optional int32 branch = 2;</code>
+     */
+    int getBranch();
+
+    // optional bool restrain = 3;
+    /**
+     * <code>optional bool restrain = 3;</code>
+     */
+    boolean hasRestrain();
+    /**
+     * <code>optional bool restrain = 3;</code>
+     */
+    boolean getRestrain();
+  }
+  /**
+   * Protobuf type {@code voldemort.RUD}
+   */
+  public static final class RUD extends
+      com.google.protobuf.GeneratedMessage
+      implements RUDOrBuilder {
+    // Use RUD.newBuilder() to construct.
+    private RUD(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private RUD(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final RUD defaultInstance;
+    public static RUD getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public RUD getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private RUD(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              rid_ = input.readInt64();
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              branch_ = input.readInt32();
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              restrain_ = input.readBool();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return voldemort.undoTracker.proto.ToManagerProto.internal_static_voldemort_RUD_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return voldemort.undoTracker.proto.ToManagerProto.internal_static_voldemort_RUD_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              voldemort.undoTracker.proto.ToManagerProto.RUD.class, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<RUD> PARSER =
+        new com.google.protobuf.AbstractParser<RUD>() {
+      public RUD parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new RUD(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<RUD> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    // optional int64 rid = 1;
+    public static final int RID_FIELD_NUMBER = 1;
+    private long rid_;
+    /**
+     * <code>optional int64 rid = 1;</code>
+     */
+    public boolean hasRid() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>optional int64 rid = 1;</code>
+     */
+    public long getRid() {
+      return rid_;
+    }
+
+    // optional int32 branch = 2;
+    public static final int BRANCH_FIELD_NUMBER = 2;
+    private int branch_;
+    /**
+     * <code>optional int32 branch = 2;</code>
+     */
+    public boolean hasBranch() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional int32 branch = 2;</code>
+     */
+    public int getBranch() {
+      return branch_;
+    }
+
+    // optional bool restrain = 3;
+    public static final int RESTRAIN_FIELD_NUMBER = 3;
+    private boolean restrain_;
+    /**
+     * <code>optional bool restrain = 3;</code>
+     */
+    public boolean hasRestrain() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional bool restrain = 3;</code>
+     */
+    public boolean getRestrain() {
+      return restrain_;
+    }
+
+    private void initFields() {
+      rid_ = 0L;
+      branch_ = 0;
+      restrain_ = false;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeInt64(1, rid_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt32(2, branch_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBool(3, restrain_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(1, rid_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, branch_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(3, restrain_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static voldemort.undoTracker.proto.ToManagerProto.RUD parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static voldemort.undoTracker.proto.ToManagerProto.RUD parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static voldemort.undoTracker.proto.ToManagerProto.RUD parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static voldemort.undoTracker.proto.ToManagerProto.RUD parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static voldemort.undoTracker.proto.ToManagerProto.RUD parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static voldemort.undoTracker.proto.ToManagerProto.RUD parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static voldemort.undoTracker.proto.ToManagerProto.RUD parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static voldemort.undoTracker.proto.ToManagerProto.RUD parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static voldemort.undoTracker.proto.ToManagerProto.RUD parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static voldemort.undoTracker.proto.ToManagerProto.RUD parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(voldemort.undoTracker.proto.ToManagerProto.RUD prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code voldemort.RUD}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return voldemort.undoTracker.proto.ToManagerProto.internal_static_voldemort_RUD_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return voldemort.undoTracker.proto.ToManagerProto.internal_static_voldemort_RUD_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                voldemort.undoTracker.proto.ToManagerProto.RUD.class, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder.class);
+      }
+
+      // Construct using voldemort.undoTracker.proto.ToManagerProto.RUD.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        rid_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        branch_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        restrain_ = false;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return voldemort.undoTracker.proto.ToManagerProto.internal_static_voldemort_RUD_descriptor;
+      }
+
+      public voldemort.undoTracker.proto.ToManagerProto.RUD getDefaultInstanceForType() {
+        return voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      }
+
+      public voldemort.undoTracker.proto.ToManagerProto.RUD build() {
+        voldemort.undoTracker.proto.ToManagerProto.RUD result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public voldemort.undoTracker.proto.ToManagerProto.RUD buildPartial() {
+        voldemort.undoTracker.proto.ToManagerProto.RUD result = new voldemort.undoTracker.proto.ToManagerProto.RUD(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.rid_ = rid_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.branch_ = branch_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.restrain_ = restrain_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof voldemort.undoTracker.proto.ToManagerProto.RUD) {
+          return mergeFrom((voldemort.undoTracker.proto.ToManagerProto.RUD)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(voldemort.undoTracker.proto.ToManagerProto.RUD other) {
+        if (other == voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance()) return this;
+        if (other.hasRid()) {
+          setRid(other.getRid());
+        }
+        if (other.hasBranch()) {
+          setBranch(other.getBranch());
+        }
+        if (other.hasRestrain()) {
+          setRestrain(other.getRestrain());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        voldemort.undoTracker.proto.ToManagerProto.RUD parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (voldemort.undoTracker.proto.ToManagerProto.RUD) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      // optional int64 rid = 1;
+      private long rid_ ;
+      /**
+       * <code>optional int64 rid = 1;</code>
+       */
+      public boolean hasRid() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>optional int64 rid = 1;</code>
+       */
+      public long getRid() {
+        return rid_;
+      }
+      /**
+       * <code>optional int64 rid = 1;</code>
+       */
+      public Builder setRid(long value) {
+        bitField0_ |= 0x00000001;
+        rid_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 rid = 1;</code>
+       */
+      public Builder clearRid() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        rid_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // optional int32 branch = 2;
+      private int branch_ ;
+      /**
+       * <code>optional int32 branch = 2;</code>
+       */
+      public boolean hasBranch() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional int32 branch = 2;</code>
+       */
+      public int getBranch() {
+        return branch_;
+      }
+      /**
+       * <code>optional int32 branch = 2;</code>
+       */
+      public Builder setBranch(int value) {
+        bitField0_ |= 0x00000002;
+        branch_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 branch = 2;</code>
+       */
+      public Builder clearBranch() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        branch_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // optional bool restrain = 3;
+      private boolean restrain_ ;
+      /**
+       * <code>optional bool restrain = 3;</code>
+       */
+      public boolean hasRestrain() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional bool restrain = 3;</code>
+       */
+      public boolean getRestrain() {
+        return restrain_;
+      }
+      /**
+       * <code>optional bool restrain = 3;</code>
+       */
+      public Builder setRestrain(boolean value) {
+        bitField0_ |= 0x00000004;
+        restrain_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool restrain = 3;</code>
+       */
+      public Builder clearRestrain() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        restrain_ = false;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:voldemort.RUD)
+    }
+
+    static {
+      defaultInstance = new RUD(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:voldemort.RUD)
+  }
+
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_voldemort_MsgToManager_descriptor;
   private static
@@ -3561,6 +4119,11 @@ public final class ToManagerProto {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_voldemort_StartEndEntry_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_voldemort_RUD_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_voldemort_RUD_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -3570,18 +4133,19 @@ public final class ToManagerProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\020to-manager.proto\022\tvoldemort\"\224\001\n\014MsgToM" +
+      "\n\020to-manager.proto\022\tvoldemort\"\223\001\n\014MsgToM" +
       "anager\022%\n\010trackMsg\030\001 \001(\0132\023.voldemort.Tra" +
       "ckMsg\022+\n\013startEndMsg\030\002 \001(\0132\026.voldemort.S" +
-      "tartEndMsg\0220\n\023trackMsgFromClients\030\003 \001(\0132" +
-      "\023.voldemort.TrackMsg\"@\n\010TrackMsg\022$\n\005entr" +
-      "y\030\001 \003(\0132\025.voldemort.TrackEntry\022\016\n\006nodeId" +
-      "\030\002 \001(\t\"-\n\nTrackEntry\022\013\n\003rid\030\001 \002(\003\022\022\n\ndep" +
-      "endency\030\002 \003(\003\"4\n\013StartEndMsg\022%\n\003msg\030\001 \003(" +
-      "\0132\030.voldemort.StartEndEntry\"+\n\rStartEndE" +
-      "ntry\022\r\n\005start\030\001 \002(\003\022\013\n\003end\030\002 \002(\003B/\n\033vold",
-      "emort.undoTracker.protoB\016ToManagerProtoH" +
-      "\001"
+      "tartEndMsg\022/\n\022trackMsgFromClient\030\003 \001(\0132\023" +
+      ".voldemort.TrackMsg\"@\n\010TrackMsg\022$\n\005entry" +
+      "\030\001 \003(\0132\025.voldemort.TrackEntry\022\016\n\006nodeId\030" +
+      "\002 \001(\t\"-\n\nTrackEntry\022\013\n\003rid\030\001 \002(\003\022\022\n\ndepe" +
+      "ndency\030\002 \003(\003\"4\n\013StartEndMsg\022%\n\003msg\030\001 \003(\013" +
+      "2\030.voldemort.StartEndEntry\"+\n\rStartEndEn" +
+      "try\022\r\n\005start\030\001 \002(\003\022\013\n\003end\030\002 \002(\003\"4\n\003RUD\022\013",
+      "\n\003rid\030\001 \001(\003\022\016\n\006branch\030\002 \001(\005\022\020\n\010restrain\030" +
+      "\003 \001(\010B/\n\033voldemort.undoTracker.protoB\016To" +
+      "ManagerProtoH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -3593,7 +4157,7 @@ public final class ToManagerProto {
           internal_static_voldemort_MsgToManager_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_MsgToManager_descriptor,
-              new java.lang.String[] { "TrackMsg", "StartEndMsg", "TrackMsgFromClients", });
+              new java.lang.String[] { "TrackMsg", "StartEndMsg", "TrackMsgFromClient", });
           internal_static_voldemort_TrackMsg_descriptor =
             getDescriptor().getMessageTypes().get(1);
           internal_static_voldemort_TrackMsg_fieldAccessorTable = new
@@ -3618,6 +4182,12 @@ public final class ToManagerProto {
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_StartEndEntry_descriptor,
               new java.lang.String[] { "Start", "End", });
+          internal_static_voldemort_RUD_descriptor =
+            getDescriptor().getMessageTypes().get(5);
+          internal_static_voldemort_RUD_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_voldemort_RUD_descriptor,
+              new java.lang.String[] { "Rid", "Branch", "Restrain", });
           return null;
         }
       };

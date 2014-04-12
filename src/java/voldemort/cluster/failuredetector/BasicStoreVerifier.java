@@ -22,6 +22,7 @@ import voldemort.VoldemortException;
 import voldemort.cluster.Node;
 import voldemort.store.Store;
 import voldemort.store.UnreachableStoreException;
+import voldemort.undoTracker.RUD;
 
 /**
  * BasicStoreVerifier is used to test Node->Store mappings when the mappings are
@@ -50,7 +51,7 @@ public class BasicStoreVerifier<K, V, T> implements StoreVerifier {
                                          + " store is null; cannot determine node availability");
 
         // This is our test.
-        store.get(key, null, 0L);
+        store.get(key, null, new RUD());
     }
 
     @Override

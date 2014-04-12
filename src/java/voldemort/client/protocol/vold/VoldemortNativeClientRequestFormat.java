@@ -34,6 +34,7 @@ import voldemort.common.nio.ByteBufferBackedInputStream;
 import voldemort.server.RequestRoutingType;
 import voldemort.store.ErrorCodeMapper;
 import voldemort.store.StoreUtils;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.versioning.VectorClock;
@@ -64,7 +65,7 @@ public class VoldemortNativeClientRequestFormat implements RequestFormat {
                                    ByteArray key,
                                    VectorClock version,
                                    RequestRoutingType routingType,
-                                   long rid) throws IOException {
+                                   RUD rud) throws IOException {
         StoreUtils.assertValidKey(key);
         outputStream.writeByte(VoldemortOpCode.DELETE_OP_CODE);
         outputStream.writeUTF(storeName);
@@ -96,7 +97,7 @@ public class VoldemortNativeClientRequestFormat implements RequestFormat {
                                 ByteArray key,
                                 byte[] transforms,
                                 RequestRoutingType routingType,
-                                long rid) throws IOException {
+                                RUD rud) throws IOException {
         StoreUtils.assertValidKey(key);
         outputStream.writeByte(VoldemortOpCode.GET_OP_CODE);
         outputStream.writeUTF(storeName);
@@ -148,7 +149,7 @@ public class VoldemortNativeClientRequestFormat implements RequestFormat {
                                    Iterable<ByteArray> keys,
                                    Map<ByteArray, byte[]> transforms,
                                    RequestRoutingType routingType,
-                                   long rid) throws IOException {
+                                   RUD rud) throws IOException {
         StoreUtils.assertValidKeys(keys);
         output.writeByte(VoldemortOpCode.GET_ALL_OP_CODE);
         output.writeUTF(storeName);
@@ -211,7 +212,7 @@ public class VoldemortNativeClientRequestFormat implements RequestFormat {
                                 byte[] transforms,
                                 VectorClock version,
                                 RequestRoutingType routingType,
-                                long rid) throws IOException {
+                                RUD rud) throws IOException {
         StoreUtils.assertValidKey(key);
         outputStream.writeByte(VoldemortOpCode.PUT_OP_CODE);
         outputStream.writeUTF(storeName);
@@ -280,7 +281,7 @@ public class VoldemortNativeClientRequestFormat implements RequestFormat {
                                        String storeName,
                                        ByteArray key,
                                        RequestRoutingType routingType,
-                                       long rid) throws IOException {
+                                       RUD rud) throws IOException {
         StoreUtils.assertValidKey(key);
         output.writeByte(VoldemortOpCode.GET_VERSION_OP_CODE);
         output.writeUTF(storeName);

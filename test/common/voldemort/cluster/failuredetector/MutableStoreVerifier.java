@@ -11,6 +11,7 @@ import voldemort.store.CompositeVoldemortRequest;
 import voldemort.store.Store;
 import voldemort.store.StoreCapabilityType;
 import voldemort.store.UnreachableStoreException;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
@@ -68,7 +69,7 @@ public class MutableStoreVerifier extends BasicStoreVerifier<ByteArray, byte[], 
         return new Store<ByteArray, byte[], byte[]>() {
 
             @Override
-            public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
+            public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, RUD rud)
                     throws VoldemortException {
                 return null;
             }
@@ -76,17 +77,17 @@ public class MutableStoreVerifier extends BasicStoreVerifier<ByteArray, byte[], 
             @Override
             public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
                                                                   Map<ByteArray, byte[]> transforms,
-                                                                  long rid)
+                                                                  RUD rud)
                     throws VoldemortException {
                 return null;
             }
 
             @Override
-            public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, long rid)
+            public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, RUD rud)
                     throws VoldemortException {}
 
             @Override
-            public boolean delete(ByteArray key, Version version, long rid)
+            public boolean delete(ByteArray key, Version version, RUD rud)
                     throws VoldemortException {
                 return false;
             }
@@ -105,7 +106,7 @@ public class MutableStoreVerifier extends BasicStoreVerifier<ByteArray, byte[], 
             }
 
             @Override
-            public List<Version> getVersions(ByteArray key, long rid) {
+            public List<Version> getVersions(ByteArray key, RUD rud) {
                 return null;
             }
 

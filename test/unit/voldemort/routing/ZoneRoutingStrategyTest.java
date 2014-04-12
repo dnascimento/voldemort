@@ -24,7 +24,6 @@ import junit.framework.TestCase;
 import voldemort.ClusterTestUtils;
 import voldemort.ServerTestUtils;
 import voldemort.cluster.Cluster;
-import voldemort.cluster.Node;
 
 public class ZoneRoutingStrategyTest extends TestCase {
 

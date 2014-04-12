@@ -23,6 +23,7 @@ import voldemort.store.routed.Pipeline;
 import voldemort.store.routed.PutPipelineData;
 import voldemort.store.slop.HintedHandoff;
 import voldemort.store.slop.Slop;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Time;
 import voldemort.versioning.VectorClock;
@@ -44,8 +45,8 @@ public class PerformPutHintedHandoff extends AbstractHintedHandoffAction<Void, P
                                    byte[] transforms,
                                    HintedHandoff hintedHandoff,
                                    Time time,
-                                   long rid) {
-        super(pipelineData, completeEvent, key, hintedHandoff, rid);
+                                   RUD rud) {
+        super(pipelineData, completeEvent, key, hintedHandoff,rud);
         this.versioned = versioned;
         this.time = time;
         this.transforms = transforms;

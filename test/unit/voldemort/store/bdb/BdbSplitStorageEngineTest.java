@@ -34,6 +34,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import voldemort.TestUtils;
 import voldemort.server.VoldemortConfig;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.Props;
 import voldemort.versioning.Versioned;
@@ -104,28 +105,28 @@ public class BdbSplitStorageEngineTest {
         storeA.put(TestUtils.toByteArray("testKey1"),
                    new Versioned<byte[]>("value".getBytes()),
                    null,
-                   0L);
+                   new RUD());
         storeA.put(TestUtils.toByteArray("testKey2"),
                    new Versioned<byte[]>("value".getBytes()),
                    null,
-                   0L);
+                   new RUD());
         storeA.put(TestUtils.toByteArray("testKey3"),
                    new Versioned<byte[]>("value".getBytes()),
                    null,
-                   0L);
+                   new RUD());
 
         storeB.put(TestUtils.toByteArray("testKey1"),
                    new Versioned<byte[]>("value".getBytes()),
                    null,
-                   0L);
+                   new RUD());
         storeB.put(TestUtils.toByteArray("testKey2"),
                    new Versioned<byte[]>("value".getBytes()),
                    null,
-                   0L);
+                   new RUD());
         storeB.put(TestUtils.toByteArray("testKey3"),
                    new Versioned<byte[]>("value".getBytes()),
                    null,
-                   0L);
+                   new RUD());
 
         storeA.close();
         storeB.close();
@@ -159,28 +160,28 @@ public class BdbSplitStorageEngineTest {
         storeA.put(TestUtils.toByteArray("testKey1"),
                    new Versioned<byte[]>("value".getBytes()),
                    null,
-                   0L);
+                   new RUD());
         storeA.put(TestUtils.toByteArray("testKey2"),
                    new Versioned<byte[]>("value".getBytes()),
                    null,
-                   0L);
+                   new RUD());
         storeA.put(TestUtils.toByteArray("testKey3"),
                    new Versioned<byte[]>("value".getBytes()),
                    null,
-                   0L);
+                   new RUD());
 
         storeB.put(TestUtils.toByteArray("testKey1"),
                    new Versioned<byte[]>("value".getBytes()),
                    null,
-                   0L);
+                   new RUD());
         storeB.put(TestUtils.toByteArray("testKey2"),
                    new Versioned<byte[]>("value".getBytes()),
                    null,
-                   0L);
+                   new RUD());
         storeB.put(TestUtils.toByteArray("testKey3"),
                    new Versioned<byte[]>("value".getBytes()),
                    null,
-                   0L);
+                   new RUD());
 
         storeA.close();
         storeB.close();
@@ -264,11 +265,17 @@ public class BdbSplitStorageEngineTest {
 
             byte[] value = new byte[(int) (CACHE_SIZE / 10000)];
             // try to push values in cache
-            storeA.put(TestUtils.toByteArray(i + "A"), new Versioned<byte[]>(value), null, 0L);
-            storeA.get(TestUtils.toByteArray(i + "A"), null, 0L);
+            storeA.put(TestUtils.toByteArray(i + "A"),
+                       new Versioned<byte[]>(value),
+                       null,
+                       new RUD());
+            storeA.get(TestUtils.toByteArray(i + "A"), null, new RUD());
 
-            storeB.put(TestUtils.toByteArray(i + "B"), new Versioned<byte[]>(value), null, 0L);
-            storeB.get(TestUtils.toByteArray(i + "B"), null, 0L);
+            storeB.put(TestUtils.toByteArray(i + "B"),
+                       new Versioned<byte[]>(value),
+                       null,
+                       new RUD());
+            storeB.get(TestUtils.toByteArray(i + "B"), null, new RUD());
 
             EnvironmentStats statsA = environmentA.getStats(new StatsConfig());
             EnvironmentStats statsB = environmentB.getStats(new StatsConfig());

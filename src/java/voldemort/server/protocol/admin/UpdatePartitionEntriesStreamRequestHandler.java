@@ -22,6 +22,7 @@ import voldemort.store.ErrorCodeMapper;
 import voldemort.store.StorageEngine;
 import voldemort.store.stats.StreamingStats;
 import voldemort.store.stats.StreamingStats.Operation;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.EventThrottler;
@@ -158,7 +159,7 @@ public class UpdatePartitionEntriesStreamRequestHandler implements StreamRequest
             startNs = System.nanoTime();
             try {
                 // TODO pode receber RID
-                processEntry(key, value, 0L);
+                processEntry(key, value, new RUD());
                 if(logger.isTraceEnabled())
                     logger.trace(getHandlerName() + " (Streaming put) successful");
             } catch(ObsoleteVersionException e) {
@@ -218,9 +219,9 @@ public class UpdatePartitionEntriesStreamRequestHandler implements StreamRequest
     }
 
     @SuppressWarnings("unused")
-    protected void processEntry(ByteArray key, Versioned<byte[]> value, long rid)
+    protected void processEntry(ByteArray key, Versioned<byte[]> value, RUD rud)
             throws IOException {
-        storageEngine.put(key, value, null, rid);
+        storageEngine.put(key, value, null,rud);
     }
 
     protected String getHandlerName() {

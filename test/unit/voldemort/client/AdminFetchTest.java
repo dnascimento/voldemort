@@ -46,6 +46,7 @@ import voldemort.server.VoldemortServer;
 import voldemort.store.StoreDefinition;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Pair;
 import voldemort.versioning.Versioned;
@@ -141,7 +142,7 @@ public class AdminFetchTest {
             if(!partitionToKeysMap.containsKey(partition))
                 partitionToKeysMap.put(partition, new HashSet<String>());
             partitionToKeysMap.get(partition).add(key);
-            voldClient.put(key, "value" + i, 0L);
+            voldClient.put(key, "value" + i, new RUD());
         }
     }
 

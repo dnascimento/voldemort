@@ -38,6 +38,7 @@ import voldemort.server.VoldemortConfig;
 import voldemort.server.VoldemortServer;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
+import voldemort.undoTracker.RUD;
 import voldemort.versioning.VectorClock;
 import voldemort.versioning.Versioned;
 
@@ -88,7 +89,7 @@ public class RebootstrappingStoreTest {
         entries.put("a", "1");
         entries.put("b", "2");
         for(Map.Entry<String, String> entry: entries.entrySet())
-            storeClient.put(entry.getKey(), entry.getValue(), 0L);
+            storeClient.put(entry.getKey(), entry.getValue(), new RUD());
     }
 
     @After
@@ -144,24 +145,24 @@ public class RebootstrappingStoreTest {
 
     @Test
     public void testGet() {
-        Versioned<String> r0 = storeClient.get("a", 0L);
-        Versioned<String> r1 = storeClient.get("b", 0L);
+        Versioned<String> r0 = storeClient.get("a", new RUD());
+        Versioned<String> r1 = storeClient.get("b", new RUD());
         assertEquals("1", r0.getValue());
         assertEquals("2", r1.getValue());
         rebalance();
-        r0 = storeClient.get("a", 0L);
-        r1 = storeClient.get("b", 0L);
+        r0 = storeClient.get("a", new RUD());
+        r1 = storeClient.get("b", new RUD());
         assertEquals("#1 get() okay after re-bootstrap", "1", r0.getValue());
         assertEquals("#2 get() okay after re-bootstrap", "2", r1.getValue());
     }
 
     @Test
     public void testPut() {
-        Versioned<String> r0 = storeClient.get("a", 0L);
+        Versioned<String> r0 = storeClient.get("a", new RUD());
         assertEquals("1", r0.getValue());
         rebalance();
-        storeClient.put("c", "3", 0L);
-        assertEquals("put() okay after re-bootstrap", "3", storeClient.get("c", 0L).getValue());
+        storeClient.put("c", "3", new RUD());
+        assertEquals("put() okay after re-bootstrap", "3", storeClient.get("c", new RUD()).getValue());
     }
 
     @Test
@@ -171,10 +172,10 @@ public class RebootstrappingStoreTest {
 
     @Test
     public void testGetAll() {
-        Versioned<String> r0 = storeClient.get("a", 0L);
+        Versioned<String> r0 = storeClient.get("a", new RUD());
         assertEquals("1", r0.getValue());
         rebalance();
-        Map<String, Versioned<String>> res = storeClient.getAll(ImmutableList.of("a", "b"), 0L);
+        Map<String, Versioned<String>> res = storeClient.getAll(ImmutableList.of("a", "b"), new RUD());
 
         assertTrue("getAll() contains a", res.containsKey("a"));
         assertTrue("getAll() contains b", res.containsKey("b"));

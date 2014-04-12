@@ -23,6 +23,7 @@ import java.nio.ByteBuffer;
 
 import voldemort.client.protocol.RequestFormat;
 import voldemort.server.RequestRoutingType;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.VectorClock;
 import voldemort.versioning.Version;
@@ -38,8 +39,8 @@ public class DeleteClientRequest extends AbstractStoreClientRequest<Boolean> {
                                RequestRoutingType requestRoutingType,
                                ByteArray key,
                                Version version,
-                               long rid) {
-        super(storeName, requestFormat, requestRoutingType, rid);
+                               RUD rud) {
+        super(storeName, requestFormat, requestRoutingType,rud);
         this.key = key;
         this.version = version;
     }
@@ -56,7 +57,7 @@ public class DeleteClientRequest extends AbstractStoreClientRequest<Boolean> {
                                          key,
                                          (VectorClock) version,
                                          requestRoutingType,
-                                         rid);
+                                        rud);
     }
 
     @Override

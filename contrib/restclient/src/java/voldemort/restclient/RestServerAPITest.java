@@ -20,6 +20,7 @@ import org.junit.Test;
 import voldemort.server.VoldemortConfig;
 import voldemort.server.VoldemortServer;
 import voldemort.store.Store;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.VectorClock;
 import voldemort.versioning.Versioned;
@@ -96,9 +97,9 @@ public class RestServerAPITest {
     }
 
     public static void deleteCreatedKeys(ByteArray key) {
-        output = store.get(key, null, 0L);
+        output = store.get(key, null, new RUD());
         for(Versioned<byte[]> versionedValue: output) {
-            store.delete(key, versionedValue.getVersion(), 0L);
+            store.delete(key, versionedValue.getVersion(), new RUD());
         }
     }
 
@@ -113,8 +114,8 @@ public class RestServerAPITest {
         logger.info("\n\n********************  Testing Get After Put *******************\n\n");
         input = new ArrayList<Versioned<byte[]>>();
         input.add(value);
-        store.put(key, value, null, 0L);
-        output = store.get(key, null, 0L);
+        store.put(key, value, null, new RUD());
+        output = store.get(key, null, new RUD());
         assertEquals(input, output);
     }
 
@@ -130,13 +131,13 @@ public class RestServerAPITest {
         vectorClock1.incrementVersion(voldemortConfig.getNodeId(), System.currentTimeMillis());
         ByteArray key2 = new ByteArray("key2".getBytes());
         Versioned<byte[]> value2 = new Versioned<byte[]>("value2".getBytes(), vectorClock1);
-        store.put(key2, value2, null, 0L);
+        store.put(key2, value2, null, new RUD());
 
         vectorClock1 = new VectorClock();
         vectorClock1.incrementVersion(voldemortConfig.getNodeId(), System.currentTimeMillis());
         ByteArray key3 = new ByteArray("key3".getBytes());
         Versioned<byte[]> value3 = new Versioned<byte[]>("value3".getBytes(), vectorClock1);
-        store.put(key3, value3, null, 0L);
+        store.put(key3, value3, null, new RUD());
 
         Map<ByteArray, List<Versioned<byte[]>>> input = new HashMap<ByteArray, List<Versioned<byte[]>>>();
         List<Versioned<byte[]>> valuesList2 = new ArrayList<Versioned<byte[]>>();
@@ -146,7 +147,9 @@ public class RestServerAPITest {
         valuesList3.add(value3);
         input.put(key3, valuesList3);
 
-        Map<ByteArray, List<Versioned<byte[]>>> output = store.getAll(input.keySet(), null, 0L);
+        Map<ByteArray, List<Versioned<byte[]>>> output = store.getAll(input.keySet(),
+                                                                      null,
+                                                                      new RUD());
 
         assertEquals(input, output);
 
@@ -170,13 +173,13 @@ public class RestServerAPITest {
         vectorClock1.incrementVersion(voldemortConfig.getNodeId(), System.currentTimeMillis());
         ByteArray key2 = new ByteArray("key22".getBytes());
         Versioned<byte[]> value1 = new Versioned<byte[]>("value22".getBytes(), vectorClock1);
-        store.put(key2, value1, null, 0L);
+        store.put(key2, value1, null, new RUD());
         valuesList2.add(value1);
 
         VectorClock vectorClock2 = new VectorClock();
         vectorClock2.incrementVersion(1, System.currentTimeMillis());
         Versioned<byte[]> value2 = new Versioned<byte[]>("value23".getBytes(), vectorClock2);
-        store.put(key2, value2, null, 0L);
+        store.put(key2, value2, null, new RUD());
         valuesList2.add(value2);
         input.put(key2, valuesList2);
 
@@ -185,11 +188,13 @@ public class RestServerAPITest {
         vectorClock3.incrementVersion(voldemortConfig.getNodeId(), System.currentTimeMillis());
         ByteArray key3 = new ByteArray("key23".getBytes());
         Versioned<byte[]> value3 = new Versioned<byte[]>("value43".getBytes(), vectorClock3);
-        store.put(key3, value3, null, 0L);
+        store.put(key3, value3, null, new RUD());
         valuesList3.add(value3);
         input.put(key3, valuesList3);
 
-        Map<ByteArray, List<Versioned<byte[]>>> output = store.getAll(input.keySet(), null, 0L);
+        Map<ByteArray, List<Versioned<byte[]>>> output = store.getAll(input.keySet(),
+                                                                      null,
+                                                                      new RUD());
         assertEquals(input, output);
 
         // cleanup specific to this test case
@@ -207,16 +212,16 @@ public class RestServerAPITest {
         logger.info("\n\n********************  Testing Delete *******************\n\n");
         input = new ArrayList<Versioned<byte[]>>();
         input.add(value);
-        store.put(key, value, null, 0L);
-        output = store.get(key, null, 0L);
+        store.put(key, value, null, new RUD());
+        output = store.get(key, null, new RUD());
         if(!output.equals(input)) {
             fail("key does not exist after put");
         } else {
-            boolean result = store.delete(key, output.get(0).getVersion(), 0L);
+            boolean result = store.delete(key, output.get(0).getVersion(), new RUD());
             if(!result) {
                 fail("Notthing to delete");
             } else {
-                output = store.get(key, null, 0L);
+                output = store.get(key, null, new RUD());
                 assertTrue(output.size() == 0);
             }
         }
@@ -231,29 +236,29 @@ public class RestServerAPITest {
     public void testRecursiveDeleteOnSameKeyWithTwoVersions() {
         logger.info("\n\n********************  Testing recursive Delete on a key with two versions *******************\n\n");
 
-        store.put(key, value, null, 0L);
+        store.put(key, value, null, new RUD());
         List<Versioned<byte[]>> resultList, previousResultList;
-        resultList = store.get(key, null, 0L);
+        resultList = store.get(key, null, new RUD());
 
         VectorClock vectorClock2 = new VectorClock();
         vectorClock2.incrementVersion(voldemortConfig.getNodeId() + 1, System.currentTimeMillis());
         Versioned<byte[]> value2 = new Versioned<byte[]>("value32".getBytes(), vectorClock2);
-        store.put(key, value2, null, 0L);
+        store.put(key, value2, null, new RUD());
         previousResultList = resultList;
-        resultList = store.get(key, null, 0L);
+        resultList = store.get(key, null, new RUD());
 
         if(resultList.size() != previousResultList.size() + 1) {
             fail("Failed to add another version");
         } else {
             previousResultList = resultList;
-            store.delete(key, value.getVersion(), 0L);
-            resultList = store.get(key, null, 0L);
+            store.delete(key, value.getVersion(), new RUD());
+            resultList = store.get(key, null, new RUD());
             if(resultList.size() != previousResultList.size() - 1) {
                 fail("Delete failed");
             } else {
                 previousResultList = resultList;
-                store.delete(key, value2.getVersion(), 0L);
-                resultList = store.get(key, null, 0L);
+                store.delete(key, value2.getVersion(), new RUD());
+                resultList = store.get(key, null, new RUD());
                 assertTrue(resultList.size() == previousResultList.size() - 1);
             }
         }

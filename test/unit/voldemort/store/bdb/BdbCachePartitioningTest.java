@@ -36,6 +36,7 @@ import voldemort.TestUtils;
 import voldemort.server.VoldemortConfig;
 import voldemort.store.StorageInitializationException;
 import voldemort.store.StoreDefinition;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.Props;
 import voldemort.versioning.Versioned;
@@ -83,7 +84,7 @@ public class BdbCachePartitioningTest {
     }
 
     private long getAndCheckCacheSize(BdbStorageEngine engine, StoreDefinition storeDef, String key) {
-        engine.get(TestUtils.toByteArray(key), null, 0L);
+        engine.get(TestUtils.toByteArray(key), null, new RUD());
         return getStats(bdbStorage.getEnvironment(storeDef)).getCacheTotalBytes();
     }
 
@@ -154,15 +155,15 @@ public class BdbCachePartitioningTest {
                 storeA.put(TestUtils.toByteArray("testKey" + i),
                            new Versioned<byte[]>(value),
                            null,
-                           0L);
+                           new RUD());
                 storeB.put(TestUtils.toByteArray("testKey" + i),
                            new Versioned<byte[]>(value),
                            null,
-                           0L);
+                           new RUD());
                 storeC.put(TestUtils.toByteArray("testKey" + i),
                            new Versioned<byte[]>(value),
                            null,
-                           0L);
+                           new RUD());
             }
 
             // we will bring all of that data into the cache, by doing a
@@ -318,8 +319,14 @@ public class BdbCachePartitioningTest {
         // Data won't fit in memory
         byte[] value = new byte[ByteUtils.BYTES_PER_MB];
         for(int i = 0; i < numRecords; i++) {
-            storeA.put(TestUtils.toByteArray("testKey" + i), new Versioned<byte[]>(value), null, 0L);
-            storeB.put(TestUtils.toByteArray("testKey" + i), new Versioned<byte[]>(value), null, 0L);
+            storeA.put(TestUtils.toByteArray("testKey" + i),
+                       new Versioned<byte[]>(value),
+                       null,
+                       new RUD());
+            storeB.put(TestUtils.toByteArray("testKey" + i),
+                       new Versioned<byte[]>(value),
+                       null,
+                       new RUD());
         }
 
         // 1. start with 10MB reserved cache for A and the rest 10MB for B

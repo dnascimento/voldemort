@@ -74,6 +74,7 @@ import voldemort.store.slop.Slop;
 import voldemort.store.slop.strategy.HintedHandoffStrategyType;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.Props;
@@ -723,11 +724,11 @@ public class ServerTestUtils {
         innerStore.put(MetadataStore.CLUSTER_KEY,
                        new Versioned<String>(new ClusterMapper().writeCluster(cluster)),
                        null,
-                       0L);
+                       new RUD());
         innerStore.put(MetadataStore.STORES_KEY,
                        new Versioned<String>(new StoreDefinitionsMapper().writeStoreList(storeDefs)),
                        null,
-                       0L);
+                       new RUD());
 
         return new MetadataStore(innerStore, 0);
     }
@@ -739,11 +740,11 @@ public class ServerTestUtils {
         innerStore.put(MetadataStore.CLUSTER_KEY,
                        new Versioned<String>(new ClusterMapper().writeCluster(cluster)),
                        null,
-                       0L);
+                       new RUD());
         innerStore.put(MetadataStore.STORES_KEY,
                        new Versioned<String>(new StoreDefinitionsMapper().writeStoreList(storeDefs)),
                        null,
-                       0L);
+                       new RUD());
 
         return new MetadataStore(innerStore, nodeId);
     }
@@ -1055,7 +1056,7 @@ public class ServerTestUtils {
                                                    MetadataStore.METADATA_STORE_NAME,
                                                    node.getSocketPort());
             try {
-                store.get(new ByteArray(MetadataStore.CLUSTER_KEY.getBytes()), null, 0L);
+                store.get(new ByteArray(MetadataStore.CLUSTER_KEY.getBytes()), null, new RUD());
                 success = true;
             } catch(UnreachableStoreException e) {
                 store.close();

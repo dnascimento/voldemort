@@ -33,6 +33,7 @@ import voldemort.client.scheduler.ClientRegistryRefresher;
 import voldemort.common.service.SchedulerService;
 import voldemort.store.metadata.MetadataStore;
 import voldemort.store.system.SystemStoreConstants;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.JmxUtils;
 import voldemort.utils.ManifestFileReader;
 import voldemort.utils.Utils;
@@ -120,7 +121,7 @@ public class ZenStoreClient<K, V> extends DefaultStoreClient<K, V> {
                 Version version = this.sysRepository.getClientRegistryStore()
                                                     .putSysStore(clientId,
                                                                  clientInfo.toString(),
-                                                                 0L);
+                                                                 new RUD());
                 refresher = new ClientRegistryRefresher(this.sysRepository,
                                                         clientId,
                                                         clientInfo,

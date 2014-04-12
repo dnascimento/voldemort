@@ -41,6 +41,7 @@ import voldemort.server.VoldemortServer;
 import voldemort.store.StoreDefinition;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.TestSocketStoreFactory;
+import voldemort.undoTracker.RUD;
 
 public class ZoneShrinkageCLITest {
 
@@ -93,8 +94,8 @@ public class ZoneShrinkageCLITest {
                                          .toString();
         StoreClientFactory factory = new SocketStoreClientFactory(new ClientConfig().setBootstrapUrls(bootstrapUrl));
         StoreClient<String, String> client = factory.getStoreClient(oldStores.get(0).getName());
-        client.put("k1", "v1", 0L);
-        assertEquals("v1", client.get("k1", 0L).getValue());
+        client.put("k1", "v1", new RUD());
+        assertEquals("v1", client.get("k1", new RUD()).getValue());
     }
 
     @Test

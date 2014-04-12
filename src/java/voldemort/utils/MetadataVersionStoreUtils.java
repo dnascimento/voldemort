@@ -22,6 +22,7 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 
 import voldemort.client.SystemStoreClient;
+import voldemort.undoTracker.RUD;
 import voldemort.versioning.Versioned;
 
 /**
@@ -46,7 +47,7 @@ public class MetadataVersionStoreUtils {
      */
     public static Properties getProperties(SystemStoreClient<String, String> versionStore) {
         Properties props = null;
-        Versioned<String> versioned = versionStore.getSysStore(VERSIONS_METADATA_KEY, 0L);
+        Versioned<String> versioned = versionStore.getSysStore(VERSIONS_METADATA_KEY, new RUD());
         if(versioned != null && versioned.getValue() != null) {
             try {
                 String versionList = versioned.getValue();
@@ -83,7 +84,7 @@ public class MetadataVersionStoreUtils {
                     finalVersionList.append("\n" + propName + "=" + props.getProperty(propName));
                 }
             }
-            versionStore.putSysStore(VERSIONS_METADATA_KEY, finalVersionList.toString(), 0L);
+            versionStore.putSysStore(VERSIONS_METADATA_KEY, finalVersionList.toString(), new RUD());
         } catch(Exception e) {
             logger.debug("Got exception in setting properties : " + e.getMessage());
         }

@@ -51,6 +51,7 @@ import voldemort.store.readonly.ReadOnlyStorageConfiguration;
 import voldemort.store.readonly.ReadOnlyUtils;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.Utils;
 import voldemort.utils.VoldemortIOUtils;
 import voldemort.xml.StoreDefinitionsMapper;
@@ -383,7 +384,7 @@ public class StoreSwapperTest {
 
         servers[1].getMetadataStore().put(MetadataStore.SERVER_STATE_KEY,
                                           MetadataStore.VoldemortState.REBALANCING_MASTER_SERVER,
-                                          0L);
+                                          new RUD());
 
         try {
             swapper.swapStoreData(STORE_NAME, temporaryDir.getAbsolutePath(), currentVersion + 4);
@@ -403,7 +404,7 @@ public class StoreSwapperTest {
         temporaryDir = createTempROFolder();
         servers[1].getMetadataStore().put(MetadataStore.SERVER_STATE_KEY,
                                           MetadataStore.VoldemortState.NORMAL_SERVER,
-                                          0L);
+                                          new RUD());
 
         swapper.swapStoreData(STORE_NAME, temporaryDir.getAbsolutePath(), currentVersion + 5);
 

@@ -27,7 +27,11 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import voldemort.cluster.Cluster;
-import voldemort.utils.impl.*;
+import voldemort.utils.impl.RsyncDeployer;
+import voldemort.utils.impl.SshClusterCleaner;
+import voldemort.utils.impl.SshClusterStarter;
+import voldemort.utils.impl.SshClusterStopper;
+import voldemort.utils.impl.SshRemoteTest;
 
 public class RemoteTestUtils {
 

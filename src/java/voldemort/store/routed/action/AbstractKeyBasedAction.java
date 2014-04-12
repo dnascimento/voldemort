@@ -18,16 +18,17 @@ package voldemort.store.routed.action;
 
 import voldemort.store.routed.Pipeline.Event;
 import voldemort.store.routed.PipelineData;
+import voldemort.undoTracker.RUD;
 
 public abstract class AbstractKeyBasedAction<K, V, PD extends PipelineData<K, V>> extends
         AbstractAction<K, V, PD> {
 
     protected final K key;
-    protected final long rid;
+    protected final RUD rud;
 
-    protected AbstractKeyBasedAction(PD pipelineData, Event completeEvent, K key, long rid) {
+    protected AbstractKeyBasedAction(PD pipelineData, Event completeEvent, K key, RUD rud) {
         super(pipelineData, completeEvent);
         this.key = key;
-        this.rid = rid;
+        this.rud = rud;
     }
 }

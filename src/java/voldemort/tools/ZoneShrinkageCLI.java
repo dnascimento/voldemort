@@ -15,9 +15,21 @@
  */
 package voldemort.tools;
 
+import static voldemort.VoldemortAdminTool.executeSetMetadataPair;
+import static voldemort.store.metadata.MetadataStore.CLUSTER_KEY;
+import static voldemort.store.metadata.MetadataStore.STORES_KEY;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
+
 import org.apache.log4j.Logger;
+
 import voldemort.client.ClientConfig;
 import voldemort.client.protocol.admin.AdminClient;
 import voldemort.client.protocol.admin.AdminClientConfig;
@@ -29,16 +41,6 @@ import voldemort.utils.RebalanceUtils;
 import voldemort.versioning.Versioned;
 import voldemort.xml.ClusterMapper;
 import voldemort.xml.StoreDefinitionsMapper;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
-import static voldemort.VoldemortAdminTool.executeSetMetadataPair;
-import static voldemort.store.metadata.MetadataStore.STORES_KEY;
-import static voldemort.store.metadata.MetadataStore.CLUSTER_KEY;
 
 
 /**

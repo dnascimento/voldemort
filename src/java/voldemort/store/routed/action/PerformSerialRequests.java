@@ -30,6 +30,7 @@ import voldemort.store.routed.BasicPipelineData;
 import voldemort.store.routed.Pipeline;
 import voldemort.store.routed.Pipeline.Event;
 import voldemort.store.routed.Response;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.Time;
@@ -58,8 +59,8 @@ public class PerformSerialRequests<V, PD extends BasicPipelineData<V>> extends
                                  int required,
                                  StoreRequest<V> storeRequest,
                                  Event insufficientSuccessesEvent,
-                                 long rid) {
-        super(pipelineData, completeEvent, key, rid);
+                                 RUD rud) {
+        super(pipelineData, completeEvent, key,rud);
         this.failureDetector = failureDetector;
         this.stores = stores;
         this.preferred = preferred;

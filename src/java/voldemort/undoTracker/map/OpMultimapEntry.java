@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import voldemort.undoTracker.RUD;
 import voldemort.undoTracker.map.Op.OpType;
 
 import com.google.common.collect.HashMultimap;
@@ -51,9 +52,9 @@ public class OpMultimapEntry {
 
     /**
      * 
-     * @param rid
+     * @paramrud
      */
-    public void isNextGet(long rid) {
+    public void isNextGet(RUD rud) {
         while(true) {
             synchronized(this) {
                 int p = redoPos;
@@ -62,7 +63,7 @@ public class OpMultimapEntry {
                     if(!op.type.equals(OpType.Get)) {
                         break;
                     }
-                    if(op.rid == rid) {
+                    if(op.rid == rud.rid) {
                         return;
                     }
                     p++;
@@ -75,13 +76,13 @@ public class OpMultimapEntry {
     /**
      * Wait if the current item is not the expected
      * 
-     * @param rid
+     * @paramrud
      */
-    public void isNextPut(long rid) {
+    public void isNextPut(RUD rud) {
         while(true) {
             synchronized(this) {
                 Op op = list.get(redoPos);
-                if(op.rid == rid) {
+                if(op.rid == rud.rid) {
                     return;
                 }
             }
@@ -89,11 +90,11 @@ public class OpMultimapEntry {
         }
     }
 
-    public void isNextDelete(long rid) {
+    public void isNextDelete(RUD rud) {
         while(true) {
             synchronized(this) {
                 Op op = list.get(redoPos);
-                if(op.rid == rid) {
+                if(op.rid == rud.rid) {
                     return;
                 }
             }
@@ -210,7 +211,7 @@ public class OpMultimapEntry {
     }
 
     /**
-     * Get the biggest write RID (the latest version of value) which value is
+     * Get the biggest write rud (the latest version of value) which value is
      * lower than sts
      * 
      * @param sts: season timestamp: -1 if wants the latest
@@ -267,16 +268,16 @@ public class OpMultimapEntry {
      * Choose the correct snapshot to access in reads and which will write
      * 
      * @param type
-     * @param rid
+     * @paramrud
      * @param sts
      * @return
      */
-    public long trackAccessNewRequest(OpType type, long rid, long sts) {
+    public long trackAccessNewRequest(OpType type, RUD rud, long sts) {
         long snapshotAccess;
         // Store the sts of write (version of entry)
-        Op op = new Op(rid, type);
+        Op op = new Op(rud.rid, type);
 
-        if(rid < sts) {
+        if(rud.rid < sts) {
             // read only old values
             snapshotAccess = getBiggestVersion(sts);
             if(!type.equals(Op.OpType.Get)) {

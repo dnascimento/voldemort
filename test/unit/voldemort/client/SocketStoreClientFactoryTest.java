@@ -37,6 +37,7 @@ import voldemort.ServerTestUtils;
 import voldemort.VoldemortException;
 import voldemort.serialization.SerializerFactory;
 import voldemort.server.AbstractSocketService;
+import voldemort.undoTracker.RUD;
 
 /**
  * 
@@ -140,7 +141,7 @@ public class SocketStoreClientFactoryTest extends AbstractStoreClientFactoryTest
     public void testBootstrapServerDown() throws Exception {
         try {
             getFactory(getValidScheme() + "://localhost:58558").getStoreClient(getValidStoreName())
-                                                               .get("test", 0L);
+                                                               .get("test", new RUD());
             fail("Should throw exception.");
         } catch(BootstrapFailureException e) {
             // this is good
@@ -154,7 +155,7 @@ public class SocketStoreClientFactoryTest extends AbstractStoreClientFactoryTest
             StoreClient<String, String> client = getFactory(getValidBootstrapUrl()).getStoreClient("12345");
             assertNotNull(client);
             if(useLazy)
-                client.get("test", 0L);
+                client.get("test", new RUD());
             fail("Bootstrapped a bad name.");
         } catch(BootstrapFailureException e) {
             // this is good
@@ -165,7 +166,7 @@ public class SocketStoreClientFactoryTest extends AbstractStoreClientFactoryTest
     @Override
     public void testBootstrapFailoverSucceeds() throws Exception {
         getFactory(getValidScheme() + "://localhost:58558", getValidBootstrapUrl()).getStoreClient(getValidStoreName())
-                                                                                   .get("test", 0L);
+                                                                                   .get("test", new RUD());
     }
 
     protected StoreClientFactory getFactoryForZoneID(int zoneID, String... bootstrapUrls) {
@@ -178,7 +179,7 @@ public class SocketStoreClientFactoryTest extends AbstractStoreClientFactoryTest
     public void testInvalidZoneID() throws Exception {
         try {
             getFactoryForZoneID(345334, getValidBootstrapUrl()).getStoreClient(getValidStoreName())
-                                                               .get("test", 0L);
+                                                               .get("test", new RUD());
             fail("Should throw exception.");
         } catch(VoldemortException e) {
             e.printStackTrace();

@@ -45,6 +45,7 @@ import voldemort.store.StoreDefinition;
 import voldemort.store.metadata.MetadataStore;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
+import voldemort.undoTracker.RUD;
 
 /**
  * Test class to verify the SystemStore (used to interact with the system
@@ -141,8 +142,8 @@ public class SystemStoreTest {
             SystemStoreClient<String, String> sysVersionStore = systemStoreFactory.createSystemStore(SystemStoreConstants.SystemStoreName.voldsys$_metadata_version_persistence.name());
 
             long storesVersion = 1;
-            sysVersionStore.putSysStore("stores.xml", Long.toString(storesVersion), 0L);
-            long version = Long.parseLong(sysVersionStore.getValueSysStore("stores.xml", 0L));
+            sysVersionStore.putSysStore("stores.xml", Long.toString(storesVersion), new RUD());
+            long version = Long.parseLong(sysVersionStore.getValueSysStore("stores.xml", new RUD()));
             assertEquals("Received incorrect version from the voldsys$_metadata_version system store",
                          storesVersion,
                          version);
@@ -162,8 +163,8 @@ public class SystemStoreTest {
                                                                                                      null);
 
             long storesVersion = 1;
-            sysVersionStore.putSysStore("stores.xml", Long.toString(storesVersion), 0L);
-            long version = Long.parseLong(sysVersionStore.getValueSysStore("stores.xml", 0L));
+            sysVersionStore.putSysStore("stores.xml", Long.toString(storesVersion), new RUD());
+            long version = Long.parseLong(sysVersionStore.getValueSysStore("stores.xml", new RUD()));
             assertEquals("Received incorrect version from the voldsys$_metadata_version system store",
                          storesVersion,
                          version);

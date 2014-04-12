@@ -34,7 +34,7 @@ public class ClientExample {
                    0L);
 
         // get the value
-        Versioned<BananaMsg.Banana> version = client.get("some_key", 0L);
+        Versioned<BananaMsg.Banana> version = client.get("some_key", new RUD());
         System.out.println(version.getValue());
         // modify the value
         // version.setObject("new_value");

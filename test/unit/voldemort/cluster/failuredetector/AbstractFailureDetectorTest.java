@@ -38,7 +38,6 @@ import org.junit.Test;
 
 import voldemort.cluster.Cluster;
 import voldemort.cluster.Node;
-import voldemort.cluster.failuredetector.FailureDetector;
 import voldemort.utils.JmxUtils;
 import voldemort.utils.Time;
 

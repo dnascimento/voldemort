@@ -21,6 +21,7 @@ import java.util.Map;
 
 import voldemort.VoldemortException;
 import voldemort.annotations.concurrency.Threadsafe;
+import voldemort.undoTracker.RUD;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
 
@@ -44,7 +45,7 @@ public interface Store<K, V, T> {
      *         are found.
      * @throws VoldemortException
      */
-    public List<Versioned<V>> get(K key, T transforms, long rid) throws VoldemortException;
+    public List<Versioned<V>> get(K key, T transforms, RUD rud) throws VoldemortException;
 
     /**
      * Get the values associated with the given keys and returns them in a Map
@@ -56,7 +57,7 @@ public interface Store<K, V, T> {
      * @return A Map of keys to a list of versioned values.
      * @throws VoldemortException
      */
-    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, long rid)
+    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, RUD rud)
             throws VoldemortException;
 
     /**
@@ -65,7 +66,7 @@ public interface Store<K, V, T> {
      * @param key The key to use
      * @param value The value to store and its version.
      */
-    public void put(K key, Versioned<V> value, T transforms, long rid) throws VoldemortException;
+    public void put(K key, Versioned<V> value, T transforms, RUD rud) throws VoldemortException;
 
     /**
      * Delete all entries prior to the given version
@@ -74,7 +75,7 @@ public interface Store<K, V, T> {
      * @param version The current value of the key
      * @return True if anything was deleted
      */
-    public boolean delete(K key, Version version, long rid) throws VoldemortException;
+    public boolean delete(K key, Version version, RUD rud) throws VoldemortException;
 
     /**
      * @return The name of the store.
@@ -107,7 +108,7 @@ public interface Store<K, V, T> {
      * @param key The key to retrieve the versions for
      * @return List of Versions associated with this key.
      */
-    public List<Version> getVersions(K key, long rid);
+    public List<Version> getVersions(K key, RUD rud);
 
     /**
      * Get the value associated with the given key

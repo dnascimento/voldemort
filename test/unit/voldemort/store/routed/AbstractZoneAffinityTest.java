@@ -26,6 +26,7 @@ import voldemort.store.Store;
 import voldemort.store.StoreDefinition;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.VectorClock;
 import voldemort.versioning.Versioned;
@@ -115,25 +116,25 @@ public abstract class AbstractZoneAffinityTest {
                 store.put(new ByteArray(k1_bytes),
                           new Versioned<byte[]>(v1_bytes, version1),
                           null,
-                          0L);
+                          new RUD());
                 store.put(new ByteArray(k2_bytes),
                           new Versioned<byte[]>(v1_bytes, version1),
                           null,
-                          0L);
+                          new RUD());
             } else {
                 // remote zone
                 store.put(new ByteArray(k1_bytes),
                           new Versioned<byte[]>(v2_bytes, version2),
                           null,
-                          0L);
+                          new RUD());
                 store.put(new ByteArray(k2_bytes),
                           new Versioned<byte[]>(v1_bytes, version1),
                           null,
-                          0L);
+                          new RUD());
                 store.put(new ByteArray(k3_bytes),
                           new Versioned<byte[]>(v1_bytes, version1),
                           null,
-                          0L);
+                          new RUD());
             }
         }
 

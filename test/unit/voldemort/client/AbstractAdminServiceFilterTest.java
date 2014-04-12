@@ -29,6 +29,7 @@ import voldemort.routing.RoutingStrategy;
 import voldemort.routing.RoutingStrategyFactory;
 import voldemort.store.Store;
 import voldemort.store.StoreDefinition;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.Pair;
@@ -63,7 +64,7 @@ public abstract class AbstractAdminServiceFilterTest extends TestCase {
                                                                                       getCluster());
         for(Pair<ByteArray, Versioned<byte[]>> pair: createEntries()) {
             if(Utils.nodeListToNodeIdList(strategy.routeRequest(pair.getFirst().get())).contains(0)) {
-                store.put(pair.getFirst(), pair.getSecond(), null, 0L);
+                store.put(pair.getFirst(), pair.getSecond(), null, new RUD());
                 if(!filter.accept(pair.getFirst(), pair.getSecond())) {
                     shouldFilterCount++;
                 }
@@ -100,7 +101,7 @@ public abstract class AbstractAdminServiceFilterTest extends TestCase {
                                                                                       getCluster());
         for(Pair<ByteArray, Versioned<byte[]>> pair: entrySet) {
             if(Utils.nodeListToNodeIdList(strategy.routeRequest(pair.getFirst().get())).contains(0))
-                store.put(pair.getFirst(), pair.getSecond(), null, 0L);
+                store.put(pair.getFirst(), pair.getSecond(), null, new RUD());
         }
 
         // make delete stream call with filter
@@ -116,14 +117,16 @@ public abstract class AbstractAdminServiceFilterTest extends TestCase {
                 if(filter.accept(entry.getFirst(), entry.getSecond())) {
                     assertEquals("All entries should be deleted except the filtered ones.",
                                  0,
-                                 store.get(entry.getFirst(), null, 0L).size());
+                                 store.get(entry.getFirst(), null, new RUD()).size());
                 } else {
                     assertNotSame("filtered entry should be still present.",
                                   0,
-                                  store.get(entry.getFirst(), null, 0L).size());
+                                  store.get(entry.getFirst(), null, new RUD()).size());
                     assertEquals("values should match",
                                  new String(entry.getSecond().getValue()),
-                                 new String(store.get(entry.getFirst(), null, 0L).get(0).getValue()));
+                                 new String(store.get(entry.getFirst(), null, new RUD())
+                                                 .get(0)
+                                                 .getValue()));
                 }
             }
         }
@@ -147,14 +150,14 @@ public abstract class AbstractAdminServiceFilterTest extends TestCase {
             if(filter.accept(entry.getFirst(), entry.getSecond())) {
                 assertEquals("Store should have this key/value pair",
                              1,
-                             store.get(entry.getFirst(), null, 0L).size());
+                             store.get(entry.getFirst(), null, new RUD()).size());
                 assertEquals("Store should have this key/value pair",
                              entry.getSecond(),
-                             store.get(entry.getFirst(), null, 0L).get(0));
+                             store.get(entry.getFirst(), null, new RUD()).get(0));
             } else {
                 assertEquals("Store should Not have this key/value pair",
                              0,
-                             store.get(entry.getFirst(), null, 0L).size());
+                             store.get(entry.getFirst(), null, new RUD()).size());
             }
         }
     }

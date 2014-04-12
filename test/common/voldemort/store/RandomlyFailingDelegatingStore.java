@@ -4,6 +4,7 @@ import java.util.List;
 
 import voldemort.VoldemortException;
 import voldemort.server.storage.KeyLockHandle;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.Pair;
 import voldemort.versioning.Versioned;
@@ -165,8 +166,8 @@ public class RandomlyFailingDelegatingStore<K, V, T> extends DelegatingStore<K, 
     }
 
     @Override
-    public List<Versioned<V>> multiVersionPut(K key, List<Versioned<V>> values, long rid) {
-        return innerStorageEngine.multiVersionPut(key, values, rid);
+    public List<Versioned<V>> multiVersionPut(K key, List<Versioned<V>> values, RUD rud) {
+        return innerStorageEngine.multiVersionPut(key, values,rud);
     }
 
     @Override

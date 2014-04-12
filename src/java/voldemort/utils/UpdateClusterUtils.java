@@ -29,9 +29,6 @@ import voldemort.cluster.Node;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-
 /**
  * UpdateClusterUtils provides helper methods for manipulating nodes and
  * clusters. The methods are used by rebalancing tools and in tests.

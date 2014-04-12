@@ -27,6 +27,7 @@ import voldemort.store.InvalidMetadataException;
 import voldemort.store.Store;
 import voldemort.store.StoreUtils;
 import voldemort.store.metadata.MetadataStore;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
@@ -62,20 +63,20 @@ public class InvalidMetadataCheckingStore extends DelegatingStore<ByteArray, byt
     }
 
     @Override
-    public boolean delete(ByteArray key, Version version, long rid) throws VoldemortException {
+    public boolean delete(ByteArray key, Version version, RUD rud) throws VoldemortException {
         StoreUtils.assertValidKey(key);
         StoreUtils.assertValidNode(metadata, nodeId);
         StoreUtils.assertValidMetadata(key,
                                        metadata.getRoutingStrategy(getName()),
                                        metadata.getCluster().getNodeById(nodeId));
 
-        return getInnerStore().delete(key, version, rid);
+        return getInnerStore().delete(key, version,rud);
     }
 
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
                                                           Map<ByteArray, byte[]> transforms,
-                                                          long rid) throws VoldemortException {
+                                                          RUD rud) throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
         StoreUtils.assertValidNode(metadata, nodeId);
         RoutingStrategy routingStrategy = metadata.getRoutingStrategy(getName());
@@ -83,11 +84,11 @@ public class InvalidMetadataCheckingStore extends DelegatingStore<ByteArray, byt
         for(ByteArray key: keys)
             StoreUtils.assertValidMetadata(key, routingStrategy, node);
 
-        return getInnerStore().getAll(keys, transforms, rid);
+        return getInnerStore().getAll(keys, transforms,rud);
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, long rid)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, RUD rud)
             throws VoldemortException {
         StoreUtils.assertValidKey(key);
         StoreUtils.assertValidNode(metadata, nodeId);
@@ -95,11 +96,11 @@ public class InvalidMetadataCheckingStore extends DelegatingStore<ByteArray, byt
                                        metadata.getRoutingStrategy(getName()),
                                        metadata.getCluster().getNodeById(nodeId));
 
-        getInnerStore().put(key, value, transforms, rid);
+        getInnerStore().put(key, value, transforms,rud);
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, RUD rud)
             throws VoldemortException {
         StoreUtils.assertValidKey(key);
         StoreUtils.assertValidNode(metadata, nodeId);
@@ -107,6 +108,6 @@ public class InvalidMetadataCheckingStore extends DelegatingStore<ByteArray, byt
                                        metadata.getRoutingStrategy(getName()),
                                        metadata.getCluster().getNodeById(nodeId));
 
-        return getInnerStore().get(key, transforms, rid);
+        return getInnerStore().get(key, transforms,rud);
     }
 }

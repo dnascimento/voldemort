@@ -64,6 +64,7 @@ import voldemort.store.slop.SlopStorageEngine;
 import voldemort.store.socket.SocketStore;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.TestSocketStoreFactory;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.Pair;
@@ -208,7 +209,7 @@ public class ZoneShrinkageEndToEndTest {
 
         public void initialize() {
             for(String k: kvMap.keySet()) {
-                client.put(k, kvMap.get(k) + "_" + kvUpdateCount.get(k).toString(), 0L);
+                client.put(k, kvMap.get(k) + "_" + kvUpdateCount.get(k).toString(), new RUD());
             }
         }
 
@@ -224,20 +225,22 @@ public class ZoneShrinkageEndToEndTest {
                                 break;
                             }
                             kvUpdateCount.put(k, kvUpdateCount.get(k) + 1);
-                            client.put(k, kvMap.get(k) + "_" + kvUpdateCount.get(k).toString(), 0L);
+                            client.put(k,
+                                       kvMap.get(k) + "_" + kvUpdateCount.get(k).toString(),
+                                       new RUD());
                             requestCount.put("PUT", requestCount.get("PUT") + 1);
                             break;
                         case 1: // get
                             if((operationMode & MODE_ALLOW_GET) == 0) {
                                 break;
                             }
-                            Versioned<String> value = client.get(k, 0L); // does
-                                                                         // not
-                                                                         // check
-                                                                         // versions,
-                                                                         // just
-                                                                         // prevent
-                                                                         // exceptions
+                            Versioned<String> value = client.get(k, new RUD()); // does
+                            // not
+                            // check
+                            // versions,
+                            // just
+                            // prevent
+                            // exceptions
                             if(value == null) {
                                 throw new RuntimeException("Versioned is empty for key [" + k + "]") {};
                             } else {
@@ -255,7 +258,7 @@ public class ZoneShrinkageEndToEndTest {
                             String k2 = keys.get(r.nextInt(KV_POOL_SIZE));
                             Map<String, Versioned<String>> result = client.getAll(Arrays.asList(k,
                                                                                                 k2),
-                                                                                  0L);
+                                                                                  new RUD());
                             if(result.get(k) == null) {
                                 throw new RuntimeException("Versioned is empty for key [" + k + "]") {};
                             } else {
@@ -514,7 +517,7 @@ public class ZoneShrinkageEndToEndTest {
                                       new Versioned<byte[]>(slopSerializer.toBytes(slop),
                                                             new VectorClock()),
                                       null,
-                                      0L);
+                                      new RUD());
                     }
                 }
             }
@@ -566,7 +569,7 @@ public class ZoneShrinkageEndToEndTest {
                                       new Versioned<byte[]>(slopSerializer.toBytes(slop),
                                                             new VectorClock()),
                                       null,
-                                      0L);
+                                      new RUD());
                     }
                 }
             }
@@ -591,7 +594,7 @@ public class ZoneShrinkageEndToEndTest {
                 ByteArray key = keyHostIdPair.getFirst();
                 Integer hostId = keyHostIdPair.getSecond();
                 Integer nodeZoneId = cluster.getNodeById(nodeId).getZoneId();
-                List<Versioned<byte[]>> result = store.get(key, null, 0L);
+                List<Versioned<byte[]>> result = store.get(key, null, new RUD());
                 if(cluster.getNodeById(nodeId).getZoneId() == droppingZoneId) {
                     if(!result.isEmpty()) {
                         logger.error(String.format("Key %s for Node %d (zone %d) slopped on Node %d should be gone but exists\n",

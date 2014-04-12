@@ -26,6 +26,7 @@ import voldemort.store.AbstractStorageEngine;
 import voldemort.store.NoSuchCapabilityException;
 import voldemort.store.StoreCapabilityType;
 import voldemort.store.StoreUtils;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.Pair;
@@ -63,7 +64,7 @@ public class NoopStorageEngine extends AbstractStorageEngine<ByteArray, byte[], 
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, RUD rud)
             throws VoldemortException {
         return dataList;
     }
@@ -71,17 +72,17 @@ public class NoopStorageEngine extends AbstractStorageEngine<ByteArray, byte[], 
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
                                                           Map<ByteArray, byte[]> transforms,
-                                                          long rid) throws VoldemortException {
+                                                          RUD rud) throws VoldemortException {
         return dataMap;
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key, long rid) {
-        return StoreUtils.getVersions(get(key, null, rid));
+    public List<Version> getVersions(ByteArray key, RUD rud) {
+        return StoreUtils.getVersions(get(key, null,rud));
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, long rid)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, RUD rud)
             throws VoldemortException {
 
         if(dataReflect) {
@@ -91,7 +92,7 @@ public class NoopStorageEngine extends AbstractStorageEngine<ByteArray, byte[], 
     }
 
     @Override
-    public boolean delete(ByteArray key, Version version, long rid) throws VoldemortException {
+    public boolean delete(ByteArray key, Version version, RUD rud) throws VoldemortException {
         return true;
     }
 

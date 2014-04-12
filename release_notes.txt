@@ -547,7 +547,7 @@ Release 0.90 on 7/10/2011
 Changes made since 0.81
  * All upgrading instructions can be found here - https://github.com/voldemort/voldemort/wiki/Upgrading-from-0.81
  * Tooling
- - Single consolidated administrative tool - Got rid of the admin client
+ - Single consolidated administrative tool - Gotrud of the admin client
    shell and have a better Voldemort admin tool. More documentation -
    https://github.com/voldemort/voldemort/wiki/Voldemort-Admin-tool
 

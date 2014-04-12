@@ -40,6 +40,7 @@ import voldemort.store.StoreBinaryFormat;
 import voldemort.store.StoreUtils;
 import voldemort.store.backup.NativeBackupable;
 import voldemort.store.bdb.stats.BdbEnvironmentStats;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.ClosableIterator;
@@ -226,12 +227,12 @@ public class BdbStorageEngine extends AbstractStorageEngine<ByteArray, byte[], b
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key, long rid) {
-        return StoreUtils.getVersions(get(key, null, rid));
+    public List<Version> getVersions(ByteArray key, RUD rud) {
+        return StoreUtils.getVersions(get(key, null, rud));
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, RUD rud)
             throws PersistenceFailureException {
         StoreUtils.assertValidKey(key);
         DatabaseEntry keyEntry = new DatabaseEntry(key.get());
@@ -268,7 +269,7 @@ public class BdbStorageEngine extends AbstractStorageEngine<ByteArray, byte[], b
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
                                                           Map<ByteArray, byte[]> transforms,
-                                                          long rid) throws VoldemortException {
+                                                          RUD rud) throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
         Map<ByteArray, List<Versioned<byte[]>>> results = null;
         long startTimeNs = -1;
@@ -276,7 +277,7 @@ public class BdbStorageEngine extends AbstractStorageEngine<ByteArray, byte[], b
         if(logger.isTraceEnabled())
             startTimeNs = System.nanoTime();
         try {
-            results = StoreUtils.getAll(this, keys, transforms, rid);
+            results = StoreUtils.getAll(this, keys, transforms,rud);
         } catch(PersistenceFailureException pfe) {
             throw pfe;
         } finally {
@@ -294,7 +295,7 @@ public class BdbStorageEngine extends AbstractStorageEngine<ByteArray, byte[], b
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, long rid)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, RUD rud)
             throws PersistenceFailureException {
 
         long startTimeNs = -1;
@@ -371,7 +372,7 @@ public class BdbStorageEngine extends AbstractStorageEngine<ByteArray, byte[], b
     }
 
     @Override
-    public boolean delete(ByteArray key, Version version, long rid)
+    public boolean delete(ByteArray key, Version version, RUD rud)
             throws PersistenceFailureException {
 
         StoreUtils.assertValidKey(key);
@@ -427,7 +428,7 @@ public class BdbStorageEngine extends AbstractStorageEngine<ByteArray, byte[], b
                     valueEntry.setData(StoreBinaryFormat.toByteArray(vals));
                     getBdbDatabase().put(transaction, keyEntry, valueEntry);
                 } else {
-                    // we have deleted all the versions; so get rid of the entry
+                    // we have deleted all the versions; so get rud of the entry
                     // in the database
                     getBdbDatabase().delete(transaction, keyEntry);
                 }

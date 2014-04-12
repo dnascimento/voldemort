@@ -49,6 +49,7 @@ import voldemort.store.routed.RoutedStoreConfig;
 import voldemort.store.routed.RoutedStoreFactory;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.CmdUtils;
 import voldemort.utils.Time;
@@ -207,7 +208,7 @@ public class RoutedStoreParallelismTest {
                         for(int i = 0; i < numKeys; i++) {
                             ByteArray key = new ByteArray(("test-key-" + i).getBytes());
                             try {
-                                routedStore.get(key, null, 0L);
+                                routedStore.get(key, null, new RUD());
                             } catch(VoldemortException e) {
                                 //
                             }

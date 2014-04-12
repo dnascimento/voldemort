@@ -65,6 +65,7 @@ import voldemort.store.bdb.BdbStorageConfiguration;
 import voldemort.store.metadata.MetadataStore;
 import voldemort.store.metadata.MetadataStore.VoldemortState;
 import voldemort.store.slop.strategy.HintedHandoffStrategyType;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.RebalanceUtils;
@@ -685,7 +686,8 @@ public abstract class AbstractZonedRebalanceTest extends AbstractRebalanceTest {
 
                                 // should get a valid value
                                 try {
-                                    Versioned<String> value = storeClientRW.get(keys.get(index), 0L);
+                                    Versioned<String> value = storeClientRW.get(keys.get(index),
+                                                                                new RUD());
                                     assertNotSame("StoreClient get() should not return null.",
                                                   null,
                                                   value);
@@ -871,7 +873,7 @@ public abstract class AbstractZonedRebalanceTest extends AbstractRebalanceTest {
                                 if(ByteUtils.getString(server.getMetadataStore()
                                                              .get(MetadataStore.SERVER_STATE_KEY,
                                                                   null,
-                                                                  0L)
+                                                                  new RUD())
                                                              .get(0)
                                                              .getValue(),
                                                        "UTF-8")
@@ -906,7 +908,7 @@ public abstract class AbstractZonedRebalanceTest extends AbstractRebalanceTest {
                                 try {
                                     String keyStr = ByteUtils.getString(movingKey.get(), "UTF-8");
                                     String valStr = "proxy_write";
-                                    storeClientRW.put(keyStr, valStr, 0L);
+                                    storeClientRW.put(keyStr, valStr, new RUD());
                                     baselineTuples.put(keyStr, valStr);
                                     // all these keys will have [5:1] vector
                                     // clock is node 5 is the new pseudo master
@@ -1022,7 +1024,7 @@ public abstract class AbstractZonedRebalanceTest extends AbstractRebalanceTest {
                             .put(keyBytes,
                                  new Versioned<byte[]>(ByteUtils.getBytes(entry.getValue(), "UTF-8")),
                                  null,
-                                 0L);
+                                 new RUD());
                 } catch(ObsoleteVersionException e) {
                     logger.info("Why are we seeing this at all here ?? ");
                     e.printStackTrace();

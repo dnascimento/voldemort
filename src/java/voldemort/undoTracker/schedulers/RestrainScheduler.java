@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import voldemort.undoTracker.RUD;
 import voldemort.undoTracker.map.OpMultimap;
 import voldemort.utils.ByteArray;
 
@@ -27,16 +28,16 @@ public class RestrainScheduler implements AccessSchedule {
     }
 
     @Override
-    public void getEnd(ByteArray key, long rid) {}
+    public void getEnd(ByteArray key, RUD rud) {}
 
     @Override
-    public void putEnd(ByteArray key, long rid) {}
+    public void putEnd(ByteArray key, RUD rud) {}
 
     @Override
-    public void deleteEnd(ByteArray key, long rid) {}
+    public void deleteEnd(ByteArray key, RUD rud) {}
 
     @Override
-    public long getStart(ByteArray key, long rid, long sts) {
+    public long getStart(ByteArray key, RUD rud, long sts) {
         synchronized(flag) {
             try {
                 flag.wait();
@@ -48,7 +49,7 @@ public class RestrainScheduler implements AccessSchedule {
     }
 
     @Override
-    public long putStart(ByteArray key, long rid, long sts) {
+    public long putStart(ByteArray key, RUD rud, long sts) {
         synchronized(flag) {
             try {
                 flag.wait();
@@ -60,7 +61,7 @@ public class RestrainScheduler implements AccessSchedule {
     }
 
     @Override
-    public long deleteStart(ByteArray key, long rid, long sts) {
+    public long deleteStart(ByteArray key, RUD rud, long sts) {
         synchronized(flag) {
             try {
                 flag.wait();

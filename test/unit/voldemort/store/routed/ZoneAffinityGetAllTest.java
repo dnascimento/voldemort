@@ -13,6 +13,7 @@ import org.junit.Test;
 import voldemort.cluster.Cluster;
 import voldemort.store.InsufficientOperationalNodesException;
 import voldemort.store.StoreDefinition;
+import voldemort.undoTracker.RUD;
 import voldemort.versioning.Versioned;
 
 public class ZoneAffinityGetAllTest extends AbstractZoneAffinityTest {
@@ -35,7 +36,7 @@ public class ZoneAffinityGetAllTest extends AbstractZoneAffinityTest {
             keys.add("K1");
             keys.add("K2");
             keys.add("K3");
-            Map<String, List<Versioned<String>>> versioneds = client.getAll(keys, null, 0L);
+            Map<String, List<Versioned<String>>> versioneds = client.getAll(keys, null, new RUD());
             assertEquals("V1", versioneds.get("K1").get(0).getValue());
             assertEquals("V1", versioneds.get("K2").get(0).getValue());
             assertEquals(null, versioneds.get("K3"));
@@ -54,7 +55,7 @@ public class ZoneAffinityGetAllTest extends AbstractZoneAffinityTest {
             keys.add("K1");
             keys.add("K2");
             keys.add("K3");
-            Map<String, List<Versioned<String>>> versioneds = client.getAll(keys, null, 0L);
+            Map<String, List<Versioned<String>>> versioneds = client.getAll(keys, null, new RUD());
             assertEquals(null, versioneds.get("K1"));
             assertEquals(null, versioneds.get("K2"));
             assertEquals(null, versioneds.get("K3"));
@@ -73,7 +74,7 @@ public class ZoneAffinityGetAllTest extends AbstractZoneAffinityTest {
             keys.add("K1");
             keys.add("K2");
             keys.add("K3");
-            Map<String, List<Versioned<String>>> versioneds = client.getAll(keys, null, 0L);
+            Map<String, List<Versioned<String>>> versioneds = client.getAll(keys, null, new RUD());
             assertEquals("V1", versioneds.get("K1").get(0).getValue());
             assertEquals("V1", versioneds.get("K2").get(0).getValue());
             assertEquals(null, versioneds.get("K3"));
@@ -96,7 +97,7 @@ public class ZoneAffinityGetAllTest extends AbstractZoneAffinityTest {
             keys.add("K1");
             keys.add("K2");
             keys.add("K3");
-            Map<String, List<Versioned<String>>> versioneds = client.getAll(keys, null, 0L);
+            Map<String, List<Versioned<String>>> versioneds = client.getAll(keys, null, new RUD());
             assertEquals(null, versioneds.get("K1"));
             assertEquals(null, versioneds.get("K2"));
             assertEquals(null, versioneds.get("K3"));

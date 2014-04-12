@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 import java.util.Queue;
 
 import voldemort.client.StoreClient;
+import voldemort.undoTracker.RUD;
 import voldemort.versioning.ObsoleteVersionException;
 import voldemort.versioning.Versioned;
 
@@ -89,7 +90,7 @@ public class VStack<K, E> implements Queue<E> {
     @Override
     public boolean isEmpty() {
         VListKey<K> newKey = new VListKey<K>(_key, 0);
-        Versioned<Map<String, Object>> firstNode = _storeClient.get(newKey.mapValue(), 0L);
+        Versioned<Map<String, Object>> firstNode = _storeClient.get(newKey.mapValue(), new RUD());
         return firstNode == null;
     }
 
@@ -248,7 +249,7 @@ public class VStack<K, E> implements Queue<E> {
             throw new NullPointerException("null objects are not allowed");
         AddNodeAction<K, E> addAction = new AddNodeAction<K, E>(_key, e);
         try {
-            return _storeClient.applyUpdate(addAction, 0L);
+            return _storeClient.applyUpdate(addAction, new RUD());
         } catch(IndexOutOfBoundsException ex) {
             // over-capacity
             return false;
@@ -317,7 +318,7 @@ public class VStack<K, E> implements Queue<E> {
         VListKey<K> key = new VListKey<K>(_key, id);
         UpdateElementById<K, E> updateElementAction = new UpdateElementById<K, E>(key, element);
 
-        if(!_storeClient.applyUpdate(updateElementAction, 0L))
+        if(!_storeClient.applyUpdate(updateElementAction, new RUD()))
             throw new ObsoleteVersionException("update failed");
 
         return updateElementAction.getResult();
@@ -327,7 +328,7 @@ public class VStack<K, E> implements Queue<E> {
         VListKey<K> key = new VListKey<K>(_key, id);
         UpdateElementById<K, E> updateElementAction = new UpdateElementById<K, E>(key, element);
 
-        if(!_storeClient.applyUpdate(updateElementAction, 0L))
+        if(!_storeClient.applyUpdate(updateElementAction, new RUD()))
             throw new ObsoleteVersionException("update failed");
 
         return updateElementAction.getResult();
@@ -360,7 +361,7 @@ public class VStack<K, E> implements Queue<E> {
      */
     Versioned<VListNode<E>> getListNode(int id) {
         VListKey<K> key = new VListKey<K>(_key, id);
-        Versioned<Map<String, Object>> resultMap = _storeClient.get(key.mapValue(), 0L);
+        Versioned<Map<String, Object>> resultMap = _storeClient.get(key.mapValue(), new RUD());
         if(resultMap == null)
             return null;
 

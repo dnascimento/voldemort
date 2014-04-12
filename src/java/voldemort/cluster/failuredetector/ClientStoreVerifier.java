@@ -25,6 +25,7 @@ import voldemort.client.SocketStoreClientFactory;
 import voldemort.cluster.Node;
 import voldemort.store.Store;
 import voldemort.store.UnreachableStoreException;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 
 /**
@@ -57,7 +58,7 @@ public abstract class ClientStoreVerifier implements StoreVerifier {
             }
         }
 
-        store.get(KEY, null, 0L);
+        store.get(KEY, null, new RUD());
     }
 
     protected abstract Store<ByteArray, byte[], byte[]> getStoreInternal(Node node);

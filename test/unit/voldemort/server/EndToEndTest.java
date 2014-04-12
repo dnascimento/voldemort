@@ -41,6 +41,7 @@ import voldemort.cluster.Cluster;
 import voldemort.cluster.Node;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
+import voldemort.undoTracker.RUD;
 import voldemort.versioning.Occurred;
 import voldemort.versioning.VectorClock;
 import voldemort.versioning.Version;
@@ -102,30 +103,31 @@ public class EndToEndTest {
      */
     @Test
     public void testSanity() {
-        storeClient.put("Belarus", "Minsk", 0L);
-        storeClient.put("Russia", "Moscow", 0L);
-        storeClient.put("Ukraine", "Kiev", 0L);
-        storeClient.put("Kazakhstan", "Almaty", 0L);
+        storeClient.put("Belarus", "Minsk", new RUD());
+        storeClient.put("Russia", "Moscow", new RUD());
+        storeClient.put("Ukraine", "Kiev", new RUD());
+        storeClient.put("Kazakhstan", "Almaty", new RUD());
 
-        Versioned<String> v1 = storeClient.get("Belarus", 0L);
+        Versioned<String> v1 = storeClient.get("Belarus", new RUD());
         assertEquals("get/put work as expected", "Minsk", v1.getValue());
 
-        storeClient.put("Kazakhstan", "Astana", 0L);
-        Versioned<String> v2 = storeClient.get("Kazakhstan", 0L);
+        storeClient.put("Kazakhstan", "Astana", new RUD());
+        Versioned<String> v2 = storeClient.get("Kazakhstan", new RUD());
         assertEquals("clobbering a value works as expected, we have read-your-writes consistency",
                      "Astana",
                      v2.getValue());
 
         Map<String, Versioned<String>> capitals = storeClient.getAll(Arrays.asList("Russia",
                                                                                    "Ukraine",
-                                                                                   "Japan"), 0L);
+                                                                                   "Japan"),
+                                                                     new RUD());
 
         assertEquals("getAll works as expected", "Moscow", capitals.get("Russia").getValue());
         assertEquals("getAll works as expected", "Kiev", capitals.get("Ukraine").getValue());
         assertFalse("getAll works as expected", capitals.containsKey("Japan"));
 
-        storeClient.delete("Ukraine", 0L);
-        assertNull("delete works as expected", storeClient.get("Ukraine", 0L));
+        storeClient.delete("Ukraine", new RUD());
+        assertNull("delete works as expected", storeClient.get("Ukraine", new RUD()));
     }
 
     /**
@@ -143,12 +145,12 @@ public class EndToEndTest {
         for(int i = 0; i < 5; i++) {
             oldValue = "value" + i;
             newValue = "value" + (i + 1);
-            oldVersion = storeClient.put("key1", Versioned.value(oldValue, baseVersion), 0L);
+            oldVersion = storeClient.put("key1", Versioned.value(oldValue, baseVersion), new RUD());
             newVersion = storeClient.put("key1",
                                          Versioned.value(newValue,
                                                          ((VectorClock) oldVersion).clone()),
-                                         0L);
-            getVersioned = storeClient.get("key1", 0L);
+                                         new RUD());
+            getVersioned = storeClient.get("key1", new RUD());
             baseVersion = newVersion;
 
             verifyResults(oldVersion, newVersion, getVersioned, newValue);
@@ -166,10 +168,10 @@ public class EndToEndTest {
         for(int i = 0; i < 5; i++) {
             oldValue = "value" + i;
             newValue = "value" + i + 1;
-            oldVersion = storeClient.put("key1", oldValue, 0L);
-            newVersion = storeClient.put("key1", newValue, 0L);
+            oldVersion = storeClient.put("key1", oldValue, new RUD());
+            newVersion = storeClient.put("key1", newValue, new RUD());
             assertEquals("Version did not advance", Occurred.AFTER, newVersion.compare(oldVersion));
-            getVersioned = storeClient.get("key1", 0L);
+            getVersioned = storeClient.get("key1", new RUD());
 
             verifyResults(oldVersion, newVersion, getVersioned, newValue);
         }

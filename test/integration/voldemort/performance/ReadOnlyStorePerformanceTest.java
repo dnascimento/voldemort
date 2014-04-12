@@ -62,6 +62,7 @@ import voldemort.store.readonly.JsonStoreBuilder;
 import voldemort.store.readonly.ReadOnlyStorageEngine;
 import voldemort.store.readonly.ReadOnlyStorageFormat;
 import voldemort.store.readonly.SearchStrategy;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.CmdUtils;
 import voldemort.utils.ReflectUtils;
@@ -307,7 +308,7 @@ public class ReadOnlyStorePerformanceTest {
                     int curr = current.getAndIncrement();
                     List<Versioned<byte[]>> results = store.get(new ByteArray(keySerializer.toBytes(requestIds.take())),
                                                                 null,
-                                                                0L);
+                                                                new RUD());
                     if(curr % progressIncrement == 0)
                         System.out.println(curr);
 

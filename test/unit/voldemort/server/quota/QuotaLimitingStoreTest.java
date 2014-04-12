@@ -19,6 +19,7 @@ import voldemort.client.protocol.admin.AdminClient;
 import voldemort.client.protocol.admin.AdminClientConfig;
 import voldemort.server.VoldemortServer;
 import voldemort.store.quota.QuotaType;
+import voldemort.undoTracker.RUD;
 
 /**
  * Does basic tests on the rate limiting implementation. More real performance
@@ -58,14 +59,14 @@ public class QuotaLimitingStoreTest {
         for(int i = 0; i < 1000; i++) {
             try {
                 // do a put
-                storeClient.put("key", "value", 0L);
+                storeClient.put("key", "value", new RUD());
             } catch(VoldemortApplicationException vae) {
                 numPutExceptions++;
             }
 
             try {
                 // do a get
-                storeClient.get("key", 0L);
+                storeClient.get("key", new RUD());
             } catch(VoldemortApplicationException vae) {
                 numGetExceptions++;
             }
@@ -79,14 +80,14 @@ public class QuotaLimitingStoreTest {
         for(int i = 0; i < 1000; i++) {
             try {
                 // do a put
-                storeClient.put("key", "value", 0L);
+                storeClient.put("key", "value", new RUD());
             } catch(VoldemortApplicationException vae) {
                 fail("Put throttled when rate is :" + Integer.MAX_VALUE);
             }
 
             try {
                 // do a get
-                storeClient.get("key", 0L);
+                storeClient.get("key", new RUD());
             } catch(VoldemortApplicationException vae) {
                 fail("Get throttled when rate is :" + Integer.MAX_VALUE);
             }

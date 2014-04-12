@@ -24,6 +24,7 @@ import java.util.List;
 
 import voldemort.client.protocol.RequestFormat;
 import voldemort.server.RequestRoutingType;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.Versioned;
 
@@ -37,8 +38,8 @@ public class GetClientRequest extends AbstractStoreClientRequest<List<Versioned<
                             RequestRoutingType requestRoutingType,
                             ByteArray key,
                             byte[] transforms,
-                            long rid) {
-        super(storeName, requestFormat, requestRoutingType, rid);
+                            RUD rud) {
+        super(storeName, requestFormat, requestRoutingType,rud);
         this.key = key;
         this.transforms = transforms;
     }
@@ -55,7 +56,7 @@ public class GetClientRequest extends AbstractStoreClientRequest<List<Versioned<
                                       key,
                                       transforms,
                                       requestRoutingType,
-                                      rid);
+                                     rud);
     }
 
     @Override

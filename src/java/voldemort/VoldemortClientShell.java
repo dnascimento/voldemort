@@ -58,6 +58,7 @@ import voldemort.serialization.json.EndOfFileException;
 import voldemort.serialization.json.JsonReader;
 import voldemort.store.StoreDefinition;
 import voldemort.store.StoreUtils;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.Pair;
@@ -252,7 +253,7 @@ public class VoldemortClientShell {
         Object key = parseKey(putArgStr, parsePos);
         putArgStr = putArgStr.substring(parsePos.intValue());
         Object value = parseValue(putArgStr, parsePos);
-        client.put(key, value, 0L);
+        client.put(key, value, new RUD());
     }
 
     /**
@@ -273,7 +274,7 @@ public class VoldemortClientShell {
             getAllArgStr = getAllArgStr.substring(parsePos.intValue());
         }
 
-        Map<Object, Versioned<Object>> vals = client.getAll(keys, 0L);
+        Map<Object, Versioned<Object>> vals = client.getAll(keys, new RUD());
         if(vals.size() > 0) {
             for(Map.Entry<Object, Versioned<Object>> entry: vals.entrySet()) {
                 commandOutput.print(entry.getKey());
@@ -288,13 +289,13 @@ public class VoldemortClientShell {
     protected void processGet(String getArgStr) {
         MutableInt parsePos = new MutableInt(0);
         Object key = parseKey(getArgStr, parsePos);
-        printVersioned(client.get(key, 0L));
+        printVersioned(client.get(key, new RUD()));
     }
 
     protected void processDelete(String deleteArgStr) {
         MutableInt parsePos = new MutableInt(0);
         Object key = parseKey(deleteArgStr, parsePos);
-        client.delete(key, 0L);
+        client.delete(key, new RUD());
     }
 
     protected void processCommands(boolean printCommands) throws IOException {

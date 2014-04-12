@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 import voldemort.client.protocol.RequestFormatType;
+import voldemort.store.socket.SocketDestination;
 
 /**
  * A wrapper class that wraps a socket with its DataInputStream and

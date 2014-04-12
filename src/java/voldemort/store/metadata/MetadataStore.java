@@ -51,6 +51,7 @@ import voldemort.store.StoreDefinition;
 import voldemort.store.StoreUtils;
 import voldemort.store.configuration.ConfigurationStorageEngine;
 import voldemort.store.system.SystemStoreConstants;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.ClosableIterator;
@@ -199,7 +200,7 @@ public class MetadataStore extends AbstractStorageEngine<ByteArray, byte[], byte
                 }
 
                 // try inserting into inner store first
-                putInner(key, convertObjectToString(key, value), 0L);
+                putInner(key, convertObjectToString(key, value), new RUD());
 
                 // cache all keys if innerStore put succeeded
                 metadataCache.put(key, value);
@@ -227,12 +228,12 @@ public class MetadataStore extends AbstractStorageEngine<ByteArray, byte[], byte
      * @param key
      * @param value
      */
-    public void put(String key, Object value, long rid) {
+    public void put(String key, Object value, RUD rud) {
         // acquire write lock
         writeLock.lock();
         try {
             if(METADATA_KEYS.contains(key)) {
-                VectorClock version = (VectorClock) get(key, null, rid).get(0).getVersion();
+                VectorClock version = (VectorClock) get(key, null,rud).get(0).getVersion();
                 put(key,
                     new Versioned<Object>(value, version.incremented(getNodeId(),
                                                                      System.currentTimeMillis())));
@@ -253,7 +254,7 @@ public class MetadataStore extends AbstractStorageEngine<ByteArray, byte[], byte
      * @throws VoldemortException
      */
     @Override
-    public void put(ByteArray keyBytes, Versioned<byte[]> valueBytes, byte[] transforms, long rid)
+    public void put(ByteArray keyBytes, Versioned<byte[]> valueBytes, byte[] transforms, RUD rud)
             throws VoldemortException {
         // acquire write lock
         writeLock.lock();
@@ -288,7 +289,7 @@ public class MetadataStore extends AbstractStorageEngine<ByteArray, byte[], byte
      * @throws VoldemortException
      */
     @Override
-    public List<Versioned<byte[]>> get(ByteArray keyBytes, byte[] transforms, long rid)
+    public List<Versioned<byte[]>> get(ByteArray keyBytes, byte[] transforms, RUD rud)
             throws VoldemortException {
         // acquire read lock
 
@@ -328,14 +329,14 @@ public class MetadataStore extends AbstractStorageEngine<ByteArray, byte[], byte
 
     }
 
-    public List<Versioned<byte[]>> get(String key, String transforms, long rid)
+    public List<Versioned<byte[]>> get(String key, String transforms, RUD rud)
             throws VoldemortException {
         // acquire read lock
         readLock.lock();
         try {
             return get(new ByteArray(ByteUtils.getBytes(key, "UTF-8")),
                        transforms == null ? null : ByteUtils.getBytes(transforms, "UTF-8"),
-                       rid);
+                      rud);
         } finally {
             readLock.unlock();
         }
@@ -350,8 +351,8 @@ public class MetadataStore extends AbstractStorageEngine<ByteArray, byte[], byte
                 if(!key.equals(NODE_ID_KEY))
                     innerStore.delete(key,
                                       getVersions(new ByteArray(ByteUtils.getBytes(key, "UTF-8")),
-                                                  0L).get(0),
-                                      0L);
+                                                  new RUD()).get(0),
+                                      new RUD());
             }
 
             init(getNodeId());
@@ -361,11 +362,11 @@ public class MetadataStore extends AbstractStorageEngine<ByteArray, byte[], byte
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key, long rid) {
+    public List<Version> getVersions(ByteArray key, RUD rud) {
         // acquire read lock
         readLock.lock();
         try {
-            List<Versioned<byte[]>> values = get(key, null, rid);
+            List<Versioned<byte[]>> values = get(key, null,rud);
             List<Version> versions = new ArrayList<Version>(values.size());
             for(Versioned<?> value: values) {
                 versions.add(value.getVersion());
@@ -588,9 +589,9 @@ public class MetadataStore extends AbstractStorageEngine<ByteArray, byte[], byte
         writeLock.lock();
         try {
             // Move into rebalancing state
-            if(ByteUtils.getString(get(SERVER_STATE_KEY, null, 0L).get(0).getValue(), "UTF-8")
-                        .compareTo(VoldemortState.NORMAL_SERVER.toString()) == 0) {
-                put(SERVER_STATE_KEY, VoldemortState.REBALANCING_MASTER_SERVER, 0L);
+            if(ByteUtils.getString(get(SERVER_STATE_KEY, null, new RUD()).get(0).getValue(),
+                                   "UTF-8").compareTo(VoldemortState.NORMAL_SERVER.toString()) == 0) {
+                put(SERVER_STATE_KEY, VoldemortState.REBALANCING_MASTER_SERVER, new RUD());
                 initCache(SERVER_STATE_KEY);
             }
 
@@ -603,7 +604,7 @@ public class MetadataStore extends AbstractStorageEngine<ByteArray, byte[], byte
                                              + rebalancerState.find(stealInfo.getDonorId())
                                              + " ) already exists");
             }
-            put(MetadataStore.REBALANCING_STEAL_INFO, rebalancerState, 0L);
+            put(MetadataStore.REBALANCING_STEAL_INFO, rebalancerState, new RUD());
             initCache(REBALANCING_STEAL_INFO);
         } finally {
             writeLock.unlock();
@@ -629,7 +630,7 @@ public class MetadataStore extends AbstractStorageEngine<ByteArray, byte[], byte
                 logger.debug("Cleaning all rebalancing state");
                 cleanAllRebalancingState();
             } else {
-                put(REBALANCING_STEAL_INFO, rebalancerState, 0L);
+                put(REBALANCING_STEAL_INFO, rebalancerState, new RUD());
                 initCache(REBALANCING_STEAL_INFO);
             }
         } finally {
@@ -663,19 +664,19 @@ public class MetadataStore extends AbstractStorageEngine<ByteArray, byte[], byte
     }
 
     @Override
-    public boolean delete(ByteArray key, Version version, long rid) throws VoldemortException {
+    public boolean delete(ByteArray key, Version version, RUD rud) throws VoldemortException {
         throw new VoldemortException("You cannot delete your metadata fool !!");
     }
 
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
                                                           Map<ByteArray, byte[]> transforms,
-                                                          long rid) throws VoldemortException {
+                                                          RUD rud) throws VoldemortException {
         // acquire read lock
         readLock.lock();
         try {
             StoreUtils.assertValidKeys(keys);
-            return StoreUtils.getAll(this, keys, transforms, rid);
+            return StoreUtils.getAll(this, keys, transforms,rud);
         } finally {
             readLock.unlock();
         }
@@ -717,7 +718,7 @@ public class MetadataStore extends AbstractStorageEngine<ByteArray, byte[], byte
     }
 
     private synchronized void initCache(String key) {
-        metadataCache.put(key, convertStringToObject(key, getInnerValue(key, 0L)));
+        metadataCache.put(key, convertStringToObject(key, getInnerValue(key, new RUD())));
     }
 
     // Initialize the metadata cache with system store list
@@ -832,12 +833,12 @@ public class MetadataStore extends AbstractStorageEngine<ByteArray, byte[], byte
         return new Versioned<Object>(valueObject, value.getVersion());
     }
 
-    private void putInner(String key, Versioned<String> value, long rid) {
-        innerStore.put(key, value, null, rid);
+    private void putInner(String key, Versioned<String> value, RUD rud) {
+        innerStore.put(key, value, null,rud);
     }
 
-    private Versioned<String> getInnerValue(String key, long rid) throws VoldemortException {
-        List<Versioned<String>> values = innerStore.get(key, null, rid);
+    private Versioned<String> getInnerValue(String key, RUD rud) throws VoldemortException {
+        List<Versioned<String>> values = innerStore.get(key, null,rud);
 
         if(values.size() > 1)
             throw new VoldemortException("Inconsistent metadata found: expected 1 version but found "

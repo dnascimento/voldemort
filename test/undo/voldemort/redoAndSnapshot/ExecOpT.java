@@ -1,6 +1,7 @@
 package voldemort.redoAndSnapshot;
 
 import voldemort.undoTracker.DBUndoStub;
+import voldemort.undoTracker.RUD;
 import voldemort.undoTracker.map.Op;
 import voldemort.undoTracker.map.Op.OpType;
 import voldemort.undoTracker.map.OpMultimap;
@@ -18,23 +19,15 @@ public class ExecOpT extends Thread {
     DBUndoStub scheduler;
     private ByteArray key;
     private OpMultimap db;
-    private boolean contained;
-    private short branch;
+    private RUD rud;
 
-    public ExecOpT(ByteArray key,
-                   long rid,
-                   OpType type,
-                   DBUndoStub stub,
-                   OpMultimap db,
-                   boolean contained,
-                   int branch) {
+    public ExecOpT(ByteArray key, RUD rud, OpType type, DBUndoStub stub, OpMultimap db) {
         super();
-        this.op = new Op(rid, type);
+        this.op = new Op(rud.rid, type);
         this.scheduler = stub;
         this.key = key;
         this.db = db;
-        this.contained = contained;
-        this.branch = (short) branch;
+        this.rud = rud;
     }
 
     @Override
@@ -50,29 +43,29 @@ public class ExecOpT extends Thread {
             switch(op.type) {
                 case Delete:
                     System.out.println("Try Delete: " + op.rid);
-                    scheduler.deleteStart(key, op.rid, branch, contained);
+                    scheduler.deleteStart(key, new RUD(op.rid, rud.branch, rud.restrain));
                     db.put(key.clone(), op);
                     System.out.println("Deleting...: " + op.rid);
                     sleep(1000);
-                    scheduler.deleteEnd(key, op.rid, branch, contained);
+                    scheduler.deleteEnd(key, new RUD(op.rid, rud.branch, rud.restrain));
                     System.out.println("Deleted: " + op.rid);
                     break;
                 case Put:
                     System.out.println("Try put: " + op.rid);
-                    scheduler.putStart(key, op.rid, branch, contained);
+                    scheduler.putStart(key, new RUD(op.rid, rud.branch, rud.restrain));
                     db.put(key.clone(), op);
                     System.out.println("Putting...: " + op.rid);
                     sleep(1000);
-                    scheduler.putEnd(key, op.rid, branch, contained);
+                    scheduler.putEnd(key, new RUD(op.rid, rud.branch, rud.restrain));
                     System.out.println("putted: " + op.rid);
                     break;
                 case Get:
                     System.out.println("Try get: " + op.rid);
-                    scheduler.getStart(key, op.rid, branch, contained);
+                    scheduler.getStart(key, new RUD(op.rid, rud.branch, rud.restrain));
                     db.put(key.clone(), op);
                     System.out.println("getting...: " + op.rid);
                     sleep(1000);
-                    scheduler.getEnd(key, op.rid, branch, contained);
+                    scheduler.getEnd(key, new RUD(op.rid, rud.branch, rud.restrain));
                     System.out.println("getted: " + op.rid);
                     break;
             }
@@ -80,5 +73,4 @@ public class ExecOpT extends Thread {
             e.printStackTrace();
         }
     }
-
 }

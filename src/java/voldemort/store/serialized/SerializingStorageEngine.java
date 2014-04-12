@@ -21,6 +21,7 @@ import java.util.List;
 import voldemort.serialization.Serializer;
 import voldemort.server.storage.KeyLockHandle;
 import voldemort.store.StorageEngine;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.Pair;
@@ -172,7 +173,7 @@ public class SerializingStorageEngine<K, V, T> extends SerializingStore<K, V, T>
     }
 
     @Override
-    public List<Versioned<V>> multiVersionPut(K key, List<Versioned<V>> values, long rid) {
+    public List<Versioned<V>> multiVersionPut(K key, List<Versioned<V>> values, RUD rud) {
         throw new UnsupportedOperationException("multiVersionPut is not supported for "
                                                 + this.getClass().getName());
     }

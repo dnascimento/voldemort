@@ -31,6 +31,7 @@ import voldemort.VoldemortException;
 import voldemort.store.AbstractStorageEngine;
 import voldemort.store.PersistenceFailureException;
 import voldemort.store.StoreUtils;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.Pair;
@@ -163,7 +164,7 @@ public class MysqlStorageEngine extends AbstractStorageEngine<ByteArray, byte[],
     }
 
     @Override
-    public boolean delete(ByteArray key, Version maxVersion, long rid)
+    public boolean delete(ByteArray key, Version maxVersion, RUD rud)
             throws PersistenceFailureException {
         StoreUtils.assertValidKey(key);
         Connection conn = null;
@@ -214,7 +215,7 @@ public class MysqlStorageEngine extends AbstractStorageEngine<ByteArray, byte[],
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
                                                           Map<ByteArray, byte[]> transforms,
-                                                          long rid) throws VoldemortException {
+                                                          RUD rud) throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -247,14 +248,14 @@ public class MysqlStorageEngine extends AbstractStorageEngine<ByteArray, byte[],
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, RUD rud)
             throws PersistenceFailureException {
         StoreUtils.assertValidKey(key);
-        return StoreUtils.get(this, key, transforms, rid);
+        return StoreUtils.get(this, key, transforms,rud);
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, long rid)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, RUD rud)
             throws PersistenceFailureException {
         StoreUtils.assertValidKey(key);
         boolean doCommit = false;
@@ -404,7 +405,7 @@ public class MysqlStorageEngine extends AbstractStorageEngine<ByteArray, byte[],
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key, long rid) {
-        return StoreUtils.getVersions(get(key, null, rid));
+    public List<Version> getVersions(ByteArray key, RUD rud) {
+        return StoreUtils.getVersions(get(key, null,rud));
     }
 }

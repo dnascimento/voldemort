@@ -1,5 +1,6 @@
 package voldemort.undoTracker.schedulers;
 
+import voldemort.undoTracker.RUD;
 import voldemort.undoTracker.map.Op.OpType;
 import voldemort.undoTracker.map.OpMultimap;
 import voldemort.undoTracker.map.OpMultimapEntry;
@@ -20,38 +21,38 @@ public class RedoScheduler implements AccessSchedule {
     }
 
     @Override
-    public long getStart(ByteArray key, long rid, long sts) {
+    public long getStart(ByteArray key, RUD rud, long sts) {
         OpMultimapEntry l = archive.get(key);
-        l.isNextGet(rid);
+        l.isNextGet(rud);
         return sts;
     }
 
     @Override
-    public long putStart(ByteArray key, long rid, long sts) {
+    public long putStart(ByteArray key, RUD rud, long sts) {
         OpMultimapEntry l = archive.get(key);
-        l.isNextPut(rid);
+        l.isNextPut(rud);
         return sts;
     }
 
     @Override
-    public long deleteStart(ByteArray key, long rid, long sts) {
+    public long deleteStart(ByteArray key, RUD rud, long sts) {
         OpMultimapEntry l = archive.get(key);
-        l.isNextDelete(rid);
+        l.isNextDelete(rud);
         return sts;
     }
 
     @Override
-    public void getEnd(ByteArray key, long rid) {
+    public void getEnd(ByteArray key, RUD rud) {
         archive.get(key).endOp(OpType.Get);
     }
 
     @Override
-    public void putEnd(ByteArray key, long rid) {
+    public void putEnd(ByteArray key, RUD rud) {
         archive.get(key).endOp(OpType.Put);
     }
 
     @Override
-    public void deleteEnd(ByteArray key, long rid) {
+    public void deleteEnd(ByteArray key, RUD rud) {
         archive.get(key).endOp(OpType.Delete);
     }
 }

@@ -47,6 +47,7 @@ import voldemort.store.slop.Slop;
 import voldemort.store.slop.SlopStorageEngine;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.versioning.ObsoleteVersionException;
@@ -178,19 +179,22 @@ public class StreamingSlopPusherTest {
             if(nextSlop.getOperation().equals(Slop.Operation.PUT)) {
                 assertNotSame("entry should be present at store",
                               0,
-                              store.get(nextSlop.getKey(), null, 0L).size());
+                              store.get(nextSlop.getKey(), null, new RUD()).size());
                 assertEquals("entry value should match",
                              new String(nextSlop.getValue()),
-                             new String(store.get(nextSlop.getKey(), null, 0L).get(0).getValue()));
+                             new String(store.get(nextSlop.getKey(), null, new RUD())
+                                             .get(0)
+                                             .getValue()));
             } else if(nextSlop.getOperation().equals(Slop.Operation.DELETE)) {
-                assertEquals("entry value should match", 0, store.get(nextSlop.getKey(), null, 0L)
-                                                                 .size());
+                assertEquals("entry value should match",
+                             0,
+                             store.get(nextSlop.getKey(), null, new RUD()).size());
             }
 
             // did it get deleted correctly
             assertEquals("slop should have gone",
                          0,
-                         slopStoreNode0.get(nextSlop.makeKey(), null, 0L).size());
+                         slopStoreNode0.get(nextSlop.makeKey(), null, new RUD()).size());
         }
 
         entryIterator = entrySet1.listIterator();
@@ -200,7 +204,7 @@ public class StreamingSlopPusherTest {
             // did it get deleted correctly
             assertNotSame("slop should be there",
                           0,
-                          slopStoreNode0.get(nextSlop.makeKey(), null, 0L).size());
+                          slopStoreNode0.get(nextSlop.makeKey(), null, new RUD()).size());
         }
 
         // Check counts
@@ -313,9 +317,10 @@ public class StreamingSlopPusherTest {
                                                  "test-replication-persistent")) {
             StorageEngine<ByteArray, byte[], byte[]> store = getVoldemortServer(1).getStoreRepository()
                                                                                   .getStorageEngine(storeName);
-            assertEquals(store.get(key1, null, 0L).size(), 1);
-            assertEquals(ByteUtils.compare(store.get(key1, null, 0L).get(0).getValue(), value2), 0);
-            assertEquals(store.get(key2, null, 0L).size(), 0);
+            assertEquals(store.get(key1, null, new RUD()).size(), 1);
+            assertEquals(ByteUtils.compare(store.get(key1, null, new RUD()).get(0).getValue(),
+                                           value2), 0);
+            assertEquals(store.get(key2, null, new RUD()).size(), 0);
         }
         stopServers(0, 1);
     }
@@ -365,19 +370,22 @@ public class StreamingSlopPusherTest {
             if(nextSlop.getOperation().equals(Slop.Operation.PUT)) {
                 assertNotSame("entry should be present at store",
                               0,
-                              store.get(nextSlop.getKey(), null, 0L).size());
+                              store.get(nextSlop.getKey(), null, new RUD()).size());
                 assertEquals("entry value should match",
                              new String(nextSlop.getValue()),
-                             new String(store.get(nextSlop.getKey(), null, 0L).get(0).getValue()));
+                             new String(store.get(nextSlop.getKey(), null, new RUD())
+                                             .get(0)
+                                             .getValue()));
             } else if(nextSlop.getOperation().equals(Slop.Operation.DELETE)) {
-                assertEquals("entry value should match", 0, store.get(nextSlop.getKey(), null, 0L)
-                                                                 .size());
+                assertEquals("entry value should match",
+                             0,
+                             store.get(nextSlop.getKey(), null, new RUD()).size());
             }
 
             // did it get deleted correctly
             assertEquals("slop should have gone",
                          0,
-                         slopStoreNode0.get(nextSlop.makeKey(), null, 0L).size());
+                         slopStoreNode0.get(nextSlop.makeKey(), null, new RUD()).size());
         }
 
         // Check counts
@@ -419,13 +427,13 @@ public class StreamingSlopPusherTest {
                                           Versioned.value(versioned.getValue().getValue(),
                                                           versioned.getVersion()),
                                           null,
-                                          0L);
+                                          new RUD());
 
                     } catch(ObsoleteVersionException e) {}
                 }
 
                 try {
-                    slopStore.put(versioned.getValue().makeKey(), versioned, null, 0L);
+                    slopStore.put(versioned.getValue().makeKey(), versioned, null, new RUD());
                 } catch(ObsoleteVersionException e) {}
             }
         }
@@ -491,18 +499,21 @@ public class StreamingSlopPusherTest {
             if(nextSlop.getOperation().equals(Slop.Operation.PUT)) {
                 assertNotSame("entry should be present at store",
                               0,
-                              store.get(nextSlop.getKey(), null, 0L).size());
+                              store.get(nextSlop.getKey(), null, new RUD()).size());
                 assertEquals("entry value should match",
                              new String(nextSlop.getValue()),
-                             new String(store.get(nextSlop.getKey(), null, 0L).get(0).getValue()));
+                             new String(store.get(nextSlop.getKey(), null, new RUD())
+                                             .get(0)
+                                             .getValue()));
             } else if(nextSlop.getOperation().equals(Slop.Operation.DELETE)) {
-                assertEquals("entry value should match", 0, store.get(nextSlop.getKey(), null, 0L)
-                                                                 .size());
+                assertEquals("entry value should match",
+                             0,
+                             store.get(nextSlop.getKey(), null, new RUD()).size());
             }
             // did it get deleted correctly
             assertEquals("slop should have gone",
                          0,
-                         slopStoreNode0.get(nextSlop.makeKey(), null, 0L).size());
+                         slopStoreNode0.get(nextSlop.makeKey(), null, new RUD()).size());
         }
 
         Iterator<Versioned<Slop>> entryIterator1 = entrySetNode1.listIterator();
@@ -514,18 +525,21 @@ public class StreamingSlopPusherTest {
             if(nextSlop.getOperation().equals(Slop.Operation.PUT)) {
                 assertNotSame("entry should be present at store",
                               0,
-                              store.get(nextSlop.getKey(), null, 0L).size());
+                              store.get(nextSlop.getKey(), null, new RUD()).size());
                 assertEquals("entry value should match",
                              new String(nextSlop.getValue()),
-                             new String(store.get(nextSlop.getKey(), null, 0L).get(0).getValue()));
+                             new String(store.get(nextSlop.getKey(), null, new RUD())
+                                             .get(0)
+                                             .getValue()));
             } else if(nextSlop.getOperation().equals(Slop.Operation.DELETE)) {
-                assertEquals("entry value should match", 0, store.get(nextSlop.getKey(), null, 0L)
-                                                                 .size());
+                assertEquals("entry value should match",
+                             0,
+                             store.get(nextSlop.getKey(), null, new RUD()).size());
             }
             // did it get deleted correctly
             assertEquals("slop should have gone",
                          0,
-                         slopStoreNode1.get(nextSlop.makeKey(), null, 0L).size());
+                         slopStoreNode1.get(nextSlop.makeKey(), null, new RUD()).size());
         }
 
         // Check counts
@@ -594,19 +608,22 @@ public class StreamingSlopPusherTest {
             if(nextSlop.getOperation().equals(Slop.Operation.PUT)) {
                 assertNotSame("entry should be present at store",
                               0,
-                              store.get(nextSlop.getKey(), null, 0L).size());
+                              store.get(nextSlop.getKey(), null, new RUD()).size());
                 assertEquals("entry value should match",
                              new String(nextSlop.getValue()),
-                             new String(store.get(nextSlop.getKey(), null, 0L).get(0).getValue()));
+                             new String(store.get(nextSlop.getKey(), null, new RUD())
+                                             .get(0)
+                                             .getValue()));
             } else if(nextSlop.getOperation().equals(Slop.Operation.DELETE)) {
-                assertEquals("entry value should match", 0, store.get(nextSlop.getKey(), null, 0L)
-                                                                 .size());
+                assertEquals("entry value should match",
+                             0,
+                             store.get(nextSlop.getKey(), null, new RUD()).size());
             }
 
             // did it get deleted correctly
             assertEquals("slop should have gone",
                          0,
-                         slopStoreNode0.get(nextSlop.makeKey(), null, 0L).size());
+                         slopStoreNode0.get(nextSlop.makeKey(), null, new RUD()).size());
         }
 
         entryIterator = entrySet1.listIterator();
@@ -616,7 +633,7 @@ public class StreamingSlopPusherTest {
             // did it get deleted correctly
             assertNotSame("slop should be there",
                           0,
-                          slopStoreNode0.get(nextSlop.makeKey(), null, 0L).size());
+                          slopStoreNode0.get(nextSlop.makeKey(), null, new RUD()).size());
         }
 
         // Check counts
@@ -631,8 +648,8 @@ public class StreamingSlopPusherTest {
 
         // update the meatadata store with the new cluster on node 0 and 2 (the
         // two servers that are running)
-        servers[0].getMetadataStore().put(MetadataStore.CLUSTER_KEY, cluster, 0L);
-        servers[2].getMetadataStore().put(MetadataStore.CLUSTER_KEY, cluster, 0L);
+        servers[0].getMetadataStore().put(MetadataStore.CLUSTER_KEY, cluster, new RUD());
+        servers[2].getMetadataStore().put(MetadataStore.CLUSTER_KEY, cluster, new RUD());
 
         // Give some time for the pusher job to figure out that server1 is up
         Thread.sleep(35000);
@@ -654,19 +671,22 @@ public class StreamingSlopPusherTest {
             if(nextSlop.getOperation().equals(Slop.Operation.PUT)) {
                 assertNotSame("entry should be present at store",
                               0,
-                              store.get(nextSlop.getKey(), null, 0L).size());
+                              store.get(nextSlop.getKey(), null, new RUD()).size());
                 assertEquals("entry value should match",
                              new String(nextSlop.getValue()),
-                             new String(store.get(nextSlop.getKey(), null, 0L).get(0).getValue()));
+                             new String(store.get(nextSlop.getKey(), null, new RUD())
+                                             .get(0)
+                                             .getValue()));
             } else if(nextSlop.getOperation().equals(Slop.Operation.DELETE)) {
-                assertEquals("entry value should match", 0, store.get(nextSlop.getKey(), null, 0L)
-                                                                 .size());
+                assertEquals("entry value should match",
+                             0,
+                             store.get(nextSlop.getKey(), null, new RUD()).size());
             }
 
             // did it get deleted correctly
             assertEquals("slop should have gone",
                          0,
-                         slopStoreNode0.get(nextSlop.makeKey(), null, 0L).size());
+                         slopStoreNode0.get(nextSlop.makeKey(), null, new RUD()).size());
         }
 
     }

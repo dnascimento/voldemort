@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import voldemort.undoTracker.RUD;
 import voldemort.undoTracker.proto.ToManagerProto;
 import voldemort.undoTracker.proto.ToManagerProto.TrackEntry;
 import voldemort.undoTracker.proto.ToManagerProto.TrackMsg;
@@ -19,8 +20,8 @@ public class ClientSideTracker extends Thread {
         super();
     }
 
-    public synchronized void trackGet(long rid, long dependentRid) {
-        dependencyPerRid.put(rid, dependentRid);
+    public synchronized void trackGet(RUD rud, RUD dependentRud) {
+        dependencyPerRid.put(rud.rid, dependentRud.rid);
     }
 
     public synchronized ArrayListMultimap<Long, Long> extractDependencies() {
@@ -62,7 +63,7 @@ public class ClientSideTracker extends Thread {
             mB.addEntry(t);
         }
         ToManagerProto.MsgToManager m = ToManagerProto.MsgToManager.newBuilder()
-                                                                   .setTrackMsgFromClients(mB)
+                                                                   .setTrackMsgFromClient(mB)
                                                                    .build();
         m.writeTo(s.getOutputStream());
         s.close();

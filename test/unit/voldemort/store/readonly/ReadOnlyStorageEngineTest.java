@@ -42,6 +42,7 @@ import voldemort.serialization.SerializerDefinition;
 import voldemort.serialization.SerializerFactory;
 import voldemort.store.Store;
 import voldemort.store.StoreDefinition;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.Pair;
@@ -142,7 +143,7 @@ public class ReadOnlyStorageEngineTest {
                 for(Node node: testData.routeRequest(entry.getKey())) {
                     Store<String, String, String> store = testData.getNodeStores()
                                                                   .get(node.getId());
-                    List<Versioned<String>> found = store.get(entry.getKey(), null, 0L);
+                    List<Versioned<String>> found = store.get(entry.getKey(), null, new RUD());
                     assertEquals("Lookup failure for '" + entry.getKey() + "' on iteration " + i
                                  + " for node " + node.getId() + ".", 1, found.size());
                     Versioned<String> obj = found.get(0);
@@ -170,7 +171,7 @@ public class ReadOnlyStorageEngineTest {
                 for(Node node: testData.routeRequest(entry.getKey())) {
                     Store<String, String, String> store = testData.getNodeStores()
                                                                   .get(node.getId());
-                    List<Versioned<String>> found = store.get(entry.getKey(), null, 0L);
+                    List<Versioned<String>> found = store.get(entry.getKey(), null, new RUD());
                     assertEquals("Lookup failure for '" + entry.getKey() + "' on iteration " + i
                                  + " for node " + node.getId() + ".", 1, found.size());
                     Versioned<String> obj = found.get(0);
@@ -198,7 +199,7 @@ public class ReadOnlyStorageEngineTest {
                 for(Node node: testData.routeRequest(entry.getKey())) {
                     Store<String, String, String> store = testData.getNodeStores()
                                                                   .get(node.getId());
-                    List<Versioned<String>> found = store.get(entry.getKey(), null, 0L);
+                    List<Versioned<String>> found = store.get(entry.getKey(), null, new RUD());
                     assertEquals("Lookup failure for '" + entry.getKey() + "' on iteration " + i
                                  + " for node " + node.getId() + ".", 1, found.size());
                     Versioned<String> obj = found.get(0);
@@ -231,7 +232,10 @@ public class ReadOnlyStorageEngineTest {
                     for(int k = 0; k < testData.getNodeStores().size(); k++)
                         assertEquals("Found key in store where it should not be.",
                                      0,
-                                     testData.getNodeStores().get(k).get(key, null, 0L).size());
+                                     testData.getNodeStores()
+                                             .get(k)
+                                             .get(key, null, new RUD())
+                                             .size());
                 }
             }
         }
@@ -259,7 +263,7 @@ public class ReadOnlyStorageEngineTest {
                         queryKeys.add(key);
             Map<String, List<Versioned<String>>> values = entry.getValue().getAll(queryKeys,
                                                                                   null,
-                                                                                  0L);
+                                                                                  new RUD());
             assertEquals("Returned fewer keys than expected.", queryKeys.size(), values.size());
             for(Map.Entry<String, List<Versioned<String>>> returned: values.entrySet()) {
                 assertTrue(queryKeys.contains(returned.getKey()));
@@ -370,7 +374,7 @@ public class ReadOnlyStorageEngineTest {
                                                                  dir,
                                                                  2);
         // should not have exceptions
-        engine.get(new ByteArray("ab".getBytes()), null, 0L);
+        engine.get(new ByteArray("ab".getBytes()), null, new RUD());
     }
 
     @Test

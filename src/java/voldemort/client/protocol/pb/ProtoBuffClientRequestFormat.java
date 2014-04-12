@@ -34,6 +34,8 @@ import voldemort.client.protocol.pb.VProto.RequestType;
 import voldemort.server.RequestRoutingType;
 import voldemort.store.ErrorCodeMapper;
 import voldemort.store.StoreUtils;
+import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.proto.ToManagerProto;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.VectorClock;
 import voldemort.versioning.Version;
@@ -61,8 +63,9 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                    ByteArray key,
                                    VectorClock version,
                                    RequestRoutingType routingType,
-                                   long rid) throws IOException {
-        System.out.println("writeDeleteRequest" + rid);
+                                   RUD rud) throws IOException {
+        ToManagerProto.RUD rudProto = rud.toProto();
+        System.out.println("writeDeleteRequest" + rud);
         StoreUtils.assertValidKey(key);
         ProtoUtils.writeMessage(output,
                                 VProto.VoldemortRequest.newBuilder()
@@ -71,7 +74,7 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                                        .setShouldRoute(routingType.equals(RequestRoutingType.ROUTED))
                                                        .setRequestRouteType(routingType.getRoutingTypeCode())
                                                        .setDelete(VProto.DeleteRequest.newBuilder()
-                                                                                      .setRid(rid)
+                                                                                      .setRud(rudProto)
                                                                                       .setKey(ByteString.copyFrom(key.get()))
                                                                                       .setVersion(ProtoUtils.encodeClock(version)))
                                                        .build());
@@ -97,13 +100,14 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                 ByteArray key,
                                 byte[] transforms,
                                 RequestRoutingType routingType,
-                                long rid) throws IOException {
+                                RUD rud) throws IOException {
         StoreUtils.assertValidKey(key);
-        System.out.println("writeGetRequest" + rid);
+        System.out.println("writeGetRequest" + rud);
+        ToManagerProto.RUD rudProto = rud.toProto();
 
         VProto.GetRequest.Builder get = VProto.GetRequest.newBuilder();
         get.setKey(ByteString.copyFrom(key.get()));
-        get.setRid(rid);
+        get.setRud(rudProto);
         if(transforms != null) {
             get.setTransforms(ByteString.copyFrom(transforms));
         }
@@ -137,12 +141,13 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                    Iterable<ByteArray> keys,
                                    Map<ByteArray, byte[]> transforms,
                                    RequestRoutingType routingType,
-                                   long rid) throws IOException {
+                                   RUD rud) throws IOException {
         StoreUtils.assertValidKeys(keys);
-        System.out.println("writeGetAllRequest" + rid);
+        System.out.println("writeGetAllRequest" + rud);
+        ToManagerProto.RUD rudProto = rud.toProto();
 
         VProto.GetAllRequest.Builder req = VProto.GetAllRequest.newBuilder();
-        req.setRid(rid);
+        req.setRud(rudProto);
         for(ByteArray key: keys)
             req.addKeys(ByteString.copyFrom(key.get()));
 
@@ -191,11 +196,13 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                 byte[] transforms,
                                 VectorClock version,
                                 RequestRoutingType routingType,
-                                long rid) throws IOException {
-        System.out.println("WritePutRequest" + rid);
+                                RUD rud) throws IOException {
+        System.out.println("WritePutRequest" + rud);
         StoreUtils.assertValidKey(key);
+        ToManagerProto.RUD rudProto = rud.toProto();
+
         VProto.PutRequest.Builder req = VProto.PutRequest.newBuilder()
-                                                         .setRid(rid)
+                                                         .setRud(rudProto)
                                                          .setKey(ByteString.copyFrom(key.get()))
                                                          .setVersioned(VProto.Versioned.newBuilder()
                                                                                        .setValue(ByteString.copyFrom(value))
@@ -251,9 +258,11 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                        String storeName,
                                        ByteArray key,
                                        RequestRoutingType routingType,
-                                       long rid) throws IOException {
+                                       RUD rud) throws IOException {
         StoreUtils.assertValidKey(key);
-        System.out.println("writeGetVersionRequest" + rid);
+        System.out.println("writeGetVersionRequest" + rud);
+        ToManagerProto.RUD rudProto = rud.toProto();
+
         ProtoUtils.writeMessage(output,
                                 VProto.VoldemortRequest.newBuilder()
                                                        .setType(RequestType.GET_VERSION)
@@ -261,7 +270,7 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                                        .setShouldRoute(routingType.equals(RequestRoutingType.ROUTED))
                                                        .setRequestRouteType(routingType.getRoutingTypeCode())
                                                        .setGet(VProto.GetRequest.newBuilder()
-                                                                                .setRid(rid)
+                                                                                .setRud(rudProto)
                                                                                 .setKey(ByteString.copyFrom(key.get())))
                                                        .build());
     }

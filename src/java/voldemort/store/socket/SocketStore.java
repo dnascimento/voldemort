@@ -43,6 +43,7 @@ import voldemort.store.socket.clientrequest.GetClientRequest;
 import voldemort.store.socket.clientrequest.GetVersionsClientRequest;
 import voldemort.store.socket.clientrequest.PutClientRequest;
 import voldemort.store.stats.ClientSocketStats;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Utils;
 import voldemort.versioning.Version;
@@ -93,14 +94,14 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
                                     Version version,
                                     NonblockingStoreCallback callback,
                                     long timeoutMs,
-                                    long rid) {
+                                    RUD rud) {
         StoreUtils.assertValidKey(key);
         DeleteClientRequest clientRequest = new DeleteClientRequest(getName(),
                                                                     requestFormat,
                                                                     requestRoutingType,
                                                                     key,
                                                                     version,
-                                                                    rid);
+                                                                   rud);
         if(logger.isDebugEnabled())
             logger.debug("DELETE keyRef: " + System.identityHashCode(key) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -112,14 +113,14 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
                                  byte[] transforms,
                                  NonblockingStoreCallback callback,
                                  long timeoutMs,
-                                 long rid) {
+                                 RUD rud) {
         StoreUtils.assertValidKey(key);
         GetClientRequest clientRequest = new GetClientRequest(getName(),
                                                               requestFormat,
                                                               requestRoutingType,
                                                               key,
                                                               transforms,
-                                                              rid);
+                                                             rud);
         if(logger.isDebugEnabled())
             logger.debug("GET keyRef: " + System.identityHashCode(key) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -131,14 +132,14 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
                                     Map<ByteArray, byte[]> transforms,
                                     NonblockingStoreCallback callback,
                                     long timeoutMs,
-                                    long rid) {
+                                    RUD rud) {
         StoreUtils.assertValidKeys(keys);
         GetAllClientRequest clientRequest = new GetAllClientRequest(getName(),
                                                                     requestFormat,
                                                                     requestRoutingType,
                                                                     keys,
                                                                     transforms,
-                                                                    rid);
+                                                                   rud);
         if(logger.isDebugEnabled())
             logger.debug("GETALL keyRef: " + System.identityHashCode(keys) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -149,13 +150,13 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
     public void submitGetVersionsRequest(ByteArray key,
                                          NonblockingStoreCallback callback,
                                          long timeoutMs,
-                                         long rid) {
+                                         RUD rud) {
         StoreUtils.assertValidKey(key);
         GetVersionsClientRequest clientRequest = new GetVersionsClientRequest(getName(),
                                                                               requestFormat,
                                                                               requestRoutingType,
                                                                               key,
-                                                                              rid);
+                                                                             rud);
         if(logger.isDebugEnabled())
             logger.debug("GETVERSIONS keyRef: " + System.identityHashCode(key) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -168,7 +169,7 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
                                  byte[] transforms,
                                  NonblockingStoreCallback callback,
                                  long timeoutMs,
-                                 long rid) {
+                                 RUD rud) {
         StoreUtils.assertValidKey(key);
         PutClientRequest clientRequest = new PutClientRequest(getName(),
                                                               requestFormat,
@@ -176,7 +177,7 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
                                                               key,
                                                               value,
                                                               transforms,
-                                                              rid);
+                                                             rud);
         if(logger.isDebugEnabled())
             logger.debug("PUT keyRef: " + System.identityHashCode(key) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -184,14 +185,14 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
     }
 
     @Override
-    public boolean delete(ByteArray key, Version version, long rid) throws VoldemortException {
+    public boolean delete(ByteArray key, Version version, RUD rud) throws VoldemortException {
         StoreUtils.assertValidKey(key);
         DeleteClientRequest clientRequest = new DeleteClientRequest(getName(),
                                                                     requestFormat,
                                                                     requestRoutingType,
                                                                     key,
                                                                     version,
-                                                                    rid);
+                                                                   rud);
         if(logger.isDebugEnabled())
             logger.debug("DELETE keyRef: " + System.identityHashCode(key) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -199,7 +200,7 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, long rid)
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, RUD rud)
             throws VoldemortException {
         StoreUtils.assertValidKey(key);
         GetClientRequest clientRequest = new GetClientRequest(getName(),
@@ -207,7 +208,7 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
                                                               requestRoutingType,
                                                               key,
                                                               transforms,
-                                                              rid);
+                                                             rud);
         if(logger.isDebugEnabled())
             logger.debug("GET keyRef: " + System.identityHashCode(key) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -217,14 +218,14 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
                                                           Map<ByteArray, byte[]> transforms,
-                                                          long rid) throws VoldemortException {
+                                                          RUD rud) throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
         GetAllClientRequest clientRequest = new GetAllClientRequest(getName(),
                                                                     requestFormat,
                                                                     requestRoutingType,
                                                                     keys,
                                                                     transforms,
-                                                                    rid);
+                                                                   rud);
         if(logger.isDebugEnabled())
             logger.debug("GETALL keyRef: " + System.identityHashCode(keys) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -232,13 +233,13 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key, long rid) {
+    public List<Version> getVersions(ByteArray key, RUD rud) {
         StoreUtils.assertValidKey(key);
         GetVersionsClientRequest clientRequest = new GetVersionsClientRequest(getName(),
                                                                               requestFormat,
                                                                               requestRoutingType,
                                                                               key,
-                                                                              rid);
+                                                                             rud);
         if(logger.isDebugEnabled())
             logger.debug("GETVERSIONS keyRef: " + System.identityHashCode(key) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -246,7 +247,7 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> versioned, byte[] transforms, long rid)
+    public void put(ByteArray key, Versioned<byte[]> versioned, byte[] transforms, RUD rud)
             throws VoldemortException {
         StoreUtils.assertValidKey(key);
         PutClientRequest clientRequest = new PutClientRequest(getName(),
@@ -255,7 +256,7 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
                                                               key,
                                                               versioned,
                                                               transforms,
-                                                              rid);
+                                                             rud);
         if(logger.isDebugEnabled())
             logger.debug("PUT keyRef: " + System.identityHashCode(key) + " requestRef: "
                          + System.identityHashCode(clientRequest));

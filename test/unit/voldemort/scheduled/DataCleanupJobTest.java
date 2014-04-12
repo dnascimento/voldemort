@@ -50,6 +50,7 @@ import voldemort.store.StorageEngine;
 import voldemort.store.StoreDefinition;
 import voldemort.store.bdb.BdbStorageConfiguration;
 import voldemort.store.retention.RetentionEnforcingStore;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.EventThrottler;
 import voldemort.utils.Props;
@@ -135,7 +136,7 @@ public class DataCleanupJobTest {
             // load some data
             for(int i = 0; i < 10; i++) {
                 ByteArray b = new ByteArray(Integer.toString(i).getBytes());
-                engine.put(b, new Versioned<byte[]>(b.get()), null, 0L);
+                engine.put(b, new Versioned<byte[]>(b.get()), null, new RUD());
             }
             // sleep for 2 seconds
             Thread.sleep(2 * Time.MS_PER_SECOND);
@@ -144,7 +145,7 @@ public class DataCleanupJobTest {
             // should n't have run.
             for(int i = 0; i < 10; i++) {
                 ByteArray b = new ByteArray(Integer.toString(i).getBytes());
-                List<Versioned<byte[]>> found = engine.get(b, null, 0L);
+                List<Versioned<byte[]>> found = engine.get(b, null, new RUD());
                 assertTrue("Did not find key '" + i + "' in store!", found.size() > 0);
             }
 
@@ -153,7 +154,7 @@ public class DataCleanupJobTest {
             // load some more data
             for(int i = 10; i < 20; i++) {
                 ByteArray b = new ByteArray(Integer.toString(i).getBytes());
-                engine.put(b, new Versioned<byte[]>(b.get()), null, 0L);
+                engine.put(b, new Versioned<byte[]>(b.get()), null, new RUD());
             }
 
             // give time for data cleanup to finally run
@@ -162,13 +163,13 @@ public class DataCleanupJobTest {
             // first batch of writes should have been deleted
             for(int i = 0; i < 10; i++) {
                 ByteArray b = new ByteArray(Integer.toString(i).getBytes());
-                List<Versioned<byte[]>> found = engine.get(b, null, 0L);
+                List<Versioned<byte[]>> found = engine.get(b, null, new RUD());
                 assertTrue("Expected key '" + i + "' to be deleted!", found.size() == 0);
             }
             // and later ones retained.
             for(int i = 10; i < 20; i++) {
                 ByteArray b = new ByteArray(Integer.toString(i).getBytes());
-                List<Versioned<byte[]>> found = engine.get(b, null, 0L);
+                List<Versioned<byte[]>> found = engine.get(b, null, new RUD());
                 assertTrue("Expected key '" + i + "' to be retained!", found.size() > 0);
             }
 
@@ -269,34 +270,46 @@ public class DataCleanupJobTest {
                                                                     onlineDeletes,
                                                                     time);
         // do a bunch of puts
-        store.put(new ByteArray("k1".getBytes()), new Versioned<byte[]>("v1".getBytes()), null, 0L);
-        store.put(new ByteArray("k2".getBytes()), new Versioned<byte[]>("v2".getBytes()), null, 0L);
+        store.put(new ByteArray("k1".getBytes()),
+                  new Versioned<byte[]>("v1".getBytes()),
+                  null,
+                  new RUD());
+        store.put(new ByteArray("k2".getBytes()),
+                  new Versioned<byte[]>("v2".getBytes()),
+                  null,
+                  new RUD());
         long writeMs = System.currentTimeMillis();
 
         // wait for a bit and then do more puts
         Thread.sleep(2000);
 
-        store.put(new ByteArray("k3".getBytes()), new Versioned<byte[]>("v3".getBytes()), null, 0L);
-        store.put(new ByteArray("k4".getBytes()), new Versioned<byte[]>("v4".getBytes()), null, 0L);
+        store.put(new ByteArray("k3".getBytes()),
+                  new Versioned<byte[]>("v3".getBytes()),
+                  null,
+                  new RUD());
+        store.put(new ByteArray("k4".getBytes()),
+                  new Versioned<byte[]>("v4".getBytes()),
+                  null,
+                  new RUD());
 
         // move time forward just enough such that some keys will have expired.
         time.setTime(writeMs + retentionStoreDef.getRetentionDays() * Time.MS_PER_DAY + 1);
         assertEquals("k1 should have expired",
                      0,
-                     store.get(new ByteArray("k1".getBytes()), null, 0L).size());
+                     store.get(new ByteArray("k1".getBytes()), null, new RUD()).size());
         assertEquals("k2 should have expired",
                      0,
-                     store.get(new ByteArray("k2".getBytes()), null, 0L).size());
+                     store.get(new ByteArray("k2".getBytes()), null, new RUD()).size());
 
         assertTrue("k3 should not have expired",
-                   store.get(new ByteArray("k3".getBytes()), null, 0L).size() > 0);
+                   store.get(new ByteArray("k3".getBytes()), null, new RUD()).size() > 0);
         assertTrue("k4 should not have expired",
-                   store.get(new ByteArray("k4".getBytes()), null, 0L).size() > 0);
+                   store.get(new ByteArray("k4".getBytes()), null, new RUD()).size() > 0);
         // get all with k1, k4 should return a map with k4 alone
         Map<ByteArray, List<Versioned<byte[]>>> getAllResult = store.getAll(Arrays.asList(new ByteArray("k1".getBytes()),
                                                                                           new ByteArray("k4".getBytes())),
                                                                             null,
-                                                                            0L);
+                                                                            new RUD());
         assertEquals("map should contain one element only", 1, getAllResult.size());
         assertEquals("k1 should not be present",
                      false,
@@ -309,10 +322,10 @@ public class DataCleanupJobTest {
         // in the base bdb store, so the datacleanup job can go and delete them
         assertEquals("k1 should be present",
                      !onlineDeletes,
-                     engine.get(new ByteArray("k1".getBytes()), null, 0L).size() > 0);
+                     engine.get(new ByteArray("k1".getBytes()), null, new RUD()).size() > 0);
         assertEquals("k2 should be present",
                      !onlineDeletes,
-                     engine.get(new ByteArray("k2".getBytes()), null, 0L).size() > 0);
+                     engine.get(new ByteArray("k2".getBytes()), null, new RUD()).size() > 0);
 
         // delete everything for next run
         engine.truncate();
@@ -329,7 +342,9 @@ public class DataCleanupJobTest {
     private void put(String... items) {
         for(String item: items) {
             VectorClock clock = null;
-            List<Versioned<byte[]>> found = engine.get(new ByteArray(item.getBytes()), null, 0L);
+            List<Versioned<byte[]>> found = engine.get(new ByteArray(item.getBytes()),
+                                                       null,
+                                                       new RUD());
             if(found.size() == 0) {
                 clock = new VectorClock(time.getMilliseconds());
             } else if(found.size() == 1) {
@@ -341,13 +356,15 @@ public class DataCleanupJobTest {
             engine.put(new ByteArray(item.getBytes()),
                        new Versioned<byte[]>(item.getBytes(), clock),
                        null,
-                       0L);
+                       new RUD());
         }
     }
 
     private void assertContains(String... keys) {
         for(String key: keys) {
-            List<Versioned<byte[]>> found = engine.get(new ByteArray(key.getBytes()), null, 0L);
+            List<Versioned<byte[]>> found = engine.get(new ByteArray(key.getBytes()),
+                                                       null,
+                                                       new RUD());
             assertTrue("Did not find key '" + key + "' in store!", found.size() > 0);
         }
     }

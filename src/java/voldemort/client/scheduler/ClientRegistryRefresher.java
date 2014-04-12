@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 
 import voldemort.client.ClientInfo;
 import voldemort.client.SystemStoreRepository;
+import voldemort.undoTracker.RUD;
 import voldemort.versioning.ObsoleteVersionException;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
@@ -64,7 +65,7 @@ public class ClientRegistryRefresher implements Runnable {
                  * update keeping failing when strange situations occur.
                  */
                 lastVersion = this.systemStoreRepository.getClientRegistryStore()
-                                                        .getSysStore(clientId, 0L)
+                                                        .getSysStore(clientId, new RUD())
                                                         .getVersion();
                 hadConflict = false;
             }
@@ -75,10 +76,11 @@ public class ClientRegistryRefresher implements Runnable {
                                                     .putSysStore(clientId,
                                                                  new Versioned<String>(clientInfo.toString(),
                                                                                        lastVersion),
-                                                                 0L);
+                                                                 new RUD());
         } catch(ObsoleteVersionException e) {
             Versioned<String> existingValue = this.systemStoreRepository.getClientRegistryStore()
-                                                                        .getSysStore(clientId, 0L);
+                                                                        .getSysStore(clientId,
+                                                                                     new RUD());
             logger.warn("Multiple clients are updating the same client registry entry");
             logger.warn("  current value: " + clientInfo + " " + lastVersion);
             logger.warn("  existing value: " + existingValue.getValue() + " "

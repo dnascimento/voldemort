@@ -32,6 +32,7 @@ import voldemort.store.routed.GetAllPipelineData;
 import voldemort.store.routed.Pipeline;
 import voldemort.store.routed.Pipeline.Event;
 import voldemort.store.routed.Response;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.Time;
@@ -118,9 +119,9 @@ public class PerformSerialGetAllRequests
                     Store<ByteArray, byte[], byte[]> store = stores.get(node.getId());
                     List<Versioned<byte[]>> values;
                     if(transforms == null)
-                        values = store.get(key, null, 0L);
+                        values = store.get(key, null, new RUD());
                     else
-                        values = store.get(key, transforms.get(key), 0L);
+                        values = store.get(key, transforms.get(key), new RUD());
 
                     if(values.size() != 0) {
                         if(result.get(key) == null)

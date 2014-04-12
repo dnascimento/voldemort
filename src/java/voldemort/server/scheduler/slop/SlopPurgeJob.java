@@ -14,6 +14,7 @@ import voldemort.store.StorageEngine;
 import voldemort.store.metadata.MetadataStore;
 import voldemort.store.slop.Slop;
 import voldemort.store.slop.SlopStorageEngine;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.Pair;
@@ -90,7 +91,9 @@ public class SlopPurgeJob extends DataMaintenanceJob {
                 // if any one of the filters were met, delete
                 if(purge) {
                     numKeysUpdatedThisRun.incrementAndGet();
-                    slopStorageEngine.delete(keyAndVal.getFirst(), versioned.getVersion(), 0L);
+                    slopStorageEngine.delete(keyAndVal.getFirst(),
+                                             versioned.getVersion(),
+                                             new RUD());
                 }
                 numKeysScannedThisRun.incrementAndGet();
                 throttler.maybeThrottle(1);

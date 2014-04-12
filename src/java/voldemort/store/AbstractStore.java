@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import voldemort.VoldemortException;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.Utils;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
@@ -17,21 +18,21 @@ public abstract class AbstractStore<K, V, T> implements Store<K, V, T> {
     }
 
     @Override
-    public List<Versioned<V>> get(K key, T transforms, long rid) throws VoldemortException {
+    public List<Versioned<V>> get(K key, T transforms, RUD rud) throws VoldemortException {
         return null;
     }
 
     @Override
-    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, long rid)
+    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, RUD rud)
             throws VoldemortException {
         return null;
     }
 
     @Override
-    public void put(K key, Versioned<V> value, T transforms, long rid) throws VoldemortException {}
+    public void put(K key, Versioned<V> value, T transforms, RUD rud) throws VoldemortException {}
 
     @Override
-    public boolean delete(K key, Version version, long rid) throws VoldemortException {
+    public boolean delete(K key, Version version, RUD rud) throws VoldemortException {
         return false;
     }
 
@@ -49,7 +50,7 @@ public abstract class AbstractStore<K, V, T> implements Store<K, V, T> {
     }
 
     @Override
-    public List<Version> getVersions(K key, long rid) {
+    public List<Version> getVersions(K key, RUD rud) {
         return null;
     }
 

@@ -74,6 +74,7 @@ import voldemort.store.readonly.ReadOnlyStorageFormat;
 import voldemort.store.readonly.ReadOnlyStorageMetadata;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
+import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Pair;
 import voldemort.utils.UpdateClusterUtils;
@@ -393,8 +394,12 @@ public class AdminRebalanceTest {
             RoutingStrategy strategy = new RoutingStrategyFactory().updateRoutingStrategy(storeDef2,
                                                                                           currentCluster);
             for(Entry<ByteArray, byte[]> entry: entrySet.entrySet()) {
-                storeClient1.put(new String(entry.getKey().get()), new String(entry.getValue()), 0L);
-                storeClient2.put(new String(entry.getKey().get()), new String(entry.getValue()), 0L);
+                storeClient1.put(new String(entry.getKey().get()),
+                                 new String(entry.getValue()),
+                                 new RUD());
+                storeClient2.put(new String(entry.getKey().get()),
+                                 new String(entry.getValue()),
+                                 new RUD());
                 List<Integer> pList = strategy.getPartitionList(entry.getKey().get());
                 if(primaryPartitionsMoved.contains(pList.get(0))) {
                     primaryEntriesMoved.put(entry.getKey(), entry.getValue());
@@ -413,11 +418,11 @@ public class AdminRebalanceTest {
                 getServer(partitionPlan.getStealerId()).getMetadataStore()
                                                        .put(MetadataStore.SERVER_STATE_KEY,
                                                             MetadataStore.VoldemortState.REBALANCING_MASTER_SERVER,
-                                                            0L);
+                                                            new RUD());
                 getServer(partitionPlan.getStealerId()).getMetadataStore()
                                                        .put(MetadataStore.REBALANCING_SOURCE_CLUSTER_XML,
                                                             partitionPlan.getInitialCluster(),
-                                                            0L);
+                                                            new RUD());
             }
 
             try {
@@ -439,7 +444,7 @@ public class AdminRebalanceTest {
                                                                                                                          .getStoreToPartitionIds(),
                                                                                                                     plans.get(0)
                                                                                                                          .getInitialCluster()))),
-                                                       0L);
+                                                       new RUD());
 
             try {
                 adminClient.rebalanceOps.rebalanceNode(plans.get(0));
@@ -453,12 +458,12 @@ public class AdminRebalanceTest {
                 getServer(partitionPlan.getStealerId()).getMetadataStore()
                                                        .put(MetadataStore.REBALANCING_STEAL_INFO,
                                                             new RebalancerState(Lists.newArrayList(RebalanceTaskInfo.create(partitionPlan.toJsonString()))),
-                                                            0L);
+                                                            new RUD());
             }
 
             // Update the cluster metadata on all three nodes
             for(VoldemortServer server: servers) {
-                server.getMetadataStore().put(MetadataStore.CLUSTER_KEY, finalCluster, 0L);
+                server.getMetadataStore().put(MetadataStore.CLUSTER_KEY, finalCluster, new RUD());
             }
 
             // Actually run it
@@ -500,28 +505,34 @@ public class AdminRebalanceTest {
             for(Entry<ByteArray, byte[]> entry: primaryEntriesMoved.entrySet()) {
                 assertSame("entry should be present at store",
                            1,
-                           storeTest0.get(entry.getKey(), null, 0L).size());
+                           storeTest0.get(entry.getKey(), null, new RUD()).size());
                 assertEquals("entry value should match",
                              new String(entry.getValue()),
-                             new String(storeTest0.get(entry.getKey(), null, 0L).get(0).getValue()));
+                             new String(storeTest0.get(entry.getKey(), null, new RUD())
+                                                  .get(0)
+                                                  .getValue()));
 
                 // Check in other store
                 assertSame("entry should be present in store test2 ",
                            1,
-                           storeTest20.get(entry.getKey(), null, 0L).size());
+                           storeTest20.get(entry.getKey(), null, new RUD()).size());
                 assertEquals("entry value should match",
                              new String(entry.getValue()),
-                             new String(storeTest20.get(entry.getKey(), null, 0L).get(0).getValue()));
+                             new String(storeTest20.get(entry.getKey(), null, new RUD())
+                                                   .get(0)
+                                                   .getValue()));
             }
 
             // Secondary is on Node 2 and not on Node 0
             for(Entry<ByteArray, byte[]> entry: secondaryEntriesMoved.entrySet()) {
                 assertSame("entry should be present at store",
                            1,
-                           storeTest2.get(entry.getKey(), null, 0L).size());
+                           storeTest2.get(entry.getKey(), null, new RUD()).size());
                 assertEquals("entry value should match",
                              new String(entry.getValue()),
-                             new String(storeTest2.get(entry.getKey(), null, 0L).get(0).getValue()));
+                             new String(storeTest2.get(entry.getKey(), null, new RUD())
+                                                  .get(0)
+                                                  .getValue()));
             }
 
             // All servers should be back to normal state
@@ -564,8 +575,12 @@ public class AdminRebalanceTest {
             RoutingStrategy strategy = new RoutingStrategyFactory().updateRoutingStrategy(storeDef2,
                                                                                           currentCluster);
             for(Entry<ByteArray, byte[]> entry: entrySet.entrySet()) {
-                storeClient1.put(new String(entry.getKey().get()), new String(entry.getValue()), 0L);
-                storeClient2.put(new String(entry.getKey().get()), new String(entry.getValue()), 0L);
+                storeClient1.put(new String(entry.getKey().get()),
+                                 new String(entry.getValue()),
+                                 new RUD());
+                storeClient2.put(new String(entry.getKey().get()),
+                                 new String(entry.getValue()),
+                                 new RUD());
                 List<Integer> pList = strategy.getPartitionList(entry.getKey().get());
                 if(primaryPartitionsMoved.contains(pList.get(0))) {
                     primaryEntriesMoved.put(entry.getKey(), entry.getValue());
@@ -581,20 +596,20 @@ public class AdminRebalanceTest {
                 getServer(partitionPlan.getStealerId()).getMetadataStore()
                                                        .put(MetadataStore.SERVER_STATE_KEY,
                                                             MetadataStore.VoldemortState.REBALANCING_MASTER_SERVER,
-                                                            0L);
+                                                            new RUD());
                 getServer(partitionPlan.getStealerId()).getMetadataStore()
                                                        .put(MetadataStore.REBALANCING_STEAL_INFO,
                                                             new RebalancerState(Lists.newArrayList(RebalanceTaskInfo.create(partitionPlan.toJsonString()))),
-                                                            0L);
+                                                            new RUD());
                 getServer(partitionPlan.getStealerId()).getMetadataStore()
                                                        .put(MetadataStore.REBALANCING_SOURCE_CLUSTER_XML,
                                                             partitionPlan.getInitialCluster(),
-                                                            0L);
+                                                            new RUD());
             }
 
             // Update the cluster metadata on all three nodes
             for(VoldemortServer server: servers) {
-                server.getMetadataStore().put(MetadataStore.CLUSTER_KEY, finalCluster, 0L);
+                server.getMetadataStore().put(MetadataStore.CLUSTER_KEY, finalCluster, new RUD());
             }
 
             // Actually run it
@@ -633,43 +648,53 @@ public class AdminRebalanceTest {
                 // Present on Node 0
                 assertSame("entry should be present at store",
                            1,
-                           storeTest0.get(entry.getKey(), null, 0L).size());
+                           storeTest0.get(entry.getKey(), null, new RUD()).size());
                 assertEquals("entry value should match",
                              new String(entry.getValue()),
-                             new String(storeTest0.get(entry.getKey(), null, 0L).get(0).getValue()));
+                             new String(storeTest0.get(entry.getKey(), null, new RUD())
+                                                  .get(0)
+                                                  .getValue()));
 
                 // Present on Node 1
                 assertSame("entry should be present at store",
                            1,
-                           storeTest1.get(entry.getKey(), null, 0L).size());
+                           storeTest1.get(entry.getKey(), null, new RUD()).size());
                 assertEquals("entry value should match",
                              new String(entry.getValue()),
-                             new String(storeTest1.get(entry.getKey(), null, 0L).get(0).getValue()));
+                             new String(storeTest1.get(entry.getKey(), null, new RUD())
+                                                  .get(0)
+                                                  .getValue()));
 
                 // Present on Node 3
                 assertSame("entry should be present at store",
                            1,
-                           storeTest3.get(entry.getKey(), null, 0L).size());
+                           storeTest3.get(entry.getKey(), null, new RUD()).size());
                 assertEquals("entry value should match",
                              new String(entry.getValue()),
-                             new String(storeTest3.get(entry.getKey(), null, 0L).get(0).getValue()));
+                             new String(storeTest3.get(entry.getKey(), null, new RUD())
+                                                  .get(0)
+                                                  .getValue()));
 
                 // Test
                 // Present on Node 0
                 assertSame("entry should be present at store",
                            1,
-                           storeTest00.get(entry.getKey(), null, 0L).size());
+                           storeTest00.get(entry.getKey(), null, new RUD()).size());
                 assertEquals("entry value should match",
                              new String(entry.getValue()),
-                             new String(storeTest00.get(entry.getKey(), null, 0L).get(0).getValue()));
+                             new String(storeTest00.get(entry.getKey(), null, new RUD())
+                                                   .get(0)
+                                                   .getValue()));
 
                 // Present on Node 3
                 assertSame("entry should be present at store",
                            1,
-                           storeTest30.get(entry.getKey(), null, 0L).size());
+                           storeTest30.get(entry.getKey(), null, new RUD()).size());
                 assertEquals("entry value should match",
                              new String(entry.getValue()),
-                             new String(storeTest30.get(entry.getKey(), null, 0L).get(0).getValue()));
+                             new String(storeTest30.get(entry.getKey(), null, new RUD())
+                                                   .get(0)
+                                                   .getValue()));
 
             }
 
@@ -680,27 +705,33 @@ public class AdminRebalanceTest {
                 // Present on Node 0
                 assertSame("entry should be present at store",
                            1,
-                           storeTest0.get(entry.getKey(), null, 0L).size());
+                           storeTest0.get(entry.getKey(), null, new RUD()).size());
                 assertEquals("entry value should match",
                              new String(entry.getValue()),
-                             new String(storeTest0.get(entry.getKey(), null, 0L).get(0).getValue()));
+                             new String(storeTest0.get(entry.getKey(), null, new RUD())
+                                                  .get(0)
+                                                  .getValue()));
 
                 // Present on Node 3
                 assertSame("entry should be present at store",
                            1,
-                           storeTest3.get(entry.getKey(), null, 0L).size());
+                           storeTest3.get(entry.getKey(), null, new RUD()).size());
                 assertEquals("entry value should match",
                              new String(entry.getValue()),
-                             new String(storeTest3.get(entry.getKey(), null, 0L).get(0).getValue()));
+                             new String(storeTest3.get(entry.getKey(), null, new RUD())
+                                                  .get(0)
+                                                  .getValue()));
 
                 // Test
                 // Present on Node 3
                 assertSame("entry should be present at store",
                            1,
-                           storeTest30.get(entry.getKey(), null, 0L).size());
+                           storeTest30.get(entry.getKey(), null, new RUD()).size());
                 assertEquals("entry value should match",
                              new String(entry.getValue()),
-                             new String(storeTest30.get(entry.getKey(), null, 0L).get(0).getValue()));
+                             new String(storeTest30.get(entry.getKey(), null, new RUD())
+                                                   .get(0)
+                                                   .getValue()));
 
             }
 
@@ -711,10 +742,12 @@ public class AdminRebalanceTest {
                 // Present on Node 3
                 assertSame("entry should be present at store",
                            1,
-                           storeTest3.get(entry.getKey(), null, 0L).size());
+                           storeTest3.get(entry.getKey(), null, new RUD()).size());
                 assertEquals("entry value should match",
                              new String(entry.getValue()),
-                             new String(storeTest3.get(entry.getKey(), null, 0L).get(0).getValue()));
+                             new String(storeTest3.get(entry.getKey(), null, new RUD())
+                                                  .get(0)
+                                                  .getValue()));
             }
 
             // All servers should be back to normal state
@@ -744,15 +777,15 @@ public class AdminRebalanceTest {
                 getServer(partitionPlan.getStealerId()).getMetadataStore()
                                                        .put(MetadataStore.SERVER_STATE_KEY,
                                                             MetadataStore.VoldemortState.REBALANCING_MASTER_SERVER,
-                                                            0L);
+                                                            new RUD());
                 getServer(partitionPlan.getStealerId()).getMetadataStore()
                                                        .put(MetadataStore.REBALANCING_STEAL_INFO,
                                                             new RebalancerState(Lists.newArrayList(RebalanceTaskInfo.create(partitionPlan.toJsonString()))),
-                                                            0L);
+                                                            new RUD());
                 getServer(partitionPlan.getStealerId()).getMetadataStore()
                                                        .put(MetadataStore.REBALANCING_SOURCE_CLUSTER_XML,
                                                             partitionPlan.getInitialCluster(),
-                                                            0L);
+                                                            new RUD());
             }
 
             // Actually run it
@@ -843,7 +876,7 @@ public class AdminRebalanceTest {
                                                                           .setPreferredWrites(1)
                                                                           .setRequiredWrites(1)
                                                                           .build()),
-                           0L);
+                           new RUD());
 
             try {
                 adminClient.rebalanceOps.rebalanceStateChange(currentCluster,
@@ -863,7 +896,7 @@ public class AdminRebalanceTest {
 
             servers[2].getMetadataStore().put(MetadataStore.STORES_KEY,
                                               Lists.newArrayList(storeDef1, storeDef2),
-                                              0L);
+                                              new RUD());
 
             // Test that all servers are still using the old cluster and have
             // swapped successfully
@@ -891,11 +924,11 @@ public class AdminRebalanceTest {
                 getServer(partitionPlan.getStealerId()).getMetadataStore()
                                                        .put(MetadataStore.SERVER_STATE_KEY,
                                                             MetadataStore.VoldemortState.REBALANCING_MASTER_SERVER,
-                                                            0L);
+                                                            new RUD());
                 getServer(partitionPlan.getStealerId()).getMetadataStore()
                                                        .put(MetadataStore.REBALANCING_STEAL_INFO,
                                                             new RebalancerState(Lists.newArrayList(RebalanceTaskInfo.create(partitionPlan.toJsonString()))),
-                                                            0L);
+                                                            new RUD());
             }
 
             // Actually run it
@@ -928,15 +961,15 @@ public class AdminRebalanceTest {
                 getServer(partitionPlan.getStealerId()).getMetadataStore()
                                                        .put(MetadataStore.SERVER_STATE_KEY,
                                                             MetadataStore.VoldemortState.REBALANCING_MASTER_SERVER,
-                                                            0L);
+                                                            new RUD());
                 getServer(partitionPlan.getStealerId()).getMetadataStore()
                                                        .put(MetadataStore.REBALANCING_STEAL_INFO,
                                                             new RebalancerState(Lists.newArrayList(RebalanceTaskInfo.create(partitionPlan.toJsonString()))),
-                                                            0L);
+                                                            new RUD());
                 getServer(partitionPlan.getStealerId()).getMetadataStore()
                                                        .put(MetadataStore.REBALANCING_SOURCE_CLUSTER_XML,
                                                             partitionPlan.getInitialCluster(),
-                                                            0L);
+                                                            new RUD());
             }
 
             // Actually run it
@@ -1022,7 +1055,7 @@ public class AdminRebalanceTest {
                                                                           .setPreferredWrites(1)
                                                                           .setRequiredWrites(1)
                                                                           .build()),
-                           0L);
+                           new RUD());
 
             try {
                 adminClient.rebalanceOps.rebalanceStateChange(currentCluster,
@@ -1060,7 +1093,7 @@ public class AdminRebalanceTest {
                                                                  storeDef2,
                                                                  storeDef3,
                                                                  storeDef4),
-                                              0L);
+                                              new RUD());
 
             // Test 3) Everything should work
             adminClient.rebalanceOps.rebalanceStateChange(currentCluster,
@@ -1360,7 +1393,7 @@ public class AdminRebalanceTest {
 
             if(server != null) {
                 // Put back the old cluster metadata
-                server.getMetadataStore().put(MetadataStore.CLUSTER_KEY, currentCluster, 0L);
+                server.getMetadataStore().put(MetadataStore.CLUSTER_KEY, currentCluster, new RUD());
 
                 // Clear all the rebalancing state
                 server.getMetadataStore().cleanAllRebalancingState();

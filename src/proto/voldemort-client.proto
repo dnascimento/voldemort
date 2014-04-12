@@ -3,6 +3,8 @@
 // Use commmand like the below to recompile:
 // $ protoc -I=src/proto --java_out=src/java src/proto/voldemort-client.proto
 
+import "to-manager.proto";
+
 package voldemort;
 
 option java_package = "voldemort.client.protocol.pb";
@@ -32,25 +34,25 @@ message Error {
 message KeyedVersions {
   required bytes key = 1;
   repeated Versioned versions = 2;
-  optional int64 rid = 3;
+  optional RUD rud = 3;
 }
 
 message GetRequest {
   optional bytes key = 1;
   optional bytes transforms = 2;
-  optional int64 rid = 3;
+  optional RUD rud = 3;
 }
 
 message GetResponse {
   repeated Versioned versioned = 1;
   optional Error error = 2;
-  optional int64 rid = 3;
+  optional RUD rud = 3;
 }
 
 message GetVersionResponse {
   repeated VectorClock versions = 1;
   optional Error error = 2;
-  optional int64 rid = 3;
+  optional RUD rud = 3;
 }
 
 message GetAllRequest {
@@ -61,7 +63,7 @@ message GetAllRequest {
     required bytes transform = 2;
   }
   repeated GetAllTransform transforms = 2;
-  optional int64 rid = 3;
+  optional RUD rud = 3;
 }
 
 message GetAllResponse {
@@ -73,7 +75,7 @@ message PutRequest {
   required bytes key = 1;
   required Versioned versioned = 2;
   optional bytes transforms = 3;
-  optional int64 rid = 4;
+  optional RUD rud = 4;
 }
 
 message PutResponse {
@@ -83,7 +85,7 @@ message PutResponse {
 message DeleteRequest {
   required bytes key = 1;
   required VectorClock version = 2;
-  optional int64 rid = 3;
+  optional RUD rud = 3;
 }
 
 message DeleteResponse {
@@ -100,7 +102,7 @@ enum RequestType {
 }
 
 message Container{
-  required int64 rid = 1;
+  required RUD rud = 1;
   required bytes data = 2;
 }
 
@@ -115,3 +117,4 @@ message VoldemortRequest {
   optional DeleteRequest delete = 7;
   optional int32 requestRouteType = 8;
 }
+
