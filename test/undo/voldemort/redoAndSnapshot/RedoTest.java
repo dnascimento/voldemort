@@ -134,14 +134,15 @@ public class RedoTest {
         new ExecOpT(k1.clone(), new RUD(6, (short) 1, false), OpType.Put, stub, db).exec();
         // restrain 7:2
 
-        Thread t1 = new ExecOpT(k1.clone(), new RUD(7, (short) 2, false), OpType.Put, stub, db);
+        Thread t1 = new ExecOpT(k1.clone(), new RUD(7, (short) 2, true), OpType.Put, stub, db);
         t1.start();
+
         new ExecOpT(k1.clone(), new RUD(5, (short) 2, false), OpType.Put, stub, db).exec();
 
         // restrain 8:2
-        Thread t2 = new ExecOpT(k1.clone(), new RUD(8, (short) 2, false), OpType.Put, stub, db);
-
+        Thread t2 = new ExecOpT(k1.clone(), new RUD(8, (short) 2, true), OpType.Put, stub, db);
         t2.start();
+
         new ExecOpT(k1.clone(), new RUD(6, (short) 2, false), OpType.Put, stub, db).exec();
 
         stub.restrainDisable();
