@@ -125,7 +125,7 @@ public class ClientRequestExecutorFactory implements
         SocketChannel socketChannel = null;
         ClientRequestExecutor clientRequestExecutor = null;
         long durationMs = 0;
-        
+
         try {
             socketChannel = SocketChannel.open();
             socketChannel.socket().setReceiveBufferSize(this.socketBufferSize);
@@ -227,7 +227,7 @@ public class ClientRequestExecutorFactory implements
 
             throw e;
         }
-        if (stats != null) {
+        if(stats != null) {
             stats.incrementCount(dest, ClientSocketStats.Tracked.CONNECTION_CREATED_EVENT);
             stats.recordConnectionEstablishmentTimeUs(dest, durationMs * Time.US_PER_MS);
         }
@@ -345,9 +345,9 @@ public class ClientRequestExecutorFactory implements
                 while((clientRequestExecutor = registrationQueue.poll()) != null) {
                     if(isClosed.get()) {
                         if(logger.isDebugEnabled())
-                            logger.debug("Closed, exiting");
+                            // logger.debug("Closed, exiting");
 
-                        break;
+                            break;
                     }
 
                     SocketChannel socketChannel = clientRequestExecutor.getSocketChannel();

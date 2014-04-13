@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import undo.proto.ToManagerProto;
+import undo.proto.ToManagerProto.TrackEntry;
+import undo.proto.ToManagerProto.TrackMsg;
 import voldemort.undoTracker.RUD;
-import voldemort.undoTracker.proto.ToManagerProto;
-import voldemort.undoTracker.proto.ToManagerProto.TrackEntry;
-import voldemort.undoTracker.proto.ToManagerProto.TrackMsg;
 
 import com.google.common.collect.ArrayListMultimap;
 

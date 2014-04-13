@@ -2,9 +2,9 @@ package voldemort.undoTracker;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -26,14 +26,18 @@ import voldemort.utils.ByteArray;
  */
 public class DBUndoStub {
 
-    private final Logger log = LogManager.getLogger("LockArray");
+    public static final int MY_PORT = 11200;
+    public static final InetSocketAddress MANAGER_ADDRESS = new InetSocketAddress("localhost",
+                                                                                  11000);
+
+    private final Logger log = LogManager.getLogger(DBUndoStub.class.getName());
     /**
      * Snapshot Timestamp or Snapshot RID: defines the next snapshot if >
      * current moment or the last snapshot otherwise
      */
     AtomicLong stsAtomic = new AtomicLong(1);
     AtomicInteger bidAtomic = new AtomicInteger(1);
-    AtomicBoolean restrainAtomic = new AtomicBoolean(false);
+    Object restrainLocker = new Object();
 
     RedoScheduler redoScheduler;
     SnapshotScheduler newRequestsScheduler;
@@ -56,10 +60,10 @@ public class DBUndoStub {
 
         redoScheduler = new RedoScheduler(keyAccessLists);
         newRequestsScheduler = new SnapshotScheduler(keyAccessLists);
-        restrainScheduler = new RestrainScheduler(keyAccessLists, restrainAtomic);
+        restrainScheduler = new RestrainScheduler(keyAccessLists, restrainLocker);
         new InvertDependencies(keyAccessLists).start();
         try {
-            new ManagerCommands(this).start();
+            new ServiceDBNode(this).start();
         } catch(IOException e) {
             log.error("DBUndoStub", e);
         }
@@ -80,9 +84,7 @@ public class DBUndoStub {
                 // new request for old branch - read old branch (req. BranchId)
                 snapshotVersion = newRequestsScheduler.getStart(key.clone(), rud, sts);
             } else {
-                boolean isContaining = restrainAtomic.get();
                 if(rud.restrain) {
-                    assert (isContaining == true);
                     // new request but may need to wait to avoid dirty reads
                     snapshotVersion = restrainScheduler.getStart(key.clone(), rud, sts);
                     bid = (short) bidAtomic.get();
@@ -109,9 +111,7 @@ public class DBUndoStub {
                 // new request for old branch - read old branch (req. BranchId)
                 snapshotVersion = newRequestsScheduler.putStart(key.clone(), rud, sts);
             } else {
-                boolean isContaining = restrainAtomic.get();
                 if(rud.restrain) {
-                    assert (isContaining == true);
                     // new request but may need to wait to avoid dirty reads
                     snapshotVersion = restrainScheduler.putStart(key.clone(), rud, sts);
                     bid = (short) bidAtomic.get();
@@ -119,7 +119,6 @@ public class DBUndoStub {
                 } else {
                     // redo requests: any change is performed in newest branch
                     snapshotVersion = redoScheduler.putStart(key.clone(), rud, sts);
-
                 }
             }
             log.info(rud.rid + " : put key: " + hexStringToAscii(key) + " branch: " + rud.branch
@@ -139,9 +138,7 @@ public class DBUndoStub {
                 // new request for old branch - read old branch (req. BranchId)
                 snapshotVersion = newRequestsScheduler.deleteStart(key.clone(), rud, sts);
             } else {
-                boolean isContaining = restrainAtomic.get();
                 if(rud.restrain) {
-                    assert (isContaining == true);
                     // new request but may need to wait to avoid dirty reads
                     snapshotVersion = restrainScheduler.deleteStart(key.clone(), rud, sts);
                     bid = (short) bidAtomic.get();
@@ -166,9 +163,7 @@ public class DBUndoStub {
             if(rud.branch <= bid) {
                 newRequestsScheduler.getEnd(key.clone(), rud);
             } else {
-                boolean isContaining = restrainAtomic.get();
                 if(rud.restrain) {
-                    assert (isContaining == true);
                     restrainScheduler.getEnd(key.clone(), rud);
                     newRequestsScheduler.getEnd(key.clone(), rud);
                 } else {
@@ -185,9 +180,7 @@ public class DBUndoStub {
             if(rud.branch <= bid) {
                 newRequestsScheduler.putEnd(key.clone(), rud);
             } else {
-                boolean isContaining = restrainAtomic.get();
                 if(rud.restrain) {
-                    assert (isContaining == true);
                     restrainScheduler.putEnd(key.clone(), rud);
                     newRequestsScheduler.putEnd(key.clone(), rud);
                 } else {
@@ -204,9 +197,7 @@ public class DBUndoStub {
             if(rud.branch <= bid) {
                 newRequestsScheduler.deleteEnd(key.clone(), rud);
             } else {
-                boolean isContaining = restrainAtomic.get();
                 if(rud.restrain) {
-                    assert (isContaining == true);
                     restrainScheduler.deleteEnd(key.clone(), rud);
                     newRequestsScheduler.deleteEnd(key.clone(), rud);
                 } else {
@@ -267,19 +258,13 @@ public class DBUndoStub {
         key.set(longBytes);
     }
 
-    public void restrainEnable() {
-        restrainAtomic.set(true);
-
-    }
-
-    public void restrainDisable() {
-        restrainAtomic.set(false);
+    public void unlockRestrain(short branch) {
         // done, increase the bid, the redo is over
-        bidAtomic.incrementAndGet();
-        System.out.println("restrain phase is over");
+        bidAtomic.set(branch);
+        System.out.println("restrain phase is over, new branch is:" + branch);
         // execute all pendent requests
-        synchronized(restrainAtomic) {
-            restrainAtomic.notifyAll();
+        synchronized(restrainLocker) {
+            restrainLocker.notifyAll();
         }
     }
 
@@ -297,9 +282,7 @@ public class DBUndoStub {
             if(rud.branch <= bid) {
                 snapshotVersion = newRequestsScheduler.getVersionStart(key.clone(), rud, sts);
             } else {
-                boolean isContaining = restrainAtomic.get();
                 if(rud.restrain) {
-                    assert (isContaining == true);
                     snapshotVersion = restrainScheduler.getVersionStart(key.clone(), rud, sts);
                     bid = (short) bidAtomic.get();
                     snapshotVersion = newRequestsScheduler.getVersionStart(key.clone(), rud, sts);
@@ -315,5 +298,10 @@ public class DBUndoStub {
             log.info(rud.rid + " : getVersion key: " + hexStringToAscii(key) + " branch: "
                      + rud.branch);
         }
+    }
+
+    public void resetDependencies() {
+        log.info("Reset dependency map");
+        keyAccessLists.clear();
     }
 }

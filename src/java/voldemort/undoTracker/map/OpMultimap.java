@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import voldemort.undoTracker.RUD;
 import voldemort.undoTracker.map.Op.OpType;
 import voldemort.utils.ByteArray;
@@ -19,10 +22,8 @@ import com.google.common.collect.HashMultimap;
  */
 public class OpMultimap {
 
-    /**
-     * The hash table
-     */
     private ConcurrentHashMap<ByteArray, OpMultimapEntry> map = new ConcurrentHashMap<ByteArray, OpMultimapEntry>();
+    private static final Logger log = LogManager.getLogger(OpMultimap.class.getName());
 
     /**
      * Add a set of operations to historic
@@ -31,7 +32,7 @@ public class OpMultimap {
      * @param values
      */
     public void putAll(ByteArray key, List<Op> values) {
-        System.out.println("PutAll");
+        log.info("PutAll");
         OpMultimapEntry entry = getOrCreate(key);
         entry.addAll(values);
     }
@@ -108,12 +109,14 @@ public class OpMultimap {
         return map.keySet();
     }
 
-    public void updateDependencies(HashMultimap<Long, Long> dependencyPerRid) {
+    public boolean updateDependencies(HashMultimap<Long, Long> dependencyPerRid) {
+        boolean newDeps = false;
         for(ByteArray key: getKeySet()) {
             OpMultimapEntry entry = map.get(key);
             assert (entry != null);
-            entry.updateDependencies(dependencyPerRid);
+            newDeps = newDeps || entry.updateDependencies(dependencyPerRid);
         }
+        return newDeps;
     }
 
     @Override
@@ -140,6 +143,10 @@ public class OpMultimap {
     public long getVersionToPut(ByteArray key, RUD rud, long sts) {
         OpMultimapEntry entry = getOrCreate(key);
         return entry.getVersionToPut(rud, sts);
+    }
+
+    public void clear() {
+        map.clear();
     }
 
 }

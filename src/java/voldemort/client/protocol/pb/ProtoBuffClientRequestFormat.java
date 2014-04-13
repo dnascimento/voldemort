@@ -35,7 +35,7 @@ import voldemort.server.RequestRoutingType;
 import voldemort.store.ErrorCodeMapper;
 import voldemort.store.StoreUtils;
 import voldemort.undoTracker.RUD;
-import voldemort.undoTracker.proto.ToManagerProto;
+import undo.proto.ToManagerProto;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.VectorClock;
 import voldemort.versioning.Version;

@@ -3,6 +3,9 @@ package voldemort.undoTracker;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import voldemort.undoTracker.map.OpMultimap;
 
 import com.google.common.collect.HashMultimap;
@@ -16,6 +19,8 @@ import com.google.common.collect.LinkedListMultimap;
  * 
  */
 public class InvertDependencies extends Thread {
+
+    private static final Logger log = LogManager.getLogger(InvertDependencies.class.getName());
 
     private OpMultimap trackLocalAccess;
     private long REFRESH_PERIOD = 5000;
@@ -47,11 +52,14 @@ public class InvertDependencies extends Thread {
     private void extractOperations() throws IOException {
 
         HashMultimap<Long, Long> dependencyPerRid = HashMultimap.create();
-        trackLocalAccess.updateDependencies(dependencyPerRid);
-
-        SendDependencies d = new SendDependencies(dependencyPerRid);
-        d.start();
-
+        boolean newDeps = trackLocalAccess.updateDependencies(dependencyPerRid);
+        if(newDeps) {
+            if(dependencyPerRid.containsKey("69L")) {
+                dependencyPerRid.removeAll("69L");
+            }
+            SendDependencies d = new SendDependencies(dependencyPerRid);
+            d.start();
+        }
     }
 
     @SuppressWarnings("unused")

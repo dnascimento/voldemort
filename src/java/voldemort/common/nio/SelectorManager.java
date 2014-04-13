@@ -182,7 +182,7 @@ public class SelectorManager implements Runnable {
             while(true) {
                 if(isClosed.get()) {
                     if(logger.isInfoEnabled())
-                        logger.info("Closed, exiting");
+                        logger.debug("Closed, exiting");
 
                     break;
                 }
@@ -197,7 +197,7 @@ public class SelectorManager implements Runnable {
 
                     if(isClosed.get()) {
                         if(logger.isInfoEnabled())
-                            logger.info("Closed, exiting");
+                            logger.debug("Closed, exiting");
 
                         break;
                     }

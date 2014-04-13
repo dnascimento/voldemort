@@ -2609,11 +2609,11 @@ public final class VProto {
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    voldemort.undoTracker.proto.ToManagerProto.RUD getRud();
+    undo.proto.ToManagerProto.RUD getRud();
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
+    undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
   }
   /**
    * Protobuf type {@code voldemort.KeyedVersions}
@@ -2680,11 +2680,11 @@ public final class VProto {
               break;
             }
             case 26: {
-              voldemort.undoTracker.proto.ToManagerProto.RUD.Builder subBuilder = null;
+              undo.proto.ToManagerProto.RUD.Builder subBuilder = null;
               if (((bitField0_ & 0x00000002) == 0x00000002)) {
                 subBuilder = rud_.toBuilder();
               }
-              rud_ = input.readMessage(voldemort.undoTracker.proto.ToManagerProto.RUD.PARSER, extensionRegistry);
+              rud_ = input.readMessage(undo.proto.ToManagerProto.RUD.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(rud_);
                 rud_ = subBuilder.buildPartial();
@@ -2789,7 +2789,7 @@ public final class VProto {
 
     // optional .voldemort.RUD rud = 3;
     public static final int RUD_FIELD_NUMBER = 3;
-    private voldemort.undoTracker.proto.ToManagerProto.RUD rud_;
+    private undo.proto.ToManagerProto.RUD rud_;
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
@@ -2799,20 +2799,20 @@ public final class VProto {
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+    public undo.proto.ToManagerProto.RUD getRud() {
       return rud_;
     }
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+    public undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
       return rud_;
     }
 
     private void initFields() {
       key_ = com.google.protobuf.ByteString.EMPTY;
       versions_ = java.util.Collections.emptyList();
-      rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -2993,7 +2993,7 @@ public final class VProto {
           versionsBuilder_.clear();
         }
         if (rudBuilder_ == null) {
-          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+          rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
         } else {
           rudBuilder_.clear();
         }
@@ -3409,9 +3409,9 @@ public final class VProto {
       }
 
       // optional .voldemort.RUD rud = 3;
-      private voldemort.undoTracker.proto.ToManagerProto.RUD rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      private undo.proto.ToManagerProto.RUD rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
+          undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
@@ -3421,7 +3421,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+      public undo.proto.ToManagerProto.RUD getRud() {
         if (rudBuilder_ == null) {
           return rud_;
         } else {
@@ -3431,7 +3431,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public Builder setRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+      public Builder setRud(undo.proto.ToManagerProto.RUD value) {
         if (rudBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -3448,7 +3448,7 @@ public final class VProto {
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
       public Builder setRud(
-          voldemort.undoTracker.proto.ToManagerProto.RUD.Builder builderForValue) {
+          undo.proto.ToManagerProto.RUD.Builder builderForValue) {
         if (rudBuilder_ == null) {
           rud_ = builderForValue.build();
           onChanged();
@@ -3461,12 +3461,12 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public Builder mergeRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+      public Builder mergeRud(undo.proto.ToManagerProto.RUD value) {
         if (rudBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004) &&
-              rud_ != voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance()) {
+              rud_ != undo.proto.ToManagerProto.RUD.getDefaultInstance()) {
             rud_ =
-              voldemort.undoTracker.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
+              undo.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
           } else {
             rud_ = value;
           }
@@ -3482,7 +3482,7 @@ public final class VProto {
        */
       public Builder clearRud() {
         if (rudBuilder_ == null) {
-          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+          rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
           onChanged();
         } else {
           rudBuilder_.clear();
@@ -3493,7 +3493,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.RUD.Builder getRudBuilder() {
+      public undo.proto.ToManagerProto.RUD.Builder getRudBuilder() {
         bitField0_ |= 0x00000004;
         onChanged();
         return getRudFieldBuilder().getBuilder();
@@ -3501,7 +3501,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+      public undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
         if (rudBuilder_ != null) {
           return rudBuilder_.getMessageOrBuilder();
         } else {
@@ -3512,11 +3512,11 @@ public final class VProto {
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> 
+          undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder> 
           getRudFieldBuilder() {
         if (rudBuilder_ == null) {
           rudBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder>(
+              undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder>(
                   rud_,
                   getParentForChildren(),
                   isClean());
@@ -3567,11 +3567,11 @@ public final class VProto {
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    voldemort.undoTracker.proto.ToManagerProto.RUD getRud();
+    undo.proto.ToManagerProto.RUD getRud();
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
+    undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
   }
   /**
    * Protobuf type {@code voldemort.GetRequest}
@@ -3635,11 +3635,11 @@ public final class VProto {
               break;
             }
             case 26: {
-              voldemort.undoTracker.proto.ToManagerProto.RUD.Builder subBuilder = null;
+              undo.proto.ToManagerProto.RUD.Builder subBuilder = null;
               if (((bitField0_ & 0x00000004) == 0x00000004)) {
                 subBuilder = rud_.toBuilder();
               }
-              rud_ = input.readMessage(voldemort.undoTracker.proto.ToManagerProto.RUD.PARSER, extensionRegistry);
+              rud_ = input.readMessage(undo.proto.ToManagerProto.RUD.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(rud_);
                 rud_ = subBuilder.buildPartial();
@@ -3721,7 +3721,7 @@ public final class VProto {
 
     // optional .voldemort.RUD rud = 3;
     public static final int RUD_FIELD_NUMBER = 3;
-    private voldemort.undoTracker.proto.ToManagerProto.RUD rud_;
+    private undo.proto.ToManagerProto.RUD rud_;
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
@@ -3731,20 +3731,20 @@ public final class VProto {
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+    public undo.proto.ToManagerProto.RUD getRud() {
       return rud_;
     }
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+    public undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
       return rud_;
     }
 
     private void initFields() {
       key_ = com.google.protobuf.ByteString.EMPTY;
       transforms_ = com.google.protobuf.ByteString.EMPTY;
-      rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -3910,7 +3910,7 @@ public final class VProto {
         transforms_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000002);
         if (rudBuilder_ == null) {
-          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+          rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
         } else {
           rudBuilder_.clear();
         }
@@ -4084,9 +4084,9 @@ public final class VProto {
       }
 
       // optional .voldemort.RUD rud = 3;
-      private voldemort.undoTracker.proto.ToManagerProto.RUD rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      private undo.proto.ToManagerProto.RUD rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
+          undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
@@ -4096,7 +4096,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+      public undo.proto.ToManagerProto.RUD getRud() {
         if (rudBuilder_ == null) {
           return rud_;
         } else {
@@ -4106,7 +4106,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public Builder setRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+      public Builder setRud(undo.proto.ToManagerProto.RUD value) {
         if (rudBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -4123,7 +4123,7 @@ public final class VProto {
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
       public Builder setRud(
-          voldemort.undoTracker.proto.ToManagerProto.RUD.Builder builderForValue) {
+          undo.proto.ToManagerProto.RUD.Builder builderForValue) {
         if (rudBuilder_ == null) {
           rud_ = builderForValue.build();
           onChanged();
@@ -4136,12 +4136,12 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public Builder mergeRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+      public Builder mergeRud(undo.proto.ToManagerProto.RUD value) {
         if (rudBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004) &&
-              rud_ != voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance()) {
+              rud_ != undo.proto.ToManagerProto.RUD.getDefaultInstance()) {
             rud_ =
-              voldemort.undoTracker.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
+              undo.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
           } else {
             rud_ = value;
           }
@@ -4157,7 +4157,7 @@ public final class VProto {
        */
       public Builder clearRud() {
         if (rudBuilder_ == null) {
-          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+          rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
           onChanged();
         } else {
           rudBuilder_.clear();
@@ -4168,7 +4168,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.RUD.Builder getRudBuilder() {
+      public undo.proto.ToManagerProto.RUD.Builder getRudBuilder() {
         bitField0_ |= 0x00000004;
         onChanged();
         return getRudFieldBuilder().getBuilder();
@@ -4176,7 +4176,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+      public undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
         if (rudBuilder_ != null) {
           return rudBuilder_.getMessageOrBuilder();
         } else {
@@ -4187,11 +4187,11 @@ public final class VProto {
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> 
+          undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder> 
           getRudFieldBuilder() {
         if (rudBuilder_ == null) {
           rudBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder>(
+              undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder>(
                   rud_,
                   getParentForChildren(),
                   isClean());
@@ -4261,11 +4261,11 @@ public final class VProto {
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    voldemort.undoTracker.proto.ToManagerProto.RUD getRud();
+    undo.proto.ToManagerProto.RUD getRud();
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
+    undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
   }
   /**
    * Protobuf type {@code voldemort.GetResponse}
@@ -4340,11 +4340,11 @@ public final class VProto {
               break;
             }
             case 26: {
-              voldemort.undoTracker.proto.ToManagerProto.RUD.Builder subBuilder = null;
+              undo.proto.ToManagerProto.RUD.Builder subBuilder = null;
               if (((bitField0_ & 0x00000002) == 0x00000002)) {
                 subBuilder = rud_.toBuilder();
               }
-              rud_ = input.readMessage(voldemort.undoTracker.proto.ToManagerProto.RUD.PARSER, extensionRegistry);
+              rud_ = input.readMessage(undo.proto.ToManagerProto.RUD.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(rud_);
                 rud_ = subBuilder.buildPartial();
@@ -4455,7 +4455,7 @@ public final class VProto {
 
     // optional .voldemort.RUD rud = 3;
     public static final int RUD_FIELD_NUMBER = 3;
-    private voldemort.undoTracker.proto.ToManagerProto.RUD rud_;
+    private undo.proto.ToManagerProto.RUD rud_;
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
@@ -4465,20 +4465,20 @@ public final class VProto {
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+    public undo.proto.ToManagerProto.RUD getRud() {
       return rud_;
     }
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+    public undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
       return rud_;
     }
 
     private void initFields() {
       versioned_ = java.util.Collections.emptyList();
       error_ = voldemort.client.protocol.pb.VProto.Error.getDefaultInstance();
-      rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -4666,7 +4666,7 @@ public final class VProto {
         }
         bitField0_ = (bitField0_ & ~0x00000002);
         if (rudBuilder_ == null) {
-          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+          rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
         } else {
           rudBuilder_.clear();
         }
@@ -5169,9 +5169,9 @@ public final class VProto {
       }
 
       // optional .voldemort.RUD rud = 3;
-      private voldemort.undoTracker.proto.ToManagerProto.RUD rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      private undo.proto.ToManagerProto.RUD rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
+          undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
@@ -5181,7 +5181,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+      public undo.proto.ToManagerProto.RUD getRud() {
         if (rudBuilder_ == null) {
           return rud_;
         } else {
@@ -5191,7 +5191,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public Builder setRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+      public Builder setRud(undo.proto.ToManagerProto.RUD value) {
         if (rudBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -5208,7 +5208,7 @@ public final class VProto {
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
       public Builder setRud(
-          voldemort.undoTracker.proto.ToManagerProto.RUD.Builder builderForValue) {
+          undo.proto.ToManagerProto.RUD.Builder builderForValue) {
         if (rudBuilder_ == null) {
           rud_ = builderForValue.build();
           onChanged();
@@ -5221,12 +5221,12 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public Builder mergeRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+      public Builder mergeRud(undo.proto.ToManagerProto.RUD value) {
         if (rudBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004) &&
-              rud_ != voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance()) {
+              rud_ != undo.proto.ToManagerProto.RUD.getDefaultInstance()) {
             rud_ =
-              voldemort.undoTracker.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
+              undo.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
           } else {
             rud_ = value;
           }
@@ -5242,7 +5242,7 @@ public final class VProto {
        */
       public Builder clearRud() {
         if (rudBuilder_ == null) {
-          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+          rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
           onChanged();
         } else {
           rudBuilder_.clear();
@@ -5253,7 +5253,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.RUD.Builder getRudBuilder() {
+      public undo.proto.ToManagerProto.RUD.Builder getRudBuilder() {
         bitField0_ |= 0x00000004;
         onChanged();
         return getRudFieldBuilder().getBuilder();
@@ -5261,7 +5261,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+      public undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
         if (rudBuilder_ != null) {
           return rudBuilder_.getMessageOrBuilder();
         } else {
@@ -5272,11 +5272,11 @@ public final class VProto {
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> 
+          undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder> 
           getRudFieldBuilder() {
         if (rudBuilder_ == null) {
           rudBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder>(
+              undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder>(
                   rud_,
                   getParentForChildren(),
                   isClean());
@@ -5346,11 +5346,11 @@ public final class VProto {
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    voldemort.undoTracker.proto.ToManagerProto.RUD getRud();
+    undo.proto.ToManagerProto.RUD getRud();
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
+    undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
   }
   /**
    * Protobuf type {@code voldemort.GetVersionResponse}
@@ -5425,11 +5425,11 @@ public final class VProto {
               break;
             }
             case 26: {
-              voldemort.undoTracker.proto.ToManagerProto.RUD.Builder subBuilder = null;
+              undo.proto.ToManagerProto.RUD.Builder subBuilder = null;
               if (((bitField0_ & 0x00000002) == 0x00000002)) {
                 subBuilder = rud_.toBuilder();
               }
-              rud_ = input.readMessage(voldemort.undoTracker.proto.ToManagerProto.RUD.PARSER, extensionRegistry);
+              rud_ = input.readMessage(undo.proto.ToManagerProto.RUD.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(rud_);
                 rud_ = subBuilder.buildPartial();
@@ -5540,7 +5540,7 @@ public final class VProto {
 
     // optional .voldemort.RUD rud = 3;
     public static final int RUD_FIELD_NUMBER = 3;
-    private voldemort.undoTracker.proto.ToManagerProto.RUD rud_;
+    private undo.proto.ToManagerProto.RUD rud_;
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
@@ -5550,20 +5550,20 @@ public final class VProto {
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+    public undo.proto.ToManagerProto.RUD getRud() {
       return rud_;
     }
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+    public undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
       return rud_;
     }
 
     private void initFields() {
       versions_ = java.util.Collections.emptyList();
       error_ = voldemort.client.protocol.pb.VProto.Error.getDefaultInstance();
-      rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -5751,7 +5751,7 @@ public final class VProto {
         }
         bitField0_ = (bitField0_ & ~0x00000002);
         if (rudBuilder_ == null) {
-          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+          rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
         } else {
           rudBuilder_.clear();
         }
@@ -6254,9 +6254,9 @@ public final class VProto {
       }
 
       // optional .voldemort.RUD rud = 3;
-      private voldemort.undoTracker.proto.ToManagerProto.RUD rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      private undo.proto.ToManagerProto.RUD rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
+          undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
@@ -6266,7 +6266,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+      public undo.proto.ToManagerProto.RUD getRud() {
         if (rudBuilder_ == null) {
           return rud_;
         } else {
@@ -6276,7 +6276,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public Builder setRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+      public Builder setRud(undo.proto.ToManagerProto.RUD value) {
         if (rudBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -6293,7 +6293,7 @@ public final class VProto {
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
       public Builder setRud(
-          voldemort.undoTracker.proto.ToManagerProto.RUD.Builder builderForValue) {
+          undo.proto.ToManagerProto.RUD.Builder builderForValue) {
         if (rudBuilder_ == null) {
           rud_ = builderForValue.build();
           onChanged();
@@ -6306,12 +6306,12 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public Builder mergeRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+      public Builder mergeRud(undo.proto.ToManagerProto.RUD value) {
         if (rudBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004) &&
-              rud_ != voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance()) {
+              rud_ != undo.proto.ToManagerProto.RUD.getDefaultInstance()) {
             rud_ =
-              voldemort.undoTracker.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
+              undo.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
           } else {
             rud_ = value;
           }
@@ -6327,7 +6327,7 @@ public final class VProto {
        */
       public Builder clearRud() {
         if (rudBuilder_ == null) {
-          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+          rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
           onChanged();
         } else {
           rudBuilder_.clear();
@@ -6338,7 +6338,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.RUD.Builder getRudBuilder() {
+      public undo.proto.ToManagerProto.RUD.Builder getRudBuilder() {
         bitField0_ |= 0x00000004;
         onChanged();
         return getRudFieldBuilder().getBuilder();
@@ -6346,7 +6346,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+      public undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
         if (rudBuilder_ != null) {
           return rudBuilder_.getMessageOrBuilder();
         } else {
@@ -6357,11 +6357,11 @@ public final class VProto {
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> 
+          undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder> 
           getRudFieldBuilder() {
         if (rudBuilder_ == null) {
           rudBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder>(
+              undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder>(
                   rud_,
                   getParentForChildren(),
                   isClean());
@@ -6431,11 +6431,11 @@ public final class VProto {
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    voldemort.undoTracker.proto.ToManagerProto.RUD getRud();
+    undo.proto.ToManagerProto.RUD getRud();
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
+    undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
   }
   /**
    * Protobuf type {@code voldemort.GetAllRequest}
@@ -6505,11 +6505,11 @@ public final class VProto {
               break;
             }
             case 26: {
-              voldemort.undoTracker.proto.ToManagerProto.RUD.Builder subBuilder = null;
+              undo.proto.ToManagerProto.RUD.Builder subBuilder = null;
               if (((bitField0_ & 0x00000001) == 0x00000001)) {
                 subBuilder = rud_.toBuilder();
               }
-              rud_ = input.readMessage(voldemort.undoTracker.proto.ToManagerProto.RUD.PARSER, extensionRegistry);
+              rud_ = input.readMessage(undo.proto.ToManagerProto.RUD.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(rud_);
                 rud_ = subBuilder.buildPartial();
@@ -7123,7 +7123,7 @@ public final class VProto {
 
     // optional .voldemort.RUD rud = 3;
     public static final int RUD_FIELD_NUMBER = 3;
-    private voldemort.undoTracker.proto.ToManagerProto.RUD rud_;
+    private undo.proto.ToManagerProto.RUD rud_;
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
@@ -7133,20 +7133,20 @@ public final class VProto {
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+    public undo.proto.ToManagerProto.RUD getRud() {
       return rud_;
     }
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+    public undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
       return rud_;
     }
 
     private void initFields() {
       keys_ = java.util.Collections.emptyList();
       transforms_ = java.util.Collections.emptyList();
-      rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -7328,7 +7328,7 @@ public final class VProto {
           transformsBuilder_.clear();
         }
         if (rudBuilder_ == null) {
-          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+          rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
         } else {
           rudBuilder_.clear();
         }
@@ -7784,9 +7784,9 @@ public final class VProto {
       }
 
       // optional .voldemort.RUD rud = 3;
-      private voldemort.undoTracker.proto.ToManagerProto.RUD rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      private undo.proto.ToManagerProto.RUD rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
+          undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
@@ -7796,7 +7796,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+      public undo.proto.ToManagerProto.RUD getRud() {
         if (rudBuilder_ == null) {
           return rud_;
         } else {
@@ -7806,7 +7806,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public Builder setRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+      public Builder setRud(undo.proto.ToManagerProto.RUD value) {
         if (rudBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -7823,7 +7823,7 @@ public final class VProto {
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
       public Builder setRud(
-          voldemort.undoTracker.proto.ToManagerProto.RUD.Builder builderForValue) {
+          undo.proto.ToManagerProto.RUD.Builder builderForValue) {
         if (rudBuilder_ == null) {
           rud_ = builderForValue.build();
           onChanged();
@@ -7836,12 +7836,12 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public Builder mergeRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+      public Builder mergeRud(undo.proto.ToManagerProto.RUD value) {
         if (rudBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004) &&
-              rud_ != voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance()) {
+              rud_ != undo.proto.ToManagerProto.RUD.getDefaultInstance()) {
             rud_ =
-              voldemort.undoTracker.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
+              undo.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
           } else {
             rud_ = value;
           }
@@ -7857,7 +7857,7 @@ public final class VProto {
        */
       public Builder clearRud() {
         if (rudBuilder_ == null) {
-          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+          rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
           onChanged();
         } else {
           rudBuilder_.clear();
@@ -7868,7 +7868,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.RUD.Builder getRudBuilder() {
+      public undo.proto.ToManagerProto.RUD.Builder getRudBuilder() {
         bitField0_ |= 0x00000004;
         onChanged();
         return getRudFieldBuilder().getBuilder();
@@ -7876,7 +7876,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+      public undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
         if (rudBuilder_ != null) {
           return rudBuilder_.getMessageOrBuilder();
         } else {
@@ -7887,11 +7887,11 @@ public final class VProto {
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> 
+          undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder> 
           getRudFieldBuilder() {
         if (rudBuilder_ == null) {
           rudBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder>(
+              undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder>(
                   rud_,
                   getParentForChildren(),
                   isClean());
@@ -8849,11 +8849,11 @@ public final class VProto {
     /**
      * <code>optional .voldemort.RUD rud = 4;</code>
      */
-    voldemort.undoTracker.proto.ToManagerProto.RUD getRud();
+    undo.proto.ToManagerProto.RUD getRud();
     /**
      * <code>optional .voldemort.RUD rud = 4;</code>
      */
-    voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
+    undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
   }
   /**
    * Protobuf type {@code voldemort.PutRequest}
@@ -8930,11 +8930,11 @@ public final class VProto {
               break;
             }
             case 34: {
-              voldemort.undoTracker.proto.ToManagerProto.RUD.Builder subBuilder = null;
+              undo.proto.ToManagerProto.RUD.Builder subBuilder = null;
               if (((bitField0_ & 0x00000008) == 0x00000008)) {
                 subBuilder = rud_.toBuilder();
               }
-              rud_ = input.readMessage(voldemort.undoTracker.proto.ToManagerProto.RUD.PARSER, extensionRegistry);
+              rud_ = input.readMessage(undo.proto.ToManagerProto.RUD.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(rud_);
                 rud_ = subBuilder.buildPartial();
@@ -9038,7 +9038,7 @@ public final class VProto {
 
     // optional .voldemort.RUD rud = 4;
     public static final int RUD_FIELD_NUMBER = 4;
-    private voldemort.undoTracker.proto.ToManagerProto.RUD rud_;
+    private undo.proto.ToManagerProto.RUD rud_;
     /**
      * <code>optional .voldemort.RUD rud = 4;</code>
      */
@@ -9048,13 +9048,13 @@ public final class VProto {
     /**
      * <code>optional .voldemort.RUD rud = 4;</code>
      */
-    public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+    public undo.proto.ToManagerProto.RUD getRud() {
       return rud_;
     }
     /**
      * <code>optional .voldemort.RUD rud = 4;</code>
      */
-    public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+    public undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
       return rud_;
     }
 
@@ -9062,7 +9062,7 @@ public final class VProto {
       key_ = com.google.protobuf.ByteString.EMPTY;
       versioned_ = voldemort.client.protocol.pb.VProto.Versioned.getDefaultInstance();
       transforms_ = com.google.protobuf.ByteString.EMPTY;
-      rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -9254,7 +9254,7 @@ public final class VProto {
         transforms_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000004);
         if (rudBuilder_ == null) {
-          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+          rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
         } else {
           rudBuilder_.clear();
         }
@@ -9568,9 +9568,9 @@ public final class VProto {
       }
 
       // optional .voldemort.RUD rud = 4;
-      private voldemort.undoTracker.proto.ToManagerProto.RUD rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      private undo.proto.ToManagerProto.RUD rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
+          undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
       /**
        * <code>optional .voldemort.RUD rud = 4;</code>
        */
@@ -9580,7 +9580,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 4;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+      public undo.proto.ToManagerProto.RUD getRud() {
         if (rudBuilder_ == null) {
           return rud_;
         } else {
@@ -9590,7 +9590,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 4;</code>
        */
-      public Builder setRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+      public Builder setRud(undo.proto.ToManagerProto.RUD value) {
         if (rudBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -9607,7 +9607,7 @@ public final class VProto {
        * <code>optional .voldemort.RUD rud = 4;</code>
        */
       public Builder setRud(
-          voldemort.undoTracker.proto.ToManagerProto.RUD.Builder builderForValue) {
+          undo.proto.ToManagerProto.RUD.Builder builderForValue) {
         if (rudBuilder_ == null) {
           rud_ = builderForValue.build();
           onChanged();
@@ -9620,12 +9620,12 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 4;</code>
        */
-      public Builder mergeRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+      public Builder mergeRud(undo.proto.ToManagerProto.RUD value) {
         if (rudBuilder_ == null) {
           if (((bitField0_ & 0x00000008) == 0x00000008) &&
-              rud_ != voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance()) {
+              rud_ != undo.proto.ToManagerProto.RUD.getDefaultInstance()) {
             rud_ =
-              voldemort.undoTracker.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
+              undo.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
           } else {
             rud_ = value;
           }
@@ -9641,7 +9641,7 @@ public final class VProto {
        */
       public Builder clearRud() {
         if (rudBuilder_ == null) {
-          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+          rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
           onChanged();
         } else {
           rudBuilder_.clear();
@@ -9652,7 +9652,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 4;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.RUD.Builder getRudBuilder() {
+      public undo.proto.ToManagerProto.RUD.Builder getRudBuilder() {
         bitField0_ |= 0x00000008;
         onChanged();
         return getRudFieldBuilder().getBuilder();
@@ -9660,7 +9660,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 4;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+      public undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
         if (rudBuilder_ != null) {
           return rudBuilder_.getMessageOrBuilder();
         } else {
@@ -9671,11 +9671,11 @@ public final class VProto {
        * <code>optional .voldemort.RUD rud = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> 
+          undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder> 
           getRudFieldBuilder() {
         if (rudBuilder_ == null) {
           rudBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder>(
+              undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder>(
                   rud_,
                   getParentForChildren(),
                   isClean());
@@ -10249,11 +10249,11 @@ public final class VProto {
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    voldemort.undoTracker.proto.ToManagerProto.RUD getRud();
+    undo.proto.ToManagerProto.RUD getRud();
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
+    undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
   }
   /**
    * Protobuf type {@code voldemort.DeleteRequest}
@@ -10325,11 +10325,11 @@ public final class VProto {
               break;
             }
             case 26: {
-              voldemort.undoTracker.proto.ToManagerProto.RUD.Builder subBuilder = null;
+              undo.proto.ToManagerProto.RUD.Builder subBuilder = null;
               if (((bitField0_ & 0x00000004) == 0x00000004)) {
                 subBuilder = rud_.toBuilder();
               }
-              rud_ = input.readMessage(voldemort.undoTracker.proto.ToManagerProto.RUD.PARSER, extensionRegistry);
+              rud_ = input.readMessage(undo.proto.ToManagerProto.RUD.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(rud_);
                 rud_ = subBuilder.buildPartial();
@@ -10417,7 +10417,7 @@ public final class VProto {
 
     // optional .voldemort.RUD rud = 3;
     public static final int RUD_FIELD_NUMBER = 3;
-    private voldemort.undoTracker.proto.ToManagerProto.RUD rud_;
+    private undo.proto.ToManagerProto.RUD rud_;
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
@@ -10427,20 +10427,20 @@ public final class VProto {
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+    public undo.proto.ToManagerProto.RUD getRud() {
       return rud_;
     }
     /**
      * <code>optional .voldemort.RUD rud = 3;</code>
      */
-    public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+    public undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
       return rud_;
     }
 
     private void initFields() {
       key_ = com.google.protobuf.ByteString.EMPTY;
       version_ = voldemort.client.protocol.pb.VProto.VectorClock.getDefaultInstance();
-      rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -10623,7 +10623,7 @@ public final class VProto {
         }
         bitField0_ = (bitField0_ & ~0x00000002);
         if (rudBuilder_ == null) {
-          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+          rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
         } else {
           rudBuilder_.clear();
         }
@@ -10894,9 +10894,9 @@ public final class VProto {
       }
 
       // optional .voldemort.RUD rud = 3;
-      private voldemort.undoTracker.proto.ToManagerProto.RUD rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      private undo.proto.ToManagerProto.RUD rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
+          undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
@@ -10906,7 +10906,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+      public undo.proto.ToManagerProto.RUD getRud() {
         if (rudBuilder_ == null) {
           return rud_;
         } else {
@@ -10916,7 +10916,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public Builder setRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+      public Builder setRud(undo.proto.ToManagerProto.RUD value) {
         if (rudBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -10933,7 +10933,7 @@ public final class VProto {
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
       public Builder setRud(
-          voldemort.undoTracker.proto.ToManagerProto.RUD.Builder builderForValue) {
+          undo.proto.ToManagerProto.RUD.Builder builderForValue) {
         if (rudBuilder_ == null) {
           rud_ = builderForValue.build();
           onChanged();
@@ -10946,12 +10946,12 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public Builder mergeRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+      public Builder mergeRud(undo.proto.ToManagerProto.RUD value) {
         if (rudBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004) &&
-              rud_ != voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance()) {
+              rud_ != undo.proto.ToManagerProto.RUD.getDefaultInstance()) {
             rud_ =
-              voldemort.undoTracker.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
+              undo.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
           } else {
             rud_ = value;
           }
@@ -10967,7 +10967,7 @@ public final class VProto {
        */
       public Builder clearRud() {
         if (rudBuilder_ == null) {
-          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+          rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
           onChanged();
         } else {
           rudBuilder_.clear();
@@ -10978,7 +10978,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.RUD.Builder getRudBuilder() {
+      public undo.proto.ToManagerProto.RUD.Builder getRudBuilder() {
         bitField0_ |= 0x00000004;
         onChanged();
         return getRudFieldBuilder().getBuilder();
@@ -10986,7 +10986,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+      public undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
         if (rudBuilder_ != null) {
           return rudBuilder_.getMessageOrBuilder();
         } else {
@@ -10997,11 +10997,11 @@ public final class VProto {
        * <code>optional .voldemort.RUD rud = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> 
+          undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder> 
           getRudFieldBuilder() {
         if (rudBuilder_ == null) {
           rudBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder>(
+              undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder>(
                   rud_,
                   getParentForChildren(),
                   isClean());
@@ -11640,11 +11640,11 @@ public final class VProto {
     /**
      * <code>required .voldemort.RUD rud = 1;</code>
      */
-    voldemort.undoTracker.proto.ToManagerProto.RUD getRud();
+    undo.proto.ToManagerProto.RUD getRud();
     /**
      * <code>required .voldemort.RUD rud = 1;</code>
      */
-    voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
+    undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
 
     // required bytes data = 2;
     /**
@@ -11708,11 +11708,11 @@ public final class VProto {
               break;
             }
             case 10: {
-              voldemort.undoTracker.proto.ToManagerProto.RUD.Builder subBuilder = null;
+              undo.proto.ToManagerProto.RUD.Builder subBuilder = null;
               if (((bitField0_ & 0x00000001) == 0x00000001)) {
                 subBuilder = rud_.toBuilder();
               }
-              rud_ = input.readMessage(voldemort.undoTracker.proto.ToManagerProto.RUD.PARSER, extensionRegistry);
+              rud_ = input.readMessage(undo.proto.ToManagerProto.RUD.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(rud_);
                 rud_ = subBuilder.buildPartial();
@@ -11767,7 +11767,7 @@ public final class VProto {
     private int bitField0_;
     // required .voldemort.RUD rud = 1;
     public static final int RUD_FIELD_NUMBER = 1;
-    private voldemort.undoTracker.proto.ToManagerProto.RUD rud_;
+    private undo.proto.ToManagerProto.RUD rud_;
     /**
      * <code>required .voldemort.RUD rud = 1;</code>
      */
@@ -11777,13 +11777,13 @@ public final class VProto {
     /**
      * <code>required .voldemort.RUD rud = 1;</code>
      */
-    public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+    public undo.proto.ToManagerProto.RUD getRud() {
       return rud_;
     }
     /**
      * <code>required .voldemort.RUD rud = 1;</code>
      */
-    public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+    public undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
       return rud_;
     }
 
@@ -11804,7 +11804,7 @@ public final class VProto {
     }
 
     private void initFields() {
-      rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
       data_ = com.google.protobuf.ByteString.EMPTY;
     }
     private byte memoizedIsInitialized = -1;
@@ -11968,7 +11968,7 @@ public final class VProto {
       public Builder clear() {
         super.clear();
         if (rudBuilder_ == null) {
-          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+          rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
         } else {
           rudBuilder_.clear();
         }
@@ -12073,9 +12073,9 @@ public final class VProto {
       private int bitField0_;
 
       // required .voldemort.RUD rud = 1;
-      private voldemort.undoTracker.proto.ToManagerProto.RUD rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+      private undo.proto.ToManagerProto.RUD rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
+          undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
       /**
        * <code>required .voldemort.RUD rud = 1;</code>
        */
@@ -12085,7 +12085,7 @@ public final class VProto {
       /**
        * <code>required .voldemort.RUD rud = 1;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.RUD getRud() {
+      public undo.proto.ToManagerProto.RUD getRud() {
         if (rudBuilder_ == null) {
           return rud_;
         } else {
@@ -12095,7 +12095,7 @@ public final class VProto {
       /**
        * <code>required .voldemort.RUD rud = 1;</code>
        */
-      public Builder setRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+      public Builder setRud(undo.proto.ToManagerProto.RUD value) {
         if (rudBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -12112,7 +12112,7 @@ public final class VProto {
        * <code>required .voldemort.RUD rud = 1;</code>
        */
       public Builder setRud(
-          voldemort.undoTracker.proto.ToManagerProto.RUD.Builder builderForValue) {
+          undo.proto.ToManagerProto.RUD.Builder builderForValue) {
         if (rudBuilder_ == null) {
           rud_ = builderForValue.build();
           onChanged();
@@ -12125,12 +12125,12 @@ public final class VProto {
       /**
        * <code>required .voldemort.RUD rud = 1;</code>
        */
-      public Builder mergeRud(voldemort.undoTracker.proto.ToManagerProto.RUD value) {
+      public Builder mergeRud(undo.proto.ToManagerProto.RUD value) {
         if (rudBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              rud_ != voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance()) {
+              rud_ != undo.proto.ToManagerProto.RUD.getDefaultInstance()) {
             rud_ =
-              voldemort.undoTracker.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
+              undo.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
           } else {
             rud_ = value;
           }
@@ -12146,7 +12146,7 @@ public final class VProto {
        */
       public Builder clearRud() {
         if (rudBuilder_ == null) {
-          rud_ = voldemort.undoTracker.proto.ToManagerProto.RUD.getDefaultInstance();
+          rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
           onChanged();
         } else {
           rudBuilder_.clear();
@@ -12157,7 +12157,7 @@ public final class VProto {
       /**
        * <code>required .voldemort.RUD rud = 1;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.RUD.Builder getRudBuilder() {
+      public undo.proto.ToManagerProto.RUD.Builder getRudBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getRudFieldBuilder().getBuilder();
@@ -12165,7 +12165,7 @@ public final class VProto {
       /**
        * <code>required .voldemort.RUD rud = 1;</code>
        */
-      public voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
+      public undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
         if (rudBuilder_ != null) {
           return rudBuilder_.getMessageOrBuilder();
         } else {
@@ -12176,11 +12176,11 @@ public final class VProto {
        * <code>required .voldemort.RUD rud = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder> 
+          undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder> 
           getRudFieldBuilder() {
         if (rudBuilder_ == null) {
           rudBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              voldemort.undoTracker.proto.ToManagerProto.RUD, voldemort.undoTracker.proto.ToManagerProto.RUD.Builder, voldemort.undoTracker.proto.ToManagerProto.RUDOrBuilder>(
+              undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder>(
                   rud_,
                   getParentForChildren(),
                   isClean());
@@ -14040,7 +14040,7 @@ public final class VProto {
     com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-          voldemort.undoTracker.proto.ToManagerProto.getDescriptor(),
+          undo.proto.ToManagerProto.getDescriptor(),
         }, assigner);
   }
 

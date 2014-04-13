@@ -13,21 +13,35 @@ from google.protobuf import descriptor_pb2
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='from-manager.proto',
   package='voldemort',
-  serialized_pb='\n\x12\x66rom-manager.proto\x12\tvoldemort\"\x1c\n\x08Snapshot\x12\x10\n\x08seasonId\x18\x01 \x02(\x03\"\x17\n\x08\x45xecList\x12\x0b\n\x03rid\x18\x01 \x03(\x03\x42\x31\n\x1bvoldemort.undoTracker.protoB\x10\x46romManagerProtoH\x01')
+  serialized_pb='\n\x12\x66rom-manager.proto\x12\tvoldemort\"R\n\nToDataNode\x12\x10\n\x08seasonId\x18\x01 \x01(\x03\x12\x19\n\x11resetDependencies\x18\x02 \x01(\x08\x12\x17\n\x0funlockNewBranch\x18\x03 \x01(\x05\"6\n\x08\x45xecList\x12\x0b\n\x03rid\x18\x01 \x03(\x03\x12\x0e\n\x06\x62ranch\x18\x02 \x02(\x05\x12\r\n\x05start\x18\x03 \x02(\x08\"@\n\x08ProxyMsg\x12\x0e\n\x06\x62ranch\x18\x01 \x01(\x05\x12\x10\n\x08restrain\x18\x02 \x01(\x08\x12\x12\n\ntimeTravel\x18\x03 \x01(\x03\x42 \n\nundo.protoB\x10\x46romManagerProtoH\x01')
 
 
 
 
-_SNAPSHOT = _descriptor.Descriptor(
-  name='Snapshot',
-  full_name='voldemort.Snapshot',
+_TODATANODE = _descriptor.Descriptor(
+  name='ToDataNode',
+  full_name='voldemort.ToDataNode',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='seasonId', full_name='voldemort.Snapshot.seasonId', index=0,
-      number=1, type=3, cpp_type=2, label=2,
+      name='seasonId', full_name='voldemort.ToDataNode.seasonId', index=0,
+      number=1, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='resetDependencies', full_name='voldemort.ToDataNode.resetDependencies', index=1,
+      number=2, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='unlockNewBranch', full_name='voldemort.ToDataNode.unlockNewBranch', index=2,
+      number=3, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -42,7 +56,7 @@ _SNAPSHOT = _descriptor.Descriptor(
   is_extendable=False,
   extension_ranges=[],
   serialized_start=33,
-  serialized_end=61,
+  serialized_end=115,
 )
 
 
@@ -60,6 +74,20 @@ _EXECLIST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='branch', full_name='voldemort.ExecList.branch', index=1,
+      number=2, type=5, cpp_type=1, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='start', full_name='voldemort.ExecList.start', index=2,
+      number=3, type=8, cpp_type=7, label=2,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -69,18 +97,61 @@ _EXECLIST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=63,
-  serialized_end=86,
+  serialized_start=117,
+  serialized_end=171,
 )
 
-DESCRIPTOR.message_types_by_name['Snapshot'] = _SNAPSHOT
+
+_PROXYMSG = _descriptor.Descriptor(
+  name='ProxyMsg',
+  full_name='voldemort.ProxyMsg',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='branch', full_name='voldemort.ProxyMsg.branch', index=0,
+      number=1, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='restrain', full_name='voldemort.ProxyMsg.restrain', index=1,
+      number=2, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='timeTravel', full_name='voldemort.ProxyMsg.timeTravel', index=2,
+      number=3, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=173,
+  serialized_end=237,
+)
+
+DESCRIPTOR.message_types_by_name['ToDataNode'] = _TODATANODE
 DESCRIPTOR.message_types_by_name['ExecList'] = _EXECLIST
+DESCRIPTOR.message_types_by_name['ProxyMsg'] = _PROXYMSG
 
-class Snapshot(_message.Message):
+class ToDataNode(_message.Message):
   __metaclass__ = _reflection.GeneratedProtocolMessageType
-  DESCRIPTOR = _SNAPSHOT
+  DESCRIPTOR = _TODATANODE
 
-  # @@protoc_insertion_point(class_scope:voldemort.Snapshot)
+  # @@protoc_insertion_point(class_scope:voldemort.ToDataNode)
 
 class ExecList(_message.Message):
   __metaclass__ = _reflection.GeneratedProtocolMessageType
@@ -88,7 +159,13 @@ class ExecList(_message.Message):
 
   # @@protoc_insertion_point(class_scope:voldemort.ExecList)
 
+class ProxyMsg(_message.Message):
+  __metaclass__ = _reflection.GeneratedProtocolMessageType
+  DESCRIPTOR = _PROXYMSG
+
+  # @@protoc_insertion_point(class_scope:voldemort.ProxyMsg)
+
 
 DESCRIPTOR.has_options = True
-DESCRIPTOR._options = _descriptor._ParseOptions(descriptor_pb2.FileOptions(), '\n\033voldemort.undoTracker.protoB\020FromManagerProtoH\001')
+DESCRIPTOR._options = _descriptor._ParseOptions(descriptor_pb2.FileOptions(), '\n\nundo.protoB\020FromManagerProtoH\001')
 # @@protoc_insertion_point(module_scope)

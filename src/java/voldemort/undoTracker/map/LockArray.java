@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 
 public class LockArray<K> {
 
-    private final Logger log = LogManager.getLogger("LockArray");
+    private final Logger log = LogManager.getLogger(LockArray.class.getName());
     public final ReentrantLock[] partitionMutex;
     public final int N_PARTITIONS;
 

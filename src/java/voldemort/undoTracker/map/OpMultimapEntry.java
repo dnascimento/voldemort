@@ -18,7 +18,7 @@ import com.google.common.collect.HashMultimap;
  */
 public class OpMultimapEntry {
 
-    private final Logger log = LogManager.getLogger("OpMultimapEntry");
+    private final Logger log = LogManager.getLogger(OpMultimapEntry.class.getName());
 
     /**
      * Avoid re-size version array, average number of version per key
@@ -236,12 +236,17 @@ public class OpMultimapEntry {
         return 0;
     }
 
-    public void updateDependencies(HashMultimap<Long, Long> dependencyPerRid) {
+    public boolean updateDependencies(HashMultimap<Long, Long> dependencyPerRid) {
         // 1st get previous write
         synchronized(this) {
             synchronized(dependencyPerRid) {
                 assert (list.size() > 0);
+                if(sentDependency == (list.size() - 1)) {
+                    return false;
+                }
+
                 long lastWrite = -1;
+                // get last write
                 for(int i = sentDependency; i >= 0; i--) {
                     if(list.get(i).type != OpType.Get) {
                         lastWrite = list.get(i).rid;
@@ -250,7 +255,7 @@ public class OpMultimapEntry {
                 }
                 assert (lastWrite != -1);
                 log.debug("LAST WRITE:" + lastWrite);
-
+                // update new dependencies
                 for(int i = sentDependency + 1; i < list.size(); i++) {
                     Op op = list.get(i);
                     if(op.type == Op.OpType.Get) {
@@ -262,6 +267,7 @@ public class OpMultimapEntry {
                 sentDependency = list.size() - 1;
             }
         }
+        return true;
     }
 
     /**

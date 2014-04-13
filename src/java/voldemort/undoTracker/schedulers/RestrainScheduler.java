@@ -1,7 +1,5 @@
 package voldemort.undoTracker.schedulers;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -16,15 +14,15 @@ import voldemort.utils.ByteArray;
  */
 public class RestrainScheduler implements AccessSchedule {
 
-    private final Logger log = LogManager.getLogger("RestrainScheduler");
+    private final Logger log = LogManager.getLogger(RestrainScheduler.class.getName());
 
     OpMultimap archive;
-    private AtomicBoolean flag;
+    private Object flag;
 
-    public RestrainScheduler(OpMultimap archive, AtomicBoolean containingFlag) {
+    public RestrainScheduler(OpMultimap archive, Object restrainLocker) {
         super();
         this.archive = archive;
-        this.flag = containingFlag;
+        this.flag = restrainLocker;
     }
 
     @Override

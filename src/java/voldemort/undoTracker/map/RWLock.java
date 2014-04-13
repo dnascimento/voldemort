@@ -35,7 +35,7 @@ public class RWLock {
     private final ReentrantLock lock = new ReentrantLock();
 
     private final LinkedList<LockOp> opsQueue = new LinkedList<LockOp>();
-    private final Logger log = LogManager.getLogger("LockArray");
+    private final Logger log = LogManager.getLogger(RWLock.class.getName());
 
     public RWLock() {
         log.debug("New lock");

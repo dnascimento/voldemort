@@ -2,19 +2,22 @@ package voldemort.undoTracker;
 
 import java.io.IOException;
 import java.net.ConnectException;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 
-import voldemort.undoTracker.proto.ToManagerProto;
-import voldemort.undoTracker.proto.ToManagerProto.TrackEntry;
-import voldemort.undoTracker.proto.ToManagerProto.TrackMsg;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
+import undo.proto.ToManagerProto;
+import undo.proto.ToManagerProto.MsgToManager;
+import undo.proto.ToManagerProto.TrackEntry;
+import undo.proto.ToManagerProto.TrackMsg;
 
 import com.google.common.collect.Multimap;
 
 public class SendDependencies extends Thread {
 
+    private final Logger log = LogManager.getLogger(SendDependencies.class.getName());
     private Multimap<Long, Long> dependencies;
-    private final InetSocketAddress SERVER_ADDRESS = new InetSocketAddress("localhost", 9090);
 
     public SendDependencies(Multimap<Long, Long> dependencies) {
         this.dependencies = dependencies;
@@ -26,8 +29,7 @@ public class SendDependencies extends Thread {
         try {
             send(list);
         } catch(IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e);
         }
     }
 
@@ -40,13 +42,14 @@ public class SendDependencies extends Thread {
         if(list.getEntryCount() == 0) {
             return;
         }
-        System.out.println("Sending dependencies to manager");
+        log.info("Sending dependencies to manager");
         Socket socket = new Socket();
         try {
-            socket.connect(SERVER_ADDRESS);
-            list.writeTo(socket.getOutputStream());
+            socket.connect(DBUndoStub.MANAGER_ADDRESS);
+            MsgToManager msg = ToManagerProto.MsgToManager.newBuilder().setTrackMsg(list).build();
+            msg.writeTo(socket.getOutputStream());
         } catch(ConnectException e) {
-            System.out.println("Manager is off, the package is:");
+            log.error("Manager is off, the package is:");
             show(list);
         } finally {
             socket.close();
@@ -54,8 +57,7 @@ public class SendDependencies extends Thread {
     }
 
     private void show(TrackMsg list) {
-        // TODO maybe improve
-        System.out.println(list.toString());
+        log.info(list.toString());
     }
 
     /**

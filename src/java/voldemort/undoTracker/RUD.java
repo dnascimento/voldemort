@@ -1,6 +1,6 @@
 package voldemort.undoTracker;
 
-import voldemort.undoTracker.proto.ToManagerProto;
+import undo.proto.ToManagerProto;
 
 /**
  * Request Undo Data
@@ -22,7 +22,7 @@ public class RUD {
         this(rid, 0, false);
     }
 
-    public RUD(voldemort.undoTracker.proto.ToManagerProto.RUD rud) {
+    public RUD(undo.proto.ToManagerProto.RUD rud) {
         this(rud.getRid(), rud.getBranch(), rud.getRestrain());
     }
 
