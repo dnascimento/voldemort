@@ -130,7 +130,6 @@ public class RedoTest {
         new ExecOpT(k1.clone(), new RUD(5, (short) 1, false), OpType.Put, stub, db).exec();
         new ExecOpT(k1.clone(), new RUD(4, (short) 2, false), OpType.Put, stub, db).exec();
 
-        stub.restrainEnable();
         new ExecOpT(k1.clone(), new RUD(6, (short) 1, false), OpType.Put, stub, db).exec();
         // restrain 7:2
 
@@ -145,7 +144,7 @@ public class RedoTest {
 
         new ExecOpT(k1.clone(), new RUD(6, (short) 2, false), OpType.Put, stub, db).exec();
 
-        stub.restrainDisable();
+        stub.unlockRestrain((short) 2);
 
         t1.join();
         t2.join();

@@ -253,8 +253,11 @@ public class OpMultimapEntry {
                         break;
                     }
                 }
-                assert (lastWrite != -1);
-                log.debug("LAST WRITE:" + lastWrite);
+                if(lastWrite == -1) {
+                    log.error("LastWrite = -1: can't find the source operation");
+                    // ignore this dependency
+                    return false;
+                }
                 // update new dependencies
                 for(int i = sentDependency + 1; i < list.size(); i++) {
                     Op op = list.get(i);

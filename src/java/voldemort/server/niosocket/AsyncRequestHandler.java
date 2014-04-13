@@ -355,8 +355,8 @@ public class AsyncRequestHandler extends SelectorManagerWorker {
             requestHandler = requestHandlerFactory.getRequestHandler(requestFormatType);
 
             if(logger.isInfoEnabled())
-                logger.info("Protocol negotiated for " + socketChannel.socket() + ": "
-                            + requestFormatType.getDisplayName());
+                logger.debug("Protocol negotiated for " + socketChannel.socket() + ": "
+                             + requestFormatType.getDisplayName());
 
             // The protocol negotiation is the first request, so respond by
             // sticking the bytes in the output buffer, signaling the Selector,
