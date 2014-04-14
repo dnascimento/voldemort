@@ -1,6 +1,15 @@
+/*
+ * Author: Dario Nascimento (dario.nascimento@tecnico.ulisboa.pt)
+ * 
+ * Instituto Superior Tecnico - University of Lisbon - INESC-ID Lisboa
+ * Copyright (c) 2014 - All rights reserved
+ */
+
 package voldemort.undoTracker;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -31,8 +40,9 @@ public class DBUndoStub {
     public static final int MY_PORT = 11200;
     public static final InetSocketAddress MANAGER_ADDRESS = new InetSocketAddress("localhost",
                                                                                   11000);
+    static final String KEY_ACCESS_LIST_FILE = "keyaccessList.obj";
 
-    private final Logger log = LogManager.getLogger(DBUndoStub.class.getName());
+    private final static Logger log = LogManager.getLogger(DBUndoStub.class.getName());
     /**
      * Snapshot Timestamp or Snapshot RID: defines the next snapshot if >
      * current moment or the last snapshot otherwise
@@ -47,7 +57,7 @@ public class DBUndoStub {
     RestrainScheduler restrainScheduler;
 
     public DBUndoStub() {
-        this(new OpMultimap());
+        this(loadKeyAccessList());
     }
 
     /**
@@ -57,6 +67,8 @@ public class DBUndoStub {
      */
     public DBUndoStub(OpMultimap keyAccessLists) {
         DOMConfigurator.configure("log4j.xml");
+        Runtime.getRuntime().addShutdownHook(new SaveKeyAccess(keyAccessLists));
+
         System.out.println("New DBUndo stub");
         this.keyAccessLists = keyAccessLists;
 
@@ -307,5 +319,20 @@ public class DBUndoStub {
     public void resetDependencies() {
         log.info("Reset dependency map");
         keyAccessLists.clear();
+    }
+
+    private static OpMultimap loadKeyAccessList() {
+        OpMultimap list;
+        try {
+            FileInputStream fin = new FileInputStream(KEY_ACCESS_LIST_FILE);
+            ObjectInputStream ois = new ObjectInputStream(fin);
+            list = (OpMultimap) ois.readObject();
+            ois.close();
+            log.info("key access list file loaded");
+            return list;
+        } catch(Exception e) {
+            log.info("No KeyAccessList file founded");
+        }
+        return new OpMultimap();
     }
 }

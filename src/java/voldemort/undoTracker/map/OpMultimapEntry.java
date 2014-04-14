@@ -1,10 +1,15 @@
+/*
+ * Author: Dario Nascimento (dario.nascimento@tecnico.ulisboa.pt)
+ * 
+ * Instituto Superior Tecnico - University of Lisbon - INESC-ID Lisboa
+ * Copyright (c) 2014 - All rights reserved
+ */
+
 package voldemort.undoTracker.map;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 
 import voldemort.undoTracker.RUD;
 import voldemort.undoTracker.map.Op.OpType;
@@ -16,9 +21,12 @@ import com.google.common.collect.HashMultimap;
  * @author darionascimento
  * 
  */
-public class OpMultimapEntry {
+public class OpMultimapEntry implements Serializable {
 
-    private final Logger log = LogManager.getLogger(OpMultimapEntry.class.getName());
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * Avoid re-size version array, average number of version per key
@@ -37,6 +45,7 @@ public class OpMultimapEntry {
      * Keep track of next or last write
      */
     private int redoPos = 0;
+
     /**
      * Keep track of last sent dependency
      */
@@ -52,7 +61,7 @@ public class OpMultimapEntry {
 
     /**
      * 
-     * @paramrud
+     * @param rud
      */
     public void isNextGet(RUD rud) {
         while(true) {
@@ -76,7 +85,7 @@ public class OpMultimapEntry {
     /**
      * Wait if the current item is not the expected
      * 
-     * @paramrud
+     * @param rud
      */
     public void isNextPut(RUD rud) {
         while(true) {
@@ -236,7 +245,7 @@ public class OpMultimapEntry {
         return 0;
     }
 
-    public boolean updateDependencies(HashMultimap<Long, Long> dependencyPerRid) {
+    public boolean updateDependencies(HashMultimap<Long, Long> dependencyPerRid) throws Exception {
         // 1st get previous write
         synchronized(this) {
             synchronized(dependencyPerRid) {
@@ -254,9 +263,7 @@ public class OpMultimapEntry {
                     }
                 }
                 if(lastWrite == -1) {
-                    log.error("LastWrite = -1: can't find the source operation");
-                    // ignore this dependency
-                    return false;
+                    throw new Exception("Last write == -1");
                 }
                 // update new dependencies
                 for(int i = sentDependency + 1; i < list.size(); i++) {
@@ -365,6 +372,13 @@ public class OpMultimapEntry {
     public int size() {
         synchronized(this) {
             return list.size();
+        }
+    }
+
+    public boolean isModified() {
+        // TODO improve to support multiple redo
+        synchronized(this) {
+            return (redoPos == 0);
         }
     }
 

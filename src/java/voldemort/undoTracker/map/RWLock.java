@@ -1,5 +1,13 @@
+/*
+ * Author: Dario Nascimento (dario.nascimento@tecnico.ulisboa.pt)
+ * 
+ * Instituto Superior Tecnico - University of Lisbon - INESC-ID Lisboa
+ * Copyright (c) 2014 - All rights reserved
+ */
+
 package voldemort.undoTracker.map;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.locks.ReentrantLock;
@@ -15,7 +23,7 @@ import org.apache.log4j.Logger;
  */
 public class RWLock {
 
-    private enum LockOp {
+    private enum LockOp implements Serializable {
         READ,
         WRITE;
     }
@@ -33,9 +41,8 @@ public class RWLock {
     private int writesExec = 0;
 
     private final ReentrantLock lock = new ReentrantLock();
-
     private final LinkedList<LockOp> opsQueue = new LinkedList<LockOp>();
-    private final Logger log = LogManager.getLogger(RWLock.class.getName());
+    private transient static final Logger log = LogManager.getLogger(RWLock.class.getName());
 
     public RWLock() {
         log.debug("New lock");

@@ -16,7 +16,6 @@ public class ContainingSerializer {
         if(rud.rid == 0) {
             return object;
         } else {
-            System.out.println("Request writing: " + rud.rid);
             return VProto.Container.newBuilder()
                                    .setData(ByteString.copyFrom(object))
                                    .setRud(rud.toProto())
@@ -33,7 +32,6 @@ public class ContainingSerializer {
         try {
             VProto.Container c = VProto.Container.parseFrom(bytes);
             RUD rud = new RUD(c.getRud());
-            System.out.println("toObjectRid: " + rud);
             return new Pair<RUD, byte[]>(rud, c.getData().toByteArray());
         } catch(InvalidProtocolBufferException e) {
             return new Pair<RUD, byte[]>(new RUD(), bytes);

@@ -1,5 +1,12 @@
+/*
+ * Author: Dario Nascimento (dario.nascimento@tecnico.ulisboa.pt)
+ * 
+ * Instituto Superior Tecnico - University of Lisbon - INESC-ID Lisboa
+ * Copyright (c) 2014 - All rights reserved
+ */
 package voldemort.undoTracker.map;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -7,6 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import voldemort.undoTracker.DBUndoStub;
 import voldemort.undoTracker.RUD;
 import voldemort.undoTracker.map.Op.OpType;
 import voldemort.utils.ByteArray;
@@ -20,10 +28,11 @@ import com.google.common.collect.HashMultimap;
  * @author darionascimento
  * 
  */
-public class OpMultimap {
+public class OpMultimap implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private ConcurrentHashMap<ByteArray, OpMultimapEntry> map = new ConcurrentHashMap<ByteArray, OpMultimapEntry>();
-    private static final Logger log = LogManager.getLogger(OpMultimap.class.getName());
+    private transient static final Logger log = LogManager.getLogger(OpMultimap.class.getName());
 
     /**
      * Add a set of operations to historic
@@ -114,7 +123,13 @@ public class OpMultimap {
         for(ByteArray key: getKeySet()) {
             OpMultimapEntry entry = map.get(key);
             assert (entry != null);
-            newDeps = newDeps || entry.updateDependencies(dependencyPerRid);
+            try {
+                newDeps = newDeps || entry.updateDependencies(dependencyPerRid);
+            } catch(Exception e) {
+                log.error("LastWrite = -1: can't find the source operation:"
+                          + DBUndoStub.hexStringToAscii(key));
+                // ignore this dependency
+            }
         }
         return newDeps;
     }

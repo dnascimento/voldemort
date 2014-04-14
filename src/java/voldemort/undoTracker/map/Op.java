@@ -1,8 +1,21 @@
+/*
+ * Author: Dario Nascimento (dario.nascimento@tecnico.ulisboa.pt)
+ * 
+ * Instituto Superior Tecnico - University of Lisbon - INESC-ID Lisboa
+ * Copyright (c) 2014 - All rights reserved
+ */
 package voldemort.undoTracker.map;
 
-public class Op {
+import java.io.Serializable;
 
-    public enum OpType {
+public class Op implements Serializable {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    public enum OpType implements Serializable {
         Put,
         Delete,
         Get;
