@@ -132,6 +132,11 @@ public class MutableStoreVerifier extends BasicStoreVerifier<ByteArray, byte[], 
                 return false;
             }
 
+            @Override
+            public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, RUD rud) {
+                return null;
+            }
+
         };
     }
 }

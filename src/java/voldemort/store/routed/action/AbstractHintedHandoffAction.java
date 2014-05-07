@@ -17,10 +17,12 @@
 package voldemort.store.routed.action;
 
 import java.util.List;
+import java.util.Set;
 
 import voldemort.cluster.Node;
 import voldemort.store.routed.BasicPipelineData;
 import voldemort.store.routed.Pipeline;
+import voldemort.store.routed.Pipeline.Event;
 import voldemort.store.slop.HintedHandoff;
 import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
@@ -38,6 +40,16 @@ public abstract class AbstractHintedHandoffAction<V, PD extends BasicPipelineDat
                                        HintedHandoff hintedHandoff,
                                        RUD rud) {
         super(pipelineData, completeEvent, key, rud);
+        this.hintedHandoff = hintedHandoff;
+        this.failedNodes = pipelineData.getFailedNodes();
+    }
+
+    public AbstractHintedHandoffAction(PD pipelineData,
+                                       Event completeEvent,
+                                       Set<ByteArray> keys,
+                                       HintedHandoff hintedHandoff,
+                                       RUD rud) {
+        super(pipelineData, completeEvent, keys, rud);
         this.hintedHandoff = hintedHandoff;
         this.failedNodes = pipelineData.getFailedNodes();
     }

@@ -1,6 +1,7 @@
 package voldemort.utils;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -68,5 +69,12 @@ public final class ByteArray implements Serializable {
 
     public void set(byte[] data) {
         this.underlying = Utils.notNull(data, "underlying");
+    }
+
+    public static String toAscii(ByteArray key) {
+        try {
+            return new String(key.get(), "UTF-8");
+        } catch(UnsupportedEncodingException e) {}
+        return key.toString();
     }
 }

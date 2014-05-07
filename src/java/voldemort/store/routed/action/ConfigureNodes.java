@@ -56,7 +56,6 @@ public class ConfigureNodes<V, PD extends BasicPipelineData<V>> extends
     @Override
     public void execute(Pipeline pipeline) {
         List<Node> nodes = null;
-
         try {
             nodes = getNodes(key);
         } catch(VoldemortException e) {
@@ -127,7 +126,7 @@ public class ConfigureNodes<V, PD extends BasicPipelineData<V>> extends
             for(Node node: nodes) {
                 nodeStr.append(node.getId() + ",");
             }
-            logger.debug("Key " + ByteUtils.toHexString(key.get())
+            logger.debug("Keys " + ByteUtils.toHexString(key.get())
                          + " final preference list to contact " + nodeStr);
         }
         pipelineData.setNodes(nodes);

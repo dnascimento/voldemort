@@ -16,6 +16,9 @@ import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -23,6 +26,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
+import voldemort.VoldemortException;
 import voldemort.undoTracker.map.OpMultimap;
 import voldemort.undoTracker.schedulers.RedoScheduler;
 import voldemort.undoTracker.schedulers.RestrainScheduler;
@@ -334,5 +338,17 @@ public class DBUndoStub {
             log.info("No KeyAccessList file founded");
         }
         return new OpMultimap();
+    }
+
+    public Map<ByteArray, Boolean> unlockKey(List<ByteArray> keys, RUD rud)
+            throws VoldemortException {
+        // stub
+        HashMap<ByteArray, Boolean> result = new HashMap<ByteArray, Boolean>();
+        for(ByteArray key: keys) {
+            result.put(key, true);
+        }
+        System.out.println("Unlock:" + keys);
+        return result;
+        // TODO
     }
 }

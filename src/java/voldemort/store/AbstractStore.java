@@ -74,4 +74,9 @@ public abstract class AbstractStore<K, V, T> implements Store<K, V, T> {
         return false;
     }
 
+    @Override
+    public Map<K, Boolean> unlockKeys(Iterable<K> keys, RUD rud) {
+        return null;
+    }
+
 }

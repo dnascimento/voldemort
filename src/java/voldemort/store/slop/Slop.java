@@ -36,7 +36,8 @@ public class Slop {
 
     public enum Operation {
         PUT((byte) 0),
-        DELETE((byte) 1);
+        DELETE((byte) 1),
+        UNLOCK((byte) 2);
 
         private final byte opCode;
 

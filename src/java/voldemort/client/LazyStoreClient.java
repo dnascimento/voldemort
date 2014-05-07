@@ -88,81 +88,86 @@ public class LazyStoreClient<K, V> implements StoreClient<K, V> {
 
     @Override
     public V getValue(K key, RUD rud) {
-        return getStoreClient().getValue(key,rud);
+        return getStoreClient().getValue(key, rud);
     }
 
     @Override
     public V getValue(K key, V defaultValue, RUD rud) {
-        return getStoreClient().getValue(key, defaultValue,rud);
+        return getStoreClient().getValue(key, defaultValue, rud);
     }
 
     @Override
     public Versioned<V> get(K key, RUD rud) {
-        return getStoreClient().get(key,rud);
+        return getStoreClient().get(key, rud);
     }
 
     @Override
     public Versioned<V> get(K key, Object transforms, RUD rud) {
-        return getStoreClient().get(key, transforms,rud);
+        return getStoreClient().get(key, transforms, rud);
     }
 
     @Override
     public Map<K, Versioned<V>> getAll(Iterable<K> keys, RUD rud) {
-        return getStoreClient().getAll(keys,rud);
+        return getStoreClient().getAll(keys, rud);
     }
 
     @Override
     public Map<K, Versioned<V>> getAll(Iterable<K> keys, Map<K, Object> transforms, RUD rud) {
-        return getStoreClient().getAll(keys, transforms,rud);
+        return getStoreClient().getAll(keys, transforms, rud);
     }
 
     @Override
     public Versioned<V> get(K key, Versioned<V> defaultValue, RUD rud) {
-        return getStoreClient().get(key, defaultValue,rud);
+        return getStoreClient().get(key, defaultValue, rud);
     }
 
     @Override
     public Version put(K key, V value, RUD rud) {
-        return getStoreClient().put(key, value,rud);
+        return getStoreClient().put(key, value, rud);
     }
 
     @Override
     public Version put(K key, V value, Object transforms, RUD rud) {
-        return getStoreClient().put(key, value, transforms,rud);
+        return getStoreClient().put(key, value, transforms, rud);
     }
 
     @Override
     public Version put(K key, Versioned<V> versioned, RUD rud) throws ObsoleteVersionException {
-        return getStoreClient().put(key, versioned,rud);
+        return getStoreClient().put(key, versioned, rud);
     }
 
     @Override
     public boolean putIfNotObsolete(K key, Versioned<V> versioned, RUD rud) {
-        return getStoreClient().putIfNotObsolete(key, versioned,rud);
+        return getStoreClient().putIfNotObsolete(key, versioned, rud);
     }
 
     @Override
     public boolean applyUpdate(UpdateAction<K, V> action, RUD rud) {
-        return getStoreClient().applyUpdate(action,rud);
+        return getStoreClient().applyUpdate(action, rud);
     }
 
     @Override
     public boolean applyUpdate(UpdateAction<K, V> action, int maxTries, RUD rud) {
-        return getStoreClient().applyUpdate(action, maxTries,rud);
+        return getStoreClient().applyUpdate(action, maxTries, rud);
     }
 
     @Override
     public boolean delete(K key, RUD rud) {
-        return getStoreClient().delete(key,rud);
+        return getStoreClient().delete(key, rud);
     }
 
     @Override
     public boolean delete(K key, Version version, RUD rud) {
-        return getStoreClient().delete(key, version,rud);
+        return getStoreClient().delete(key, version, rud);
     }
 
     @Override
     public List<Node> getResponsibleNodes(K key) {
         return getStoreClient().getResponsibleNodes(key);
+    }
+
+    @Override
+    public Map<K, Boolean> unlockKeys(Iterable<K> keys, RUD rud) {
+        return getStoreClient().unlockKeys(keys, rud);
     }
 }

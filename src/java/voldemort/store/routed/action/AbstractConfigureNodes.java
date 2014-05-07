@@ -17,7 +17,9 @@
 package voldemort.store.routed.action;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import voldemort.cluster.Node;
 import voldemort.cluster.failuredetector.FailureDetector;
@@ -50,7 +52,7 @@ public abstract class AbstractConfigureNodes<K, V, PD extends PipelineData<K, V>
     }
 
     protected List<Node> getNodes(ByteArray key) {
-        List<Node> nodes = new ArrayList<Node>();
+        Set<Node> nodes = new HashSet<Node>();
 
         pipelineData.setReplicationSet(routingStrategy.routeRequest(key.get()));
         // raise an error if no server has any partitions defined
@@ -90,6 +92,6 @@ public abstract class AbstractConfigureNodes<K, V, PD extends PipelineData<K, V>
             }
             throw new InsufficientOperationalNodesException(errorMessage);
         }
-        return nodes;
+        return new ArrayList<Node>(nodes);
     }
 }

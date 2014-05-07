@@ -967,4 +967,10 @@ public class ThreadPoolRoutedStore extends RoutedStore {
 
         List<R> execute(Store<ByteArray, byte[], byte[]> store, ByteArray key, byte[] transforms);
     }
+
+    @Override
+    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, RUD rud) {
+        // TODO
+        throw new RuntimeException("NOT IMPLEMENTED");
+    }
 }

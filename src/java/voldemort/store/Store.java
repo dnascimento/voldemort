@@ -149,4 +149,6 @@ public interface Store<K, V, T> {
      * @return True if anything was deleted
      */
     public boolean delete(CompositeVoldemortRequest<K, V> request) throws VoldemortException;
+
+    public Map<K, Boolean> unlockKeys(Iterable<K> keys, RUD rud);
 }

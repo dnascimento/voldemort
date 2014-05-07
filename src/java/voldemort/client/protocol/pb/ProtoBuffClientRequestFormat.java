@@ -24,18 +24,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import undo.proto.ToManagerProto;
 import voldemort.client.protocol.RequestFormat;
 import voldemort.client.protocol.pb.VProto.DeleteResponse;
 import voldemort.client.protocol.pb.VProto.GetAllResponse;
 import voldemort.client.protocol.pb.VProto.GetResponse;
 import voldemort.client.protocol.pb.VProto.GetVersionResponse;
+import voldemort.client.protocol.pb.VProto.KeyStatus;
 import voldemort.client.protocol.pb.VProto.PutResponse;
 import voldemort.client.protocol.pb.VProto.RequestType;
+import voldemort.client.protocol.pb.VProto.UnlockResponse;
 import voldemort.server.RequestRoutingType;
 import voldemort.store.ErrorCodeMapper;
 import voldemort.store.StoreUtils;
 import voldemort.undoTracker.RUD;
-import undo.proto.ToManagerProto;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.VectorClock;
 import voldemort.versioning.Version;
@@ -67,6 +69,10 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
         ToManagerProto.RUD rudProto = rud.toProto();
         System.out.println("writeDeleteRequest" + rud);
         StoreUtils.assertValidKey(key);
+
+        // Track the key access by client
+        rud.addAccessedKey(key, storeName, RUD.OpType.Delete);
+
         ProtoUtils.writeMessage(output,
                                 VProto.VoldemortRequest.newBuilder()
                                                        .setType(RequestType.DELETE)
@@ -108,6 +114,9 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
         VProto.GetRequest.Builder get = VProto.GetRequest.newBuilder();
         get.setKey(ByteString.copyFrom(key.get()));
         get.setRud(rudProto);
+        // Track the key access by client
+        rud.addAccessedKey(key, storeName, RUD.OpType.Get);
+
         if(transforms != null) {
             get.setTransforms(ByteString.copyFrom(transforms));
         }
@@ -200,6 +209,8 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
         System.out.println("WritePutRequest" + rud);
         StoreUtils.assertValidKey(key);
         ToManagerProto.RUD rudProto = rud.toProto();
+        // Track the key access by client
+        rud.addAccessedKey(key, storeName, RUD.OpType.Put);
 
         VProto.PutRequest.Builder req = VProto.PutRequest.newBuilder()
                                                          .setRud(rudProto)
@@ -278,6 +289,52 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
     private boolean isCompleteResponse(ByteBuffer buffer) {
         int size = buffer.getInt();
         return buffer.remaining() == size;
+    }
+
+    @Override
+    public void writeUnlockRequest(DataOutputStream output,
+                                   String storeName,
+                                   Iterable<ByteArray> keys,
+                                   RequestRoutingType routingType,
+                                   RUD rud) throws IOException {
+        System.out.println("writeUnlock" + rud);
+        ToManagerProto.RUD rudProto = rud.toProto();
+        VProto.UnlockRequest.Builder unlock = VProto.UnlockRequest.newBuilder();
+
+        for(ByteArray key: keys) {
+            StoreUtils.assertValidKey(key);
+            unlock.addKey(ByteString.copyFrom(key.get()));
+        }
+
+        unlock.setRud(rudProto);
+        ProtoUtils.writeMessage(output,
+                                VProto.VoldemortRequest.newBuilder()
+                                                       .setType(RequestType.UNLOCK)
+                                                       .setStore(storeName)
+                                                       .setShouldRoute(routingType.equals(RequestRoutingType.ROUTED))
+                                                       .setRequestRouteType(routingType.getRoutingTypeCode())
+                                                       .setUnlock(unlock)
+                                                       .build());
+    }
+
+    @Override
+    public Map<ByteArray, Boolean> readUnlockResponse(DataInputStream stream) throws IOException {
+        UnlockResponse.Builder response = ProtoUtils.readToBuilder(stream,
+                                                                   UnlockResponse.newBuilder());
+        if(response.hasError())
+            throwException(response.getError());
+
+        List<KeyStatus> status = response.getStatusList();
+        Map<ByteArray, Boolean> result = new HashMap<ByteArray, Boolean>(status.size());
+        for(KeyStatus k: status) {
+            result.put(ProtoUtils.decodeBytes(k.getKey()), k.getStatus());
+        }
+        return result;
+    }
+
+    @Override
+    public boolean isCompleteUnlockRequest(ByteBuffer buffer) {
+        return isCompleteResponse(buffer);
     }
 
 }

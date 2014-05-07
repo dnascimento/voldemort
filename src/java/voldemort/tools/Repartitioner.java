@@ -80,7 +80,7 @@ public class Repartitioner {
      * Default setting for which zone IDs to run greedy swap algorithm. Empty
      * implies all zones will be considered.
      */
-    public final static List<Integer> DEFAULT_GREEDY_SWAP_ZONE_IDS = Collections.<Integer> emptyList();;
+    public final static List<Integer> DEFAULT_GREEDY_SWAP_ZONE_IDS = Collections.<Integer> emptyList();
     /**
      * Default (max) number of partition IDs per node to consider, if greedy
      * swaps are enabled.
@@ -252,9 +252,8 @@ public class Repartitioner {
      * @return A map of zoneId to list of target number of partitions per node
      *         within zone.
      */
-    public static HashMap<Integer, List<Integer>>
-            getBalancedNumberOfPrimaryPartitionsPerNode(final Cluster nextCandidateCluster,
-                                                        Map<Integer, Integer> targetPartitionsPerZone) {
+    public static HashMap<Integer, List<Integer>> getBalancedNumberOfPrimaryPartitionsPerNode(final Cluster nextCandidateCluster,
+                                                                                              Map<Integer, Integer> targetPartitionsPerZone) {
         HashMap<Integer, List<Integer>> numPartitionsPerNode = Maps.newHashMap();
         for(Integer zoneId: nextCandidateCluster.getZoneIds()) {
             List<Integer> partitionsOnNode = Utils.distributeEvenlyIntoList(nextCandidateCluster.getNumberOfNodesInZone(zoneId),
@@ -276,9 +275,8 @@ public class Repartitioner {
      *         Integer where the integer value is the number of partitions to
      *         store.
      */
-    public static Pair<HashMap<Node, Integer>, HashMap<Node, Integer>>
-            getDonorsAndStealersForBalance(final Cluster nextCandidateCluster,
-                                           Map<Integer, List<Integer>> numPartitionsPerNodePerZone) {
+    public static Pair<HashMap<Node, Integer>, HashMap<Node, Integer>> getDonorsAndStealersForBalance(final Cluster nextCandidateCluster,
+                                                                                                      Map<Integer, List<Integer>> numPartitionsPerNodePerZone) {
         HashMap<Node, Integer> donorNodes = Maps.newHashMap();
         HashMap<Node, Integer> stealerNodes = Maps.newHashMap();
 
@@ -451,9 +449,8 @@ public class Repartitioner {
      * @param maxContiguousPartitionsPerZone See RebalanceCLI.
      * @return updated cluster
      */
-    public static Cluster
-            repeatedlyBalanceContiguousPartitionsPerZone(final Cluster nextCandidateCluster,
-                                                         final int maxContiguousPartitionsPerZone) {
+    public static Cluster repeatedlyBalanceContiguousPartitionsPerZone(final Cluster nextCandidateCluster,
+                                                                       final int maxContiguousPartitionsPerZone) {
         System.out.println("Looping to evenly balance partitions across zones while limiting contiguous partitions");
         // This loop is hard to make definitive. I.e., there are corner cases
         // for small clusters and/or clusters with few partitions for which it
@@ -486,9 +483,8 @@ public class Repartitioner {
      * @param maxContiguousPartitionsPerZone See RebalanceCLI.
      * @return Return updated cluster metadata.
      */
-    public static Cluster
-            balanceContiguousPartitionsPerZone(final Cluster nextCandidateCluster,
-                                               final int maxContiguousPartitionsPerZone) {
+    public static Cluster balanceContiguousPartitionsPerZone(final Cluster nextCandidateCluster,
+                                                             final int maxContiguousPartitionsPerZone) {
         System.out.println("Balance number of contiguous partitions within a zone.");
         System.out.println("numPartitionsPerZone");
         for(int zoneId: nextCandidateCluster.getZoneIds()) {
@@ -697,7 +693,8 @@ public class Repartitioner {
      * @param nextCandidateCluster cluster object.
      * @param randomSwapAttempts See RebalanceCLI.
      * @param randomSwapSuccesses See RebalanceCLI.
-     * @param randomSwapZoneIds The set of zoneIds to consider. Each zone is done
+     * @param randomSwapZoneIds The set of zoneIds to consider. Each zone is
+     *        done
      *        independently.
      * @param storeDefs List of store definitions
      * @return updated cluster
@@ -854,7 +851,8 @@ public class Repartitioner {
      * @param greedyAttempts See RebalanceCLI.
      * @param greedySwapMaxPartitionsPerNode See RebalanceCLI.
      * @param greedySwapMaxPartitionsPerZone See RebalanceCLI.
-     * @param greedySwapZoneIds The set of zoneIds to consider. Each zone is done
+     * @param greedySwapZoneIds The set of zoneIds to consider. Each zone is
+     *        done
      *        independently.
      * @param storeDefs
      * @return updated cluster

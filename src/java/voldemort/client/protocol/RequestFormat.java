@@ -95,4 +95,14 @@ public interface RequestFormat {
     public boolean isCompleteDeleteResponse(ByteBuffer buffer);
 
     public boolean readDeleteResponse(DataInputStream input) throws IOException;
+
+    public void writeUnlockRequest(DataOutputStream output,
+                                   String storeName,
+                                   Iterable<ByteArray> keys,
+                                   RequestRoutingType routingType,
+                                   RUD rud) throws IOException;
+
+    public Map<ByteArray, Boolean> readUnlockResponse(DataInputStream input) throws IOException;
+
+    public boolean isCompleteUnlockRequest(ByteBuffer buffer);
 }

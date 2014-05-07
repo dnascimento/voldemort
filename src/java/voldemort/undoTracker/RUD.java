@@ -7,7 +7,11 @@
 
 package voldemort.undoTracker;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import undo.proto.ToManagerProto;
+import voldemort.utils.ByteArray;
 
 /**
  * Request Undo Data
@@ -17,26 +21,39 @@ import undo.proto.ToManagerProto;
  */
 public class RUD {
 
+    public enum OpType {
+        Put,
+        Delete,
+        Get;
+    }
+
     public long rid;
     public short branch;
     public boolean restrain;
+    public Set<KeyAccess> accessedKeys;
+    public boolean redo;
 
     public RUD() {
-        this(0L, 0, false);
+        this(0L, 0, false, false);
     }
 
     public RUD(long rid) {
-        this(rid, 0, false);
+        this(rid, 0, false, false);
     }
 
     public RUD(undo.proto.ToManagerProto.RUD rud) {
-        this(rud.getRid(), rud.getBranch(), rud.getRestrain());
+        this(rud.getRid(), rud.getBranch(), rud.getRestrain(), rud.getRedo());
     }
 
     public RUD(long rid, int branch, boolean restrain) {
+        this(rid, branch, restrain, false);
+    }
+
+    public RUD(long rid, int branch, boolean restrain, boolean redo) {
         this.rid = rid;
         this.branch = (short) branch;
         this.restrain = restrain;
+        this.redo = redo;
     }
 
     public ToManagerProto.RUD toProto() {
@@ -45,6 +62,19 @@ public class RUD {
                                  .setRid(rid)
                                  .setRestrain(restrain)
                                  .build();
+    }
+
+    public void addAccessedKey(ByteArray key, String storeName, OpType type) {
+        if(accessedKeys == null)
+            accessedKeys = new HashSet<KeyAccess>();
+        KeyAccess k = new KeyAccess(key, storeName);
+        accessedKeys.add(k);
+    }
+
+    public Set<KeyAccess> getAccessedKeys() {
+        if(accessedKeys == null)
+            return new HashSet<KeyAccess>();
+        return accessedKeys;
     }
 
     @Override

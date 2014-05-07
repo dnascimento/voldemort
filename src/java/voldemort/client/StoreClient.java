@@ -207,4 +207,7 @@ public interface StoreClient<K, V> {
      * @return a list of Nodes which should hold this key
      */
     public List<Node> getResponsibleNodes(K key);
+
+    public Map<K, Boolean> unlockKeys(Iterable<K> keys, RUD rud);
+
 }

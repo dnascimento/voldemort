@@ -16,6 +16,8 @@
 
 package voldemort.store.routed.action;
 
+import java.util.Set;
+
 import voldemort.store.routed.Pipeline.Event;
 import voldemort.store.routed.PipelineData;
 import voldemort.undoTracker.RUD;
@@ -24,11 +26,21 @@ public abstract class AbstractKeyBasedAction<K, V, PD extends PipelineData<K, V>
         AbstractAction<K, V, PD> {
 
     protected final K key;
+    protected final Set<K> keys;
     protected final RUD rud;
 
     protected AbstractKeyBasedAction(PD pipelineData, Event completeEvent, K key, RUD rud) {
         super(pipelineData, completeEvent);
         this.key = key;
+        this.keys = null;
         this.rud = rud;
     }
+
+    protected AbstractKeyBasedAction(PD pipelineData, Event completeEvent, Set<K> keys, RUD rud) {
+        super(pipelineData, completeEvent);
+        this.keys = keys;
+        this.key = null;
+        this.rud = rud;
+    }
+
 }

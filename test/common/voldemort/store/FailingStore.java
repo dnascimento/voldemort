@@ -72,4 +72,9 @@ public class FailingStore<K, V, T> extends AbstractStore<K, V, T> {
     public java.util.List<Version> getVersions(K key, RUD rud) {
         throw exception;
     }
+
+    @Override
+    public Map<K, Boolean> unlockKeys(Iterable<K> keys, RUD rud) throws VoldemortException {
+        throw exception;
+    }
 }

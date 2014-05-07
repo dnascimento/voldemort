@@ -96,4 +96,9 @@ public interface NonblockingStore {
 
     public void close() throws VoldemortException;
 
+    public void submitUnlockRequest(Iterable<ByteArray> keys,
+                                    NonblockingStoreCallback callback,
+                                    long timeoutMs,
+                                    RUD rud);
+
 }

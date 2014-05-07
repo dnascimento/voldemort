@@ -20,7 +20,7 @@ public class FailingReadsStore<K, V, T> extends AbstractStore<K, V, T> {
 
     @Override
     public boolean delete(K key, Version version, RUD rud) throws VoldemortException {
-        return engine.delete(key, version,rud);
+        return engine.delete(key, version, rud);
     }
 
     @Override
@@ -41,6 +41,11 @@ public class FailingReadsStore<K, V, T> extends AbstractStore<K, V, T> {
 
     @Override
     public void put(K key, Versioned<V> value, T transforms, RUD rud) throws VoldemortException {
-        engine.put(key, value, transforms,rud);
+        engine.put(key, value, transforms, rud);
+    }
+
+    @Override
+    public Map<K, Boolean> unlockKeys(Iterable<K> keys, RUD rud) {
+        throw new VoldemortException("Operation failed");
     }
 }

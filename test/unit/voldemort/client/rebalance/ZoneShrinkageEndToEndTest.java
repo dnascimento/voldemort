@@ -153,7 +153,7 @@ public class ZoneShrinkageEndToEndTest {
                 }
                 return builder.toString();
             }
-        };
+        }
 
         static int MODE_ALLOW_GET = 0x01;
         static int MODE_ALLOW_GETALL = 0x02;

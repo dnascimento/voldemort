@@ -8,12 +8,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import voldemort.VoldemortException;
 import voldemort.client.protocol.pb.ProtoUtils;
 import voldemort.client.protocol.pb.VProto;
 import voldemort.client.protocol.pb.VProto.GetRequest;
+import voldemort.client.protocol.pb.VProto.KeyStatus;
 import voldemort.client.protocol.pb.VProto.RequestType;
+import voldemort.client.protocol.pb.VProto.UnlockRequest;
 import voldemort.client.protocol.pb.VProto.VoldemortRequest;
 import voldemort.server.RequestRoutingType;
 import voldemort.server.StoreRepository;
@@ -77,12 +80,41 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
                 case GET_VERSION:
                     response = handleGetVersion(request.getGet(), store);
                     break;
+                case UNLOCK:
+                    response = handleUnlock(request.getUnlock(), store);
+                    break;
                 default:
                     throw new VoldemortException("Unknown operation " + request.getType());
             }
         }
         ProtoUtils.writeMessage(outputStream, response);
         return null;
+    }
+
+    private Message handleUnlock(UnlockRequest request, Store<ByteArray, byte[], byte[]> store) {
+        VProto.UnlockResponse.Builder response = VProto.UnlockResponse.newBuilder();
+        List<ByteArray> keys = new ArrayList<ByteArray>(request.getKeyCount());
+        for(ByteString bs: request.getKeyList()) {
+            ByteArray key = ProtoUtils.decodeBytes(bs);
+            keys.add(key);
+        }
+
+        RUD rud = new RUD(request.getRud());
+
+        try {
+            // TODO deveria ter em conta a store
+            Map<ByteArray, Boolean> status = undoStub.unlockKey(keys, rud);
+            for(Entry<ByteArray, Boolean> s: status.entrySet()) {
+                KeyStatus.Builder b = KeyStatus.newBuilder()
+                                               .setKey(ProtoUtils.encodeBytes(s.getKey()))
+                                               .setStatus(s.getValue());
+                response.addStatus(b);
+            }
+        } catch(VoldemortException e) {
+            response.setError(ProtoUtils.encodeError(getErrorMapper(), e));
+        }
+
+        return response.build();
     }
 
     private Message handleGetVersion(GetRequest request, Store<ByteArray, byte[], byte[]> store) {

@@ -55,12 +55,15 @@ import voldemort.store.routed.action.PerformParallelDeleteRequests;
 import voldemort.store.routed.action.PerformParallelGetAllRequests;
 import voldemort.store.routed.action.PerformParallelPutRequests;
 import voldemort.store.routed.action.PerformParallelRequests;
+import voldemort.store.routed.action.PerformParallelUnlockRequests;
 import voldemort.store.routed.action.PerformPutHintedHandoff;
 import voldemort.store.routed.action.PerformSerialGetAllRequests;
 import voldemort.store.routed.action.PerformSerialPutRequests;
 import voldemort.store.routed.action.PerformSerialRequests;
+import voldemort.store.routed.action.PerformSerialUnlockRequests;
 import voldemort.store.routed.action.PerformZoneSerialRequests;
 import voldemort.store.routed.action.ReadRepair;
+import voldemort.store.routed.action.UnlockConfigureNodes;
 import voldemort.store.slop.HintedHandoff;
 import voldemort.store.slop.Slop;
 import voldemort.store.slop.strategy.HintedHandoffStrategy;
@@ -252,7 +255,7 @@ public class PipelineRoutedStore extends RoutedStore {
         return get(key,
                    transforms,
                    timeoutConfig.getOperationTimeout(VoldemortOpCode.GET_OP_CODE),
-                  rud);
+                   rud);
     }
 
     public List<Versioned<byte[]>> get(final ByteArray key,
@@ -283,7 +286,7 @@ public class PipelineRoutedStore extends RoutedStore {
 
             @Override
             public List<Versioned<byte[]>> request(Store<ByteArray, byte[], byte[]> store) {
-                return store.get(key, transforms,rud);
+                return store.get(key, transforms, rud);
             }
 
         };
@@ -308,7 +311,7 @@ public class PipelineRoutedStore extends RoutedStore {
                                                                                                                                  nonblockingStores,
                                                                                                                                  Event.INSUFFICIENT_SUCCESSES,
                                                                                                                                  Event.INSUFFICIENT_ZONES,
-                                                                                                                                rud));
+                                                                                                                                 rud));
         pipeline.addEventAction(Event.INSUFFICIENT_SUCCESSES,
                                 new PerformSerialRequests<List<Versioned<byte[]>>, BasicPipelineData<List<Versioned<byte[]>>>>(pipelineData,
                                                                                                                                allowReadRepair ? Event.RESPONSES_RECEIVED
@@ -320,7 +323,7 @@ public class PipelineRoutedStore extends RoutedStore {
                                                                                                                                storeDef.getRequiredReads(),
                                                                                                                                blockingStoreRequest,
                                                                                                                                null,
-                                                                                                                              rud));
+                                                                                                                               rud));
 
         if(allowReadRepair)
             pipeline.addEventAction(Event.RESPONSES_RECEIVED,
@@ -340,7 +343,7 @@ public class PipelineRoutedStore extends RoutedStore {
                                                                                                                                        failureDetector,
                                                                                                                                        innerStores,
                                                                                                                                        blockingStoreRequest,
-                                                                                                                                      rud));
+                                                                                                                                       rud));
 
         pipeline.addEvent(Event.STARTED);
 
@@ -399,7 +402,7 @@ public class PipelineRoutedStore extends RoutedStore {
         return getAll(keys,
                       transforms,
                       timeoutConfig.getOperationTimeout(VoldemortOpCode.GET_ALL_OP_CODE),
-                     rud);
+                      rud);
     }
 
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
@@ -445,7 +448,7 @@ public class PipelineRoutedStore extends RoutedStore {
                                                                   failureDetector,
                                                                   getAllOpTimeoutInMs,
                                                                   nonblockingStores,
-                                                                 rud));
+                                                                  rud));
         pipeline.addEventAction(Event.INSUFFICIENT_SUCCESSES,
                                 new PerformSerialGetAllRequests(pipelineData,
                                                                 allowReadRepair ? Event.RESPONSES_RECEIVED
@@ -538,7 +541,7 @@ public class PipelineRoutedStore extends RoutedStore {
 
             @Override
             public List<Version> request(Store<ByteArray, byte[], byte[]> store) {
-                return store.getVersions(key,rud);
+                return store.getVersions(key, rud);
             }
 
         };
@@ -574,7 +577,7 @@ public class PipelineRoutedStore extends RoutedStore {
                                                                                                              nonblockingStores,
                                                                                                              Event.INSUFFICIENT_SUCCESSES,
                                                                                                              Event.INSUFFICIENT_ZONES,
-                                                                                                            rud));
+                                                                                                             rud));
 
         pipeline.addEventAction(Event.INSUFFICIENT_SUCCESSES,
                                 new PerformSerialRequests<List<Version>, BasicPipelineData<List<Version>>>(pipelineData,
@@ -586,7 +589,7 @@ public class PipelineRoutedStore extends RoutedStore {
                                                                                                            storeDef.getRequiredReads(),
                                                                                                            blockingStoreRequest,
                                                                                                            null,
-                                                                                                          rud));
+                                                                                                           rud));
 
         if(zoneRoutingEnabled)
             pipeline.addEventAction(Event.INSUFFICIENT_ZONES,
@@ -596,7 +599,7 @@ public class PipelineRoutedStore extends RoutedStore {
                                                                                                                    failureDetector,
                                                                                                                    innerStores,
                                                                                                                    blockingStoreRequest,
-                                                                                                                  rud));
+                                                                                                                   rud));
 
         pipeline.addEvent(Event.STARTED);
         if(logger.isDebugEnabled()) {
@@ -649,7 +652,7 @@ public class PipelineRoutedStore extends RoutedStore {
         return delete(key,
                       version,
                       timeoutConfig.getOperationTimeout(VoldemortOpCode.DELETE_OP_CODE),
-                     rud);
+                      rud);
     }
 
     protected boolean delete(final ByteArray key,
@@ -707,7 +710,7 @@ public class PipelineRoutedStore extends RoutedStore {
                                                                                                        nonblockingStores,
                                                                                                        hintedHandoff,
                                                                                                        version,
-                                                                                                      rud));
+                                                                                                       rud));
 
         if(isHintedHandoffEnabled()) {
             pipeline.addEventAction(Event.RESPONSES_RECEIVED,
@@ -716,13 +719,13 @@ public class PipelineRoutedStore extends RoutedStore {
                                                                    key,
                                                                    version,
                                                                    hintedHandoff,
-                                                                  rud));
+                                                                   rud));
             pipeline.addEventAction(Event.ABORTED, new PerformDeleteHintedHandoff(pipelineData,
                                                                                   Event.ERROR,
                                                                                   key,
                                                                                   version,
                                                                                   hintedHandoff,
-                                                                                 rud));
+                                                                                  rud));
 
         }
 
@@ -806,7 +809,7 @@ public class PipelineRoutedStore extends RoutedStore {
             versioned,
             transforms,
             timeoutConfig.getOperationTimeout(VoldemortOpCode.PUT_OP_CODE),
-           rud);
+            rud);
     }
 
     public void put(ByteArray key,
@@ -865,7 +868,7 @@ public class PipelineRoutedStore extends RoutedStore {
                                                              versioned,
                                                              time,
                                                              Event.MASTER_DETERMINED,
-                                                            rud));
+                                                             rud));
         pipeline.addEventAction(Event.MASTER_DETERMINED,
                                 new PerformParallelPutRequests(pipelineData,
                                                                Event.RESPONSES_RECEIVED,
@@ -877,7 +880,7 @@ public class PipelineRoutedStore extends RoutedStore {
                                                                putOpTimeoutInMs,
                                                                nonblockingStores,
                                                                hintedHandoff,
-                                                              rud));
+                                                               rud));
         if(isHintedHandoffEnabled()) {
             pipeline.addEventAction(Event.ABORTED, new PerformPutHintedHandoff(pipelineData,
                                                                                Event.ERROR,
@@ -886,7 +889,7 @@ public class PipelineRoutedStore extends RoutedStore {
                                                                                transforms,
                                                                                hintedHandoff,
                                                                                time,
-                                                                              rud));
+                                                                               rud));
             pipeline.addEventAction(Event.RESPONSES_RECEIVED,
                                     new PerformPutHintedHandoff(pipelineData,
                                                                 Event.HANDOFF_FINISHED,
@@ -895,7 +898,7 @@ public class PipelineRoutedStore extends RoutedStore {
                                                                 transforms,
                                                                 hintedHandoff,
                                                                 time,
-                                                               rud));
+                                                                rud));
             pipeline.addEventAction(Event.HANDOFF_FINISHED, new IncrementClock(pipelineData,
                                                                                Event.COMPLETED,
                                                                                versioned,
@@ -982,5 +985,105 @@ public class PipelineRoutedStore extends RoutedStore {
     public static boolean isSlopableFailure(Object response) {
         return response instanceof UnreachableStoreException
                || response instanceof PersistenceFailureException;
+    }
+
+    @Override
+    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, RUD rud) {
+        for(ByteArray key: keys) {
+            StoreUtils.assertValidKey(key);
+        }
+        // TODO assumes the same timeout as delete
+        long unlockOpTimeout = timeoutConfig.getOperationTimeout(VoldemortOpCode.DELETE_OP_CODE);
+
+        long startTimeMs = -1;
+        long startTimeNs = -1;
+
+        if(logger.isDebugEnabled()) {
+            startTimeMs = System.currentTimeMillis();
+            startTimeNs = System.nanoTime();
+        }
+
+        UnlockPipelineData pipelineData = new UnlockPipelineData();
+        if(zoneRoutingEnabled)
+            pipelineData.setZonesRequired(storeDef.getZoneCountWrites());
+        else
+            pipelineData.setZonesRequired(null);
+        pipelineData.setStats(stats);
+
+        Pipeline pipeline = new Pipeline(Operation.UNLOCK, unlockOpTimeout, TimeUnit.MILLISECONDS);
+
+        pipeline.addEventAction(Event.STARTED,
+                                new UnlockConfigureNodes(pipelineData,
+                                                         Event.CONFIGURED,
+                                                         failureDetector,
+                                                         storeDef.getRequiredUnlock(),
+                                                         routingStrategy,
+                                                         keys,
+                                                         clientZone,
+                                                         zoneAffinity));
+
+        pipeline.addEventAction(Event.CONFIGURED,
+                                new PerformParallelUnlockRequests(pipelineData,
+                                                                  Event.COMPLETED,
+                                                                  failureDetector,
+                                                                  unlockOpTimeout,
+                                                                  nonblockingStores,
+                                                                  Event.INSUFFICIENT_SUCCESSES,
+                                                                  rud));
+
+        // TODO If parallel fails, then try serial
+        pipeline.addEventAction(Event.INSUFFICIENT_SUCCESSES,
+                                new PerformSerialUnlockRequests(pipelineData,
+                                                                Event.COMPLETED,
+                                                                keys,
+                                                                failureDetector,
+                                                                innerStores,
+                                                                storeDef.getRequiredUnlock(),
+                                                                rud));
+
+        // pipeline.addEventAction(Event.RESPONSES_RECEIVED,
+        // new PerformUnlockHintedHandoff(pipelineData,
+        // Event.COMPLETED,
+        // keys,
+        // hintedHandoff,
+        // rud));
+        // pipeline.addEventAction(Event.ABORTED, new
+        // PerformUnlockHintedHandoff(pipelineData,
+        // Event.ERROR,
+        // keys,
+        // hintedHandoff,
+        // rud));
+
+        pipeline.addEvent(Event.STARTED);
+
+        if(logger.isDebugEnabled()) {
+            StringBuilder keyStr = new StringBuilder();
+            for(ByteArray key: keys) {
+                keyStr.append(ByteUtils.toHexString(key.get()) + ",");
+            }
+            logger.debug("Operation " + pipeline.getOperation().getSimpleName() + " Keys "
+                         + keyStr.toString());
+        }
+        try {
+            pipeline.execute();
+        } catch(VoldemortException e) {
+            stats.reportException(e);
+            throw e;
+        }
+
+        if(pipelineData.getFatalError() != null)
+            throw pipelineData.getFatalError();
+
+        if(logger.isDebugEnabled()) {
+            StringBuilder sb = new StringBuilder();
+            for(ByteArray b: keys) {
+                sb.append(ByteUtils.toHexString(b.get()));
+            }
+            logger.debug("Finished " + pipeline.getOperation().getSimpleName() + " for key "
+                         + sb.toString() + " keyRef: " + sb.toString() + "; started at "
+                         + startTimeMs + " took " + (System.nanoTime() - startTimeNs));
+        }
+
+        return pipelineData.getResult();
     }
 }

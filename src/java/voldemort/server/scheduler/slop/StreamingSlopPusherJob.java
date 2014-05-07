@@ -391,8 +391,7 @@ public class StreamingSlopPusherJob extends SlopPusherJob implements Runnable {
 
                         writeThrottler.maybeThrottle(writtenLast);
                         writtenLast = slopSize(head);
-                        deleteBatch.add(Pair.create(head.getValue().makeKey(),
-                                                    (Version) head.getVersion()));
+                        deleteBatch.add(Pair.create(head.getValue().makeKey(), head.getVersion()));
                         return head;
                     }
                 }

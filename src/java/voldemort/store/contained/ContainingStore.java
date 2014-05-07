@@ -60,8 +60,8 @@ public class ContainingStore extends AbstractStore<ByteArray, byte[], byte[]> {
 
     @Override
     public boolean delete(ByteArray key, Version version, RUD rud) throws VoldemortException {
-        System.out.println("Client Delete: " +rud);
-        return store.delete(keyToBytes(key), version,rud);
+        System.out.println("Client Delete: " + rud);
+        return store.delete(keyToBytes(key), version, rud);
     }
 
     @Override
@@ -93,13 +93,13 @@ public class ContainingStore extends AbstractStore<ByteArray, byte[], byte[]> {
         Map<ByteArray, ByteArray> byteKeyToKey = keysToBytes(keys);
         Map<ByteArray, List<Versioned<byte[]>>> storeResult = store.getAll(byteKeyToKey.keySet(),
                                                                            transformsToBytes(transforms),
-                                                                          rud);
+                                                                           rud);
         Map<ByteArray, List<Versioned<byte[]>>> result = Maps.newHashMapWithExpectedSize(storeResult.size());
         for(Map.Entry<ByteArray, List<Versioned<byte[]>>> mapEntry: storeResult.entrySet()) {
             List<Versioned<byte[]>> values = Lists.newArrayListWithExpectedSize(mapEntry.getValue()
                                                                                         .size());
             for(Versioned<byte[]> versioned: mapEntry.getValue())
-                values.add(new Versioned<byte[]>(valueSerializer.pack(versioned.getValue(),rud),
+                values.add(new Versioned<byte[]>(valueSerializer.pack(versioned.getValue(), rud),
                                                  versioned.getVersion()));
 
             result.put(byteKeyToKey.get(mapEntry.getKey()), values);
@@ -111,15 +111,15 @@ public class ContainingStore extends AbstractStore<ByteArray, byte[], byte[]> {
     public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, RUD rud)
             throws VoldemortException {
         store.put(keyToBytes(key),
-                  new Versioned<byte[]>(valueSerializer.pack(value.getValue(),rud),
+                  new Versioned<byte[]>(valueSerializer.pack(value.getValue(), rud),
                                         value.getVersion()),
                   transformToBytes(transforms),
-                 rud);
+                  rud);
     }
 
     @Override
     public List<Version> getVersions(ByteArray key, RUD rud) {
-        return store.getVersions(keyToBytes(key),rud);
+        return store.getVersions(keyToBytes(key), rud);
     }
 
     // ///////////////////// AUX ///////////////////////
@@ -172,5 +172,10 @@ public class ContainingStore extends AbstractStore<ByteArray, byte[], byte[]> {
 
     public ContainingSerializer getValueSerializer() {
         return valueSerializer;
+    }
+
+    @Override
+    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, RUD rud) {
+        return store.unlockKeys(keys, rud);
     }
 }

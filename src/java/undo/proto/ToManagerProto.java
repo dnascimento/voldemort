@@ -3976,6 +3976,16 @@ public final class ToManagerProto {
      * <code>optional bool restrain = 3;</code>
      */
     boolean getRestrain();
+
+    // optional bool redo = 4;
+    /**
+     * <code>optional bool redo = 4;</code>
+     */
+    boolean hasRedo();
+    /**
+     * <code>optional bool redo = 4;</code>
+     */
+    boolean getRedo();
   }
   /**
    * Protobuf type {@code voldemort.RUD}
@@ -4041,6 +4051,11 @@ public final class ToManagerProto {
             case 24: {
               bitField0_ |= 0x00000004;
               restrain_ = input.readBool();
+              break;
+            }
+            case 32: {
+              bitField0_ |= 0x00000008;
+              redo_ = input.readBool();
               break;
             }
           }
@@ -4131,10 +4146,27 @@ public final class ToManagerProto {
       return restrain_;
     }
 
+    // optional bool redo = 4;
+    public static final int REDO_FIELD_NUMBER = 4;
+    private boolean redo_;
+    /**
+     * <code>optional bool redo = 4;</code>
+     */
+    public boolean hasRedo() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional bool redo = 4;</code>
+     */
+    public boolean getRedo() {
+      return redo_;
+    }
+
     private void initFields() {
       rid_ = 0L;
       branch_ = 0;
       restrain_ = false;
+      redo_ = false;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -4157,6 +4189,9 @@ public final class ToManagerProto {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeBool(3, restrain_);
       }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBool(4, redo_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -4177,6 +4212,10 @@ public final class ToManagerProto {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(3, restrain_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(4, redo_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -4300,6 +4339,8 @@ public final class ToManagerProto {
         bitField0_ = (bitField0_ & ~0x00000002);
         restrain_ = false;
         bitField0_ = (bitField0_ & ~0x00000004);
+        redo_ = false;
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -4340,6 +4381,10 @@ public final class ToManagerProto {
           to_bitField0_ |= 0x00000004;
         }
         result.restrain_ = restrain_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.redo_ = redo_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -4364,6 +4409,9 @@ public final class ToManagerProto {
         }
         if (other.hasRestrain()) {
           setRestrain(other.getRestrain());
+        }
+        if (other.hasRedo()) {
+          setRedo(other.getRedo());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -4487,6 +4535,39 @@ public final class ToManagerProto {
       public Builder clearRestrain() {
         bitField0_ = (bitField0_ & ~0x00000004);
         restrain_ = false;
+        onChanged();
+        return this;
+      }
+
+      // optional bool redo = 4;
+      private boolean redo_ ;
+      /**
+       * <code>optional bool redo = 4;</code>
+       */
+      public boolean hasRedo() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional bool redo = 4;</code>
+       */
+      public boolean getRedo() {
+        return redo_;
+      }
+      /**
+       * <code>optional bool redo = 4;</code>
+       */
+      public Builder setRedo(boolean value) {
+        bitField0_ |= 0x00000008;
+        redo_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool redo = 4;</code>
+       */
+      public Builder clearRedo() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        redo_ = false;
         onChanged();
         return this;
       }
@@ -5903,14 +5984,15 @@ public final class ToManagerProto {
       "d\030\002 \001(\t\"-\n\nTrackEntry\022\013\n\003rid\030\001 \002(\003\022\022\n\nde" +
       "pendency\030\002 \003(\003\"4\n\013StartEndMsg\022%\n\003msg\030\001 \003",
       "(\0132\030.voldemort.StartEndEntry\"+\n\rStartEnd" +
-      "Entry\022\r\n\005start\030\001 \002(\003\022\013\n\003end\030\002 \002(\003\"4\n\003RUD" +
+      "Entry\022\r\n\005start\030\001 \002(\003\022\013\n\003end\030\002 \002(\003\"B\n\003RUD" +
       "\022\013\n\003rid\030\001 \001(\003\022\016\n\006branch\030\002 \001(\005\022\020\n\010restrai" +
-      "n\030\003 \001(\010\"(\n\006AckMsg\022\014\n\004port\030\001 \002(\005\022\020\n\010hostn" +
-      "ame\030\002 \002(\t\"\232\001\n\017NodeRegistryMsg\0223\n\005group\030\001" +
-      " \002(\0162$.voldemort.NodeRegistryMsg.NodeGro" +
-      "up\022\014\n\004port\030\002 \002(\005\022\020\n\010hostname\030\003 \002(\t\"2\n\tNo" +
-      "deGroup\022\t\n\005PROXY\020\001\022\013\n\007DB_NODE\020\002\022\r\n\tREDO_" +
-      "NODE\020\003B\036\n\nundo.protoB\016ToManagerProtoH\001"
+      "n\030\003 \001(\010\022\014\n\004redo\030\004 \001(\010\"(\n\006AckMsg\022\014\n\004port\030" +
+      "\001 \002(\005\022\020\n\010hostname\030\002 \002(\t\"\232\001\n\017NodeRegistry" +
+      "Msg\0223\n\005group\030\001 \002(\0162$.voldemort.NodeRegis" +
+      "tryMsg.NodeGroup\022\014\n\004port\030\002 \002(\005\022\020\n\010hostna" +
+      "me\030\003 \002(\t\"2\n\tNodeGroup\022\t\n\005PROXY\020\001\022\013\n\007DB_N" +
+      "ODE\020\002\022\r\n\tREDO_NODE\020\003B\036\n\nundo.protoB\016ToMa" +
+      "nagerProtoH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -5952,7 +6034,7 @@ public final class ToManagerProto {
           internal_static_voldemort_RUD_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_RUD_descriptor,
-              new java.lang.String[] { "Rid", "Branch", "Restrain", });
+              new java.lang.String[] { "Rid", "Branch", "Restrain", "Redo", });
           internal_static_voldemort_AckMsg_descriptor =
             getDescriptor().getMessageTypes().get(6);
           internal_static_voldemort_AckMsg_fieldAccessorTable = new

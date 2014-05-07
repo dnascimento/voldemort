@@ -42,6 +42,7 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -535,7 +536,7 @@ public class R2Store extends AbstractStore<ByteArray, byte[], byte[]> {
                 if(transforms != null) {
                     singleKeyTransforms = transforms.get(key);
                 }
-                resultList = this.get(key, singleKeyTransforms,rud);
+                resultList = this.get(key, singleKeyTransforms, rud);
                 resultMap.put(key, resultList);
             } else {
 
@@ -737,6 +738,12 @@ public class R2Store extends AbstractStore<ByteArray, byte[], byte[]> {
         String vectorClockListStr = new String(bytes);
         List<Version> vectorClockList = RestUtils.deserializeVectorClocks(vectorClockListStr);
         return vectorClockList;
+    }
+
+    @Override
+    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, RUD rud) {
+        // TODO implement REST HTTP unlock
+        throw new NotImplementedException();
     }
 
 }

@@ -80,7 +80,7 @@ public class HttpStore extends AbstractStore<ByteArray, byte[], byte[]> {
                                              key,
                                              (VectorClock) version,
                                              reroute,
-                                            rud);
+                                             rud);
             input = executeRequest(method, outputBytes);
             return requestFormat.readDeleteResponse(input);
         } catch(IOException e) {
@@ -104,7 +104,7 @@ public class HttpStore extends AbstractStore<ByteArray, byte[], byte[]> {
                                           key,
                                           transforms,
                                           reroute,
-                                         rud);
+                                          rud);
             input = executeRequest(method, outputBytes);
             return requestFormat.readGetResponse(input);
         } catch(IOException e) {
@@ -129,7 +129,7 @@ public class HttpStore extends AbstractStore<ByteArray, byte[], byte[]> {
                                              keys,
                                              transforms,
                                              reroute,
-                                            rud);
+                                             rud);
             input = executeRequest(method, outputBytes);
             return requestFormat.readGetAllResponse(input);
         } catch(IOException e) {
@@ -155,7 +155,7 @@ public class HttpStore extends AbstractStore<ByteArray, byte[], byte[]> {
                                           transforms,
                                           (VectorClock) versioned.getVersion(),
                                           reroute,
-                                         rud);
+                                          rud);
             input = executeRequest(method, outputBytes);
             requestFormat.readPutResponse(input);
         } catch(IOException e) {
@@ -198,9 +198,30 @@ public class HttpStore extends AbstractStore<ByteArray, byte[], byte[]> {
                                                  getName(),
                                                  key,
                                                  reroute,
-                                                rud);
+                                                 rud);
             input = executeRequest(method, outputBytes);
             return requestFormat.readGetVersionResponse(input);
+        } catch(IOException e) {
+            throw new UnreachableStoreException("Could not connect to " + storeUrl + " for "
+                                                + getName(), e);
+        } finally {
+            IOUtils.closeQuietly(input);
+        }
+    }
+
+    @Override
+    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, RUD rud) {
+        DataInputStream input = null;
+        try {
+            HttpPost method = new HttpPost(this.storeUrl);
+            ByteArrayOutputStream outputBytes = new ByteArrayOutputStream();
+            requestFormat.writeUnlockRequest(new DataOutputStream(outputBytes),
+                                             getName(),
+                                             keys,
+                                             reroute,
+                                             rud);
+            input = executeRequest(method, outputBytes);
+            return requestFormat.readUnlockResponse(input);
         } catch(IOException e) {
             throw new UnreachableStoreException("Could not connect to " + storeUrl + " for "
                                                 + getName(), e);

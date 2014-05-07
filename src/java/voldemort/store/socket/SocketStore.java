@@ -42,6 +42,7 @@ import voldemort.store.socket.clientrequest.GetAllClientRequest;
 import voldemort.store.socket.clientrequest.GetClientRequest;
 import voldemort.store.socket.clientrequest.GetVersionsClientRequest;
 import voldemort.store.socket.clientrequest.PutClientRequest;
+import voldemort.store.socket.clientrequest.UnlockClientRequest;
 import voldemort.store.stats.ClientSocketStats;
 import voldemort.undoTracker.RUD;
 import voldemort.utils.ByteArray;
@@ -101,7 +102,7 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
                                                                     requestRoutingType,
                                                                     key,
                                                                     version,
-                                                                   rud);
+                                                                    rud);
         if(logger.isDebugEnabled())
             logger.debug("DELETE keyRef: " + System.identityHashCode(key) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -120,7 +121,7 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
                                                               requestRoutingType,
                                                               key,
                                                               transforms,
-                                                             rud);
+                                                              rud);
         if(logger.isDebugEnabled())
             logger.debug("GET keyRef: " + System.identityHashCode(key) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -139,7 +140,7 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
                                                                     requestRoutingType,
                                                                     keys,
                                                                     transforms,
-                                                                   rud);
+                                                                    rud);
         if(logger.isDebugEnabled())
             logger.debug("GETALL keyRef: " + System.identityHashCode(keys) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -156,7 +157,7 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
                                                                               requestFormat,
                                                                               requestRoutingType,
                                                                               key,
-                                                                             rud);
+                                                                              rud);
         if(logger.isDebugEnabled())
             logger.debug("GETVERSIONS keyRef: " + System.identityHashCode(key) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -177,7 +178,7 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
                                                               key,
                                                               value,
                                                               transforms,
-                                                             rud);
+                                                              rud);
         if(logger.isDebugEnabled())
             logger.debug("PUT keyRef: " + System.identityHashCode(key) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -192,7 +193,7 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
                                                                     requestRoutingType,
                                                                     key,
                                                                     version,
-                                                                   rud);
+                                                                    rud);
         if(logger.isDebugEnabled())
             logger.debug("DELETE keyRef: " + System.identityHashCode(key) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -208,7 +209,7 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
                                                               requestRoutingType,
                                                               key,
                                                               transforms,
-                                                             rud);
+                                                              rud);
         if(logger.isDebugEnabled())
             logger.debug("GET keyRef: " + System.identityHashCode(key) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -225,7 +226,7 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
                                                                     requestRoutingType,
                                                                     keys,
                                                                     transforms,
-                                                                   rud);
+                                                                    rud);
         if(logger.isDebugEnabled())
             logger.debug("GETALL keyRef: " + System.identityHashCode(keys) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -239,7 +240,7 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
                                                                               requestFormat,
                                                                               requestRoutingType,
                                                                               key,
-                                                                             rud);
+                                                                              rud);
         if(logger.isDebugEnabled())
             logger.debug("GETVERSIONS keyRef: " + System.identityHashCode(key) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -256,7 +257,7 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
                                                               key,
                                                               versioned,
                                                               transforms,
-                                                             rud);
+                                                              rud);
         if(logger.isDebugEnabled())
             logger.debug("PUT keyRef: " + System.identityHashCode(key) + " requestRef: "
                          + System.identityHashCode(clientRequest));
@@ -386,5 +387,36 @@ public class SocketStore extends AbstractStore<ByteArray, byte[], byte[]> implem
                                   long timeoutMs,
                                   String operationName) {
         pool.submitAsync(this.destination, delegate, callback, timeoutMs, operationName);
+    }
+
+    @Override
+    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, RUD rud) {
+        StoreUtils.assertValidKeys(keys);
+        UnlockClientRequest clientRequest = new UnlockClientRequest(getName(),
+                                                                    requestFormat,
+                                                                    requestRoutingType,
+                                                                    keys,
+                                                                    rud);
+        if(logger.isDebugEnabled())
+            logger.debug("UNLOCK keyRef: " + System.identityHashCode(keys) + " requestRef: "
+                         + System.identityHashCode(clientRequest));
+        return request(clientRequest, "unlock");
+    }
+
+    @Override
+    public void submitUnlockRequest(Iterable<ByteArray> keys,
+                                    NonblockingStoreCallback callback,
+                                    long timeoutMs,
+                                    RUD rud) {
+        StoreUtils.assertValidKeys(keys);
+        UnlockClientRequest clientRequest = new UnlockClientRequest(getName(),
+                                                                    requestFormat,
+                                                                    requestRoutingType,
+                                                                    keys,
+                                                                    rud);
+        if(logger.isDebugEnabled())
+            logger.debug("UNLOCK keyRef: " + System.identityHashCode(keys) + " requestRef: "
+                         + System.identityHashCode(clientRequest));
+        requestAsync(clientRequest, callback, timeoutMs, "unlock");
     }
 }

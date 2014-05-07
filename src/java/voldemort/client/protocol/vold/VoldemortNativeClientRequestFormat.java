@@ -337,4 +337,23 @@ public class VoldemortNativeClientRequestFormat implements RequestFormat {
             return false;
         }
     }
+
+    @Override
+    public void writeUnlockRequest(DataOutputStream output,
+                                   String storeName,
+                                   Iterable<ByteArray> keys,
+                                   RequestRoutingType routingType,
+                                   RUD rud) throws IOException {
+        throw new RuntimeException("NOT IMPLEMENTED: VoldemortNativeClientRequestFormat");
+    }
+
+    @Override
+    public Map<ByteArray, Boolean> readUnlockResponse(DataInputStream input) throws IOException {
+        throw new RuntimeException("NOT IMPLEMENTED: VoldemortNativeClientRequestFormat");
+    }
+
+    @Override
+    public boolean isCompleteUnlockRequest(ByteBuffer buffer) {
+        throw new RuntimeException("NOT IMPLEMENTED: VoldemortNativeClientRequestFormat");
+    }
 }

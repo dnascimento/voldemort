@@ -58,7 +58,7 @@ public class ThreadPoolBasedNonblockingStoreImpl implements NonblockingStore {
 
             @Override
             public Map<ByteArray, List<Versioned<byte[]>>> request(Store<ByteArray, byte[], byte[]> store) {
-                return innerStore.getAll(keys, transforms,rud);
+                return innerStore.getAll(keys, transforms, rud);
             }
         },
                callback,
@@ -76,7 +76,7 @@ public class ThreadPoolBasedNonblockingStoreImpl implements NonblockingStore {
 
             @Override
             public List<Versioned<byte[]>> request(Store<ByteArray, byte[], byte[]> store) {
-                return innerStore.get(key, transforms,rud);
+                return innerStore.get(key, transforms, rud);
             }
 
         }, callback, timeoutMs, "get");
@@ -91,7 +91,7 @@ public class ThreadPoolBasedNonblockingStoreImpl implements NonblockingStore {
 
             @Override
             public List<Version> request(Store<ByteArray, byte[], byte[]> store) {
-                return innerStore.getVersions(key,rud);
+                return innerStore.getVersions(key, rud);
             }
 
         }, callback, timeoutMs, "submit");
@@ -108,7 +108,7 @@ public class ThreadPoolBasedNonblockingStoreImpl implements NonblockingStore {
 
             @Override
             public Void request(Store<ByteArray, byte[], byte[]> store) {
-                innerStore.put(key, value, transforms,rud);
+                innerStore.put(key, value, transforms, rud);
                 return null;
             }
 
@@ -125,7 +125,7 @@ public class ThreadPoolBasedNonblockingStoreImpl implements NonblockingStore {
 
             @Override
             public Boolean request(Store<ByteArray, byte[], byte[]> store) {
-                return innerStore.delete(key, version,rud);
+                return innerStore.delete(key, version, rud);
             }
 
         }, callback, timeoutMs, "delete");
@@ -187,4 +187,17 @@ public class ThreadPoolBasedNonblockingStoreImpl implements NonblockingStore {
         innerStore.close();
     }
 
+    @Override
+    public void submitUnlockRequest(final Iterable<ByteArray> keys,
+                                    NonblockingStoreCallback callback,
+                                    long timeoutMs,
+                                    final RUD rud) {
+        submit(new StoreRequest<Map<ByteArray, Boolean>>() {
+
+            @Override
+            public Map<ByteArray, Boolean> request(Store<ByteArray, byte[], byte[]> store) {
+                return innerStore.unlockKeys(keys, rud);
+            }
+        }, callback, timeoutMs, "unlock");
+    }
 }

@@ -58,12 +58,12 @@ public class RESTClient<K, V> implements StoreClient<K, V> {
 
     @Override
     public V getValue(K key, RUD rud) {
-        return getValue(key, null,rud);
+        return getValue(key, null, rud);
     }
 
     @Override
     public V getValue(K key, V defaultValue, RUD rud) {
-        Versioned<V> retVal = get(key,rud);
+        Versioned<V> retVal = get(key, rud);
         if(retVal == null) {
             return defaultValue;
         } else {
@@ -73,19 +73,19 @@ public class RESTClient<K, V> implements StoreClient<K, V> {
 
     @Override
     public Versioned<V> get(K key, RUD rud) {
-        return get(key, null,rud);
+        return get(key, null, rud);
     }
 
     @Override
     public Versioned<V> get(K key, Object transforms, RUD rud) {
-        List<Versioned<V>> resultList = this.clientStore.get(key, null,rud);
-        return getItemOrThrow(key, null, resultList,rud);
+        List<Versioned<V>> resultList = this.clientStore.get(key, null, rud);
+        return getItemOrThrow(key, null, resultList, rud);
     }
 
     @Override
     public Versioned<V> get(K key, Versioned<V> defaultValue, RUD rud) {
-        List<Versioned<V>> resultList = this.clientStore.get(key, null,rud);
-        return getItemOrThrow(key, defaultValue, resultList,rud);
+        List<Versioned<V>> resultList = this.clientStore.get(key, null, rud);
+        return getItemOrThrow(key, defaultValue, resultList, rud);
     }
 
     protected Versioned<V> getItemOrThrow(K key,
@@ -103,17 +103,17 @@ public class RESTClient<K, V> implements StoreClient<K, V> {
 
     @Override
     public Map<K, Versioned<V>> getAll(Iterable<K> keys, RUD rud) {
-        return getAll(keys, null,rud);
+        return getAll(keys, null, rud);
     }
 
     @Override
     public Map<K, Versioned<V>> getAll(Iterable<K> keys, Map<K, Object> transforms, RUD rud) {
         Map<K, List<Versioned<V>>> items = null;
-        items = this.clientStore.getAll(keys, null,rud);
+        items = this.clientStore.getAll(keys, null, rud);
         Map<K, Versioned<V>> result = Maps.newHashMapWithExpectedSize(items.size());
 
         for(Entry<K, List<Versioned<V>>> mapEntry: items.entrySet()) {
-            Versioned<V> value = getItemOrThrow(mapEntry.getKey(), null, mapEntry.getValue(),rud);
+            Versioned<V> value = getItemOrThrow(mapEntry.getKey(), null, mapEntry.getValue(), rud);
             result.put(mapEntry.getKey(), value);
         }
         return result;
@@ -126,24 +126,24 @@ public class RESTClient<K, V> implements StoreClient<K, V> {
      */
     @Override
     public Version put(K key, V value, RUD rud) {
-        return put(key, new Versioned<V>(value),rud);
+        return put(key, new Versioned<V>(value), rud);
     }
 
     @Override
     public Version put(K key, V value, Object transforms, RUD rud) {
-        return put(key, value,rud);
+        return put(key, value, rud);
     }
 
     @Override
     public Version put(K key, Versioned<V> versioned, RUD rud) throws ObsoleteVersionException {
-        clientStore.put(key, versioned, null,rud);
+        clientStore.put(key, versioned, null, rud);
         return versioned.getVersion();
     }
 
     @Override
     public boolean putIfNotObsolete(K key, Versioned<V> versioned, RUD rud) {
         try {
-            put(key, versioned,rud);
+            put(key, versioned, rud);
             return true;
         } catch(ObsoleteVersionException e) {
             return false;
@@ -152,7 +152,7 @@ public class RESTClient<K, V> implements StoreClient<K, V> {
 
     @Override
     public boolean applyUpdate(UpdateAction<K, V> action, RUD rud) {
-        return applyUpdate(action, 3,rud);
+        return applyUpdate(action, 3, rud);
     }
 
     @Override
@@ -180,15 +180,20 @@ public class RESTClient<K, V> implements StoreClient<K, V> {
 
     @Override
     public boolean delete(K key, RUD rud) {
-        Versioned<V> versioned = get(key,rud);
+        Versioned<V> versioned = get(key, rud);
         if(versioned == null)
             return false;
-        return this.clientStore.delete(key, versioned.getVersion(),rud);
+        return this.clientStore.delete(key, versioned.getVersion(), rud);
+    }
+
+    @Override
+    public Map<K, Boolean> unlockKeys(Iterable<K> keys, RUD rud) {
+        return this.clientStore.unlockKeys(keys, rud);
     }
 
     @Override
     public boolean delete(K key, Version version, RUD rud) {
-        return this.clientStore.delete(key, version,rud);
+        return this.clientStore.delete(key, version, rud);
     }
 
     @Override

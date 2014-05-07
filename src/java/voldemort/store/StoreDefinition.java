@@ -64,6 +64,8 @@ public class StoreDefinition implements Serializable {
     private final List<String> owners;
     private final long memoryFootprintMB;
 
+    private final int requiredUnlock;
+
     public StoreDefinition(String name,
                            String type,
                            String description,
@@ -116,6 +118,9 @@ public class StoreDefinition implements Serializable {
         this.hintedHandoffStrategyType = hintedHandoffStrategyType;
         this.hintPrefListSize = hintPrefListSize;
         this.owners = owners;
+
+        // TODO change to set the required number of nodes to Unlock
+        this.requiredUnlock = Math.max(requiredWrites, requiredReads);
     }
 
     protected void checkParameterLegality() {
@@ -455,5 +460,9 @@ public class StoreDefinition implements Serializable {
                + ", hinted-handoff-strategy = " + getHintedHandoffStrategyType()
                + ", hint-preflist-size = " + getHintPrefListSize() + ", owners = " + getOwners()
                + ", memory-footprint(MB)" + getMemoryFootprintMB() + ")";
+    }
+
+    public int getRequiredUnlock() {
+        return this.requiredUnlock;
     }
 }
