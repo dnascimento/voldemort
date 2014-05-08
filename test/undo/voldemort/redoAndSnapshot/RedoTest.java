@@ -33,7 +33,7 @@ public class RedoTest {
 
     short branch = 1;
     private boolean contained = false;
-    private long currentSnapshot = 0;
+    private long currentCommit = 0;
 
     @Before
     public void setup() {
@@ -57,20 +57,20 @@ public class RedoTest {
     }
 
     /**
-     * The easiest base test: common requests in current branch and snapshot
+     * The easiest base test: common requests in current branch and commit
      * Goal: check if possible to exec normal
      * 
      * @throws InterruptedException
      */
     @Test
     public void currentSnasphotAndBranch() throws InterruptedException {
-        System.out.println("----- Start test: Current Snapshot and branch -------");
+        System.out.println("----- Start test: Current Commit and branch -------");
         stub = new DBUndoStub();
-        stub.setNewSnapshotRid(currentSnapshot);
+        stub.setNewCommitRid(currentCommit);
 
         execOperations(false);
         // the database is populated and stub has the operation ordering
-        ByteArray k1Versioned = DBUndoStub.modifyKey(k1.clone(), branch, currentSnapshot);
+        ByteArray k1Versioned = DBUndoStub.modifyKey(k1.clone(), branch, currentCommit);
         System.out.println(db.get(k1Versioned));
     }
 
@@ -87,11 +87,11 @@ public class RedoTest {
         System.out.println("----- Start test: Redo Isolated -------");
 
         stub = new DBUndoStub();
-        stub.setNewSnapshotRid(currentSnapshot);
+        stub.setNewCommitRid(currentCommit);
 
         execOperations(false);
         // the database is populated and stub has the operation ordering
-        ByteArray kOriginalBranch = DBUndoStub.modifyKey(k1.clone(), branch, currentSnapshot);
+        ByteArray kOriginalBranch = DBUndoStub.modifyKey(k1.clone(), branch, currentCommit);
         System.out.println(db.get(kOriginalBranch));
 
         System.out.println("--------- Prepare redo -------------");
@@ -107,7 +107,7 @@ public class RedoTest {
 
         // Check result: same order in re-execution
         ArrayList<Op> originalEntry = dbOriginal.get(kOriginalBranch).getAll();
-        ByteArray kNewBranch = DBUndoStub.modifyKey(k1.clone(), branch, currentSnapshot);
+        ByteArray kNewBranch = DBUndoStub.modifyKey(k1.clone(), branch, currentCommit);
         ArrayList<Op> newEntry = db.get(kNewBranch).getAll();
         for(int i = 0; i < originalEntry.size(); i++) {
             assertEquals(originalEntry.get(i).type, newEntry.get(i).type);

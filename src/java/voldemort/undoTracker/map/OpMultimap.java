@@ -34,6 +34,50 @@ public class OpMultimap implements Serializable {
     private ConcurrentHashMap<ByteArray, OpMultimapEntry> map = new ConcurrentHashMap<ByteArray, OpMultimapEntry>();
     private transient static final Logger log = LogManager.getLogger(OpMultimap.class.getName());
 
+    // //////////// Access Control ////////
+    /**
+     * Access tracking
+     * 
+     * @param key
+     * @param type
+     * @param rud
+     * @param current
+     * @return
+     */
+    public StsBranchPair trackReadAccess(ByteArray key, RUD rud, StsBranchPair current) {
+        OpMultimapEntry entry = getOrCreate(key);
+        entry.lockRead();
+        return entry.trackReadAccess(rud, current);
+    }
+
+    public StsBranchPair trackWriteAccess(ByteArray key,
+                                          OpType writeType,
+                                          RUD rud,
+                                          StsBranchPair sts) {
+        OpMultimapEntry entry = getOrCreate(key);
+        entry.lockWrite();
+        return entry.trackWriteAccess(writeType, rud, sts);
+    }
+
+    public void endReadAccess(ByteArray key) {
+        OpMultimapEntry l = getOrCreate(key);
+        assert (l != null);
+        l.unlockRead();
+    }
+
+    public void endWriteAccess(ByteArray key) {
+        OpMultimapEntry l = getOrCreate(key);
+        assert (l != null);
+        l.unlockWrite();
+    }
+
+    public StsBranchPair getVersionToPut(ByteArray key, RUD rud, StsBranchPair current) {
+        OpMultimapEntry entry = getOrCreate(key);
+        return entry.getVersionToPut(rud, current);
+    }
+
+    // // Map Management ////
+
     /**
      * Add a set of operations to historic
      * 
@@ -46,6 +90,12 @@ public class OpMultimap implements Serializable {
         entry.addAll(values);
     }
 
+    /**
+     * Get last write action in a specific key
+     * 
+     * @param key
+     * @return
+     */
     public Op getLastWrite(ByteArray key) {
         OpMultimapEntry l = map.get(key);
         Op op = null;
@@ -55,46 +105,29 @@ public class OpMultimap implements Serializable {
         return op;
     }
 
+    /**
+     * Get a map entry
+     * 
+     * @param key
+     * @return
+     */
     public OpMultimapEntry get(ByteArray key) {
         OpMultimapEntry entry = map.get(key);
         return entry;
     }
 
+    /**
+     * Add new entry to map
+     * 
+     * @param key
+     * @param op
+     * @return
+     */
     public OpMultimapEntry put(ByteArray key, Op op) {
         OpMultimapEntry l = getOrCreate(key);
         assert (l != null);
         l.addLast(op);
         return l;
-    }
-
-    /**
-     * Access tracking
-     * 
-     * @param key
-     * @param type
-     * @param rud
-     * @param sts
-     * @return
-     */
-    public long trackAccess(ByteArray key, OpType type, RUD rud, long sts) {
-        OpMultimapEntry entry = getOrCreate(key);
-        if(type.equals(Op.OpType.Get)) {
-            entry.lockRead();
-        } else {
-            entry.lockWrite();
-        }
-
-        return entry.trackAccessNewRequest(type, rud, sts);
-    }
-
-    public void endAccess(ByteArray key, OpType type) {
-        OpMultimapEntry l = getOrCreate(key);
-        assert (l != null);
-        if(type.equals(Op.OpType.Get)) {
-            l.unlockRead();
-        } else {
-            l.unlockWrite();
-        }
     }
 
     /**
@@ -153,11 +186,6 @@ public class OpMultimap implements Serializable {
 
     public int size() {
         return map.size();
-    }
-
-    public long getVersionToPut(ByteArray key, RUD rud, long sts) {
-        OpMultimapEntry entry = getOrCreate(key);
-        return entry.getVersionToPut(rud, sts);
     }
 
     public void clear() {

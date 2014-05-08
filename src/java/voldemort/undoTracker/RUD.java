@@ -27,11 +27,11 @@ public class RUD {
         Get;
     }
 
-    public long rid;
-    public short branch;
-    public boolean restrain;
+    public final long rid;
+    public final short branch;
+    public final boolean restrain;
     public Set<KeyAccess> accessedKeys;
-    public boolean redo;
+    public final boolean redo;
 
     public RUD() {
         this(0L, 0, false, false);
@@ -54,6 +54,7 @@ public class RUD {
         this.branch = (short) branch;
         this.restrain = restrain;
         this.redo = redo;
+        this.accessedKeys = null;
     }
 
     public ToManagerProto.RUD toProto() {

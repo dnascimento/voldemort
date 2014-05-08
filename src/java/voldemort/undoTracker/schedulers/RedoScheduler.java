@@ -10,7 +10,7 @@ package voldemort.undoTracker.schedulers;
 import voldemort.undoTracker.RUD;
 import voldemort.undoTracker.map.Op.OpType;
 import voldemort.undoTracker.map.OpMultimap;
-import voldemort.undoTracker.map.OpMultimapEntry;
+import voldemort.undoTracker.map.StsBranchPair;
 import voldemort.utils.ByteArray;
 
 /**
@@ -27,25 +27,28 @@ public class RedoScheduler implements AccessSchedule {
         this.archive = archive;
     }
 
+    /*
+     * reads are perform in new branch or the base commit branch
+     */
     @Override
-    public long getStart(ByteArray key, RUD rud, long sts) {
-        OpMultimapEntry l = archive.get(key);
-        l.isNextGet(rud);
-        return sts;
+    public StsBranchPair getStart(ByteArray key, RUD rud, StsBranchPair redoBase) {
+        return archive.get(key).redoRead(rud.branch, redoBase.sts);
     }
 
+    /*
+     * writes are perform in new branch
+     */
     @Override
-    public long putStart(ByteArray key, RUD rud, long sts) {
-        OpMultimapEntry l = archive.get(key);
-        l.isNextPut(rud);
-        return sts;
+    public StsBranchPair putStart(ByteArray key, RUD rud, StsBranchPair sts) {
+        return archive.get(key).redoWrite(rud);
     }
 
+    /*
+     * writes are perform in new branch
+     */
     @Override
-    public long deleteStart(ByteArray key, RUD rud, long sts) {
-        OpMultimapEntry l = archive.get(key);
-        l.isNextDelete(rud);
-        return sts;
+    public StsBranchPair deleteStart(ByteArray key, RUD rud, StsBranchPair sts) {
+        return archive.get(key).redoWrite(rud);
     }
 
     @Override
@@ -64,7 +67,12 @@ public class RedoScheduler implements AccessSchedule {
     }
 
     @Override
-    public long getVersionStart(ByteArray clone, RUD rud, long sts) {
-        return sts;
+    public StsBranchPair getVersionStart(ByteArray clone, RUD rud, StsBranchPair sts) {
+        // TODO check
+        return new StsBranchPair(sts, rud.branch);
+    }
+
+    public boolean unlock(ByteArray key, RUD rud) {
+        return archive.get(key).unlockOp(rud);
     }
 }

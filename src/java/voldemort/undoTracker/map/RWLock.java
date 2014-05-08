@@ -28,6 +28,8 @@ public class RWLock {
         WRITE;
     }
 
+    // TODO lock access politic may cause issues
+
     private Object readsWaiter = new Object();
     private Object writesWaiter = new Object();
 

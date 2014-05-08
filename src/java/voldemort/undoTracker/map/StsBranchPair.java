@@ -22,4 +22,29 @@ public class StsBranchPair {
         this.branch = branch;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + branch;
+        result = prime * result + (int) (sts ^ (sts >>> 32));
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj)
+            return true;
+        if(obj == null)
+            return false;
+        if(getClass() != obj.getClass())
+            return false;
+        StsBranchPair other = (StsBranchPair) obj;
+        if(branch != other.branch)
+            return false;
+        if(sts != other.sts)
+            return false;
+        return true;
+    }
+
 }

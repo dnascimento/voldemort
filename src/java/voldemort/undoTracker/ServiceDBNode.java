@@ -75,7 +75,7 @@ public class ServiceDBNode extends Thread {
     private void processRequest(Socket s) throws IOException {
         ToDataNode cmd = FromManagerProto.ToDataNode.parseFrom(s.getInputStream());
         if(cmd.hasSeasonId()) {
-            stub.setNewSnapshotRid(cmd.getSeasonId());
+            stub.setNewCommitRid(cmd.getSeasonId());
         }
         if(cmd.hasResetDependencies()) {
             stub.resetDependencies();

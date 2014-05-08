@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import voldemort.undoTracker.RUD;
 import voldemort.undoTracker.map.OpMultimap;
 import voldemort.undoTracker.map.OpMultimapEntry;
+import voldemort.undoTracker.map.StsBranchPair;
 import voldemort.utils.ByteArray;
 
 /**
@@ -43,7 +44,7 @@ public class RestrainScheduler implements AccessSchedule {
     public void deleteEnd(ByteArray key, RUD rud) {}
 
     @Override
-    public long getStart(ByteArray key, RUD rud, long sts) {
+    public StsBranchPair getStart(ByteArray key, RUD rud, StsBranchPair sts) {
         OpMultimapEntry l = archive.get(key);
         if(l.isModified()) {
             synchronized(flag) {
@@ -54,11 +55,11 @@ public class RestrainScheduler implements AccessSchedule {
                 }
             }
         }
-        return 0;
+        return null;
     }
 
     @Override
-    public long putStart(ByteArray key, RUD rud, long sts) {
+    public StsBranchPair putStart(ByteArray key, RUD rud, StsBranchPair sts) {
         OpMultimapEntry l = archive.get(key);
         if(l.isModified()) {
             synchronized(flag) {
@@ -69,11 +70,11 @@ public class RestrainScheduler implements AccessSchedule {
                 }
             }
         }
-        return 0;
+        return null;
     }
 
     @Override
-    public long deleteStart(ByteArray key, RUD rud, long sts) {
+    public StsBranchPair deleteStart(ByteArray key, RUD rud, StsBranchPair sts) {
         OpMultimapEntry l = archive.get(key);
         if(l.isModified()) {
             synchronized(flag) {
@@ -84,11 +85,11 @@ public class RestrainScheduler implements AccessSchedule {
                 }
             }
         }
-        return 0;
+        return null;
     }
 
     @Override
-    public long getVersionStart(ByteArray key, RUD rud, long sts) {
+    public StsBranchPair getVersionStart(ByteArray key, RUD rud, StsBranchPair sts) {
         OpMultimapEntry l = archive.get(key);
         if(l.isModified()) {
             synchronized(flag) {
@@ -99,7 +100,7 @@ public class RestrainScheduler implements AccessSchedule {
                 }
             }
         }
-        return 0;
+        return null;
     }
 
 }

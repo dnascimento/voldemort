@@ -22,7 +22,6 @@ public class Op implements Serializable {
     }
 
     public long rid;
-    public long sts;
     public OpType type;
 
     public Op(long rid, OpType type) {
@@ -58,6 +57,6 @@ public class Op implements Serializable {
 
     @Override
     public String toString() {
-        return "[" + type + " " + "rid=" + rid + ", sts=" + sts + "]";
+        return "[" + type + " " + "rid=" + rid + "]";
     }
 }
