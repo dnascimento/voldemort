@@ -8,7 +8,7 @@
 package voldemort.undoTracker.schedulers;
 
 import voldemort.undoTracker.RUD;
-import voldemort.undoTracker.map.Op.OpType;
+import voldemort.undoTracker.branching.BranchPath;
 import voldemort.undoTracker.map.OpMultimap;
 import voldemort.undoTracker.map.StsBranchPair;
 import voldemort.utils.ByteArray;
@@ -18,7 +18,7 @@ import voldemort.utils.ByteArray;
  * @author darionascimento
  * 
  */
-public class RedoScheduler implements AccessSchedule {
+public class RedoScheduler extends AccessSchedule {
 
     OpMultimap archive;
 
@@ -31,48 +31,47 @@ public class RedoScheduler implements AccessSchedule {
      * reads are perform in new branch or the base commit branch
      */
     @Override
-    public StsBranchPair getStart(ByteArray key, RUD rud, StsBranchPair redoBase) {
-        return archive.get(key).redoRead(rud.branch, redoBase.sts);
+    public StsBranchPair getStart(ByteArray key, RUD rud, BranchPath path) {
+        return archive.get(key).redoRead(rud, path);
     }
 
     /*
      * writes are perform in new branch
      */
     @Override
-    public StsBranchPair putStart(ByteArray key, RUD rud, StsBranchPair sts) {
-        return archive.get(key).redoWrite(rud);
+    public StsBranchPair putStart(ByteArray key, RUD rud, BranchPath path) {
+        return archive.get(key).redoWrite(rud, path);
     }
 
     /*
      * writes are perform in new branch
      */
     @Override
-    public StsBranchPair deleteStart(ByteArray key, RUD rud, StsBranchPair sts) {
-        return archive.get(key).redoWrite(rud);
+    public StsBranchPair deleteStart(ByteArray key, RUD rud, BranchPath path) {
+        return archive.get(key).redoWrite(rud, path);
     }
 
     @Override
-    public void getEnd(ByteArray key, RUD rud) {
-        archive.get(key).endOp(OpType.Get);
+    public void getEnd(ByteArray key) {
+        archive.get(key).endRedoRead();
     }
 
     @Override
-    public void putEnd(ByteArray key, RUD rud) {
-        archive.get(key).endOp(OpType.Put);
+    public void putEnd(ByteArray key) {
+        archive.get(key).endRedoWrite();
     }
 
     @Override
-    public void deleteEnd(ByteArray key, RUD rud) {
-        archive.get(key).endOp(OpType.Delete);
+    public void deleteEnd(ByteArray key) {
+        archive.get(key).endRedoWrite();
     }
 
     @Override
-    public StsBranchPair getVersionStart(ByteArray clone, RUD rud, StsBranchPair sts) {
-        // TODO check
-        return new StsBranchPair(sts, rud.branch);
+    public StsBranchPair getVersionStart(ByteArray clone, RUD rud, BranchPath path) {
+        return new StsBranchPair(path.current.sts, rud.branch);
     }
 
-    public boolean unlock(ByteArray key, RUD rud) {
-        return archive.get(key).unlockOp(rud);
+    public boolean unlock(ByteArray key, RUD rud, long redoCommit) {
+        return archive.get(key).unlockOp(rud, redoCommit);
     }
 }

@@ -12,10 +12,13 @@ import org.junit.Test;
 
 import voldemort.undoTracker.DBUndoStub;
 import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.branching.BranchController;
+import voldemort.undoTracker.branching.BranchPath;
 import voldemort.undoTracker.map.Op;
 import voldemort.undoTracker.map.Op.OpType;
 import voldemort.undoTracker.map.OpMultimap;
 import voldemort.undoTracker.map.OpMultimapEntry;
+import voldemort.undoTracker.map.StsBranchPair;
 import voldemort.utils.ByteArray;
 
 public class RedoTest {
@@ -31,12 +34,16 @@ public class RedoTest {
     List<Thread> tList;
     LinkedList<OpType> order;
 
-    short branch = 1;
-    private boolean contained = false;
-    private long currentCommit = 0;
+    short branch;
+    private boolean contained;
+    private long currentCommit;
 
     @Before
     public void setup() {
+        currentCommit = BranchController.INIT_COMMIT;
+        branch = BranchController.INIT_BRANCH;
+        contained = false;
+
         order = new LinkedList<OpType>();
         List<Op> l = new ArrayList<Op>();
         order.add(OpType.Put);
@@ -57,24 +64,6 @@ public class RedoTest {
     }
 
     /**
-     * The easiest base test: common requests in current branch and commit
-     * Goal: check if possible to exec normal
-     * 
-     * @throws InterruptedException
-     */
-    @Test
-    public void currentSnasphotAndBranch() throws InterruptedException {
-        System.out.println("----- Start test: Current Commit and branch -------");
-        stub = new DBUndoStub();
-        stub.setNewCommitRid(currentCommit);
-
-        execOperations(false);
-        // the database is populated and stub has the operation ordering
-        ByteArray k1Versioned = DBUndoStub.modifyKey(k1.clone(), branch, currentCommit);
-        System.out.println(db.get(k1Versioned));
-    }
-
-    /**
      * Re-execution of actions set.
      * Execute a set of serialized actions (non-parallel). Then, re-execute this
      * actions in a new branch and compare the branches. The order must be
@@ -86,12 +75,11 @@ public class RedoTest {
     public void redoIsolated() throws InterruptedException {
         System.out.println("----- Start test: Redo Isolated -------");
 
-        stub = new DBUndoStub();
-        stub.setNewCommitRid(currentCommit);
+        stub = new DBUndoStub(true);
 
         execOperations(false);
         // the database is populated and stub has the operation ordering
-        ByteArray kOriginalBranch = DBUndoStub.modifyKey(k1.clone(), branch, currentCommit);
+        ByteArray kOriginalBranch = stub.modifyKey(k1.clone(), branch, currentCommit);
         System.out.println(db.get(kOriginalBranch));
 
         System.out.println("--------- Prepare redo -------------");
@@ -101,13 +89,17 @@ public class RedoTest {
 
         System.out.println("--------- Start redo -------------");
         // create new branch to start the redo
-        branch = 2;
+        branch = 1;
+        BranchPath redoPath = new BranchPath(new StsBranchPair(0L, 1),
+                                             new StsBranchPair(0L, 0),
+                                             new StsBranchPair(0L, 1));
+        stub.newRedo(redoPath);
 
         execOperations(true);
 
         // Check result: same order in re-execution
         ArrayList<Op> originalEntry = dbOriginal.get(kOriginalBranch).getAll();
-        ByteArray kNewBranch = DBUndoStub.modifyKey(k1.clone(), branch, currentCommit);
+        ByteArray kNewBranch = stub.modifyKey(k1.clone(), branch, currentCommit);
         ArrayList<Op> newEntry = db.get(kNewBranch).getAll();
         for(int i = 0; i < originalEntry.size(); i++) {
             assertEquals(originalEntry.get(i).type, newEntry.get(i).type);
@@ -118,37 +110,50 @@ public class RedoTest {
     public void restrain() throws InterruptedException {
         System.out.println("----- Start test: Restrain -------");
 
-        stub = new DBUndoStub();
+        stub = new DBUndoStub(true);
+        BranchPath redoPath = new BranchPath(new StsBranchPair(0L, 1),
+                                             new StsBranchPair(0L, 0),
+                                             new StsBranchPair(0L, 1));
+        stub.newRedo(redoPath);
 
-        new ExecOpT(k1.clone(), new RUD(1, (short) 1, false), OpType.Put, stub, db).exec();
-        new ExecOpT(k1.clone(), new RUD(2, (short) 1, false), OpType.Put, stub, db).exec();
-        new ExecOpT(k1.clone(), new RUD(3, (short) 1, false), OpType.Put, stub, db).exec();
-        new ExecOpT(k1.clone(), new RUD(1, (short) 2, false), OpType.Put, stub, db).exec();
-        new ExecOpT(k1.clone(), new RUD(4, (short) 1, false), OpType.Put, stub, db).exec();
-        new ExecOpT(k1.clone(), new RUD(2, (short) 2, false), OpType.Put, stub, db).exec();
-        new ExecOpT(k1.clone(), new RUD(3, (short) 2, false), OpType.Put, stub, db).exec();
-        new ExecOpT(k1.clone(), new RUD(5, (short) 1, false), OpType.Put, stub, db).exec();
-        new ExecOpT(k1.clone(), new RUD(4, (short) 2, false), OpType.Put, stub, db).exec();
+        new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(1, 0, false)).exec();
 
-        new ExecOpT(k1.clone(), new RUD(6, (short) 1, false), OpType.Put, stub, db).exec();
+        new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(2, 0, false)).exec();
+        new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(3, 0, false)).exec();
+
+        // redo
+        new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(1, 1, false)).exec();
+
+        new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(4, 0, false)).exec();
+
+        // redo
+        new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(2, 1, false)).exec();
+        new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(3, 1, false)).exec();
+
+        new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(5, 0, false)).exec();
+
+        // redo
+        new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(4, 1, false)).exec();
+
+        new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(6, 0, false)).exec();
         // restrain 7:2
 
-        Thread t1 = new ExecOpT(k1.clone(), new RUD(7, (short) 2, true), OpType.Put, stub, db);
+        Thread t1 = new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(7, 1, true));
         t1.start();
 
-        new ExecOpT(k1.clone(), new RUD(5, (short) 2, false), OpType.Put, stub, db).exec();
+        new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(5, 1, false)).exec();
 
         // restrain 8:2
-        Thread t2 = new ExecOpT(k1.clone(), new RUD(8, (short) 2, true), OpType.Put, stub, db);
+        Thread t2 = new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(8, 1, true));
         t2.start();
 
-        new ExecOpT(k1.clone(), new RUD(6, (short) 2, false), OpType.Put, stub, db).exec();
+        new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(6, 1, false)).exec();
 
-        stub.unlockRestrain((short) 2);
+        stub.redoOver();
 
         t1.join();
         t2.join();
-        ByteArray k1Branch2Snaphost0 = DBUndoStub.modifyKey(k1.clone(), (short) 2, 1);
+        ByteArray k1Branch2Snaphost0 = stub.modifyKey(k1.clone(), (short) 1, 0);
         // the restrain operations should be in the branch 2
         OpMultimapEntry entryNewBranch = db.get(k1Branch2Snaphost0);
         assertTrue(entryNewBranch != null);
@@ -156,7 +161,6 @@ public class RedoTest {
         assertEquals(8, entryNewBranch.getAll().size());
     }
 
-    // Aux
     void execOperations(boolean parallel) throws InterruptedException {
         List<Op> opList = new ArrayList<Op>();
 
@@ -165,7 +169,7 @@ public class RedoTest {
             OpType t = order.get(i);
             Op o = new Op(i + 1, t);
             opList.add(o);
-            tList.add(new ExecOpT(k1.clone(), new RUD(i + 1, branch, contained), t, stub, db));
+            tList.add(new ExecOpT(k1.clone(), t, stub, db, new RUD(i + 1, branch, contained)));
         }
 
         // Populate the stub to set the ordering in archive

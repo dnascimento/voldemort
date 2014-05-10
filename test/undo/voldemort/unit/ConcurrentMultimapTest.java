@@ -96,9 +96,11 @@ public class ConcurrentMultimapTest {
 
     @Test
     public void putGet() {
+        // TODO check
+        DBUndoStub stub = new DBUndoStub();
         ByteArray k1 = new ByteArray("key1".getBytes());
         ByteArray k2 = k1.clone();
-        DBUndoStub.modifyKey(k1, (short) 0, 0L);
+        stub.modifyKey(k1, (short) 0, 0L);
         OpMultimap map = new OpMultimap();
         map.put(k1, new Op(20L, OpType.Delete));
         assertEquals(map.get(k1).size(), 1);
@@ -108,7 +110,7 @@ public class ConcurrentMultimapTest {
         assertEquals(map.get(k1).size(), 2);
 
         assertEquals(map.get(k2), null);
-        DBUndoStub.modifyKey(k2, (short) 0, 0L);
+        stub.modifyKey(k2, (short) 0, 0L);
         assertEquals(map.get(k2).size(), 2);
 
         map.put(k1, new Op(21L, OpType.Get));

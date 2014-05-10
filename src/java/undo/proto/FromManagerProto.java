@@ -11,15 +11,15 @@ public final class FromManagerProto {
   public interface ToDataNodeOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
-    // optional int64 seasonId = 1;
+    // optional int64 newCommit = 1;
     /**
-     * <code>optional int64 seasonId = 1;</code>
+     * <code>optional int64 newCommit = 1;</code>
      */
-    boolean hasSeasonId();
+    boolean hasNewCommit();
     /**
-     * <code>optional int64 seasonId = 1;</code>
+     * <code>optional int64 newCommit = 1;</code>
      */
-    long getSeasonId();
+    long getNewCommit();
 
     // optional bool resetDependencies = 2;
     /**
@@ -31,15 +31,43 @@ public final class FromManagerProto {
      */
     boolean getResetDependencies();
 
-    // optional int32 unlockNewBranch = 3;
+    // optional bool redoOver = 3;
     /**
-     * <code>optional int32 unlockNewBranch = 3;</code>
+     * <code>optional bool redoOver = 3;</code>
      */
-    boolean hasUnlockNewBranch();
+    boolean hasRedoOver();
     /**
-     * <code>optional int32 unlockNewBranch = 3;</code>
+     * <code>optional bool redoOver = 3;</code>
      */
-    int getUnlockNewBranch();
+    boolean getRedoOver();
+
+    // repeated int32 pathBranch = 4;
+    /**
+     * <code>repeated int32 pathBranch = 4;</code>
+     */
+    java.util.List<java.lang.Integer> getPathBranchList();
+    /**
+     * <code>repeated int32 pathBranch = 4;</code>
+     */
+    int getPathBranchCount();
+    /**
+     * <code>repeated int32 pathBranch = 4;</code>
+     */
+    int getPathBranch(int index);
+
+    // repeated int64 pathCommit = 5;
+    /**
+     * <code>repeated int64 pathCommit = 5;</code>
+     */
+    java.util.List<java.lang.Long> getPathCommitList();
+    /**
+     * <code>repeated int64 pathCommit = 5;</code>
+     */
+    int getPathCommitCount();
+    /**
+     * <code>repeated int64 pathCommit = 5;</code>
+     */
+    long getPathCommit(int index);
   }
   /**
    * Protobuf type {@code voldemort.ToDataNode}
@@ -98,7 +126,7 @@ public final class FromManagerProto {
             }
             case 8: {
               bitField0_ |= 0x00000001;
-              seasonId_ = input.readInt64();
+              newCommit_ = input.readInt64();
               break;
             }
             case 16: {
@@ -108,7 +136,49 @@ public final class FromManagerProto {
             }
             case 24: {
               bitField0_ |= 0x00000004;
-              unlockNewBranch_ = input.readInt32();
+              redoOver_ = input.readBool();
+              break;
+            }
+            case 32: {
+              if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+                pathBranch_ = new java.util.ArrayList<java.lang.Integer>();
+                mutable_bitField0_ |= 0x00000008;
+              }
+              pathBranch_.add(input.readInt32());
+              break;
+            }
+            case 34: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000008) == 0x00000008) && input.getBytesUntilLimit() > 0) {
+                pathBranch_ = new java.util.ArrayList<java.lang.Integer>();
+                mutable_bitField0_ |= 0x00000008;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                pathBranch_.add(input.readInt32());
+              }
+              input.popLimit(limit);
+              break;
+            }
+            case 40: {
+              if (!((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
+                pathCommit_ = new java.util.ArrayList<java.lang.Long>();
+                mutable_bitField0_ |= 0x00000010;
+              }
+              pathCommit_.add(input.readInt64());
+              break;
+            }
+            case 42: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000010) == 0x00000010) && input.getBytesUntilLimit() > 0) {
+                pathCommit_ = new java.util.ArrayList<java.lang.Long>();
+                mutable_bitField0_ |= 0x00000010;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                pathCommit_.add(input.readInt64());
+              }
+              input.popLimit(limit);
               break;
             }
           }
@@ -119,6 +189,12 @@ public final class FromManagerProto {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
+          pathBranch_ = java.util.Collections.unmodifiableList(pathBranch_);
+        }
+        if (((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
+          pathCommit_ = java.util.Collections.unmodifiableList(pathCommit_);
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -151,20 +227,20 @@ public final class FromManagerProto {
     }
 
     private int bitField0_;
-    // optional int64 seasonId = 1;
-    public static final int SEASONID_FIELD_NUMBER = 1;
-    private long seasonId_;
+    // optional int64 newCommit = 1;
+    public static final int NEWCOMMIT_FIELD_NUMBER = 1;
+    private long newCommit_;
     /**
-     * <code>optional int64 seasonId = 1;</code>
+     * <code>optional int64 newCommit = 1;</code>
      */
-    public boolean hasSeasonId() {
+    public boolean hasNewCommit() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>optional int64 seasonId = 1;</code>
+     * <code>optional int64 newCommit = 1;</code>
      */
-    public long getSeasonId() {
-      return seasonId_;
+    public long getNewCommit() {
+      return newCommit_;
     }
 
     // optional bool resetDependencies = 2;
@@ -183,26 +259,74 @@ public final class FromManagerProto {
       return resetDependencies_;
     }
 
-    // optional int32 unlockNewBranch = 3;
-    public static final int UNLOCKNEWBRANCH_FIELD_NUMBER = 3;
-    private int unlockNewBranch_;
+    // optional bool redoOver = 3;
+    public static final int REDOOVER_FIELD_NUMBER = 3;
+    private boolean redoOver_;
     /**
-     * <code>optional int32 unlockNewBranch = 3;</code>
+     * <code>optional bool redoOver = 3;</code>
      */
-    public boolean hasUnlockNewBranch() {
+    public boolean hasRedoOver() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>optional int32 unlockNewBranch = 3;</code>
+     * <code>optional bool redoOver = 3;</code>
      */
-    public int getUnlockNewBranch() {
-      return unlockNewBranch_;
+    public boolean getRedoOver() {
+      return redoOver_;
+    }
+
+    // repeated int32 pathBranch = 4;
+    public static final int PATHBRANCH_FIELD_NUMBER = 4;
+    private java.util.List<java.lang.Integer> pathBranch_;
+    /**
+     * <code>repeated int32 pathBranch = 4;</code>
+     */
+    public java.util.List<java.lang.Integer>
+        getPathBranchList() {
+      return pathBranch_;
+    }
+    /**
+     * <code>repeated int32 pathBranch = 4;</code>
+     */
+    public int getPathBranchCount() {
+      return pathBranch_.size();
+    }
+    /**
+     * <code>repeated int32 pathBranch = 4;</code>
+     */
+    public int getPathBranch(int index) {
+      return pathBranch_.get(index);
+    }
+
+    // repeated int64 pathCommit = 5;
+    public static final int PATHCOMMIT_FIELD_NUMBER = 5;
+    private java.util.List<java.lang.Long> pathCommit_;
+    /**
+     * <code>repeated int64 pathCommit = 5;</code>
+     */
+    public java.util.List<java.lang.Long>
+        getPathCommitList() {
+      return pathCommit_;
+    }
+    /**
+     * <code>repeated int64 pathCommit = 5;</code>
+     */
+    public int getPathCommitCount() {
+      return pathCommit_.size();
+    }
+    /**
+     * <code>repeated int64 pathCommit = 5;</code>
+     */
+    public long getPathCommit(int index) {
+      return pathCommit_.get(index);
     }
 
     private void initFields() {
-      seasonId_ = 0L;
+      newCommit_ = 0L;
       resetDependencies_ = false;
-      unlockNewBranch_ = 0;
+      redoOver_ = false;
+      pathBranch_ = java.util.Collections.emptyList();
+      pathCommit_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -217,13 +341,19 @@ public final class FromManagerProto {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeInt64(1, seasonId_);
+        output.writeInt64(1, newCommit_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeBool(2, resetDependencies_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeInt32(3, unlockNewBranch_);
+        output.writeBool(3, redoOver_);
+      }
+      for (int i = 0; i < pathBranch_.size(); i++) {
+        output.writeInt32(4, pathBranch_.get(i));
+      }
+      for (int i = 0; i < pathCommit_.size(); i++) {
+        output.writeInt64(5, pathCommit_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -236,7 +366,7 @@ public final class FromManagerProto {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, seasonId_);
+          .computeInt64Size(1, newCommit_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
@@ -244,7 +374,25 @@ public final class FromManagerProto {
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, unlockNewBranch_);
+          .computeBoolSize(3, redoOver_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < pathBranch_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(pathBranch_.get(i));
+        }
+        size += dataSize;
+        size += 1 * getPathBranchList().size();
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < pathCommit_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt64SizeNoTag(pathCommit_.get(i));
+        }
+        size += dataSize;
+        size += 1 * getPathCommitList().size();
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -366,12 +514,16 @@ public final class FromManagerProto {
 
       public Builder clear() {
         super.clear();
-        seasonId_ = 0L;
+        newCommit_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000001);
         resetDependencies_ = false;
         bitField0_ = (bitField0_ & ~0x00000002);
-        unlockNewBranch_ = 0;
+        redoOver_ = false;
         bitField0_ = (bitField0_ & ~0x00000004);
+        pathBranch_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        pathCommit_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
 
@@ -403,7 +555,7 @@ public final class FromManagerProto {
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
-        result.seasonId_ = seasonId_;
+        result.newCommit_ = newCommit_;
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
@@ -411,7 +563,17 @@ public final class FromManagerProto {
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
-        result.unlockNewBranch_ = unlockNewBranch_;
+        result.redoOver_ = redoOver_;
+        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+          pathBranch_ = java.util.Collections.unmodifiableList(pathBranch_);
+          bitField0_ = (bitField0_ & ~0x00000008);
+        }
+        result.pathBranch_ = pathBranch_;
+        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+          pathCommit_ = java.util.Collections.unmodifiableList(pathCommit_);
+          bitField0_ = (bitField0_ & ~0x00000010);
+        }
+        result.pathCommit_ = pathCommit_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -428,14 +590,34 @@ public final class FromManagerProto {
 
       public Builder mergeFrom(undo.proto.FromManagerProto.ToDataNode other) {
         if (other == undo.proto.FromManagerProto.ToDataNode.getDefaultInstance()) return this;
-        if (other.hasSeasonId()) {
-          setSeasonId(other.getSeasonId());
+        if (other.hasNewCommit()) {
+          setNewCommit(other.getNewCommit());
         }
         if (other.hasResetDependencies()) {
           setResetDependencies(other.getResetDependencies());
         }
-        if (other.hasUnlockNewBranch()) {
-          setUnlockNewBranch(other.getUnlockNewBranch());
+        if (other.hasRedoOver()) {
+          setRedoOver(other.getRedoOver());
+        }
+        if (!other.pathBranch_.isEmpty()) {
+          if (pathBranch_.isEmpty()) {
+            pathBranch_ = other.pathBranch_;
+            bitField0_ = (bitField0_ & ~0x00000008);
+          } else {
+            ensurePathBranchIsMutable();
+            pathBranch_.addAll(other.pathBranch_);
+          }
+          onChanged();
+        }
+        if (!other.pathCommit_.isEmpty()) {
+          if (pathCommit_.isEmpty()) {
+            pathCommit_ = other.pathCommit_;
+            bitField0_ = (bitField0_ & ~0x00000010);
+          } else {
+            ensurePathCommitIsMutable();
+            pathCommit_.addAll(other.pathCommit_);
+          }
+          onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -464,35 +646,35 @@ public final class FromManagerProto {
       }
       private int bitField0_;
 
-      // optional int64 seasonId = 1;
-      private long seasonId_ ;
+      // optional int64 newCommit = 1;
+      private long newCommit_ ;
       /**
-       * <code>optional int64 seasonId = 1;</code>
+       * <code>optional int64 newCommit = 1;</code>
        */
-      public boolean hasSeasonId() {
+      public boolean hasNewCommit() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional int64 seasonId = 1;</code>
+       * <code>optional int64 newCommit = 1;</code>
        */
-      public long getSeasonId() {
-        return seasonId_;
+      public long getNewCommit() {
+        return newCommit_;
       }
       /**
-       * <code>optional int64 seasonId = 1;</code>
+       * <code>optional int64 newCommit = 1;</code>
        */
-      public Builder setSeasonId(long value) {
+      public Builder setNewCommit(long value) {
         bitField0_ |= 0x00000001;
-        seasonId_ = value;
+        newCommit_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 seasonId = 1;</code>
+       * <code>optional int64 newCommit = 1;</code>
        */
-      public Builder clearSeasonId() {
+      public Builder clearNewCommit() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        seasonId_ = 0L;
+        newCommit_ = 0L;
         onChanged();
         return this;
       }
@@ -530,35 +712,167 @@ public final class FromManagerProto {
         return this;
       }
 
-      // optional int32 unlockNewBranch = 3;
-      private int unlockNewBranch_ ;
+      // optional bool redoOver = 3;
+      private boolean redoOver_ ;
       /**
-       * <code>optional int32 unlockNewBranch = 3;</code>
+       * <code>optional bool redoOver = 3;</code>
        */
-      public boolean hasUnlockNewBranch() {
+      public boolean hasRedoOver() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>optional int32 unlockNewBranch = 3;</code>
+       * <code>optional bool redoOver = 3;</code>
        */
-      public int getUnlockNewBranch() {
-        return unlockNewBranch_;
+      public boolean getRedoOver() {
+        return redoOver_;
       }
       /**
-       * <code>optional int32 unlockNewBranch = 3;</code>
+       * <code>optional bool redoOver = 3;</code>
        */
-      public Builder setUnlockNewBranch(int value) {
+      public Builder setRedoOver(boolean value) {
         bitField0_ |= 0x00000004;
-        unlockNewBranch_ = value;
+        redoOver_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 unlockNewBranch = 3;</code>
+       * <code>optional bool redoOver = 3;</code>
        */
-      public Builder clearUnlockNewBranch() {
+      public Builder clearRedoOver() {
         bitField0_ = (bitField0_ & ~0x00000004);
-        unlockNewBranch_ = 0;
+        redoOver_ = false;
+        onChanged();
+        return this;
+      }
+
+      // repeated int32 pathBranch = 4;
+      private java.util.List<java.lang.Integer> pathBranch_ = java.util.Collections.emptyList();
+      private void ensurePathBranchIsMutable() {
+        if (!((bitField0_ & 0x00000008) == 0x00000008)) {
+          pathBranch_ = new java.util.ArrayList<java.lang.Integer>(pathBranch_);
+          bitField0_ |= 0x00000008;
+         }
+      }
+      /**
+       * <code>repeated int32 pathBranch = 4;</code>
+       */
+      public java.util.List<java.lang.Integer>
+          getPathBranchList() {
+        return java.util.Collections.unmodifiableList(pathBranch_);
+      }
+      /**
+       * <code>repeated int32 pathBranch = 4;</code>
+       */
+      public int getPathBranchCount() {
+        return pathBranch_.size();
+      }
+      /**
+       * <code>repeated int32 pathBranch = 4;</code>
+       */
+      public int getPathBranch(int index) {
+        return pathBranch_.get(index);
+      }
+      /**
+       * <code>repeated int32 pathBranch = 4;</code>
+       */
+      public Builder setPathBranch(
+          int index, int value) {
+        ensurePathBranchIsMutable();
+        pathBranch_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 pathBranch = 4;</code>
+       */
+      public Builder addPathBranch(int value) {
+        ensurePathBranchIsMutable();
+        pathBranch_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 pathBranch = 4;</code>
+       */
+      public Builder addAllPathBranch(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensurePathBranchIsMutable();
+        super.addAll(values, pathBranch_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 pathBranch = 4;</code>
+       */
+      public Builder clearPathBranch() {
+        pathBranch_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000008);
+        onChanged();
+        return this;
+      }
+
+      // repeated int64 pathCommit = 5;
+      private java.util.List<java.lang.Long> pathCommit_ = java.util.Collections.emptyList();
+      private void ensurePathCommitIsMutable() {
+        if (!((bitField0_ & 0x00000010) == 0x00000010)) {
+          pathCommit_ = new java.util.ArrayList<java.lang.Long>(pathCommit_);
+          bitField0_ |= 0x00000010;
+         }
+      }
+      /**
+       * <code>repeated int64 pathCommit = 5;</code>
+       */
+      public java.util.List<java.lang.Long>
+          getPathCommitList() {
+        return java.util.Collections.unmodifiableList(pathCommit_);
+      }
+      /**
+       * <code>repeated int64 pathCommit = 5;</code>
+       */
+      public int getPathCommitCount() {
+        return pathCommit_.size();
+      }
+      /**
+       * <code>repeated int64 pathCommit = 5;</code>
+       */
+      public long getPathCommit(int index) {
+        return pathCommit_.get(index);
+      }
+      /**
+       * <code>repeated int64 pathCommit = 5;</code>
+       */
+      public Builder setPathCommit(
+          int index, long value) {
+        ensurePathCommitIsMutable();
+        pathCommit_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int64 pathCommit = 5;</code>
+       */
+      public Builder addPathCommit(long value) {
+        ensurePathCommitIsMutable();
+        pathCommit_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int64 pathCommit = 5;</code>
+       */
+      public Builder addAllPathCommit(
+          java.lang.Iterable<? extends java.lang.Long> values) {
+        ensurePathCommitIsMutable();
+        super.addAll(values, pathCommit_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int64 pathCommit = 5;</code>
+       */
+      public Builder clearPathCommit() {
+        pathCommit_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000010);
         onChanged();
         return this;
       }
@@ -1822,13 +2136,14 @@ public final class FromManagerProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\022from-manager.proto\022\tvoldemort\"R\n\nToDat" +
-      "aNode\022\020\n\010seasonId\030\001 \001(\003\022\031\n\021resetDependen" +
-      "cies\030\002 \001(\010\022\027\n\017unlockNewBranch\030\003 \001(\005\"6\n\010E" +
-      "xecList\022\013\n\003rid\030\001 \003(\003\022\016\n\006branch\030\002 \002(\005\022\r\n\005" +
-      "start\030\003 \002(\010\"@\n\010ProxyMsg\022\016\n\006branch\030\001 \001(\005\022" +
-      "\020\n\010restrain\030\002 \001(\010\022\022\n\ntimeTravel\030\003 \001(\003B \n" +
-      "\nundo.protoB\020FromManagerProtoH\001"
+      "\n\022from-manager.proto\022\tvoldemort\"t\n\nToDat" +
+      "aNode\022\021\n\tnewCommit\030\001 \001(\003\022\031\n\021resetDepende" +
+      "ncies\030\002 \001(\010\022\020\n\010redoOver\030\003 \001(\010\022\022\n\npathBra" +
+      "nch\030\004 \003(\005\022\022\n\npathCommit\030\005 \003(\003\"6\n\010ExecLis" +
+      "t\022\013\n\003rid\030\001 \003(\003\022\016\n\006branch\030\002 \002(\005\022\r\n\005start\030" +
+      "\003 \002(\010\"@\n\010ProxyMsg\022\016\n\006branch\030\001 \001(\005\022\020\n\010res" +
+      "train\030\002 \001(\010\022\022\n\ntimeTravel\030\003 \001(\003B \n\nundo." +
+      "protoB\020FromManagerProtoH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -1840,7 +2155,7 @@ public final class FromManagerProto {
           internal_static_voldemort_ToDataNode_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_ToDataNode_descriptor,
-              new java.lang.String[] { "SeasonId", "ResetDependencies", "UnlockNewBranch", });
+              new java.lang.String[] { "NewCommit", "ResetDependencies", "RedoOver", "PathBranch", "PathCommit", });
           internal_static_voldemort_ExecList_descriptor =
             getDescriptor().getMessageTypes().get(1);
           internal_static_voldemort_ExecList_fieldAccessorTable = new

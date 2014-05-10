@@ -49,12 +49,12 @@ public class SendDependencies extends Thread {
         if(list.getEntryCount() == 0) {
             return;
         }
-        log.info("Sending dependencies to manager");
+        log.debug("Sending dependencies to manager");
         Socket socket = new Socket();
         try {
             socket.connect(DBUndoStub.MANAGER_ADDRESS);
             MsgToManager msg = ToManagerProto.MsgToManager.newBuilder().setTrackMsg(list).build();
-            msg.writeTo(socket.getOutputStream());
+            msg.writeDelimitedTo(socket.getOutputStream());
         } catch(ConnectException e) {
             log.error("Manager is off, the package is:");
             show(list);

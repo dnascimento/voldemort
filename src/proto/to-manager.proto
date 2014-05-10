@@ -44,8 +44,9 @@ message RUD{
 
 //From Redo Nodes
 message AckMsg{
-	required int32 port = 1;
-	required string hostname = 2;
+	optional int32 port = 1;
+	optional string hostname = 2;
+	repeated string exception = 3;
 }
 
 

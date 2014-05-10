@@ -383,12 +383,6 @@ public final class ToManagerProto {
           return false;
         }
       }
-      if (hasAck()) {
-        if (!getAck().isInitialized()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -715,12 +709,6 @@ public final class ToManagerProto {
         }
         if (hasNodeRegistry()) {
           if (!getNodeRegistry().isInitialized()) {
-            
-            return false;
-          }
-        }
-        if (hasAck()) {
-          if (!getAck().isInitialized()) {
             
             return false;
           }
@@ -4586,30 +4574,50 @@ public final class ToManagerProto {
   public interface AckMsgOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
-    // required int32 port = 1;
+    // optional int32 port = 1;
     /**
-     * <code>required int32 port = 1;</code>
+     * <code>optional int32 port = 1;</code>
      */
     boolean hasPort();
     /**
-     * <code>required int32 port = 1;</code>
+     * <code>optional int32 port = 1;</code>
      */
     int getPort();
 
-    // required string hostname = 2;
+    // optional string hostname = 2;
     /**
-     * <code>required string hostname = 2;</code>
+     * <code>optional string hostname = 2;</code>
      */
     boolean hasHostname();
     /**
-     * <code>required string hostname = 2;</code>
+     * <code>optional string hostname = 2;</code>
      */
     java.lang.String getHostname();
     /**
-     * <code>required string hostname = 2;</code>
+     * <code>optional string hostname = 2;</code>
      */
     com.google.protobuf.ByteString
         getHostnameBytes();
+
+    // repeated string exception = 3;
+    /**
+     * <code>repeated string exception = 3;</code>
+     */
+    java.util.List<java.lang.String>
+    getExceptionList();
+    /**
+     * <code>repeated string exception = 3;</code>
+     */
+    int getExceptionCount();
+    /**
+     * <code>repeated string exception = 3;</code>
+     */
+    java.lang.String getException(int index);
+    /**
+     * <code>repeated string exception = 3;</code>
+     */
+    com.google.protobuf.ByteString
+        getExceptionBytes(int index);
   }
   /**
    * Protobuf type {@code voldemort.AckMsg}
@@ -4676,6 +4684,14 @@ public final class ToManagerProto {
               hostname_ = input.readBytes();
               break;
             }
+            case 26: {
+              if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+                exception_ = new com.google.protobuf.LazyStringArrayList();
+                mutable_bitField0_ |= 0x00000004;
+              }
+              exception_.add(input.readBytes());
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -4684,6 +4700,9 @@ public final class ToManagerProto {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+          exception_ = new com.google.protobuf.UnmodifiableLazyStringList(exception_);
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -4716,33 +4735,33 @@ public final class ToManagerProto {
     }
 
     private int bitField0_;
-    // required int32 port = 1;
+    // optional int32 port = 1;
     public static final int PORT_FIELD_NUMBER = 1;
     private int port_;
     /**
-     * <code>required int32 port = 1;</code>
+     * <code>optional int32 port = 1;</code>
      */
     public boolean hasPort() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required int32 port = 1;</code>
+     * <code>optional int32 port = 1;</code>
      */
     public int getPort() {
       return port_;
     }
 
-    // required string hostname = 2;
+    // optional string hostname = 2;
     public static final int HOSTNAME_FIELD_NUMBER = 2;
     private java.lang.Object hostname_;
     /**
-     * <code>required string hostname = 2;</code>
+     * <code>optional string hostname = 2;</code>
      */
     public boolean hasHostname() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required string hostname = 2;</code>
+     * <code>optional string hostname = 2;</code>
      */
     public java.lang.String getHostname() {
       java.lang.Object ref = hostname_;
@@ -4759,7 +4778,7 @@ public final class ToManagerProto {
       }
     }
     /**
-     * <code>required string hostname = 2;</code>
+     * <code>optional string hostname = 2;</code>
      */
     public com.google.protobuf.ByteString
         getHostnameBytes() {
@@ -4775,23 +4794,46 @@ public final class ToManagerProto {
       }
     }
 
+    // repeated string exception = 3;
+    public static final int EXCEPTION_FIELD_NUMBER = 3;
+    private com.google.protobuf.LazyStringList exception_;
+    /**
+     * <code>repeated string exception = 3;</code>
+     */
+    public java.util.List<java.lang.String>
+        getExceptionList() {
+      return exception_;
+    }
+    /**
+     * <code>repeated string exception = 3;</code>
+     */
+    public int getExceptionCount() {
+      return exception_.size();
+    }
+    /**
+     * <code>repeated string exception = 3;</code>
+     */
+    public java.lang.String getException(int index) {
+      return exception_.get(index);
+    }
+    /**
+     * <code>repeated string exception = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+        getExceptionBytes(int index) {
+      return exception_.getByteString(index);
+    }
+
     private void initFields() {
       port_ = 0;
       hostname_ = "";
+      exception_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
 
-      if (!hasPort()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasHostname()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -4804,6 +4846,9 @@ public final class ToManagerProto {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeBytes(2, getHostnameBytes());
+      }
+      for (int i = 0; i < exception_.size(); i++) {
+        output.writeBytes(3, exception_.getByteString(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -4821,6 +4866,15 @@ public final class ToManagerProto {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(2, getHostnameBytes());
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < exception_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeBytesSizeNoTag(exception_.getByteString(i));
+        }
+        size += dataSize;
+        size += 1 * getExceptionList().size();
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -4946,6 +5000,8 @@ public final class ToManagerProto {
         bitField0_ = (bitField0_ & ~0x00000001);
         hostname_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
+        exception_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -4982,6 +5038,12 @@ public final class ToManagerProto {
           to_bitField0_ |= 0x00000002;
         }
         result.hostname_ = hostname_;
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          exception_ = new com.google.protobuf.UnmodifiableLazyStringList(
+              exception_);
+          bitField0_ = (bitField0_ & ~0x00000004);
+        }
+        result.exception_ = exception_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -5006,19 +5068,21 @@ public final class ToManagerProto {
           hostname_ = other.hostname_;
           onChanged();
         }
+        if (!other.exception_.isEmpty()) {
+          if (exception_.isEmpty()) {
+            exception_ = other.exception_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+          } else {
+            ensureExceptionIsMutable();
+            exception_.addAll(other.exception_);
+          }
+          onChanged();
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
-        if (!hasPort()) {
-          
-          return false;
-        }
-        if (!hasHostname()) {
-          
-          return false;
-        }
         return true;
       }
 
@@ -5041,22 +5105,22 @@ public final class ToManagerProto {
       }
       private int bitField0_;
 
-      // required int32 port = 1;
+      // optional int32 port = 1;
       private int port_ ;
       /**
-       * <code>required int32 port = 1;</code>
+       * <code>optional int32 port = 1;</code>
        */
       public boolean hasPort() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required int32 port = 1;</code>
+       * <code>optional int32 port = 1;</code>
        */
       public int getPort() {
         return port_;
       }
       /**
-       * <code>required int32 port = 1;</code>
+       * <code>optional int32 port = 1;</code>
        */
       public Builder setPort(int value) {
         bitField0_ |= 0x00000001;
@@ -5065,7 +5129,7 @@ public final class ToManagerProto {
         return this;
       }
       /**
-       * <code>required int32 port = 1;</code>
+       * <code>optional int32 port = 1;</code>
        */
       public Builder clearPort() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -5074,16 +5138,16 @@ public final class ToManagerProto {
         return this;
       }
 
-      // required string hostname = 2;
+      // optional string hostname = 2;
       private java.lang.Object hostname_ = "";
       /**
-       * <code>required string hostname = 2;</code>
+       * <code>optional string hostname = 2;</code>
        */
       public boolean hasHostname() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required string hostname = 2;</code>
+       * <code>optional string hostname = 2;</code>
        */
       public java.lang.String getHostname() {
         java.lang.Object ref = hostname_;
@@ -5097,7 +5161,7 @@ public final class ToManagerProto {
         }
       }
       /**
-       * <code>required string hostname = 2;</code>
+       * <code>optional string hostname = 2;</code>
        */
       public com.google.protobuf.ByteString
           getHostnameBytes() {
@@ -5113,7 +5177,7 @@ public final class ToManagerProto {
         }
       }
       /**
-       * <code>required string hostname = 2;</code>
+       * <code>optional string hostname = 2;</code>
        */
       public Builder setHostname(
           java.lang.String value) {
@@ -5126,7 +5190,7 @@ public final class ToManagerProto {
         return this;
       }
       /**
-       * <code>required string hostname = 2;</code>
+       * <code>optional string hostname = 2;</code>
        */
       public Builder clearHostname() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -5135,7 +5199,7 @@ public final class ToManagerProto {
         return this;
       }
       /**
-       * <code>required string hostname = 2;</code>
+       * <code>optional string hostname = 2;</code>
        */
       public Builder setHostnameBytes(
           com.google.protobuf.ByteString value) {
@@ -5144,6 +5208,99 @@ public final class ToManagerProto {
   }
   bitField0_ |= 0x00000002;
         hostname_ = value;
+        onChanged();
+        return this;
+      }
+
+      // repeated string exception = 3;
+      private com.google.protobuf.LazyStringList exception_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureExceptionIsMutable() {
+        if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+          exception_ = new com.google.protobuf.LazyStringArrayList(exception_);
+          bitField0_ |= 0x00000004;
+         }
+      }
+      /**
+       * <code>repeated string exception = 3;</code>
+       */
+      public java.util.List<java.lang.String>
+          getExceptionList() {
+        return java.util.Collections.unmodifiableList(exception_);
+      }
+      /**
+       * <code>repeated string exception = 3;</code>
+       */
+      public int getExceptionCount() {
+        return exception_.size();
+      }
+      /**
+       * <code>repeated string exception = 3;</code>
+       */
+      public java.lang.String getException(int index) {
+        return exception_.get(index);
+      }
+      /**
+       * <code>repeated string exception = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+          getExceptionBytes(int index) {
+        return exception_.getByteString(index);
+      }
+      /**
+       * <code>repeated string exception = 3;</code>
+       */
+      public Builder setException(
+          int index, java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureExceptionIsMutable();
+        exception_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string exception = 3;</code>
+       */
+      public Builder addException(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureExceptionIsMutable();
+        exception_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string exception = 3;</code>
+       */
+      public Builder addAllException(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureExceptionIsMutable();
+        super.addAll(values, exception_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string exception = 3;</code>
+       */
+      public Builder clearException() {
+        exception_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string exception = 3;</code>
+       */
+      public Builder addExceptionBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureExceptionIsMutable();
+        exception_.add(value);
         onChanged();
         return this;
       }
@@ -5986,13 +6143,13 @@ public final class ToManagerProto {
       "(\0132\030.voldemort.StartEndEntry\"+\n\rStartEnd" +
       "Entry\022\r\n\005start\030\001 \002(\003\022\013\n\003end\030\002 \002(\003\"B\n\003RUD" +
       "\022\013\n\003rid\030\001 \001(\003\022\016\n\006branch\030\002 \001(\005\022\020\n\010restrai" +
-      "n\030\003 \001(\010\022\014\n\004redo\030\004 \001(\010\"(\n\006AckMsg\022\014\n\004port\030" +
-      "\001 \002(\005\022\020\n\010hostname\030\002 \002(\t\"\232\001\n\017NodeRegistry" +
-      "Msg\0223\n\005group\030\001 \002(\0162$.voldemort.NodeRegis" +
-      "tryMsg.NodeGroup\022\014\n\004port\030\002 \002(\005\022\020\n\010hostna" +
-      "me\030\003 \002(\t\"2\n\tNodeGroup\022\t\n\005PROXY\020\001\022\013\n\007DB_N" +
-      "ODE\020\002\022\r\n\tREDO_NODE\020\003B\036\n\nundo.protoB\016ToMa" +
-      "nagerProtoH\001"
+      "n\030\003 \001(\010\022\014\n\004redo\030\004 \001(\010\";\n\006AckMsg\022\014\n\004port\030" +
+      "\001 \001(\005\022\020\n\010hostname\030\002 \001(\t\022\021\n\texception\030\003 \003" +
+      "(\t\"\232\001\n\017NodeRegistryMsg\0223\n\005group\030\001 \002(\0162$." +
+      "voldemort.NodeRegistryMsg.NodeGroup\022\014\n\004p" +
+      "ort\030\002 \002(\005\022\020\n\010hostname\030\003 \002(\t\"2\n\tNodeGroup" +
+      "\022\t\n\005PROXY\020\001\022\013\n\007DB_NODE\020\002\022\r\n\tREDO_NODE\020\003B" +
+      "\036\n\nundo.protoB\016ToManagerProtoH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -6040,7 +6197,7 @@ public final class ToManagerProto {
           internal_static_voldemort_AckMsg_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_AckMsg_descriptor,
-              new java.lang.String[] { "Port", "Hostname", });
+              new java.lang.String[] { "Port", "Hostname", "Exception", });
           internal_static_voldemort_NodeRegistryMsg_descriptor =
             getDescriptor().getMessageTypes().get(7);
           internal_static_voldemort_NodeRegistryMsg_fieldAccessorTable = new

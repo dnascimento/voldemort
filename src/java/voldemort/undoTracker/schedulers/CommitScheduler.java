@@ -8,6 +8,7 @@
 package voldemort.undoTracker.schedulers;
 
 import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.branching.BranchPath;
 import voldemort.undoTracker.map.Op;
 import voldemort.undoTracker.map.OpMultimap;
 import voldemort.undoTracker.map.StsBranchPair;
@@ -17,7 +18,7 @@ import voldemort.utils.ByteArray;
  * @author darionascimento
  * 
  */
-public class CommitScheduler implements AccessSchedule {
+public class CommitScheduler extends AccessSchedule {
 
     private OpMultimap keyAccessLists;
 
@@ -37,38 +38,38 @@ public class CommitScheduler implements AccessSchedule {
      * @return the key version to access
      */
     @Override
-    public StsBranchPair getStart(ByteArray key, RUD rud, StsBranchPair current) {
+    public StsBranchPair getStart(ByteArray key, RUD rud, BranchPath current) {
         return keyAccessLists.trackReadAccess(key, rud, current);
     }
 
     @Override
-    public StsBranchPair putStart(ByteArray key, RUD rud, StsBranchPair sts) {
-        return keyAccessLists.trackWriteAccess(key, Op.OpType.Put, rud, sts);
+    public StsBranchPair putStart(ByteArray key, RUD rud, BranchPath path) {
+        return keyAccessLists.trackWriteAccess(key, Op.OpType.Put, rud, path);
     }
 
     @Override
-    public StsBranchPair deleteStart(ByteArray key, RUD rud, StsBranchPair sts) {
-        return keyAccessLists.trackWriteAccess(key, Op.OpType.Delete, rud, sts);
+    public StsBranchPair deleteStart(ByteArray key, RUD rud, BranchPath path) {
+        return keyAccessLists.trackWriteAccess(key, Op.OpType.Delete, rud, path);
     }
 
     @Override
-    public void getEnd(ByteArray key, RUD rud) {
+    public StsBranchPair getVersionStart(ByteArray key, RUD rud, BranchPath current) {
+        return keyAccessLists.getVersionToPut(key, rud, current);
+    }
+
+    @Override
+    public void getEnd(ByteArray key) {
         keyAccessLists.endReadAccess(key);
     }
 
     @Override
-    public void putEnd(ByteArray key, RUD rud) {
+    public void putEnd(ByteArray key) {
         keyAccessLists.endWriteAccess(key);
     }
 
     @Override
-    public void deleteEnd(ByteArray key, RUD rud) {
+    public void deleteEnd(ByteArray key) {
         keyAccessLists.endWriteAccess(key);
-    }
-
-    @Override
-    public StsBranchPair getVersionStart(ByteArray key, RUD rud, StsBranchPair current) {
-        return keyAccessLists.getVersionToPut(key, rud, current);
     }
 
 }

@@ -11,14 +11,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import voldemort.VoldemortException;
 import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.branching.BranchPath;
 import voldemort.undoTracker.map.Op.OpType;
-import voldemort.undoTracker.map.commits.CommitController;
+import voldemort.undoTracker.map.commits.CommitList;
 
 import com.google.common.collect.HashMultimap;
 
@@ -29,19 +31,21 @@ import com.google.common.collect.HashMultimap;
  */
 public class OpMultimapEntry implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private transient static final Logger log = LogManager.getLogger(OpMultimap.class.getName());
 
-    private enum WaitState {
-        Waiting,
-        Unlocked;
-    }
-
-    private HashMap<Long, WaitState> waitTable = new HashMap<Long, WaitState>();
-
+    private transient HashMap<Long, Object> waitingMap;
     /**
-     * 
+     * Entry RWLock: not related with list access. It is the value/database
+     * access
+     * locker.
      */
-    private static final long serialVersionUID = 1L;
+    private transient RWLock valueLocker;
+
+    private transient ReentrantLock waitingMapLocker;
+
+    private transient RedoIterator iterator = null;
 
     /**
      * Avoid re-size version array, average number of version per key
@@ -49,95 +53,72 @@ public class OpMultimapEntry implements Serializable {
     public final int INIT_ARRAY_SIZE = 16;
 
     /**
-     * Entry RWLock: not related with list access. It is the value/database
-     * access
-     * locker.
-     */
-    private RWLock lock = new RWLock();
-
-    /**
      * Use synchronized(this) to access the list. List of past interactions
      */
     private ArrayList<Op> list = new ArrayList<Op>(INIT_ARRAY_SIZE);
-
-    /**
-     * Keep track of next or last write
-     */
-    private int redoPos = 0;
 
     /**
      * Keep track of last sent dependency to the manager
      */
     private int sentDependency = 0;
 
-    private CommitController commitList = new CommitController();
+    private CommitList commitList = new CommitList();
 
     public OpMultimapEntry(ArrayList<Op> list) {
+        this();
         this.list = list;
     }
 
     public OpMultimapEntry() {
-
+        valueLocker = new RWLock();
+        waitingMapLocker = new ReentrantLock();
+        waitingMap = new HashMap<Long, Object>();
     }
 
-    public void addAll(List<Op> values) {
-        synchronized(this) {
-            list.addAll(values);
-        }
+    public synchronized void addAll(List<Op> values) {
+        list.addAll(values);
     }
 
     public synchronized Op getLastWrite() {
-        synchronized(this) {
-            for(int i = list.size() - 1; i > 0; i--) {
-                Op op = list.get(i);
-                if(op.type != OpType.Get) {
-                    return op;
-                }
+        for(int i = list.size() - 1; i > 0; i--) {
+            Op op = list.get(i);
+            if(op.type != OpType.Get) {
+                return op;
             }
-            return null;
         }
+        return null;
     }
 
-    public boolean isEmpty() {
-        synchronized(this) {
-            return list.isEmpty();
-        }
-    }
-
-    public void addLast(Op op) {
-        synchronized(this) {
-            list.add(op);
-        }
+    public synchronized boolean isEmpty() {
+        return list.isEmpty();
     }
 
     public ArrayList<Op> getAll() {
         return list;
     }
 
-    public ArrayList<Op> extractAll() {
-        synchronized(this) {
-            ArrayList<Op> data = list;
-            list = new ArrayList<Op>();
-            return data;
-        }
+    public synchronized ArrayList<Op> extractAll() {
+        ArrayList<Op> data = list;
+        list = new ArrayList<Op>();
+        return data;
     }
 
     /* /////////// Value Access Lock ////////////////////// */
 
     public void lockWrite() {
-        lock.lockWrite();
+        valueLocker.lockWrite();
     }
 
     public void lockRead() {
-        lock.lockRead();
+        valueLocker.lockRead();
     }
 
     public void unlockWrite() {
-        lock.releaseWrite();
+        valueLocker.releaseWrite();
     }
 
     public void unlockRead() {
-        lock.releaseRead();
+        valueLocker.releaseRead();
     }
 
     /**
@@ -146,40 +127,39 @@ public class OpMultimapEntry implements Serializable {
      * @return
      */
     public boolean hasLocked() {
-        return lock.hasPendent();
+        return valueLocker.hasPendent();
     }
 
-    public boolean updateDependencies(HashMultimap<Long, Long> dependencyPerRid) throws Exception {
+    public synchronized boolean updateDependencies(HashMultimap<Long, Long> dependencyPerRid)
+            throws Exception {
         // 1st get previous write
-        synchronized(this) {
-            synchronized(dependencyPerRid) {
-                assert (list.size() > 0);
-                if(sentDependency == (list.size() - 1)) {
-                    return false;
-                }
-
-                long lastWrite = -1;
-                // get last write
-                for(int i = sentDependency; i >= 0; i--) {
-                    if(list.get(i).type != OpType.Get) {
-                        lastWrite = list.get(i).rid;
-                        break;
-                    }
-                }
-                if(lastWrite == -1) {
-                    throw new Exception("Last write == -1");
-                }
-                // update new dependencies
-                for(int i = sentDependency + 1; i < list.size(); i++) {
-                    Op op = list.get(i);
-                    if(op.type == Op.OpType.Get) {
-                        dependencyPerRid.put(op.rid, lastWrite);
-                    } else {
-                        lastWrite = op.rid;
-                    }
-                }
-                sentDependency = list.size() - 1;
+        synchronized(dependencyPerRid) {
+            assert (list.size() > 0);
+            if(sentDependency == (list.size() - 1)) {
+                return false;
             }
+
+            long lastWrite = -1;
+            // get last write
+            for(int i = sentDependency; i >= 0; i--) {
+                if(list.get(i).type != OpType.Get) {
+                    lastWrite = list.get(i).rid;
+                    break;
+                }
+            }
+            if(lastWrite == -1) {
+                throw new Exception("Last write == -1");
+            }
+            // update new dependencies
+            for(int i = sentDependency + 1; i < list.size(); i++) {
+                Op op = list.get(i);
+                if(op.type == Op.OpType.Get) {
+                    dependencyPerRid.put(op.rid, lastWrite);
+                } else {
+                    lastWrite = op.rid;
+                }
+            }
+            sentDependency = list.size() - 1;
         }
         return true;
     }
@@ -195,13 +175,13 @@ public class OpMultimapEntry implements Serializable {
      * @param sts
      * @return
      */
-    public StsBranchPair getVersionToPut(RUD rud, StsBranchPair current) {
-        if(rud.rid < current.sts) {
+    public synchronized StsBranchPair getVersionToPut(RUD rud, BranchPath path) {
+        if(rud.rid < path.current.sts) {
             // write only over old values
-            return commitList.getBiggestSmallerCommit(current);
+            return commitList.getBiggestSmallerCommit(path, rud.rid);
         } else {
             // write in the new commit
-            return commitList.latestVersion(current);
+            return commitList.getLatest(path);
         }
     }
 
@@ -215,17 +195,17 @@ public class OpMultimapEntry implements Serializable {
      * @param sts
      * @return
      */
-    public StsBranchPair trackReadAccess(RUD rud, StsBranchPair current) {
+    public synchronized StsBranchPair trackReadAccess(RUD rud, BranchPath path) {
         Op op = new Op(rud.rid, OpType.Get);
-        addLast(op);
+        list.add(op);
 
         /* If rid < commit timestamp, read only old values */
-        if(rud.rid < current.sts) {
+        if(rud.rid < path.current.sts) {
             // read only old values
-            return commitList.getBiggestSmallerCommit(current);
+            return commitList.getBiggestSmallerCommit(path, rud.rid);
         } else {
             // read the most recent
-            return commitList.latestVersion(current);
+            return commitList.getLatest(path);
         }
     }
 
@@ -239,129 +219,108 @@ public class OpMultimapEntry implements Serializable {
      * @param sts
      * @return
      */
-    public StsBranchPair trackWriteAccess(OpType type, RUD rud, StsBranchPair current) {
+    public synchronized StsBranchPair trackWriteAccess(OpType type, RUD rud, BranchPath path) {
         Op op = new Op(rud.rid, type);
-        addLast(op);
+        list.add(op);
 
         /* If rid < commit timestamp, write only old values */
-        if(rud.rid < current.sts) {
+        if(rud.rid < path.current.sts) {
             // write only old values
-            return commitList.getBiggestSmallerCommit(current);
+            return commitList.getBiggestSmallerCommit(path, rud.rid);
         } else {
-            StsBranchPair latest = commitList.latestVersion(current);
+            StsBranchPair latest = commitList.getLatest(path);
             // write in the current commit and branch
-            if(current.sts > latest.sts) {
+            if(path.current.sts > latest.sts) {
                 // new commit
-                commitList.addNewCommit(current.sts, rud.branch);
+                return commitList.addNewCommit(path.current.sts, rud.branch);
             }
             return latest;
         }
     }
 
     /*------------------------------ REDO ------------------------------- */
-    /**
-     * Select the first action after the commit
-     * 
-     * @param rid
-     */
-    private void startRedo(long commitRid, short branch) {
-        newBranch(branch);
-        // TODO repensar
-        for(redoPos = 0; redoPos < list.size(); redoPos++) {
-            if(list.get(redoPos).rid >= commitRid)
-                break;
-        }
-        if(redoPos == list.size())
-            return;
 
-        Op next = list.get(redoPos);
-        // wake the next write or next readS
-        if(!next.type.equals(OpType.Get)) {
-            wakeOrAdd(next.rid, next.type);
-        } else {
-            int i = 0;
-            do {
-                next = list.get(redoPos + i);
-                if(!next.type.equals(OpType.Get))
-                    break;
-                i++;
-                wakeOrAdd(next.rid, next.type);
-            } while((redoPos + i) < list.size());
-        }
-    }
-
-    public boolean isModified() {
-        // TODO improve to support redo
-        synchronized(this) {
-            return (redoPos == 0);
-        }
+    public synchronized boolean isModified(short redoBranch) {
+        if(getRedoIterator() != null && getRedoIterator().getBranch() == redoBranch)
+            return true;
+        return false;
     }
 
     /**
-     * To be the next op, it must exist in table. Otherwise, it add itself to
-     * the table and waits.
+     * To be the next operation, it must exist in table. Otherwise, it add
+     * itself to the table and waits.
      * 
      * @param rud
      */
-    public void isNextOp(RUD rud) {
-        synchronized(waitTable) {
-            WaitState s = waitTable.remove(rud.rid);
-            if(s == null) {
-                WaitState obj = WaitState.Waiting;
-                waitTable.put(rud.rid, obj);
+    private void isNextOp(RUD rud, long baseCommit) {
+        Op next;
+        synchronized(this) {
+            RedoIterator i = getOrNewRedoIterator(rud.branch, baseCommit);
+            next = i.next();
+            if(next == null) {
+                log.error("Next is null but there is an operation remaining");
+                throw new VoldemortException("Next is null but there is an operation remaining");
+            }
+        }
+        if(next.rid != rud.rid) {
+            Object waiter = new Object();
+            waitingMapLocker.lock();
+            waitingMap.put(rud.rid, waiter);
+            synchronized(waiter) {
                 try {
-                    obj.wait();
+                    waitingMapLocker.unlock();
+                    waiter.wait();
                 } catch(InterruptedException e) {
                     log.error(e);
                 }
-                s = waitTable.remove(rud.rid);
             }
         }
     }
 
     /**
+     * Current is read. If next is write, then wake
      * 
      * @param type
      */
-    public void endOp(OpType type) {
-        synchronized(this) {
-            ++redoPos;
-
-            if(redoPos == list.size())
-                return;
-
-            Op next = list.get(redoPos);
-
-            // If current is read and next is write:
-            if(type.equals(OpType.Get)) {
-                if(!next.type.equals(OpType.Get)) {
-                    wakeOrAdd(next.rid, next.type);
-                }
-            } else {
-                // if write, wake next reads or THE next write
-                if(next.type.equals(OpType.Get)) {
-                    int i = 0;
-                    do {
-                        next = list.get(redoPos + i);
-                        if(!next.type.equals(OpType.Get))
-                            break;
-                        i++;
-                        wakeOrAdd(next.rid, next.type);
-                    } while((redoPos + i) < list.size());
-                } else {
-                    wakeOrAdd(next.rid, next.type);
-                }
+    public synchronized void endRedoRead() {
+        RedoIterator i = getRedoIterator();
+        if(i.hasNext()) {
+            Op next = i.next();
+            if(!next.type.equals(OpType.Get)) {
+                wake(next.rid);
             }
         }
     }
 
-    private void wakeOrAdd(long rid, OpType type) {
-        synchronized(waitTable) {
-            WaitState state = waitTable.remove(rid);
-            if(state.equals(WaitState.Unlocked)) {
-                endOp(type);
-            } else {
-                state.notifyAll();
+    /**
+     * Current is write. Wake the next reads or THE next write
+     * 
+     * @param type
+     */
+    public synchronized void endRedoWrite() {
+        RedoIterator it = getRedoIterator();
+        waitingMapLocker.lock();
+
+        if(it.hasNext()) {
+            Op next = it.next();
+            wake(next.rid);
+            if(next.type.equals(OpType.Get)) {
+                int i = 1;
+                while(it.hasRead(i)) {
+                    wake(it.peakRead().rid);
+                    i++;
+                }
+            }
+        }
+        waitingMapLocker.unlock();
+    }
+
+    private void wake(long rid) {
+        Object waiter;
+        waiter = waitingMap.remove(new Long(rid));
+        if(waiter != null) {
+            synchronized(waiter) {
+                waiter.notifyAll();
             }
         }
     }
@@ -372,26 +331,26 @@ public class OpMultimapEntry implements Serializable {
      * @param rud
      * @return was it locking other actions?
      */
-    public boolean unlockOp(RUD rud) {
-        WaitState s = waitTable.remove(rud.rid);
-        if(s == null) {
-            waitTable.put(rud.rid, WaitState.Unlocked);
-            return false;
-        } else {
-            OpType type = searchType(rud.rid);
-            endOp(type);
-            return true;
-        }
+    public synchronized boolean unlockOp(RUD rud, long redoRid) {
+        return getOrNewRedoIterator(rud.branch, redoRid).unlock(rud.rid);
     }
 
-    private OpType searchType(long rid) {
-        for(int i = redoPos; i < list.size(); i++) {
-            if(list.get(i).rid == rid) {
-                return list.get(i).type;
-            }
+    /**
+     * Get redo iterator, creating if needed
+     * 
+     * @param branch
+     * @param baseRid
+     * @return
+     */
+    private RedoIterator getOrNewRedoIterator(short branch, long baseRid) {
+        if(iterator == null || iterator.getBranch() != branch) {
+            iterator = new RedoIterator(branch, baseRid, list);
         }
-        log.error("SEARCHTYPE FAILT!!!!");
-        throw new VoldemortException("SEARCHTYPE FAILT!!!!");
+        return iterator;
+    }
+
+    private RedoIterator getRedoIterator() {
+        return iterator;
     }
 
     // ///////////// REDO CODE ////////////////////////////////
@@ -404,10 +363,10 @@ public class OpMultimapEntry implements Serializable {
      * @param sts: branch base Commit
      * @return
      */
-    public StsBranchPair redoRead(RUD rud, short redoBranch, long redoBaseCommit) {
+    public StsBranchPair redoRead(RUD rud, BranchPath path) {
         // serialize
-        isNextOp(rud);
-        return commitList.redoRead(redoBranch, redoBaseCommit);
+        isNextOp(rud, path.current.sts);
+        return commitList.redoRead(path);
     }
 
     /**
@@ -417,9 +376,9 @@ public class OpMultimapEntry implements Serializable {
      * @param rud
      * @return
      */
-    public StsBranchPair redoWrite(RUD rud, long sts) {
-        isNextOp(rud);
-        return commitList.addRedoVersion(sts, rud.branch);
+    public StsBranchPair redoWrite(RUD rud, BranchPath path) {
+        isNextOp(rud, path.current.sts);
+        return commitList.redoWrite(path);
     }
 
     /* -------------------------- others ---------------------------- */
@@ -454,8 +413,7 @@ public class OpMultimapEntry implements Serializable {
     public String toString() {
         synchronized(this) {
 
-            return "[Entry:" + list + ", redoPos=" + redoPos + ", sentDependency=" + sentDependency
-                   + "]";
+            return "[Entry:" + list + ", sentDependency=" + sentDependency + "]";
         }
     }
 
@@ -463,5 +421,9 @@ public class OpMultimapEntry implements Serializable {
         synchronized(this) {
             return list.size();
         }
+    }
+
+    public synchronized void addLast(Op op) {
+        list.add(op);
     }
 }

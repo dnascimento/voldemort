@@ -18,7 +18,8 @@ public class Op implements Serializable {
     public enum OpType implements Serializable {
         Put,
         Delete,
-        Get;
+        Get,
+        GetVersion;
     }
 
     public long rid;

@@ -7,24 +7,58 @@
 
 package voldemort.undoTracker.schedulers;
 
+import voldemort.VoldemortException;
 import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.branching.BranchPath;
+import voldemort.undoTracker.map.Op.OpType;
 import voldemort.undoTracker.map.StsBranchPair;
 import voldemort.utils.ByteArray;
 
-public interface AccessSchedule {
+public abstract class AccessSchedule {
 
-    public StsBranchPair getStart(ByteArray key, RUD rud, StsBranchPair current);
+    abstract StsBranchPair getStart(ByteArray key, RUD rud, BranchPath current);
 
-    public StsBranchPair putStart(ByteArray key, RUD rud, StsBranchPair sts);
+    abstract StsBranchPair putStart(ByteArray key, RUD rud, BranchPath path);
 
-    public StsBranchPair deleteStart(ByteArray key, RUD rud, StsBranchPair sts);
+    abstract StsBranchPair deleteStart(ByteArray key, RUD rud, BranchPath path);
 
-    public StsBranchPair getVersionStart(ByteArray clone, RUD rud, StsBranchPair sts);
+    abstract StsBranchPair getVersionStart(ByteArray clone, RUD rud, BranchPath path);
 
-    public void getEnd(ByteArray key, RUD rud);
+    abstract void getEnd(ByteArray key);
 
-    public void putEnd(ByteArray key, RUD rud);
+    abstract void putEnd(ByteArray key);
 
-    public void deleteEnd(ByteArray key, RUD rud);
+    abstract void deleteEnd(ByteArray key);
+
+    public void opEnd(OpType op, ByteArray key) {
+        switch(op) {
+            case Delete:
+                deleteEnd(key);
+                break;
+            case Get:
+                getEnd(key);
+                break;
+            case Put:
+                putEnd(key);
+                break;
+            default:
+                throw new VoldemortException("Unknown operation");
+        }
+    }
+
+    public StsBranchPair opStart(OpType op, ByteArray key, RUD rud, BranchPath path) {
+        switch(op) {
+            case Delete:
+                return deleteStart(key, rud, path);
+            case Get:
+                return getStart(key, rud, path);
+            case Put:
+                return putStart(key, rud, path);
+            case GetVersion:
+                return getVersionStart(key, rud, path);
+            default:
+                throw new VoldemortException("Unknown operation");
+        }
+    }
 
 }

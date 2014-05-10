@@ -64,8 +64,10 @@ public class InvertDependencies extends Thread {
             if(dependencyPerRid.containsKey("69L")) {
                 dependencyPerRid.removeAll("69L");
             }
-            SendDependencies d = new SendDependencies(dependencyPerRid);
-            d.start();
+            if(!dependencyPerRid.isEmpty()) {
+                SendDependencies d = new SendDependencies(dependencyPerRid);
+                d.start();
+            }
         }
     }
 

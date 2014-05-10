@@ -26,6 +26,9 @@ import org.apache.log4j.xml.DOMConfigurator;
 
 import voldemort.VoldemortException;
 import voldemort.undoTracker.branching.BranchController;
+import voldemort.undoTracker.branching.BranchPath;
+import voldemort.undoTracker.branching.Path;
+import voldemort.undoTracker.map.Op.OpType;
 import voldemort.undoTracker.map.OpMultimap;
 import voldemort.undoTracker.map.StsBranchPair;
 import voldemort.undoTracker.schedulers.CommitScheduler;
@@ -46,6 +49,8 @@ public class DBUndoStub {
                                                                                   11000);
     static final String KEY_ACCESS_LIST_FILE = "keyaccessList.obj";
 
+    private static final boolean LOAD_FROM_FILE = false;
+
     private final static Logger log = LogManager.getLogger(DBUndoStub.class.getName());
     Object restrainLocker = new Object();
     BranchController brancher = new BranchController();
@@ -56,7 +61,11 @@ public class DBUndoStub {
     RestrainScheduler restrainScheduler;
 
     public DBUndoStub() {
-        this(loadKeyAccessList());
+        this(loadKeyAccessList(LOAD_FROM_FILE), false);
+    }
+
+    public DBUndoStub(boolean testing) {
+        this(new OpMultimap(), testing);
     }
 
     /**
@@ -64,72 +73,83 @@ public class DBUndoStub {
      * 
      * @throws IOException
      */
-    public DBUndoStub(OpMultimap keyAccessLists) {
+    private DBUndoStub(OpMultimap keyAccessLists, boolean testing) {
         DOMConfigurator.configure("log4j.xml");
         Runtime.getRuntime().addShutdownHook(new SaveKeyAccess(keyAccessLists));
 
-        System.out.println("New DBUndo stub");
+        log.info("New DBUndo stub");
         this.keyAccessLists = keyAccessLists;
 
         redoScheduler = new RedoScheduler(keyAccessLists);
         newRequestsScheduler = new CommitScheduler(keyAccessLists);
         restrainScheduler = new RestrainScheduler(keyAccessLists, restrainLocker);
-        new InvertDependencies(keyAccessLists).start();
-        try {
-            new ServiceDBNode(this).start();
-        } catch(IOException e) {
-            log.error("DBUndoStub", e);
-        }
-    }
-
-    /**
-     * 
-     * @param key
-     * @param rud
-     * @param reqBid: Request Branch ID (separate redo attempts)
-     */
-    public void getStart(ByteArray key, RUD rud) {
-        if(rud.rid != 0) {
-            StsBranchPair current = brancher.getCurrent();
-            StsBranchPair access;
-            if(rud.branch <= current.branch) {
-                // Read old/common branch, may create a new commit
-                access = newRequestsScheduler.getStart(key.clone(), rud, current);
-            } else {
-                // use redo branch
-                if(rud.restrain) {
-                    // new request but may need to wait to avoid dirty reads
-                    restrainScheduler.getStart(key.clone(), rud, current);
-                    current = brancher.getCurrent();
-                    rud.branch = current.branch; // update the requests branch
-                    access = newRequestsScheduler.getStart(key.clone(), rud, current);
-                } else {
-                    // redo requests
-                    StsBranchPair redoBase = new StsBranchPair(rud.getBaseSts(), -1);
-                    access = redoScheduler.getStart(key.clone(), rud, redoBase);
-                }
+        if(!testing) {
+            new InvertDependencies(keyAccessLists).start();
+            try {
+                new ServiceDBNode(this).start();
+            } catch(IOException e) {
+                log.error("DBUndoStub", e);
             }
-            log.info(rud.rid + " : get key: " + hexStringToAscii(key) + " branch: " + access.branch
-                     + " commit: " + access.sts);
-            modifyKey(key, access.branch, access.sts);
-        } else {
-            log.info(rud.rid + " : get key: " + hexStringToAscii(key) + " branch: " + rud.branch);
         }
     }
 
-    public void getEnd(ByteArray key, RUD rud) {
+    private void opStart(OpType op, ByteArray key, RUD rud) {
+        if(rud.rid == 0) {
+            return;
+        }
+        System.out.println("REDO BRANCH: " + rud.branch);
+        StringBuilder sb = new StringBuilder();
+        Path p = brancher.getPath(rud.branch);
+        BranchPath path = p.path;
+        StsBranchPair access;
+        if(p.isRedo) {
+            // use redo branch
+            if(rud.restrain) {
+                sb.append(" -> RESTRAIN: ");
+                // new request but may need to wait to avoid dirty reads
+                restrainScheduler.opStart(op, key.clone(), rud, path);
+                path = brancher.getCurrent();
+                rud.branch = path.current.branch; // update the branch
+                sb.append(" -> DO AFTER RESTRAIN: ");
+                access = newRequestsScheduler.opStart(op, key.clone(), rud, path);
+            } else {
+                sb.append(" -> REDO: ");
+                access = redoScheduler.opStart(op, key.clone(), rud, path);
+            }
+
+        } else {
+            sb.append(" -> DO: ");
+            // Read old/common branch, may create a new commit
+            access = newRequestsScheduler.opStart(op, key.clone(), rud, path);
+        }
+        modifyKey(key, access.branch, access.sts);
+        if(log.isInfoEnabled()) {
+            sb.append(rud.rid);
+            sb.append(" : ");
+            sb.append(op);
+            sb.append(" key: ");
+            sb.append(hexStringToAscii(key));
+            sb.append(" branch: ");
+            sb.append(access.branch);
+            sb.append(" commit: ");
+            sb.append(access.sts);
+            log.info(sb.toString());
+        }
+    }
+
+    public void opEnd(OpType op, ByteArray key, RUD rud) {
         if(rud.rid != 0) {
             removeKeyVersion(key);
-            short bid = (short) bidAtomic.get();
-            if(rud.branch <= bid) {
-                newRequestsScheduler.getEnd(key.clone(), rud);
-            } else {
+            Boolean isRedo = brancher.isRedo(rud.branch);
+            if(isRedo) {
                 if(rud.restrain) {
-                    restrainScheduler.getEnd(key.clone(), rud);
-                    newRequestsScheduler.getEnd(key.clone(), rud);
+                    restrainScheduler.opEnd(op, key.clone());
+                    newRequestsScheduler.opEnd(op, key.clone());
                 } else {
-                    redoScheduler.getEnd(key.clone(), rud);
+                    redoScheduler.opEnd(op, key.clone());
                 }
+            } else {
+                newRequestsScheduler.opEnd(op, key.clone());
             }
         }
     }
@@ -145,12 +165,14 @@ public class DBUndoStub {
     public Map<ByteArray, Boolean> unlockKey(List<ByteArray> keys, RUD rud)
             throws VoldemortException {
         HashMap<ByteArray, Boolean> result = new HashMap<ByteArray, Boolean>();
+        Path p = brancher.getPath(rud.branch);
+
         if(rud.branch <= rud.branch) {
             log.error("Unlocking in the wrong branch");
             throw new VoldemortException("Unlocking in the wrong branch");
         } else {
             for(ByteArray key: keys) {
-                redoScheduler.unlock(key.clone(), rud);
+                redoScheduler.unlock(key.clone(), rud, p.path.current.sts);
             }
         }
         return result;
@@ -161,18 +183,27 @@ public class DBUndoStub {
      * 
      * @param newRid
      */
-    public void setNewCommitRid(long newRid) {
-        SimpleDateFormat formater = new SimpleDateFormat("hh:mm:ss dd/mm/yyyy");
-        String time = formater.format(new Date(newRid));
-        log.info("Commit scheduled with rid: " + newRid + " " + time);
-        brancher.setCommit(newRid);
+    public void scheduleNewCommit(long newRid) {
+        String dateString = new SimpleDateFormat("H:m:S").format(new Date(newRid));
+        log.info("Commit scheduled with rid: " + newRid + " at " + dateString);
+        brancher.newCommit(newRid);
     }
 
-    public void unlockRestrain(short branch, long sts) {
-        // done, increase the bid, the redo is over: new branch and commit
-        brancher.setBranchAndCommit(branch, sts);
-        System.out.println("restrain phase is over, new branch is:" + branch + " based on commit: "
-                           + sts);
+    public void newRedo(BranchPath redoPath) {
+        log.info("New redo with path: " + redoPath);
+        brancher.newRedo(redoPath);
+    }
+
+    /**
+     * Redo is over
+     * 
+     * @param s
+     * 
+     * @param branch
+     * @param sts
+     */
+    public void redoOver() {
+        brancher.redoOver();
         // execute all pendent requests
         synchronized(restrainLocker) {
             restrainLocker.notifyAll();
@@ -196,7 +227,7 @@ public class DBUndoStub {
      * @param sts
      * @param branch
      */
-    public static ByteArray modifyKey(ByteArray key, short branch, long commit) {
+    public ByteArray modifyKey(ByteArray key, short branch, long commit) {
         byte[] version = ByteBuffer.allocate(key.length() + 10)
                                    .put(key.get(), 0, key.length())
                                    .putShort(branch)
@@ -206,7 +237,7 @@ public class DBUndoStub {
         return key;
     }
 
-    public static long getKeyCommit(ByteArray key) {
+    public long getKeyCommit(ByteArray key) {
         byte[] kb = key.get();
         if(kb.length < 8) {
             return -1;
@@ -216,7 +247,7 @@ public class DBUndoStub {
         return bb.getLong();
     }
 
-    public static void removeKeyVersion(ByteArray key) {
+    public void removeKeyVersion(ByteArray key) {
         byte[] kb = key.get();
         assert (kb.length > 10);
 
@@ -232,20 +263,53 @@ public class DBUndoStub {
     /**
      * Load the map from file
      * 
+     * @param loadFromFile
+     * 
      * @return
      */
-    private static OpMultimap loadKeyAccessList() {
+    private static OpMultimap loadKeyAccessList(boolean loadFromFile) {
         OpMultimap list;
-        try {
-            FileInputStream fin = new FileInputStream(KEY_ACCESS_LIST_FILE);
-            ObjectInputStream ois = new ObjectInputStream(fin);
-            list = (OpMultimap) ois.readObject();
-            ois.close();
-            log.info("key access list file loaded");
-            return list;
-        } catch(Exception e) {
-            log.info("No KeyAccessList file founded");
+        if(loadFromFile) {
+            try {
+                FileInputStream fin = new FileInputStream(KEY_ACCESS_LIST_FILE);
+                ObjectInputStream ois = new ObjectInputStream(fin);
+                list = (OpMultimap) ois.readObject();
+                ois.close();
+                log.info("key access list file loaded");
+                return list;
+            } catch(Exception e) {
+                log.info("No KeyAccessList file founded");
+            }
         }
         return new OpMultimap();
     }
+
+    public void getStart(ByteArray key, RUD rud) {
+        opStart(OpType.Get, key, rud);
+    }
+
+    public void getEnd(ByteArray key, RUD rud) {
+        opEnd(OpType.Get, key, rud);
+    }
+
+    public void putStart(ByteArray key, RUD rud) {
+        opStart(OpType.Put, key, rud);
+    }
+
+    public void putEnd(ByteArray key, RUD rud) {
+        opEnd(OpType.Put, key, rud);
+    }
+
+    public void deleteStart(ByteArray key, RUD rud) {
+        opStart(OpType.Delete, key, rud);
+    }
+
+    public void deleteEnd(ByteArray key, RUD rud) {
+        opEnd(OpType.Delete, key, rud);
+    }
+
+    public void getVersion(ByteArray key, RUD rud) {
+        opStart(OpType.GetVersion, key, rud);
+    }
+
 }

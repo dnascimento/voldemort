@@ -28,7 +28,7 @@ public class RUD {
     }
 
     public final long rid;
-    public final short branch;
+    public short branch;
     public final boolean restrain;
     public Set<KeyAccess> accessedKeys;
     public final boolean redo;
@@ -80,7 +80,7 @@ public class RUD {
 
     @Override
     public String toString() {
-        return "[rid=" + rid + ", b=" + branch + ", r=" + restrain + "]";
+        return "[rid=" + rid + ", b=" + branch + ", r=" + restrain + ",redo=" + redo + "]";
     }
 
 }

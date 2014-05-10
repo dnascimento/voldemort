@@ -11,6 +11,7 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.branching.BranchPath;
 import voldemort.undoTracker.map.OpMultimap;
 import voldemort.undoTracker.map.OpMultimapEntry;
 import voldemort.undoTracker.map.StsBranchPair;
@@ -21,7 +22,7 @@ import voldemort.utils.ByteArray;
  * @author darionascimento
  * 
  */
-public class RestrainScheduler implements AccessSchedule {
+public class RestrainScheduler extends AccessSchedule {
 
     private final Logger log = LogManager.getLogger(RestrainScheduler.class.getName());
 
@@ -35,18 +36,18 @@ public class RestrainScheduler implements AccessSchedule {
     }
 
     @Override
-    public void getEnd(ByteArray key, RUD rud) {}
+    public void getEnd(ByteArray key) {}
 
     @Override
-    public void putEnd(ByteArray key, RUD rud) {}
+    public void putEnd(ByteArray key) {}
 
     @Override
-    public void deleteEnd(ByteArray key, RUD rud) {}
+    public void deleteEnd(ByteArray key) {}
 
     @Override
-    public StsBranchPair getStart(ByteArray key, RUD rud, StsBranchPair sts) {
+    public StsBranchPair getStart(ByteArray key, RUD rud, BranchPath path) {
         OpMultimapEntry l = archive.get(key);
-        if(l.isModified()) {
+        if(l.isModified(path.current.branch)) {
             synchronized(flag) {
                 try {
                     flag.wait();
@@ -59,9 +60,9 @@ public class RestrainScheduler implements AccessSchedule {
     }
 
     @Override
-    public StsBranchPair putStart(ByteArray key, RUD rud, StsBranchPair sts) {
+    public StsBranchPair putStart(ByteArray key, RUD rud, BranchPath path) {
         OpMultimapEntry l = archive.get(key);
-        if(l.isModified()) {
+        if(l.isModified(path.current.branch)) {
             synchronized(flag) {
                 try {
                     flag.wait();
@@ -74,9 +75,9 @@ public class RestrainScheduler implements AccessSchedule {
     }
 
     @Override
-    public StsBranchPair deleteStart(ByteArray key, RUD rud, StsBranchPair sts) {
+    public StsBranchPair deleteStart(ByteArray key, RUD rud, BranchPath path) {
         OpMultimapEntry l = archive.get(key);
-        if(l.isModified()) {
+        if(l.isModified(path.current.branch)) {
             synchronized(flag) {
                 try {
                     flag.wait();
@@ -89,9 +90,9 @@ public class RestrainScheduler implements AccessSchedule {
     }
 
     @Override
-    public StsBranchPair getVersionStart(ByteArray key, RUD rud, StsBranchPair sts) {
+    public StsBranchPair getVersionStart(ByteArray key, RUD rud, BranchPath path) {
         OpMultimapEntry l = archive.get(key);
-        if(l.isModified()) {
+        if(l.isModified(path.current.branch)) {
             synchronized(flag) {
                 try {
                     flag.wait();
@@ -102,5 +103,4 @@ public class RestrainScheduler implements AccessSchedule {
         }
         return null;
     }
-
 }

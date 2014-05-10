@@ -7,7 +7,11 @@
 
 package voldemort.undoTracker.map;
 
-public class StsBranchPair {
+import java.io.Serializable;
+
+public class StsBranchPair implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public long sts;
     public short branch;
@@ -29,6 +33,11 @@ public class StsBranchPair {
         result = prime * result + branch;
         result = prime * result + (int) (sts ^ (sts >>> 32));
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "[sts=" + sts + ", branch=" + branch + "]";
     }
 
     @Override

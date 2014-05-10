@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -20,6 +22,8 @@ import undo.proto.FromManagerProto.ToDataNode;
 import undo.proto.ToManagerProto;
 import undo.proto.ToManagerProto.NodeRegistryMsg;
 import undo.proto.ToManagerProto.NodeRegistryMsg.NodeGroup;
+import voldemort.undoTracker.branching.BranchPath;
+import voldemort.undoTracker.map.StsBranchPair;
 
 public class ServiceDBNode extends Thread {
 
@@ -33,7 +37,7 @@ public class ServiceDBNode extends Thread {
             serverSocket = new ServerSocket(DBUndoStub.MY_PORT);
             this.stub = stub;
             running = true;
-            System.out.println("DBNode service listening....");
+            log.info("DBNode service listening....");
             registryToManger();
         } catch(BindException e) {
             log.error(e);
@@ -52,7 +56,7 @@ public class ServiceDBNode extends Thread {
             ToManagerProto.MsgToManager.newBuilder()
                                        .setNodeRegistry(c)
                                        .build()
-                                       .writeTo(s.getOutputStream());
+                                       .writeDelimitedTo(s.getOutputStream());
 
             s.close();
         } catch(IOException e) {
@@ -63,25 +67,50 @@ public class ServiceDBNode extends Thread {
     @Override
     public void run() {
         while(running) {
+            Socket s = null;
             try {
-                Socket s = serverSocket.accept();
+                s = serverSocket.accept();
                 processRequest(s);
             } catch(IOException e) {
-                e.printStackTrace();
+                log.error(e);
+            }
+            if(s != null) {
+                try {
+                    s.close();
+                } catch(IOException e) {
+                    log.error(e);
+                }
             }
         }
     }
 
     private void processRequest(Socket s) throws IOException {
-        ToDataNode cmd = FromManagerProto.ToDataNode.parseFrom(s.getInputStream());
-        if(cmd.hasSeasonId()) {
-            stub.setNewCommitRid(cmd.getSeasonId());
+        ToDataNode cmd = FromManagerProto.ToDataNode.parseDelimitedFrom(s.getInputStream());
+        if(cmd.hasNewCommit()) {
+            stub.scheduleNewCommit(cmd.getNewCommit());
+            ToManagerProto.AckMsg.newBuilder().build().writeDelimitedTo(s.getOutputStream());
+            s.getOutputStream().flush();
         }
         if(cmd.hasResetDependencies()) {
             stub.resetDependencies();
         }
-        if(cmd.hasUnlockNewBranch()) {
-            stub.unlockRestrain((short) cmd.getUnlockNewBranch());
+        if(cmd.hasRedoOver()) {
+            stub.redoOver();
         }
+        if(cmd.getPathBranchCount() != 0 && cmd.getPathCommitCount() != 0) {
+            // Retrieve 2 sorted list from most recent to oldest
+            Iterator<Long> itCommits = cmd.getPathCommitList().iterator();
+            Iterator<Integer> itBranches = cmd.getPathBranchList().iterator();
+            HashSet<StsBranchPair> path = new HashSet<StsBranchPair>();
+            StsBranchPair current = new StsBranchPair(cmd.getPathCommit(0), cmd.getPathBranch(0));
+            while(itCommits.hasNext()) {
+                path.add(new StsBranchPair(itCommits.next(), itBranches.next()));
+            }
+            BranchPath branchPath = new BranchPath(current, path);
+            stub.newRedo(branchPath);
+            ToManagerProto.AckMsg.newBuilder().build().writeDelimitedTo(s.getOutputStream());
+            s.getOutputStream().flush();
+        }
+        s.close();
     }
 }

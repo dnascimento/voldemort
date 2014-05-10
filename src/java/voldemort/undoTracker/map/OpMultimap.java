@@ -14,8 +14,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import voldemort.undoTracker.DBUndoStub;
 import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.branching.BranchPath;
 import voldemort.undoTracker.map.Op.OpType;
 import voldemort.utils.ByteArray;
 
@@ -44,35 +44,32 @@ public class OpMultimap implements Serializable {
      * @param current
      * @return
      */
-    public StsBranchPair trackReadAccess(ByteArray key, RUD rud, StsBranchPair current) {
-        OpMultimapEntry entry = getOrCreate(key);
+    public StsBranchPair trackReadAccess(ByteArray key, RUD rud, BranchPath current) {
+        OpMultimapEntry entry = get(key);
         entry.lockRead();
         return entry.trackReadAccess(rud, current);
     }
 
-    public StsBranchPair trackWriteAccess(ByteArray key,
-                                          OpType writeType,
-                                          RUD rud,
-                                          StsBranchPair sts) {
-        OpMultimapEntry entry = getOrCreate(key);
+    public StsBranchPair trackWriteAccess(ByteArray key, OpType writeType, RUD rud, BranchPath path) {
+        OpMultimapEntry entry = get(key);
         entry.lockWrite();
-        return entry.trackWriteAccess(writeType, rud, sts);
+        return entry.trackWriteAccess(writeType, rud, path);
     }
 
     public void endReadAccess(ByteArray key) {
-        OpMultimapEntry l = getOrCreate(key);
+        OpMultimapEntry l = get(key);
         assert (l != null);
         l.unlockRead();
     }
 
     public void endWriteAccess(ByteArray key) {
-        OpMultimapEntry l = getOrCreate(key);
+        OpMultimapEntry l = get(key);
         assert (l != null);
         l.unlockWrite();
     }
 
-    public StsBranchPair getVersionToPut(ByteArray key, RUD rud, StsBranchPair current) {
-        OpMultimapEntry entry = getOrCreate(key);
+    public StsBranchPair getVersionToPut(ByteArray key, RUD rud, BranchPath current) {
+        OpMultimapEntry entry = get(key);
         return entry.getVersionToPut(rud, current);
     }
 
@@ -86,7 +83,7 @@ public class OpMultimap implements Serializable {
      */
     public void putAll(ByteArray key, List<Op> values) {
         log.info("PutAll");
-        OpMultimapEntry entry = getOrCreate(key);
+        OpMultimapEntry entry = get(key);
         entry.addAll(values);
     }
 
@@ -106,17 +103,6 @@ public class OpMultimap implements Serializable {
     }
 
     /**
-     * Get a map entry
-     * 
-     * @param key
-     * @return
-     */
-    public OpMultimapEntry get(ByteArray key) {
-        OpMultimapEntry entry = map.get(key);
-        return entry;
-    }
-
-    /**
      * Add new entry to map
      * 
      * @param key
@@ -124,7 +110,7 @@ public class OpMultimap implements Serializable {
      * @return
      */
     public OpMultimapEntry put(ByteArray key, Op op) {
-        OpMultimapEntry l = getOrCreate(key);
+        OpMultimapEntry l = get(key);
         assert (l != null);
         l.addLast(op);
         return l;
@@ -136,7 +122,7 @@ public class OpMultimap implements Serializable {
      * @param key
      * @return
      */
-    private OpMultimapEntry getOrCreate(ByteArray key) {
+    public OpMultimapEntry get(ByteArray key) {
         OpMultimapEntry entry = map.get(key);
         if(entry == null) {
             entry = map.putIfAbsent(key, new OpMultimapEntry());
@@ -159,8 +145,8 @@ public class OpMultimap implements Serializable {
             try {
                 newDeps = newDeps || entry.updateDependencies(dependencyPerRid);
             } catch(Exception e) {
-                log.error("LastWrite = -1: can't find the source operation:"
-                          + DBUndoStub.hexStringToAscii(key));
+                // log.error("LastWrite = -1: can't find the source operation:"
+                // + DBUndoStub.hexStringToAscii(key));
                 // ignore this dependency
             }
         }

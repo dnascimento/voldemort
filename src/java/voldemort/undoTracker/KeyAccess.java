@@ -2,7 +2,7 @@ package voldemort.undoTracker;
 
 import voldemort.utils.ByteArray;
 
-public class KeyAccess {
+public class KeyAccess implements Comparable<KeyAccess> {
 
     public ByteArray key;
     public String store;
@@ -47,6 +47,11 @@ public class KeyAccess {
     @Override
     public String toString() {
         return ByteArray.toAscii(key) + "|" + store;
+    }
+
+    @Override
+    public int compareTo(KeyAccess o) {
+        return store.compareTo(o.store);
     }
 
 }

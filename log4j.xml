@@ -6,7 +6,7 @@
 	<appender name="stdout" class="org.apache.log4j.ConsoleAppender">
 		<param name="Target" value="System.out" />
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%-5p [%t][%F:%L]: %m%n" />
+			<param name="ConversionPattern" value="%-5p [%F:%L]: %m%n" />
 		</layout>
 		<filter class="org.apache.log4j.varia.LevelRangeFilter">
 			<param name="LevelMax" value="WARN" />
@@ -35,7 +35,7 @@
 		<param name="Append" value="false" />
 		<!-- <param name="File" value="app.log" /> -->
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%-5p [%t][%F:%L]: %m%n" />
+			<param name="ConversionPattern" value="%-5p [%t] [%F:%L]: %m%n" />
 		</layout>
 	</appender>
 	<logger name="log4logger">

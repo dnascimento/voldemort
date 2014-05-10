@@ -71,7 +71,7 @@ public class ClientSideTracker extends Thread {
         ToManagerProto.MsgToManager m = ToManagerProto.MsgToManager.newBuilder()
                                                                    .setTrackMsgFromClient(mB)
                                                                    .build();
-        m.writeTo(s.getOutputStream());
+        m.writeDelimitedTo(s.getOutputStream());
         s.close();
     }
 }
