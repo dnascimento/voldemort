@@ -1,5 +1,6 @@
 package voldemort.redoAndSnapshot;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -89,6 +90,13 @@ public class ExecOpT extends Thread {
                         scheduler.getEnd(key, new RUD(op.rid, rud.branch, rud.restrain));
                         System.out.println("got: " + op.rid);
                         break;
+                    case UNLOCK:
+                        System.out.println("Try to Unlock: " + op.rid);
+                        scheduler.unlockKey(Arrays.asList(key), new RUD(op.rid,
+                                                                        rud.branch,
+                                                                        rud.restrain));
+                        System.out.println("unlocked: " + op.rid);
+
                     default:
                         break;
                 }

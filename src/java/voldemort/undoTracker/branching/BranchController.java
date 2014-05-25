@@ -71,7 +71,7 @@ public class BranchController {
         if(current.current.branch == branch) {
             return false;
         }
-        if(redo.current.branch == branch)
+        if(redo != null && redo.current.branch == branch)
             return true;
 
         log.error("isRedo: branch not present: " + branch);

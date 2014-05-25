@@ -67,7 +67,6 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                    RequestRoutingType routingType,
                                    RUD rud) throws IOException {
         ToManagerProto.RUD rudProto = rud.toProto();
-        System.out.println("writeDeleteRequest" + rud);
         StoreUtils.assertValidKey(key);
 
         // Track the key access by client
@@ -108,7 +107,6 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                 RequestRoutingType routingType,
                                 RUD rud) throws IOException {
         StoreUtils.assertValidKey(key);
-        System.out.println("writeGetRequest" + rud);
         ToManagerProto.RUD rudProto = rud.toProto();
 
         VProto.GetRequest.Builder get = VProto.GetRequest.newBuilder();
@@ -152,7 +150,6 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                    RequestRoutingType routingType,
                                    RUD rud) throws IOException {
         StoreUtils.assertValidKeys(keys);
-        System.out.println("writeGetAllRequest" + rud);
         ToManagerProto.RUD rudProto = rud.toProto();
 
         VProto.GetAllRequest.Builder req = VProto.GetAllRequest.newBuilder();
@@ -206,7 +203,6 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                 VectorClock version,
                                 RequestRoutingType routingType,
                                 RUD rud) throws IOException {
-        System.out.println("WritePutRequest" + rud);
         StoreUtils.assertValidKey(key);
         ToManagerProto.RUD rudProto = rud.toProto();
         // Track the key access by client
@@ -271,7 +267,6 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                        RequestRoutingType routingType,
                                        RUD rud) throws IOException {
         StoreUtils.assertValidKey(key);
-        System.out.println("writeGetVersionRequest" + rud);
         ToManagerProto.RUD rudProto = rud.toProto();
 
         ProtoUtils.writeMessage(output,

@@ -97,27 +97,23 @@ public class DBUndoStub {
         if(rud.rid == 0) {
             return;
         }
-        System.out.println("REDO BRANCH: " + rud.branch);
         StringBuilder sb = new StringBuilder();
         Path p = brancher.getPath(rud.branch);
         BranchPath path = p.path;
         StsBranchPair access;
         if(p.isRedo) {
             // use redo branch
+            sb.append(" -> REDO: ");
+            access = redoScheduler.opStart(op, key.clone(), rud, path);
+        } else {
             if(rud.restrain) {
                 sb.append(" -> RESTRAIN: ");
                 // new request but may need to wait to avoid dirty reads
                 restrainScheduler.opStart(op, key.clone(), rud, path);
                 path = brancher.getCurrent();
                 rud.branch = path.current.branch; // update the branch
-                sb.append(" -> DO AFTER RESTRAIN: ");
-                access = newRequestsScheduler.opStart(op, key.clone(), rud, path);
-            } else {
-                sb.append(" -> REDO: ");
-                access = redoScheduler.opStart(op, key.clone(), rud, path);
+                sb.append(" -> AFTER RESTRAIN: ");
             }
-
-        } else {
             sb.append(" -> DO: ");
             // Read old/common branch, may create a new commit
             access = newRequestsScheduler.opStart(op, key.clone(), rud, path);
@@ -167,14 +163,16 @@ public class DBUndoStub {
         HashMap<ByteArray, Boolean> result = new HashMap<ByteArray, Boolean>();
         Path p = brancher.getPath(rud.branch);
 
-        if(rud.branch <= rud.branch) {
-            log.error("Unlocking in the wrong branch");
-            throw new VoldemortException("Unlocking in the wrong branch");
-        } else {
+        Boolean isRedo = brancher.isRedo(rud.branch);
+        if(isRedo) {
             for(ByteArray key: keys) {
                 redoScheduler.unlock(key.clone(), rud, p.path.current.sts);
             }
+        } else {
+            log.error("Unlocking in the wrong branch");
+            throw new VoldemortException("Unlocking in the wrong branch");
         }
+        log.info("Unlocked: " + keys + " by " + rud);
         return result;
     }
 

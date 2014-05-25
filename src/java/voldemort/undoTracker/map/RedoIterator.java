@@ -31,7 +31,7 @@ public class RedoIterator implements Iterator<Op> {
 
     @Override
     public boolean hasNext() {
-        if(++position == list.size())
+        if(++position >= list.size())
             return false;
 
         // ignore the unlocked operations
@@ -58,8 +58,13 @@ public class RedoIterator implements Iterator<Op> {
     }
 
     public boolean unlock(long rid) {
-        unlockedSet.add(rid);
-        return true;
+        if(next != null && next.rid == rid) {
+            hasNext();
+            return true;
+        } else {
+            unlockedSet.add(rid);
+            return false;
+        }
     }
 
     public boolean hasRead(int i) {

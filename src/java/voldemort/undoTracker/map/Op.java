@@ -19,7 +19,8 @@ public class Op implements Serializable {
         Put,
         Delete,
         Get,
-        GetVersion;
+        GetVersion,
+        UNLOCK;
     }
 
     public long rid;

@@ -261,6 +261,7 @@ public class OpMultimapEntry implements Serializable {
                 log.error("Next is null but there is an operation remaining");
                 throw new VoldemortException("Next is null but there is an operation remaining");
             }
+
         }
         if(next.rid != rud.rid) {
             Object waiter = new Object();
@@ -286,9 +287,7 @@ public class OpMultimapEntry implements Serializable {
         RedoIterator i = getRedoIterator();
         if(i.hasNext()) {
             Op next = i.next();
-            if(!next.type.equals(OpType.Get)) {
-                wake(next.rid);
-            }
+            wake(next.rid);
         }
     }
 
@@ -332,7 +331,12 @@ public class OpMultimapEntry implements Serializable {
      * @return was it locking other actions?
      */
     public synchronized boolean unlockOp(RUD rud, long redoRid) {
-        return getOrNewRedoIterator(rud.branch, redoRid).unlock(rud.rid);
+        RedoIterator it = getOrNewRedoIterator(rud.branch, redoRid);
+        boolean wasNext = it.unlock(rud.rid);
+        if(wasNext) {
+            wake(it.next().rid);
+        }
+        return true;
     }
 
     /**
