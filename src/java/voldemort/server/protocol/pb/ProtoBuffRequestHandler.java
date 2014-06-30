@@ -111,9 +111,9 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
                 response.addStatus(b);
             }
         } catch(VoldemortException e) {
+            e.printStackTrace();
             response.setError(ProtoUtils.encodeError(getErrorMapper(), e));
         }
-
         return response.build();
     }
 
@@ -215,7 +215,7 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
                                                           .get() : null,
                       rud);
         } catch(VoldemortException e) {
-            System.out.println("EXCEPTION");
+            e.printStackTrace();
             response.setError(ProtoUtils.encodeError(getErrorMapper(), e));
         }
         undoStub.putEnd(key, rud);

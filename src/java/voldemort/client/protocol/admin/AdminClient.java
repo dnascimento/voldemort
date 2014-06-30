@@ -2722,10 +2722,12 @@ public class AdminClient {
                     }
                 }
 
-                if(exceptions.size() > 0) {
-                    throw new VoldemortRebalancingException("Got exceptions from nodes "
-                                                            + exceptions.keySet());
-                }
+                if(exceptions.size() > 0)
+                    for(Exception e: exceptions.values()) {
+                        logger.error(e);
+                        throw new VoldemortRebalancingException("Got exceptions from nodes "
+                                                                + exceptions.keySet());
+                    }
 
                 /*
                  * If everything went smoothly, update the version of the
@@ -2765,7 +2767,13 @@ public class AdminClient {
                 } else {
                     logger.error("Got exceptions from nodes " + exceptions.keySet()
                                  + " while changing state");
+                    logger.error(e);
                 }
+
+                for(Exception ex: exceptions.values()) {
+                    logger.error(ex);
+                }
+
                 throw new VoldemortRebalancingException("Got exceptions from nodes "
                                                                 + exceptions.keySet()
                                                                 + " while changing state",

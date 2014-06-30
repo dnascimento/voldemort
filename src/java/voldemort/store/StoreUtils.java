@@ -73,7 +73,7 @@ public class StoreUtils {
         Map<K, List<Versioned<V>>> result = storageEngine.getAll(Collections.singleton(key),
                                                                  Collections.singletonMap(key,
                                                                                           transform),
-                                                                rud);
+                                                                 rud);
         if(result.size() > 0)
             return result.get(key);
         else
@@ -92,7 +92,7 @@ public class StoreUtils {
             List<Versioned<V>> value = storageEngine.get(key,
                                                          transforms != null ? transforms.get(key)
                                                                            : null,
-                                                        rud);
+                                                         rud);
             if(!value.isEmpty())
                 result.put(key, value);
         }

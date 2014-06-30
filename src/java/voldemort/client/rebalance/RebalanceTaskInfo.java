@@ -40,11 +40,13 @@ import com.google.common.collect.Maps;
  * @param stealerNodeId Stealer node id
  * @param donorId Donor node id
  * @param storeToPartitionList Map of store name to partitions
- * @param initialCluster We require the state of the current metadata in order to determine
- *            correct key movement for RW stores. Otherwise we move keys on the basis of the
- *            updated metadata and hell breaks loose.
- *            
- *  TODO: Verify if initialCluster is needed as part of this class.          
+ * @param initialCluster We require the state of the current metadata in order
+ *        to determine
+ *        correct key movement for RW stores. Otherwise we move keys on the
+ *        basis of the
+ *        updated metadata and hell breaks loose.
+ * 
+ *        TODO: Verify if initialCluster is needed as part of this class.
  */
 
 public class RebalanceTaskInfo {
@@ -53,9 +55,11 @@ public class RebalanceTaskInfo {
     private final int donorId;
     private HashMap<String, List<Integer>> storeToPartitionIds;
     private Cluster initialCluster;
-    
-    public RebalanceTaskInfo(int stealerNodeId, int donorId, HashMap<String,
-                             List<Integer>> storeToPartitionIds, Cluster initialCluster) {
+
+    public RebalanceTaskInfo(int stealerNodeId,
+                             int donorId,
+                             HashMap<String, List<Integer>> storeToPartitionIds,
+                             Cluster initialCluster) {
         this.stealerId = stealerNodeId;
         this.donorId = donorId;
         this.storeToPartitionIds = storeToPartitionIds;
@@ -67,26 +71,28 @@ public class RebalanceTaskInfo {
             JsonReader reader = new JsonReader(new StringReader(line));
             Map<String, ?> map = reader.readObject();
             return create(map);
-        } catch (Exception e) {
+        } catch(Exception e) {
             throw new VoldemortException("Failed to create partition info from string: " + line, e);
         }
     }
 
-    // TODO : Need to think through which of these "SerDe" methods are needed for on-the-wire and 
-    // which are needed for on-disk. Neither seems like standard "SerDe". And then come up with a 
+    // TODO : Need to think through which of these "SerDe" methods are needed
+    // for on-the-wire and
+    // which are needed for on-disk. Neither seems like standard "SerDe". And
+    // then come up with a
     // standard way to perform Serialization/De-serialization
 
     public static RebalanceTaskInfo create(Map<?, ?> map) {
-        int stealerId = (Integer)map.get("stealerId");
-        int donorId = (Integer)map.get("donorId");
+        int stealerId = (Integer) map.get("stealerId");
+        int donorId = (Integer) map.get("donorId");
         List<String> unbalancedStoreList = Utils.uncheckedCast(map.get("unbalancedStores"));
-        Cluster initialCluster = new ClusterMapper()
-                                     .readCluster(new StringReader((String)map.get("initialCluster")));
+        Cluster initialCluster = new ClusterMapper().readCluster(new StringReader((String) map.get("initialCluster")));
 
         HashMap<String, List<Integer>> storeToPartitionIds = Maps.newHashMap();
-        for (String unbalancedStore : unbalancedStoreList) {
-            List<Integer> partitionList = Utils.uncheckedCast(map.get(unbalancedStore + "partitionList"));
-            if (partitionList.size() > 0)
+        for(String unbalancedStore: unbalancedStoreList) {
+            List<Integer> partitionList = Utils.uncheckedCast(map.get(unbalancedStore
+                                                                      + "partitionList"));
+            if(partitionList.size() > 0)
                 storeToPartitionIds.put(unbalancedStore, partitionList);
         }
 
@@ -101,13 +107,13 @@ public class RebalanceTaskInfo {
                .put("unbalancedStores", Lists.newArrayList(storeToPartitionIds.keySet()))
                .put("initialCluster", new ClusterMapper().writeCluster(initialCluster));
 
-        for (String unbalancedStore : storeToPartitionIds.keySet()) {
+        for(String unbalancedStore: storeToPartitionIds.keySet()) {
             List<Integer> partitionIds = storeToPartitionIds.get(unbalancedStore);
-            if (!partitionIds.isEmpty()) 
+            if(!partitionIds.isEmpty())
                 builder.put(unbalancedStore + "partitionList", partitionIds);
             else
-                builder.put(unbalancedStore + "partitionList" , Lists.newArrayList());
-            }
+                builder.put(unbalancedStore + "partitionList", Lists.newArrayList());
+        }
 
         return builder.build();
     }
@@ -155,7 +161,7 @@ public class RebalanceTaskInfo {
      */
     public synchronized int getPartitionStoreMoves() {
         int count = 0;
-        for (List<Integer> entry : storeToPartitionIds.values())
+        for(List<Integer> entry: storeToPartitionIds.values())
             count += entry.size();
         return count;
     }
@@ -195,7 +201,7 @@ public class RebalanceTaskInfo {
      */
     public synchronized int getPartitionStoreCount() {
         int count = 0;
-        for (String store : storeToPartitionIds.keySet()) {
+        for(String store: storeToPartitionIds.keySet()) {
             count += storeToPartitionIds.get(store).size();
         }
         return count;
@@ -204,16 +210,12 @@ public class RebalanceTaskInfo {
     @Override
     public synchronized String toString() {
         StringBuffer sb = new StringBuffer();
-        sb.append("\nRebalanceTaskInfo(" + getStealerId()
-                  + " [" + initialCluster.getNodeById(getStealerId()).getHost() 
-                  + "] <--- " + getDonorId() 
-                  + " ["
-                  + initialCluster.getNodeById(getDonorId()).getHost() 
-                  + "] ");
-        for (String unbalancedStore : storeToPartitionIds.keySet()) {
+        sb.append("\nRebalanceTaskInfo(" + getStealerId() + " [" + getStealerId() + "] <--- "
+                  + getDonorId() + " [" + getDonorId() + "] ");
+        for(String unbalancedStore: storeToPartitionIds.keySet()) {
             sb.append("\n\t- Store '" + unbalancedStore + "' move ");
             List<Integer> partitionIds = storeToPartitionIds.get(unbalancedStore);
-            if (!partitionIds.isEmpty())
+            if(!partitionIds.isEmpty())
                 sb.append(" - " + partitionIds);
             else
                 sb.append(" - []");
@@ -230,10 +232,18 @@ public class RebalanceTaskInfo {
      */
     public static String taskListToString(List<RebalanceTaskInfo> infos) {
         StringBuffer sb = new StringBuffer();
-        for (RebalanceTaskInfo info : infos) {
-            sb.append("\t").append(info.getDonorId()).append(" -> ").append(info.getStealerId()).append(" : [");
-            for (String storeName : info.getPartitionStores()) {
-                sb.append("{").append(storeName).append(" : ").append(info.getPartitionIds(storeName)).append("}");
+        for(RebalanceTaskInfo info: infos) {
+            sb.append("\t")
+              .append(info.getDonorId())
+              .append(" -> ")
+              .append(info.getStealerId())
+              .append(" : [");
+            for(String storeName: info.getPartitionStores()) {
+                sb.append("{")
+                  .append(storeName)
+                  .append(" : ")
+                  .append(info.getPartitionIds(storeName))
+                  .append("}");
             }
             sb.append("]").append(Utils.NEWLINE);
         }
@@ -250,19 +260,19 @@ public class RebalanceTaskInfo {
 
     @Override
     public synchronized boolean equals(Object o) {
-        if (this == o)
+        if(this == o)
             return true;
-        if (o == null || getClass() != o.getClass())
+        if(o == null || getClass() != o.getClass())
             return false;
-        RebalanceTaskInfo that = (RebalanceTaskInfo)o;
-        if (donorId != that.donorId)
+        RebalanceTaskInfo that = (RebalanceTaskInfo) o;
+        if(donorId != that.donorId)
             return false;
-        if (stealerId != that.stealerId)
+        if(stealerId != that.stealerId)
             return false;
-        if (!initialCluster.equals(that.initialCluster))
+        if(!initialCluster.equals(that.initialCluster))
             return false;
-        if (storeToPartitionIds != null ? !storeToPartitionIds.equals(that.storeToPartitionIds) 
-                                        : that.storeToPartitionIds != null)
+        if(storeToPartitionIds != null ? !storeToPartitionIds.equals(that.storeToPartitionIds)
+                                      : that.storeToPartitionIds != null)
             return false;
 
         return true;

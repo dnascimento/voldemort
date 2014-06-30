@@ -1,0 +1,19 @@
+<stores>
+  <store>
+    <name>questionStore</name>
+    <persistence>bdb</persistence>
+    <description>Question Store</description>
+    <routing-strategy>consistent-routing</routing-strategy>
+    <routing>client</routing>
+    <replication-factor>1</replication-factor>
+    <required-reads>1</required-reads>
+    <required-writes>1</required-writes>
+    <key-serializer>
+      <type>string</type>
+    </key-serializer>
+    <value-serializer>
+      <type>protobuf</type>
+      <schema-info version="0">java=pt.inesc.ask.proto.AskProto$Question</schema-info>
+    </value-serializer>
+  </store>
+</stores>

@@ -39,14 +39,14 @@
 		</layout>
 	</appender>
 	<logger name="log4logger">
-		<level value="info" />
+		<level value="debug" />
 	<!-- 	 <appender-ref ref="file" />   -->
 		<appender-ref ref="stdout" />
 		<appender-ref ref="stderr" />
 	</logger>
 
 	<root>
-		<priority value="info" />
+		<priority value="debug" />
 	<!-- 	 <appender-ref ref="file" />  -->
 		<appender-ref ref="stdout" />
 		<appender-ref ref="stderr" />

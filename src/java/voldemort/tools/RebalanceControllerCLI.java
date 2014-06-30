@@ -99,7 +99,6 @@ public class RebalanceControllerCLI {
         help.append("    --output-dir [ Output directory in which plan is stored ]\n");
         help.append("    --batch <batch> [ Number of primary partitions to move in each rebalancing batch. ]\n");
         help.append("    --output-dir <outputDir> [ Directory in which cluster metadata is dumped for each batch of the plan. ]\n");
-       
 
         try {
             parser.printHelpOn(System.out);
@@ -136,13 +135,15 @@ public class RebalanceControllerCLI {
     }
 
     public static void main(String[] args) throws Exception {
+        for(String s: args) {
+            System.out.println(s);
+        }
         setupParser();
         OptionSet options = getValidOptions(args);
 
         // Bootstrap & fetch current cluster/stores
         String bootstrapURL = (String) options.valueOf("url");
 
-    
         int parallelism = RebalanceController.MAX_PARALLEL_REBALANCING;
         if(options.has("parallelism")) {
             parallelism = (Integer) options.valueOf("parallelism");
