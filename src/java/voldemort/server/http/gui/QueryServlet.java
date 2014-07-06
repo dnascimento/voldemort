@@ -17,7 +17,7 @@
 package voldemort.server.http.gui;
 
 import java.io.IOException;
-import java.net.URI;
+import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,7 +52,7 @@ public class QueryServlet extends HttpServlet {
 
     public QueryServlet() {}
 
-    public QueryServlet(VelocityEngine engine, URI bootstrap) {
+    public QueryServlet(VelocityEngine engine, InetSocketAddress bootstrap) {
         this.engine = engine;
         this.clientFactory = new HttpStoreClientFactory(new ClientConfig().setBootstrapUrls(bootstrap.toString())
                                                                           .setMaxThreads(1));

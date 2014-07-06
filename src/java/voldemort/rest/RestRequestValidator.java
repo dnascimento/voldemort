@@ -215,8 +215,8 @@ public abstract class RestRequestValidator {
      */
     protected boolean hasKey() {
         boolean result = false;
-        String requestURI = this.request.getUri();
-        parseKeys(requestURI);
+        String requestInetSocketAddress = this.request.getUri();
+        parseKeys(requestInetSocketAddress);
 
         if(this.parsedKeys != null) {
             result = true;
@@ -230,15 +230,15 @@ public abstract class RestRequestValidator {
     }
 
     /**
-     * Method to read a key (or keys) present in the HTTP request URI. The URI
+     * Method to read a key (or keys) present in the HTTP request InetSocketAddress. The InetSocketAddress
      * must be of the format /<store_name>/<key>[,<key>,...]
      * 
-     * @param requestURI The URI of the HTTP request
+     * @param requestInetSocketAddress The InetSocketAddress of the HTTP request
      */
-    protected void parseKeys(String requestURI) {
+    protected void parseKeys(String requestInetSocketAddress) {
 
         this.parsedKeys = null;
-        String[] parts = requestURI.split("/");
+        String[] parts = requestInetSocketAddress.split("/");
         if(parts.length > 2) {
             String base64KeyList = parts[2];
             this.parsedKeys = new ArrayList<ByteArray>();
@@ -264,8 +264,8 @@ public abstract class RestRequestValidator {
 
     protected boolean isStoreValid() {
         boolean result = false;
-        String requestURI = this.request.getUri();
-        this.storeName = parseStoreName(requestURI);
+        String requestInetSocketAddress = this.request.getUri();
+        this.storeName = parseStoreName(requestInetSocketAddress);
         if(storeName != null) {
             result = true;
         } else {
@@ -278,15 +278,15 @@ public abstract class RestRequestValidator {
     }
 
     /**
-     * Parses the store name HTTP request URI. The URI must be of the format
+     * Parses the store name HTTP request InetSocketAddress. The InetSocketAddress must be of the format
      * /<store_name>/<key>[,<key>,...]
      * 
-     * @param requestURI
+     * @param requestInetSocketAddress
      * @return a String representing store name
      */
-    protected String parseStoreName(String requestURI) {
+    protected String parseStoreName(String requestInetSocketAddress) {
         String storeName = null;
-        String[] parts = requestURI.split("/");
+        String[] parts = requestInetSocketAddress.split("/");
         if(parts.length > 1) {
             storeName = parts[1];
         }

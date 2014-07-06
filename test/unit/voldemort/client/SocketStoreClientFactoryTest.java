@@ -166,7 +166,8 @@ public class SocketStoreClientFactoryTest extends AbstractStoreClientFactoryTest
     @Override
     public void testBootstrapFailoverSucceeds() throws Exception {
         getFactory(getValidScheme() + "://localhost:58558", getValidBootstrapUrl()).getStoreClient(getValidStoreName())
-                                                                                   .get("test", new RUD());
+                                                                                   .get("test",
+                                                                                        new RUD());
     }
 
     protected StoreClientFactory getFactoryForZoneID(int zoneID, String... bootstrapUrls) {
