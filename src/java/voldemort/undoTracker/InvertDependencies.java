@@ -10,9 +10,6 @@ package voldemort.undoTracker;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-
 import voldemort.undoTracker.map.OpMultimap;
 
 import com.google.common.collect.HashMultimap;
@@ -27,10 +24,8 @@ import com.google.common.collect.LinkedListMultimap;
  */
 public class InvertDependencies extends Thread {
 
-    private static final Logger log = LogManager.getLogger(InvertDependencies.class.getName());
-
     private OpMultimap trackLocalAccess;
-    private long REFRESH_PERIOD = 5000;
+    private long REFRESH_PERIOD = 1000;
 
     public InvertDependencies(OpMultimap trackLocalAccess) {
         this.trackLocalAccess = trackLocalAccess;

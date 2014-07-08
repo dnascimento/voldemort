@@ -49,7 +49,7 @@ public class SendDependencies extends Thread {
         if(list.getEntryCount() == 0) {
             return;
         }
-        log.debug("Sending dependencies to manager");
+        log.info("Sending dependencies to manager");
         Socket socket = new Socket();
         try {
             socket.connect(DBUndoStub.MANAGER_ADDRESS);

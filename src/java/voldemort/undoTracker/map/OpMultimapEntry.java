@@ -135,11 +135,13 @@ public class OpMultimapEntry implements Serializable {
         // 1st get previous write
         synchronized(dependencyPerRid) {
             assert (list.size() > 0);
-            if(sentDependency == (list.size() - 1)) {
+            if(sentDependency == (list.size() - 1) || list.size() == 0) {
                 return false;
             }
-
+            // log.info("Extracting dependencies from: " + this);
+            // log.info(list);
             long lastWrite = -1;
+
             // get last write
             for(int i = sentDependency; i >= 0; i--) {
                 if(list.get(i).type != OpType.Get) {
@@ -147,8 +149,24 @@ public class OpMultimapEntry implements Serializable {
                     break;
                 }
             }
+
             if(lastWrite == -1) {
-                throw new Exception("Last write == -1");
+                // exception: the first elements of list is a get op because
+                // someone
+                // tried to get the entry before it exists
+                while(sentDependency < list.size()) {
+                    if(list.get(sentDependency).type != OpType.Get) {
+                        lastWrite = list.get(sentDependency).rid;
+                        break;
+                    } else {
+                        sentDependency++;
+                    }
+                }
+            }
+            if(lastWrite == -1) {
+                sentDependency = Math.max(sentDependency - 1, 0);
+                // no write operations yet
+                return false;
             }
             // update new dependencies
             for(int i = sentDependency + 1; i < list.size(); i++) {
@@ -160,6 +178,7 @@ public class OpMultimapEntry implements Serializable {
                 }
             }
             sentDependency = list.size() - 1;
+
         }
         return true;
     }
@@ -264,6 +283,7 @@ public class OpMultimapEntry implements Serializable {
 
         }
         if(next.rid != rud.rid) {
+            log.info("Operation locked " + rud.rid);
             Object waiter = new Object();
             waitingMapLocker.lock();
             waitingMap.put(rud.rid, waiter);
@@ -275,6 +295,7 @@ public class OpMultimapEntry implements Serializable {
                     log.error(e);
                 }
             }
+            log.info("Operation UNlocked " + rud.rid);
         }
     }
 
@@ -368,6 +389,10 @@ public class OpMultimapEntry implements Serializable {
      * @return
      */
     public StsBranchPair redoRead(RUD rud, BranchPath path) {
+        if(path == null) {
+            log.error("Attempt to read using the redo stub without path");
+            throw new VoldemortException("New operation on redo");
+        }
         // serialize
         isNextOp(rud, path.current.sts);
         return commitList.redoRead(path);

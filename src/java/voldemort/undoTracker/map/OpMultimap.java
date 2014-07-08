@@ -7,13 +7,14 @@
 package voldemort.undoTracker.map;
 
 import java.io.Serializable;
+import java.util.Enumeration;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import voldemort.undoTracker.DBUndoStub;
 import voldemort.undoTracker.RUD;
 import voldemort.undoTracker.branching.BranchPath;
 import voldemort.undoTracker.map.Op.OpType;
@@ -133,21 +134,32 @@ public class OpMultimap implements Serializable {
         return entry;
     }
 
-    public Set<ByteArray> getKeySet() {
-        return map.keySet();
+    public Enumeration<ByteArray> getKeySet() {
+        return map.keys();
+        // TODO this may cause issues, then use keySet which is weakly
+        // consistent
+        // return map.keySet();
     }
 
+    /**
+     * Extracts the dependencies of each entry
+     * 
+     * @param dependencyPerRid
+     * @return
+     */
     public boolean updateDependencies(HashMultimap<Long, Long> dependencyPerRid) {
         boolean newDeps = false;
-        for(ByteArray key: getKeySet()) {
+        // Set<ByteArray> keySet = getKeySet();
+        // for(ByteArray key: keySet) {
+        Enumeration<ByteArray> keySet = getKeySet();
+        while(keySet.hasMoreElements()) {
+            ByteArray key = keySet.nextElement();
             OpMultimapEntry entry = map.get(key);
             assert (entry != null);
             try {
                 newDeps = newDeps || entry.updateDependencies(dependencyPerRid);
             } catch(Exception e) {
-                // log.error("LastWrite = -1: can't find the source operation:"
-                // + DBUndoStub.hexStringToAscii(key));
-                // ignore this dependency
+                log.error(DBUndoStub.hexStringToAscii(key), e);
             }
         }
         return newDeps;

@@ -95,6 +95,7 @@ public class DBUndoStub {
 
     private void opStart(OpType op, ByteArray key, RUD rud) {
         if(rud.rid == 0) {
+            log.info(op + " " + hexStringToAscii(key) + " with rud: " + rud);
             return;
         }
         StringBuilder sb = new StringBuilder();
@@ -104,6 +105,7 @@ public class DBUndoStub {
         if(p.isRedo) {
             // use redo branch
             sb.append(" -> REDO: ");
+            System.out.println("Redo Start: " + op + " " + hexStringToAscii(key) + " " + rud);
             access = redoScheduler.opStart(op, key.clone(), rud, path);
         } else {
             if(rud.restrain) {
@@ -115,7 +117,8 @@ public class DBUndoStub {
                 sb.append(" -> AFTER RESTRAIN: ");
             }
             sb.append(" -> DO: ");
-            // Read old/common branch, may create a new commit
+            // Read old/common branch, may create a new commit - for new
+            // requests
             access = newRequestsScheduler.opStart(op, key.clone(), rud, path);
         }
         modifyKey(key, access.branch, access.sts);
