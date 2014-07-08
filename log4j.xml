@@ -10,7 +10,7 @@
 		</layout>
 		<filter class="org.apache.log4j.varia.LevelRangeFilter">
 			<param name="LevelMax" value="WARN" />
-			<param name="LevelMin" value="DEBUG" />
+			<param name="LevelMin" value="info" />
 			<param name="AcceptOnMatch" value="true" />
 		</filter>
 	</appender>
@@ -39,14 +39,14 @@
 		</layout>
 	</appender>
 	<logger name="log4logger">
-		<level value="debug" />
+		<level value="info" />
 	<!-- 	 <appender-ref ref="file" />   -->
 		<appender-ref ref="stdout" />
 		<appender-ref ref="stderr" />
 	</logger>
 
 	<root>
-		<priority value="debug" />
+		<priority value="info" />
 	<!-- 	 <appender-ref ref="file" />  -->
 		<appender-ref ref="stdout" />
 		<appender-ref ref="stderr" />

@@ -22,3 +22,5 @@ voldsys$_*
 .pydevproject
 /META-INF
 expand/
+keyaccessList.obj
+config/
