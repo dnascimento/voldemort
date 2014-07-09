@@ -14,7 +14,7 @@ import java.net.Socket;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.Logger;
 
 import undo.proto.FromManagerProto;
@@ -27,7 +27,7 @@ import voldemort.undoTracker.map.StsBranchPair;
 
 public class ServiceDBNode extends Thread {
 
-    private final Logger log = LogManager.getLogger(ServiceDBNode.class.getName());
+    private final Logger log = Logger.getLogger(ServiceDBNode.class.getName());
     private ServerSocket serverSocket;
     private DBUndoStub stub;
     private boolean running = false;

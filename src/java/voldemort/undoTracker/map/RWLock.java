@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.Logger;
 
 /**
@@ -44,7 +44,7 @@ public class RWLock {
 
     private final ReentrantLock lock = new ReentrantLock();
     private final LinkedList<LockOp> opsQueue = new LinkedList<LockOp>();
-    private transient static final Logger log = LogManager.getLogger(RWLock.class.getName());
+    private transient static final Logger log = Logger.getLogger(RWLock.class.getName());
 
     public RWLock() {
         log.debug("New lock");

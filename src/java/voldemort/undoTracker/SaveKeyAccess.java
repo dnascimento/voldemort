@@ -5,9 +5,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.Logger;
+
 import voldemort.undoTracker.map.OpMultimap;
 
 public class SaveKeyAccess extends Thread {
+
+    private final static Logger log = Logger.getLogger(SaveKeyAccess.class.getName());
 
     private OpMultimap keyAccessLists;
 
@@ -18,7 +23,7 @@ public class SaveKeyAccess extends Thread {
     @Override
     public void run() {
         try {
-            System.out.println("Saving key access list....");
+            log.info("Saving key access list....");
             FileOutputStream fout = new FileOutputStream(DBUndoStub.KEY_ACCESS_LIST_FILE);
             ObjectOutputStream oos = new ObjectOutputStream(fout);
             oos.writeObject(keyAccessLists);

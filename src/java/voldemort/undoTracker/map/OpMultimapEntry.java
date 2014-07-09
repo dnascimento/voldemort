@@ -9,11 +9,8 @@ package voldemort.undoTracker.map;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import voldemort.VoldemortException;
@@ -33,19 +30,7 @@ public class OpMultimapEntry implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private transient static final Logger log = LogManager.getLogger(OpMultimap.class.getName());
-
-    private transient HashMap<Long, Object> waitingMap;
-    /**
-     * Entry RWLock: not related with list access. It is the value/database
-     * access
-     * locker.
-     */
-    private transient RWLock valueLocker;
-
-    private transient ReentrantLock waitingMapLocker;
-
-    private transient RedoIterator iterator = null;
+    private transient static final Logger log = Logger.getLogger(OpMultimap.class.getName());
 
     /**
      * Avoid re-size version array, average number of version per key
@@ -53,27 +38,29 @@ public class OpMultimapEntry implements Serializable {
     public final int INIT_ARRAY_SIZE = 16;
 
     /**
-     * Use synchronized(this) to access the list. List of past interactions
+     * Entry RWLock: not related with list access. It is the value/database
+     * access locker.
+     */
+    private transient RWLock valueLocker = new RWLock();
+
+    private transient RedoIterator iterator = null;
+
+    /**
+     * List of interactions
      */
     private ArrayList<Op> list = new ArrayList<Op>(INIT_ARRAY_SIZE);
+
+    private List<Long> threadsToWake = new ArrayList<Long>();
 
     /**
      * Keep track of last sent dependency to the manager
      */
     private int sentDependency = 0;
 
+    /**
+     * Committed versions management
+     */
     private CommitList commitList = new CommitList();
-
-    public OpMultimapEntry(ArrayList<Op> list) {
-        this();
-        this.list = list;
-    }
-
-    public OpMultimapEntry() {
-        valueLocker = new RWLock();
-        waitingMapLocker = new ReentrantLock();
-        waitingMap = new HashMap<Long, Object>();
-    }
 
     public synchronized void addAll(List<Op> values) {
         list.addAll(values);
@@ -93,7 +80,7 @@ public class OpMultimapEntry implements Serializable {
         return list.isEmpty();
     }
 
-    public ArrayList<Op> getAll() {
+    public synchronized ArrayList<Op> getAll() {
         return list;
     }
 
@@ -124,63 +111,66 @@ public class OpMultimapEntry implements Serializable {
     /**
      * Count if there are some operation running
      * 
-     * @return
      */
     public boolean hasLocked() {
         return valueLocker.hasPendent();
     }
 
-    public synchronized boolean updateDependencies(HashMultimap<Long, Long> dependencyPerRid)
-            throws Exception {
-        // 1st get previous write
-        synchronized(dependencyPerRid) {
-            assert (list.size() > 0);
-            if(sentDependency == (list.size() - 1) || list.size() == 0) {
-                return false;
-            }
-            // log.info("Extracting dependencies from: " + this);
-            // log.info(list);
-            long lastWrite = -1;
+    /**
+     * Extract the set of new operations performed in this entry
+     * 
+     * @param dependencyMap dependency between request ids
+     * @return the number of new operations
+     * @throws Exception
+     */
+    public synchronized int updateDependencies(HashMultimap<Long, Long> dependencyMap) {
+        int lastSentDependency = sentDependency;
 
-            // get last write
-            for(int i = sentDependency; i >= 0; i--) {
-                if(list.get(i).type != OpType.Get) {
-                    lastWrite = list.get(i).rid;
-                    break;
-                }
-            }
-
-            if(lastWrite == -1) {
-                // exception: the first elements of list is a get op because
-                // someone
-                // tried to get the entry before it exists
-                while(sentDependency < list.size()) {
-                    if(list.get(sentDependency).type != OpType.Get) {
-                        lastWrite = list.get(sentDependency).rid;
-                        break;
-                    } else {
-                        sentDependency++;
-                    }
-                }
-            }
-            if(lastWrite == -1) {
-                sentDependency = Math.max(sentDependency - 1, 0);
-                // no write operations yet
-                return false;
-            }
-            // update new dependencies
-            for(int i = sentDependency + 1; i < list.size(); i++) {
-                Op op = list.get(i);
-                if(op.type == Op.OpType.Get) {
-                    dependencyPerRid.put(op.rid, lastWrite);
-                } else {
-                    lastWrite = op.rid;
-                }
-            }
-            sentDependency = list.size() - 1;
-
+        // if empty list or updated, return
+        if(sentDependency == (list.size() - 1) || list.size() == 0) {
+            return 0;
         }
-        return true;
+        long lastWrite = -1;
+
+        // get last write
+        for(int i = sentDependency; i >= 0; i--) {
+            if(list.get(i).type != OpType.Get) {
+                lastWrite = list.get(i).rid;
+                break;
+            }
+        }
+
+        if(lastWrite == -1) {
+            // exception: the first elements of list are get ops because
+            // someone
+            // tried to get the entry before it exists
+            while(sentDependency < list.size()) {
+                if(list.get(sentDependency).type != OpType.Get) {
+                    lastWrite = list.get(sentDependency).rid;
+                    break;
+                } else {
+                    sentDependency++;
+                }
+            }
+        }
+
+        if(lastWrite == -1) {
+            // no write operations yet
+            sentDependency = Math.max(sentDependency - 1, 0);
+            return 0;
+        }
+
+        // update new dependencies
+        for(int i = sentDependency + 1; i < list.size(); i++) {
+            Op op = list.get(i);
+            if(op.type == Op.OpType.Get) {
+                dependencyMap.put(op.rid, lastWrite);
+            } else {
+                lastWrite = op.rid;
+            }
+        }
+        sentDependency = list.size() - 1;
+        return lastSentDependency - sentDependency;
     }
 
     /******************************************************************************************************/
@@ -271,32 +261,27 @@ public class OpMultimapEntry implements Serializable {
      * 
      * @param rud
      */
-    private void isNextOp(RUD rud, long baseCommit) {
-        Op next;
-        synchronized(this) {
-            RedoIterator i = getOrNewRedoIterator(rud.branch, baseCommit);
-            next = i.next();
-            if(next == null) {
-                log.error("Next is null but there is an operation remaining");
-                throw new VoldemortException("Next is null but there is an operation remaining");
-            }
+    private synchronized void isNextOp(RUD rud, long baseCommit) {
 
+        log.info("isNextOp " + rud.rid);
+        Op next = getOrNewRedoIterator(rud.branch, baseCommit).next();
+        if(next == null) {
+            log.error("Next is null but there is an operation remaining");
+            throw new VoldemortException("Next is null but there is an operation remaining");
         }
         if(next.rid != rud.rid) {
-            log.info("Operation locked " + rud.rid);
-            Object waiter = new Object();
-            waitingMapLocker.lock();
-            waitingMap.put(rud.rid, waiter);
-            synchronized(waiter) {
+            while(!threadsToWake.contains(rud.rid)) {
+                log.info("Operation locked " + rud.rid + " waiting for: " + next.rid);
                 try {
-                    waitingMapLocker.unlock();
-                    waiter.wait();
+                    this.wait();
                 } catch(InterruptedException e) {
                     log.error(e);
                 }
+                log.info("Trying to be unlocked " + rud.rid);
             }
-            log.info("Operation UNlocked " + rud.rid);
+            threadsToWake.remove(rud.rid);
         }
+        log.info("free to go: " + rud.rid);
     }
 
     /**
@@ -308,7 +293,8 @@ public class OpMultimapEntry implements Serializable {
         RedoIterator i = getRedoIterator();
         if(i.hasNext()) {
             Op next = i.next();
-            wake(next.rid);
+            threadsToWake.add(next.rid);
+            this.notifyAll();
         }
     }
 
@@ -319,30 +305,19 @@ public class OpMultimapEntry implements Serializable {
      */
     public synchronized void endRedoWrite() {
         RedoIterator it = getRedoIterator();
-        waitingMapLocker.lock();
 
         if(it.hasNext()) {
             Op next = it.next();
-            wake(next.rid);
+            threadsToWake.add(next.rid);
             if(next.type.equals(OpType.Get)) {
                 int i = 1;
                 while(it.hasRead(i)) {
-                    wake(it.peakRead().rid);
+                    threadsToWake.add(it.peakRead().rid);
                     i++;
                 }
             }
         }
-        waitingMapLocker.unlock();
-    }
-
-    private void wake(long rid) {
-        Object waiter;
-        waiter = waitingMap.remove(new Long(rid));
-        if(waiter != null) {
-            synchronized(waiter) {
-                waiter.notifyAll();
-            }
-        }
+        this.notifyAll();
     }
 
     /**
@@ -355,7 +330,8 @@ public class OpMultimapEntry implements Serializable {
         RedoIterator it = getOrNewRedoIterator(rud.branch, redoRid);
         boolean wasNext = it.unlock(rud.rid);
         if(wasNext) {
-            wake(it.next().rid);
+            threadsToWake.add(it.next().rid);
+            this.notifyAll();
         }
         return true;
     }
@@ -411,45 +387,51 @@ public class OpMultimapEntry implements Serializable {
     }
 
     /* -------------------------- others ---------------------------- */
+
     @Override
-    public int hashCode() {
+    public synchronized String toString() {
+        return "[Entry:" + list + ", sentDependency=" + sentDependency + "]";
+    }
+
+    @Override
+    public synchronized int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + INIT_ARRAY_SIZE;
+        result = prime * result + ((commitList == null) ? 0 : commitList.hashCode());
         result = prime * result + ((list == null) ? 0 : list.hashCode());
+        result = prime * result + sentDependency;
         return result;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        synchronized(this) {
-            if(this == obj)
-                return true;
-            if(obj == null)
-                return false;
-            if(getClass() != obj.getClass())
-                return false;
-            OpMultimapEntry other = (OpMultimapEntry) obj;
-            if(list == null) {
-                if(other.list != null)
-                    return false;
-            } else if(!list.equals(other.list))
-                return false;
+    public synchronized boolean equals(Object obj) {
+        if(this == obj)
             return true;
-        }
+        if(obj == null)
+            return false;
+        if(getClass() != obj.getClass())
+            return false;
+        OpMultimapEntry other = (OpMultimapEntry) obj;
+        if(INIT_ARRAY_SIZE != other.INIT_ARRAY_SIZE)
+            return false;
+        if(commitList == null) {
+            if(other.commitList != null)
+                return false;
+        } else if(!commitList.equals(other.commitList))
+            return false;
+        if(list == null) {
+            if(other.list != null)
+                return false;
+        } else if(!list.equals(other.list))
+            return false;
+        if(sentDependency != other.sentDependency)
+            return false;
+        return true;
     }
 
-    @Override
-    public String toString() {
-        synchronized(this) {
-
-            return "[Entry:" + list + ", sentDependency=" + sentDependency + "]";
-        }
-    }
-
-    public int size() {
-        synchronized(this) {
-            return list.size();
-        }
+    public synchronized int size() {
+        return list.size();
     }
 
     public synchronized void addLast(Op op) {

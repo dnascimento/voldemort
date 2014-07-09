@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.Logger;
 
 import voldemort.VoldemortException;
@@ -16,7 +16,7 @@ public class CommitList implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private transient final static Logger log = LogManager.getLogger(CommitList.class);
+    private transient final static Logger log = Logger.getLogger(CommitList.class);
 
     /**
      * Commit-Branch list sorted by commit

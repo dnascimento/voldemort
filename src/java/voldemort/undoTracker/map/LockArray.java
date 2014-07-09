@@ -8,12 +8,12 @@ package voldemort.undoTracker.map;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.Logger;
 
 public class LockArray<K> {
 
-    private final Logger log = LogManager.getLogger(LockArray.class.getName());
+    private final Logger log = Logger.getLogger(LockArray.class.getName());
     public final ReentrantLock[] partitionMutex;
     public final int N_PARTITIONS;
 

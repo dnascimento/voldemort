@@ -24,7 +24,9 @@ import voldemort.common.OpTimeMap;
  */
 public class TimeoutConfig {
 
-    public static int DEFAULT_GLOBAL_TIMEOUT_MS = 5000;
+    // modified timeout to allow waits on database
+    public static int DEFAULT_GLOBAL_TIMEOUT_MS = 10000;
+    // public static int DEFAULT_GLOBAL_TIMEOUT_MS = 5000;
     public static boolean DEFAULT_ALLOW_PARTIAL_GETALLS = false;
     private OpTimeMap timeoutMap;
 

@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
@@ -51,7 +51,7 @@ public class DBUndoStub {
 
     private static final boolean LOAD_FROM_FILE = false;
 
-    private final static Logger log = LogManager.getLogger(DBUndoStub.class.getName());
+    private final static Logger log = Logger.getLogger(DBUndoStub.class.getName());
     Object restrainLocker = new Object();
     BranchController brancher = new BranchController();
 
@@ -105,7 +105,7 @@ public class DBUndoStub {
         if(p.isRedo) {
             // use redo branch
             sb.append(" -> REDO: ");
-            System.out.println("Redo Start: " + op + " " + hexStringToAscii(key) + " " + rud);
+            log.info("Redo Start: " + op + " " + hexStringToAscii(key) + " " + rud);
             access = redoScheduler.opStart(op, key.clone(), rud, path);
         } else {
             if(rud.restrain) {

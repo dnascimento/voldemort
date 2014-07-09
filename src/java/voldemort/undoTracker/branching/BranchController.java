@@ -7,7 +7,6 @@
 
 package voldemort.undoTracker.branching;
 
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import voldemort.VoldemortException;
@@ -15,7 +14,7 @@ import voldemort.undoTracker.map.StsBranchPair;
 
 public class BranchController {
 
-    private final static Logger log = LogManager.getLogger(BranchController.class.getName());
+    private final static Logger log = Logger.getLogger(BranchController.class.getName());
     public final static long INIT_COMMIT = 0L;
     public final static short INIT_BRANCH = 0;
 

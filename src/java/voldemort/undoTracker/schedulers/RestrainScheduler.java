@@ -7,7 +7,7 @@
 
 package voldemort.undoTracker.schedulers;
 
-import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.Logger;
 
 import voldemort.undoTracker.RUD;
@@ -24,7 +24,7 @@ import voldemort.utils.ByteArray;
  */
 public class RestrainScheduler extends AccessSchedule {
 
-    private final Logger log = LogManager.getLogger(RestrainScheduler.class.getName());
+    private final Logger log = Logger.getLogger(RestrainScheduler.class.getName());
 
     OpMultimap archive;
     private Object flag;

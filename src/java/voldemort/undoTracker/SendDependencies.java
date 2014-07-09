@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.Socket;
 
-import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.log4j.Logger;
 
 import undo.proto.ToManagerProto;
@@ -23,7 +23,7 @@ import com.google.common.collect.Multimap;
 
 public class SendDependencies extends Thread {
 
-    private final Logger log = LogManager.getLogger(SendDependencies.class.getName());
+    private final Logger log = Logger.getLogger(SendDependencies.class.getName());
     private Multimap<Long, Long> dependencies;
 
     public SendDependencies(Multimap<Long, Long> dependencies) {

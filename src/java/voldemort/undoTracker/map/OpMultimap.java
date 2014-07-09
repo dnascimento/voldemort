@@ -11,7 +11,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
 import voldemort.undoTracker.DBUndoStub;
@@ -33,7 +32,7 @@ public class OpMultimap implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private ConcurrentHashMap<ByteArray, OpMultimapEntry> map = new ConcurrentHashMap<ByteArray, OpMultimapEntry>();
-    private transient static final Logger log = LogManager.getLogger(OpMultimap.class.getName());
+    private transient static final Logger log = Logger.getLogger(OpMultimap.class.getName());
 
     // //////////// Access Control ////////
     /**
@@ -148,21 +147,25 @@ public class OpMultimap implements Serializable {
      * @return
      */
     public boolean updateDependencies(HashMultimap<Long, Long> dependencyPerRid) {
-        boolean newDeps = false;
-        // Set<ByteArray> keySet = getKeySet();
-        // for(ByteArray key: keySet) {
+        int newDeps = 0;
+        int verified = 0;
         Enumeration<ByteArray> keySet = getKeySet();
         while(keySet.hasMoreElements()) {
             ByteArray key = keySet.nextElement();
             OpMultimapEntry entry = map.get(key);
+
             assert (entry != null);
             try {
-                newDeps = newDeps || entry.updateDependencies(dependencyPerRid);
+                newDeps += entry.updateDependencies(dependencyPerRid);
             } catch(Exception e) {
                 log.error(DBUndoStub.hexStringToAscii(key), e);
             }
+            verified++;
         }
-        return newDeps;
+        if(newDeps != 0) {
+            log.error(verified);
+        }
+        return newDeps != 0;
     }
 
     @Override
