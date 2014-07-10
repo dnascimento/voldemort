@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import voldemort.VoldemortException;
@@ -138,17 +137,19 @@ public class DBUndoStub {
 
     public void opEnd(OpType op, ByteArray key, RUD rud) {
         if(rud.rid != 0) {
+            Path p = brancher.getPath(rud.branch);
+            BranchPath path = p.path;
             removeKeyVersion(key);
             Boolean isRedo = brancher.isRedo(rud.branch);
             if(isRedo) {
                 if(rud.restrain) {
-                    restrainScheduler.opEnd(op, key.clone());
-                    newRequestsScheduler.opEnd(op, key.clone());
+                    restrainScheduler.opEnd(op, key.clone(), rud, path);
+                    newRequestsScheduler.opEnd(op, key.clone(), rud, path);
                 } else {
-                    redoScheduler.opEnd(op, key.clone());
+                    redoScheduler.opEnd(op, key.clone(), rud, path);
                 }
             } else {
-                newRequestsScheduler.opEnd(op, key.clone());
+                newRequestsScheduler.opEnd(op, key.clone(), rud, path);
             }
         }
     }
@@ -169,7 +170,7 @@ public class DBUndoStub {
         Boolean isRedo = brancher.isRedo(rud.branch);
         if(isRedo) {
             for(ByteArray key: keys) {
-                redoScheduler.unlock(key.clone(), rud, p.path.current.sts);
+                redoScheduler.ignore(key.clone(), rud, p.path);
             }
         } else {
             log.error("Unlocking in the wrong branch");
@@ -193,6 +194,7 @@ public class DBUndoStub {
     public void newRedo(BranchPath redoPath) {
         log.info("New redo with path: " + redoPath);
         brancher.newRedo(redoPath);
+        keyAccessLists.debugExecutionList();
     }
 
     /**

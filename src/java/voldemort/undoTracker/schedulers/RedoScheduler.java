@@ -9,6 +9,7 @@ package voldemort.undoTracker.schedulers;
 
 import voldemort.undoTracker.RUD;
 import voldemort.undoTracker.branching.BranchPath;
+import voldemort.undoTracker.map.Op.OpType;
 import voldemort.undoTracker.map.OpMultimap;
 import voldemort.undoTracker.map.StsBranchPair;
 import voldemort.utils.ByteArray;
@@ -40,7 +41,7 @@ public class RedoScheduler extends AccessSchedule {
      */
     @Override
     public StsBranchPair putStart(ByteArray key, RUD rud, BranchPath path) {
-        return archive.get(key).redoWrite(rud, path);
+        return archive.get(key).redoWrite(OpType.Put, rud, path);
     }
 
     /*
@@ -48,22 +49,22 @@ public class RedoScheduler extends AccessSchedule {
      */
     @Override
     public StsBranchPair deleteStart(ByteArray key, RUD rud, BranchPath path) {
-        return archive.get(key).redoWrite(rud, path);
+        return archive.get(key).redoWrite(OpType.Delete, rud, path);
     }
 
     @Override
-    public void getEnd(ByteArray key) {
-        archive.get(key).endRedoRead();
+    public void getEnd(ByteArray key, RUD rud, BranchPath path) {
+        archive.get(key).endRedoOp(OpType.Get, rud, path);
     }
 
     @Override
-    public void putEnd(ByteArray key) {
-        archive.get(key).endRedoWrite();
+    public void putEnd(ByteArray key, RUD rud, BranchPath path) {
+        archive.get(key).endRedoOp(OpType.Put, rud, path);
     }
 
     @Override
-    public void deleteEnd(ByteArray key) {
-        archive.get(key).endRedoWrite();
+    public void deleteEnd(ByteArray key, RUD rud, BranchPath path) {
+        archive.get(key).endRedoOp(OpType.Delete, rud, path);
     }
 
     @Override
@@ -71,7 +72,7 @@ public class RedoScheduler extends AccessSchedule {
         return new StsBranchPair(path.current.sts, rud.branch);
     }
 
-    public boolean unlock(ByteArray key, RUD rud, long redoCommit) {
-        return archive.get(key).unlockOp(rud, redoCommit);
+    public boolean ignore(ByteArray key, RUD rud, BranchPath path) {
+        return archive.get(key).ignore(rud, path);
     }
 }

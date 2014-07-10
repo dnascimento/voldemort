@@ -24,22 +24,22 @@ public abstract class AccessSchedule {
 
     abstract StsBranchPair getVersionStart(ByteArray clone, RUD rud, BranchPath path);
 
-    abstract void getEnd(ByteArray key);
+    abstract void getEnd(ByteArray key, RUD rud, BranchPath path);
 
-    abstract void putEnd(ByteArray key);
+    abstract void putEnd(ByteArray key, RUD rud, BranchPath path);
 
-    abstract void deleteEnd(ByteArray key);
+    abstract void deleteEnd(ByteArray key, RUD rud, BranchPath path);
 
-    public void opEnd(OpType op, ByteArray key) {
+    public void opEnd(OpType op, ByteArray key, RUD rud, BranchPath path) {
         switch(op) {
             case Delete:
-                deleteEnd(key);
+                deleteEnd(key, rud, path);
                 break;
             case Get:
-                getEnd(key);
+                getEnd(key, rud, path);
                 break;
             case Put:
-                putEnd(key);
+                putEnd(key, rud, path);
                 break;
             default:
                 throw new VoldemortException("Unknown operation");

@@ -4,86 +4,155 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import org.apache.log4j.Logger;
+
 import voldemort.VoldemortException;
 import voldemort.undoTracker.map.Op.OpType;
 
-public class RedoIterator implements Iterator<Op> {
+public class RedoIterator {
 
-    private final HashSet<Long> unlockedSet = new HashSet<Long>();
-    private final ArrayList<Op> list;
+    private transient static final Logger log = Logger.getLogger(OpMultimap.class.getName());
+
+    /**
+     * A reference to the full execution list
+     */
+    private final ArrayList<Op> fullList;
+
+    /**
+     * Allowed operations to execute now
+     */
+    private final ArrayList<Op> allowed = new ArrayList<Op>();
+
+    /**
+     * Allowed operations which are executing
+     */
+    private final ArrayList<Op> executing = new ArrayList<Op>();
+
+    /**
+     * Allowed operations which are sleeping
+     */
+    private final ArrayList<Op> sleeping = new ArrayList<Op>();
+
+    /**
+     * Operations to ignore (different execution), the request was processed
+     */
+    private final HashSet<Long> ignoring = new HashSet<Long>();
+
+    /**
+     * Position to fetch the next allowed operations, always on the 1st element
+     */
+    private int nextPosition = 0;
+
+    /**
+     * Each branch has an iterator = an execution of redo
+     */
     private final short branch;
 
-    private int position;
-    private Op next;
-    private Op read;
+    /**
+     * The snapshot which the redo is based on
+     */
+    private long baseRid;
 
     public RedoIterator(short branch, long baseRid, ArrayList<Op> list) {
         this.branch = branch;
-        this.list = list;
+        this.fullList = list;
+        this.baseRid = baseRid;
 
-        // TODO analyze the cost, may binary search would help
-        for(position = 0; position < list.size(); position++) {
-            if(list.get(position).rid >= baseRid)
+        for(nextPosition = 0; nextPosition < list.size(); nextPosition++) {
+            if(list.get(nextPosition).rid >= baseRid)
                 break;
         }
-        position--;
     }
 
-    @Override
-    public boolean hasNext() {
-        if(++position >= list.size())
-            return false;
-
-        // ignore the unlocked operations
-        next = list.get(position);
-        while(unlockedSet.remove(next.rid)) {
-            if(++position == list.size())
-                return false;
-            next = list.get(position);
+    /**
+     * Allowed only if it belongs to allowed list.
+     * If there are not requests executing nether allowed, update the allowed
+     * list
+     * 
+     * @param op
+     * @return true if allowed to execute, false if must go sleep
+     */
+    public boolean allows(Op op) {
+        // If no operation allowed or executing, fetch next
+        while(allowed.isEmpty() && executing.isEmpty()) {
+            fetchNextAllowed();
+            removeIgnored();
         }
-        return true;
-    }
 
-    @Override
-    public Op next() {
-        if(next == null)
-            hasNext();
-        return next;
-    }
-
-    @Override
-    public void remove() {
-        // LIST IS NOT MODIFICABLE - EMPTY TO PROTECT
-        throw new VoldemortException("Not removable during redo");
-    }
-
-    public boolean unlock(long rid) {
-        if(next != null && next.rid == rid) {
-            hasNext();
+        if(allowed.remove(op)) {
+            if(sleeping.remove(op))
+                log.info("Op " + op + " was sleeping");
+            executing.add(op);
+            log.info("Op " + op + " allowed to exec");
             return true;
         } else {
-            unlockedSet.add(rid);
+            sleeping.add(op);
+            log.info("Op " + op + " go sleep");
             return false;
+        }
+
+    }
+
+    private void fetchNextAllowed() {
+        assert (allowed.size() == 0);
+        // all the gets or one write
+        if(nextPosition == fullList.size()) {
+            throw new VoldemortException("Fetch Next but list is over");
+        }
+
+        log.info("Fetch more operations");
+        // is next a write?
+        if(fullList.get(nextPosition).type != OpType.Get) {
+            allowed.add(fullList.get(nextPosition++));
+            return;
+        }
+        // add all the reads
+        while(nextPosition < fullList.size()) {
+            if(fullList.get(nextPosition).type != OpType.Get) {
+                break;
+            }
+            allowed.add(fullList.get(nextPosition++));
         }
     }
 
-    public boolean hasRead(int i) {
-        if(position + i >= list.size()) {
-            return false;
-        }
-        if(list.get(position + i).type.equals(OpType.Get)) {
-            read = list.get(position + i);
-            return true;
-        } else {
-            return false;
+    private void removeIgnored() {
+        // remove the operations of previous snapshots or over
+        Iterator<Op> it = allowed.listIterator();
+        while(it.hasNext()) {
+            Long rid = new Long(it.next().rid);
+            if(rid < baseRid || ignoring.contains(rid)) {
+                it.remove();
+                continue;
+            }
+
         }
     }
 
-    public Op peakRead() {
-        return read;
+    /**
+     * Finish the execution of current operation
+     * 
+     * @param op
+     * @return true if there are threads waiting to wake
+     */
+    public boolean endOp(Op op) {
+        executing.remove(op);
+        return !sleeping.isEmpty();
     }
 
     public short getBranch() {
         return branch;
     }
+
+    public boolean ignore(long rid) {
+        // executed, jump the executing list
+        Iterator<Op> it = allowed.listIterator();
+        while(it.hasNext()) {
+            if(it.next().rid == rid)
+                it.remove();
+        }
+        ignoring.add(rid);
+
+        return !sleeping.isEmpty();
+    }
+
 }

@@ -14,10 +14,12 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import voldemort.VoldemortException;
+import voldemort.undoTracker.DBUndoStub;
 import voldemort.undoTracker.RUD;
 import voldemort.undoTracker.branching.BranchPath;
 import voldemort.undoTracker.map.Op.OpType;
 import voldemort.undoTracker.map.commits.CommitList;
+import voldemort.utils.ByteArray;
 
 import com.google.common.collect.HashMultimap;
 
@@ -50,8 +52,6 @@ public class OpMultimapEntry implements Serializable {
      */
     private ArrayList<Op> list = new ArrayList<Op>(INIT_ARRAY_SIZE);
 
-    private List<Long> threadsToWake = new ArrayList<Long>();
-
     /**
      * Keep track of last sent dependency to the manager
      */
@@ -61,6 +61,13 @@ public class OpMultimapEntry implements Serializable {
      * Committed versions management
      */
     private CommitList commitList = new CommitList();
+
+    private ByteArray key;
+
+    public OpMultimapEntry(ByteArray key) {
+        super();
+        this.key = key;
+    }
 
     public synchronized void addAll(List<Op> values) {
         list.addAll(values);
@@ -261,63 +268,35 @@ public class OpMultimapEntry implements Serializable {
      * 
      * @param rud
      */
-    private synchronized void isNextOp(RUD rud, long baseCommit) {
-
+    private synchronized void startRedoOp(Op op, RUD rud, long baseCommit) {
         log.info("isNextOp " + rud.rid);
-        Op next = getOrNewRedoIterator(rud.branch, baseCommit).next();
-        if(next == null) {
-            log.error("Next is null but there is an operation remaining");
-            throw new VoldemortException("Next is null but there is an operation remaining");
-        }
-        if(next.rid != rud.rid) {
-            while(!threadsToWake.contains(rud.rid)) {
-                log.info("Operation locked " + rud.rid + " waiting for: " + next.rid);
-                try {
-                    this.wait();
-                } catch(InterruptedException e) {
-                    log.error(e);
-                }
-                log.info("Trying to be unlocked " + rud.rid);
+        RedoIterator it = getOrNewRedoIterator(rud.branch, baseCommit);
+        while(!it.allows(op)) {
+            log.info("Operation locked " + rud.rid + " on key: " + DBUndoStub.hexStringToAscii(key));
+            try {
+                this.wait();
+            } catch(InterruptedException e) {
+                log.error(e);
             }
-            threadsToWake.remove(rud.rid);
+            log.info("Trying to be unlocked " + rud.rid);
         }
         log.info("free to go: " + rud.rid);
+
     }
 
     /**
-     * Current is read. If next is write, then wake
+     * Operation is done
      * 
      * @param type
      */
-    public synchronized void endRedoRead() {
-        RedoIterator i = getRedoIterator();
-        if(i.hasNext()) {
-            Op next = i.next();
-            threadsToWake.add(next.rid);
+    public synchronized void endRedoOp(OpType type, RUD rud, BranchPath path) {
+        RedoIterator it = getOrNewRedoIterator(rud.branch, path.current.sts);
+        log.info("Op end: " + type + " " + rud.rid);
+        Op op = new Op(rud.rid, type);
+        if(it.endOp(op)) {
+            log.info("Waking the threads of key: " + DBUndoStub.hexStringToAscii(key));
             this.notifyAll();
         }
-    }
-
-    /**
-     * Current is write. Wake the next reads or THE next write
-     * 
-     * @param type
-     */
-    public synchronized void endRedoWrite() {
-        RedoIterator it = getRedoIterator();
-
-        if(it.hasNext()) {
-            Op next = it.next();
-            threadsToWake.add(next.rid);
-            if(next.type.equals(OpType.Get)) {
-                int i = 1;
-                while(it.hasRead(i)) {
-                    threadsToWake.add(it.peakRead().rid);
-                    i++;
-                }
-            }
-        }
-        this.notifyAll();
     }
 
     /**
@@ -326,11 +305,10 @@ public class OpMultimapEntry implements Serializable {
      * @param rud
      * @return was it locking other actions?
      */
-    public synchronized boolean unlockOp(RUD rud, long redoRid) {
-        RedoIterator it = getOrNewRedoIterator(rud.branch, redoRid);
-        boolean wasNext = it.unlock(rud.rid);
-        if(wasNext) {
-            threadsToWake.add(it.next().rid);
+    public synchronized boolean ignore(RUD rud, BranchPath path) {
+        RedoIterator it = getOrNewRedoIterator(rud.branch, path.current.sts);
+        if(it.ignore(rud.rid)) {
+            log.info("Waking the threads on key: " + DBUndoStub.hexStringToAscii(key));
             this.notifyAll();
         }
         return true;
@@ -370,7 +348,7 @@ public class OpMultimapEntry implements Serializable {
             throw new VoldemortException("New operation on redo");
         }
         // serialize
-        isNextOp(rud, path.current.sts);
+        startRedoOp(new Op(rud.rid, OpType.Get), rud, path.current.sts);
         return commitList.redoRead(path);
     }
 
@@ -381,8 +359,8 @@ public class OpMultimapEntry implements Serializable {
      * @param rud
      * @return
      */
-    public StsBranchPair redoWrite(RUD rud, BranchPath path) {
-        isNextOp(rud, path.current.sts);
+    public StsBranchPair redoWrite(OpType opType, RUD rud, BranchPath path) {
+        startRedoOp(new Op(rud.rid, opType), rud, path.current.sts);
         return commitList.redoWrite(path);
     }
 
@@ -436,5 +414,14 @@ public class OpMultimapEntry implements Serializable {
 
     public synchronized void addLast(Op op) {
         list.add(op);
+    }
+
+    public String debugExecutionList() {
+        StringBuilder sb = new StringBuilder();
+        for(Op op: list) {
+            sb.append(op.toString());
+            sb.append(" ");
+        }
+        return sb.toString();
     }
 }

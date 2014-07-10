@@ -58,17 +58,17 @@ public class CommitScheduler extends AccessSchedule {
     }
 
     @Override
-    public void getEnd(ByteArray key) {
+    public void getEnd(ByteArray key, RUD rud, BranchPath path) {
         keyAccessLists.endReadAccess(key);
     }
 
     @Override
-    public void putEnd(ByteArray key) {
+    public void putEnd(ByteArray key, RUD rud, BranchPath path) {
         keyAccessLists.endWriteAccess(key);
     }
 
     @Override
-    public void deleteEnd(ByteArray key) {
+    public void deleteEnd(ByteArray key, RUD rud, BranchPath path) {
         keyAccessLists.endWriteAccess(key);
     }
 

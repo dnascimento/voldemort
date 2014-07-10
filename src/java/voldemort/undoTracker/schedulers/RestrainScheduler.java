@@ -8,7 +8,6 @@
 package voldemort.undoTracker.schedulers;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.Logger;
 
 import voldemort.undoTracker.RUD;
 import voldemort.undoTracker.branching.BranchPath;
@@ -36,13 +35,13 @@ public class RestrainScheduler extends AccessSchedule {
     }
 
     @Override
-    public void getEnd(ByteArray key) {}
+    public void getEnd(ByteArray key, RUD rud, BranchPath path) {}
 
     @Override
-    public void putEnd(ByteArray key) {}
+    public void putEnd(ByteArray key, RUD rud, BranchPath path) {}
 
     @Override
-    public void deleteEnd(ByteArray key) {}
+    public void deleteEnd(ByteArray key, RUD rud, BranchPath path) {}
 
     @Override
     public StsBranchPair getStart(ByteArray key, RUD rud, BranchPath path) {

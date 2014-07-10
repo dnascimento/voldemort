@@ -9,6 +9,7 @@ package voldemort.undoTracker.map;
 import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
@@ -31,8 +32,13 @@ import com.google.common.collect.HashMultimap;
 public class OpMultimap implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private ConcurrentHashMap<ByteArray, OpMultimapEntry> map = new ConcurrentHashMap<ByteArray, OpMultimapEntry>();
     private transient static final Logger log = Logger.getLogger(OpMultimap.class.getName());
+
+    /**
+     * Each entry of this map represents the metadata of a data entry of
+     * voldemort
+     */
+    private ConcurrentHashMap<ByteArray, OpMultimapEntry> map = new ConcurrentHashMap<ByteArray, OpMultimapEntry>();
 
     // //////////// Access Control ////////
     /**
@@ -125,7 +131,8 @@ public class OpMultimap implements Serializable {
     public OpMultimapEntry get(ByteArray key) {
         OpMultimapEntry entry = map.get(key);
         if(entry == null) {
-            entry = map.putIfAbsent(key, new OpMultimapEntry());
+            entry = map.putIfAbsent(key, new OpMultimapEntry(key));
+            System.out.println("Creating new entry");
             if(entry == null) {
                 entry = map.get(key);
             }
@@ -193,4 +200,11 @@ public class OpMultimap implements Serializable {
         map.clear();
     }
 
+    public String debugExecutionList() {
+        StringBuilder sb = new StringBuilder();
+        for(Entry<ByteArray, OpMultimapEntry> entry: map.entrySet()) {
+            sb.append(entry.getValue().debugExecutionList() + "\n");
+        }
+        return sb.toString();
+    }
 }
