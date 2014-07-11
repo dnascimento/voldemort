@@ -27,6 +27,7 @@ import voldemort.client.UpdateAction;
 import voldemort.cluster.Node;
 import voldemort.store.Store;
 import voldemort.undoTracker.RUD;
+import voldemort.utils.ByteArray;
 import voldemort.versioning.InconsistentDataException;
 import voldemort.versioning.ObsoleteVersionException;
 import voldemort.versioning.Version;
@@ -187,7 +188,7 @@ public class RESTClient<K, V> implements StoreClient<K, V> {
     }
 
     @Override
-    public Map<K, Boolean> unlockKeys(Iterable<K> keys, RUD rud) {
+    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, RUD rud) {
         return this.clientStore.unlockKeys(keys, rud);
     }
 

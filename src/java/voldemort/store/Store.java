@@ -22,6 +22,7 @@ import java.util.Map;
 import voldemort.VoldemortException;
 import voldemort.annotations.concurrency.Threadsafe;
 import voldemort.undoTracker.RUD;
+import voldemort.utils.ByteArray;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
 
@@ -150,5 +151,5 @@ public interface Store<K, V, T> {
      */
     public boolean delete(CompositeVoldemortRequest<K, V> request) throws VoldemortException;
 
-    public Map<K, Boolean> unlockKeys(Iterable<K> keys, RUD rud);
+    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, RUD rud);
 }

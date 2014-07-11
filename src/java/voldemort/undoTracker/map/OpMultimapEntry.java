@@ -273,6 +273,7 @@ public class OpMultimapEntry implements Serializable {
         RedoIterator it = getOrNewRedoIterator(rud.branch, baseCommit);
         while(!it.allows(op)) {
             log.info("Operation locked " + rud.rid + " on key: " + DBUndoStub.hexStringToAscii(key));
+            log.info(it.toString());
             try {
                 this.wait();
             } catch(InterruptedException e) {

@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 import voldemort.VoldemortException;
 import voldemort.cluster.Node;
 import voldemort.undoTracker.RUD;
+import voldemort.utils.ByteArray;
 import voldemort.versioning.ObsoleteVersionException;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
@@ -167,7 +168,7 @@ public class LazyStoreClient<K, V> implements StoreClient<K, V> {
     }
 
     @Override
-    public Map<K, Boolean> unlockKeys(Iterable<K> keys, RUD rud) {
+    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, RUD rud) {
         return getStoreClient().unlockKeys(keys, rud);
     }
 }

@@ -9,7 +9,7 @@ package voldemort.undoTracker.map;
 
 import java.io.Serializable;
 
-public class StsBranchPair implements Serializable {
+public class StsBranchPair implements Serializable, Comparable<StsBranchPair> {
 
     private static final long serialVersionUID = 1L;
 
@@ -54,6 +54,14 @@ public class StsBranchPair implements Serializable {
         if(sts != other.sts)
             return false;
         return true;
+    }
+
+    @Override
+    public int compareTo(StsBranchPair o) {
+        if(o.branch != branch) {
+            return branch - o.branch;
+        }
+        return (int) (sts - o.sts);
     }
 
 }

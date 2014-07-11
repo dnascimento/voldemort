@@ -70,9 +70,9 @@ public class Response<K, V> {
 
     private final long requestTime;
 
-    public Response(Node node, K key, V value, long requestTime) {
+    public Response(Node node, K keyIt, V value, long requestTime) {
         this.node = node;
-        this.key = key;
+        this.key = keyIt;
         this.value = value;
         this.requestTime = requestTime;
     }

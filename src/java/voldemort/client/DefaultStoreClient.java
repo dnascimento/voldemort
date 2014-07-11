@@ -34,6 +34,7 @@ import voldemort.store.InvalidMetadataException;
 import voldemort.store.Store;
 import voldemort.store.StoreCapabilityType;
 import voldemort.undoTracker.RUD;
+import voldemort.utils.ByteArray;
 import voldemort.utils.JmxUtils;
 import voldemort.utils.Utils;
 import voldemort.versioning.InconsistencyResolver;
@@ -388,7 +389,7 @@ public class DefaultStoreClient<K, V> implements StoreClient<K, V> {
     }
 
     @Override
-    public Map<K, Boolean> unlockKeys(Iterable<K> keys, RUD rud) {
+    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, RUD rud) {
         for(int attempts = 0; attempts < this.metadataRefreshAttempts; attempts++) {
             try {
                 return store.unlockKeys(keys, rud);

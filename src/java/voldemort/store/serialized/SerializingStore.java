@@ -184,18 +184,8 @@ public class SerializingStore<K, V, T> extends AbstractStore<K, V, T> {
     }
 
     @Override
-    public Map<K, Boolean> unlockKeys(Iterable<K> keys, RUD rud) {
+    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, RUD rud) {
         StoreUtils.assertValidKeys(keys);
-
-        Map<ByteArray, K> byteKeyToKey = keysToBytes(keys);
-
-        Map<ByteArray, Boolean> storeResult = store.unlockKeys(byteKeyToKey.keySet(), rud);
-
-        Map<K, Boolean> result = Maps.newHashMapWithExpectedSize(storeResult.size());
-
-        for(Map.Entry<ByteArray, Boolean> mapEntry: storeResult.entrySet()) {
-            result.put(byteKeyToKey.get(mapEntry.getKey()), mapEntry.getValue());
-        }
-        return result;
+        return store.unlockKeys(keys, rud);
     }
 }

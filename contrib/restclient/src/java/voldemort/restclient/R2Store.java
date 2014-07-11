@@ -743,7 +743,7 @@ public class R2Store extends AbstractStore<ByteArray, byte[], byte[]> {
     @Override
     public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, RUD rud) {
         // TODO implement REST HTTP unlock
-        throw new NotImplementedException();
+        throw new NotImplementedException("REST HTTP UNLOCK");
     }
 
 }

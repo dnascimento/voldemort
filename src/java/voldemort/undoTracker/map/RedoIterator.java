@@ -1,6 +1,7 @@
 package voldemort.undoTracker.map;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -135,7 +136,9 @@ public class RedoIterator {
      * @return true if there are threads waiting to wake
      */
     public boolean endOp(Op op) {
-        executing.remove(op);
+        if(!executing.remove(op)) {
+            log.error("Removing an end operation that is not at executing list");
+        }
         return !sleeping.isEmpty();
     }
 
@@ -155,4 +158,21 @@ public class RedoIterator {
         return !sleeping.isEmpty();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("RedoIterator [fullList=");
+        sb.append(Arrays.toString(fullList.toArray()));
+        sb.append("\n nextPosition=" + nextPosition + " baseRid=" + baseRid);
+        sb.append("\n allowed=");
+        sb.append(Arrays.toString(allowed.toArray()));
+        sb.append("\n executing=");
+        sb.append(Arrays.toString(executing.toArray()));
+        sb.append("\n sleeping=");
+        sb.append(Arrays.toString(sleeping.toArray()));
+        sb.append("\n ignoring=");
+        sb.append(Arrays.toString(ignoring.toArray()));
+
+        return sb.toString();
+    }
 }

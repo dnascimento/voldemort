@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.Logger;
 
 import voldemort.VoldemortException;
 import voldemort.undoTracker.branching.BranchController;
@@ -89,7 +88,7 @@ public class CommitList implements Serializable {
     }
 
     /**
-     * Try to find the redoBranch and redoBaseCommit (if exists, its the latest)
+     * Try to find the redoBranch and redoBaseCommit
      * otherwise, use one previous to the redoBaseCommit master
      * 
      * @param sts: commit used to start the new branch
@@ -97,7 +96,36 @@ public class CommitList implements Serializable {
      * @return
      */
     public synchronized StsBranchPair redoRead(BranchPath path) {
-        return getLatest(path);
+        return getRedoRead(path);
+    }
+
+    /**
+     * Get the latest if same commit and same branch or the biggest smaller of
+     * the previous branch
+     * 
+     * @param path
+     * @param sts
+     * @return
+     */
+    private StsBranchPair getRedoRead(BranchPath path) {
+        // TODO list is sorted?
+        Iterator<StsBranchPair> i = list.descendingIterator();
+        while(i.hasNext()) {
+            StsBranchPair e = i.next();
+            if(e.branch == path.current.branch && e.sts == path.current.sts) {
+                // already written by the redo
+                return e;
+            }
+            if(path.path.contains(e)) {
+                if(e.sts < path.current.sts) {
+                    // the latest smaller than the base redo
+                    return e;
+                }
+            }
+        }
+        log.error("getBiggestSmallerCommit: empty");
+        throw new VoldemortException("getBiggestSmallerCommit: empty");
+
     }
 
     /**
@@ -110,12 +138,11 @@ public class CommitList implements Serializable {
     public synchronized StsBranchPair redoWrite(BranchPath path) {
         StsBranchPair latest = getLatest(path);
 
-        if(latest.branch == path.current.branch && latest.sts == path.current.sts) {
-            return latest;
-        } else {
+        // if latest version is not the redo version, then add it
+        if(latest.branch != path.current.branch || latest.sts != path.current.sts) {
             latest = new StsBranchPair(path.current.sts, path.current.branch);
             list.add(latest);
-            return latest;
         }
+        return latest;
     }
 }

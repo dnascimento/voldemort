@@ -7,11 +7,10 @@
 
 package voldemort.undoTracker;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import undo.proto.ToManagerProto;
 import voldemort.utils.ByteArray;
+
+import com.google.common.collect.ArrayListMultimap;
 
 /**
  * Request Undo Data
@@ -30,7 +29,7 @@ public class RUD {
     public final long rid;
     public short branch;
     public final boolean restrain;
-    public Set<KeyAccess> accessedKeys;
+    public ArrayListMultimap<ByteArray, KeyAccess> accessedKeys;
     public final boolean redo;
 
     public RUD() {
@@ -67,14 +66,15 @@ public class RUD {
 
     public void addAccessedKey(ByteArray key, String storeName, OpType type) {
         if(accessedKeys == null)
-            accessedKeys = new HashSet<KeyAccess>();
-        KeyAccess k = new KeyAccess(key, storeName);
-        accessedKeys.add(k);
+            accessedKeys = ArrayListMultimap.create();
+        KeyAccess k = new KeyAccess(storeName, type);
+        accessedKeys.put(key, k);
     }
 
-    public Set<KeyAccess> getAccessedKeys() {
-        if(accessedKeys == null)
-            return new HashSet<KeyAccess>();
+    public ArrayListMultimap<ByteArray, KeyAccess> getAccessedKeys() {
+        if(accessedKeys == null) {
+            accessedKeys = ArrayListMultimap.create();
+        }
         return accessedKeys;
     }
 

@@ -1076,8 +1076,8 @@ public class PipelineRoutedStore extends RoutedStore {
 
         if(logger.isDebugEnabled()) {
             StringBuilder sb = new StringBuilder();
-            for(ByteArray b: keys) {
-                sb.append(ByteUtils.toHexString(b.get()));
+            for(ByteArray key: keys) {
+                sb.append(ByteUtils.toHexString(key.get()));
             }
             logger.debug("Finished " + pipeline.getOperation().getSimpleName() + " for key "
                          + sb.toString() + " keyRef: " + sb.toString() + "; started at "

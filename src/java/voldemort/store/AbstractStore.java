@@ -5,6 +5,7 @@ import java.util.Map;
 
 import voldemort.VoldemortException;
 import voldemort.undoTracker.RUD;
+import voldemort.utils.ByteArray;
 import voldemort.utils.Utils;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
@@ -75,7 +76,7 @@ public abstract class AbstractStore<K, V, T> implements Store<K, V, T> {
     }
 
     @Override
-    public Map<K, Boolean> unlockKeys(Iterable<K> keys, RUD rud) {
+    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, RUD rud) {
         return null;
     }
 

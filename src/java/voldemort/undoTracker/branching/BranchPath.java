@@ -1,6 +1,8 @@
 package voldemort.undoTracker.branching;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 
 import voldemort.undoTracker.map.StsBranchPair;
@@ -20,6 +22,11 @@ public class BranchPath {
         this.current = current;
         this.path = new HashSet<StsBranchPair>();
         path.addAll(Arrays.asList(pathEntries));
+    }
+
+    public void getPathOrdered() {
+        ArrayList<StsBranchPair> list = new ArrayList<StsBranchPair>(path);
+        Collections.sort(list);
     }
 
     @Override

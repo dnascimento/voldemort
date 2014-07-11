@@ -971,6 +971,6 @@ public class ThreadPoolRoutedStore extends RoutedStore {
     @Override
     public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, RUD rud) {
         // TODO
-        throw new RuntimeException("NOT IMPLEMENTED");
+        throw new RuntimeException("NOT IMPLEMENTED thread pool routed store");
     }
 }

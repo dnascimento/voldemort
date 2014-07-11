@@ -22,6 +22,7 @@ import java.util.Map;
 import voldemort.annotations.concurrency.Threadsafe;
 import voldemort.cluster.Node;
 import voldemort.undoTracker.RUD;
+import voldemort.utils.ByteArray;
 import voldemort.versioning.ObsoleteVersionException;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
@@ -208,6 +209,6 @@ public interface StoreClient<K, V> {
      */
     public List<Node> getResponsibleNodes(K key);
 
-    public Map<K, Boolean> unlockKeys(Iterable<K> keys, RUD rud);
+    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, RUD rud);
 
 }

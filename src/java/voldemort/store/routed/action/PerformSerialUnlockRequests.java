@@ -64,7 +64,7 @@ public class PerformSerialUnlockRequests extends
             MutableInt successCount = pipelineData.getSuccessCount(key);
 
             if(logger.isDebugEnabled())
-                logger.debug("GETALL for key " + ByteUtils.toHexString(key.get()) + " (keyRef: "
+                logger.debug("Unlock for key " + ByteUtils.toHexString(key.get()) + " (keyRef: "
                              + System.identityHashCode(key) + ") successes: "
                              + successCount.intValue() + " required: " + required);
 
