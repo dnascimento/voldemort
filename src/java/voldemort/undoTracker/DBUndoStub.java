@@ -170,10 +170,14 @@ public class DBUndoStub {
         Boolean isRedo = brancher.isRedo(rud.branch);
         if(isRedo) {
             for(ByteArray key: keys) {
-                redoScheduler.ignore(key.clone(), rud, p.path);
+                boolean status = redoScheduler.ignore(key.clone(), rud, p.path);
+                result.put(key, status);
             }
         } else {
             log.error("Unlocking in the wrong branch");
+            for(ByteArray key: keys) {
+                result.put(key, false);
+            }
             throw new VoldemortException("Unlocking in the wrong branch");
         }
         StringBuilder sb = new StringBuilder();

@@ -170,7 +170,7 @@ public class OpMultimap implements Serializable {
             verified++;
         }
         if(newDeps != 0) {
-            log.error(verified);
+            log.info("Updated " + verified + " dependencies");
         }
         return newDeps != 0;
     }

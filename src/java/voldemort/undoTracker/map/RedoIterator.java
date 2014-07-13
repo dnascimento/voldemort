@@ -146,6 +146,11 @@ public class RedoIterator {
         return branch;
     }
 
+    /**
+     * 
+     * @param rid
+     * @return true if the thread should wake other sleeping threads
+     */
     public boolean ignore(long rid) {
         // executed, jump the executing list
         Iterator<Op> it = allowed.listIterator();
