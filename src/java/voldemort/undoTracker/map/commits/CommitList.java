@@ -123,9 +123,10 @@ public class CommitList implements Serializable {
                 }
             }
         }
-        log.error("getBiggestSmallerCommit: empty");
-        throw new VoldemortException("getBiggestSmallerCommit: empty");
-
+        log.warn("getBiggestSmallerCommit: empty: not exists in branch " + path.current.branch
+                 + " and snapshot: " + path.current.sts + " returning as current");
+        // it will try to access and fail, no problem
+        return new StsBranchPair(path.current.sts, path.current.branch);
     }
 
     /**

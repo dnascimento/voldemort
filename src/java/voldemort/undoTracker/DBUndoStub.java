@@ -176,7 +176,16 @@ public class DBUndoStub {
             log.error("Unlocking in the wrong branch");
             throw new VoldemortException("Unlocking in the wrong branch");
         }
-        log.info("Unlocked: " + keys + " by " + rud);
+        StringBuilder sb = new StringBuilder();
+        sb.append("Unlocked: ");
+        for(ByteArray key: keys) {
+            sb.append(hexStringToAscii(key));
+            sb.append(" : ");
+        }
+        sb.append("by request: ");
+        sb.append(rud.rid);
+        log.info(sb.toString());
+
         return result;
     }
 

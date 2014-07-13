@@ -11,7 +11,7 @@ public class KeyAccess implements Comparable<KeyAccess> {
     public ByteArray key;
 
     public KeyAccess(String store, OpType type) {
-        this(store, type, 0);
+        this(store, type, 1);
     }
 
     public KeyAccess(String store, OpType type, int times) {

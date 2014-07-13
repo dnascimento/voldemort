@@ -528,7 +528,9 @@
 	
  <target name="copyToRepo" description="Copy to Repo" depends="war">
 	<delete dir="/Users/darionascimento/.m2/repository/com/voldemort"/>
-	<copy file="${dist.dir}/${name}.war" tofile="../askJava/ask-war/repo/com/voldemort/voldemort/3.0.0/voldemort-3.0.0.jar"/> 		 
+	<copy file="${dist.dir}/${name}.war" tofile="../askJava/ask-war/repo/com/voldemort/voldemort/3.0.0/voldemort-3.0.0.jar"/> 	 
+	<copy file="${dist.dir}/${name}.war" tofile="../undo/repo/com/voldemort/voldemort/3.0.0/voldemort-3.0.0.jar"/> 		 
+
   </target>
 	
 

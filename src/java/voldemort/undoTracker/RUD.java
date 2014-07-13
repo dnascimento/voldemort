@@ -68,7 +68,12 @@ public class RUD {
         if(accessedKeys == null)
             accessedKeys = ArrayListMultimap.create();
         KeyAccess k = new KeyAccess(storeName, type);
-        accessedKeys.put(key, k);
+        int index = accessedKeys.get(key).indexOf(k);
+        if(index == -1) {
+            accessedKeys.put(key, k);
+        } else {
+            accessedKeys.get(key).get(index).times += 1;
+        }
     }
 
     public ArrayListMultimap<ByteArray, KeyAccess> getAccessedKeys() {
