@@ -7,7 +7,9 @@
 package voldemort.undoTracker.map;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,6 +23,7 @@ import voldemort.undoTracker.map.Op.OpType;
 import voldemort.utils.ByteArray;
 
 import com.google.common.collect.HashMultimap;
+import com.google.protobuf.ByteString;
 
 /**
  * A HashMap where same items are append to a list and each entry has a
@@ -140,6 +143,16 @@ public class OpMultimap implements Serializable {
         return entry;
     }
 
+    public HashMap<ByteString, ArrayList<Op>> getAccessList(List<ByteString> keysList, long baseRid) {
+        HashMap<ByteString, ArrayList<Op>> result = new HashMap<ByteString, ArrayList<Op>>();
+        for(ByteString key: keysList) {
+            OpMultimapEntry entry = get(new ByteArray(key.toByteArray()));
+            ArrayList<Op> operations = entry.getAccesses(baseRid);
+            result.put(key, operations);
+        }
+        return result;
+    }
+
     public Enumeration<ByteArray> getKeySet() {
         return map.keys();
         // TODO this may cause issues, then use keySet which is weakly
@@ -207,4 +220,5 @@ public class OpMultimap implements Serializable {
         }
         return sb.toString();
     }
+
 }

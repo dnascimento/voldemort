@@ -14,6 +14,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import voldemort.VoldemortException;
 import voldemort.undoTracker.branching.BranchController;
 import voldemort.undoTracker.branching.BranchPath;
 import voldemort.undoTracker.branching.Path;
+import voldemort.undoTracker.map.Op;
 import voldemort.undoTracker.map.Op.OpType;
 import voldemort.undoTracker.map.OpMultimap;
 import voldemort.undoTracker.map.StsBranchPair;
@@ -34,6 +36,8 @@ import voldemort.undoTracker.schedulers.CommitScheduler;
 import voldemort.undoTracker.schedulers.RedoScheduler;
 import voldemort.undoTracker.schedulers.RestrainScheduler;
 import voldemort.utils.ByteArray;
+
+import com.google.protobuf.ByteString;
 
 /**
  * Singleton class used by multiple threads
@@ -328,4 +332,7 @@ public class DBUndoStub {
         opStart(OpType.GetVersion, key, rud);
     }
 
+    public HashMap<ByteString, ArrayList<Op>> getAccessList(List<ByteString> keysList, long baseRid) {
+        return keyAccessLists.getAccessList(keysList, baseRid);
+    }
 }

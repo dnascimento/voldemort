@@ -13,10 +13,44 @@ from google.protobuf import descriptor_pb2
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='from-manager.proto',
   package='voldemort',
-  serialized_pb='\n\x12\x66rom-manager.proto\x12\tvoldemort\"t\n\nToDataNode\x12\x11\n\tnewCommit\x18\x01 \x01(\x03\x12\x19\n\x11resetDependencies\x18\x02 \x01(\x08\x12\x10\n\x08redoOver\x18\x03 \x01(\x08\x12\x12\n\npathBranch\x18\x04 \x03(\x05\x12\x12\n\npathCommit\x18\x05 \x03(\x03\"6\n\x08\x45xecList\x12\x0b\n\x03rid\x18\x01 \x03(\x03\x12\x0e\n\x06\x62ranch\x18\x02 \x02(\x05\x12\r\n\x05start\x18\x03 \x02(\x08\"@\n\x08ProxyMsg\x12\x0e\n\x06\x62ranch\x18\x01 \x01(\x05\x12\x10\n\x08restrain\x18\x02 \x01(\x08\x12\x12\n\ntimeTravel\x18\x03 \x01(\x03\x42 \n\nundo.protoB\x10\x46romManagerProtoH\x01')
+  serialized_pb='\n\x12\x66rom-manager.proto\x12\tvoldemort\"\xe9\x01\n\nToDataNode\x12\x11\n\tnewCommit\x18\x01 \x01(\x03\x12\x19\n\x11resetDependencies\x18\x02 \x01(\x08\x12\x10\n\x08redoOver\x18\x03 \x01(\x08\x12\x12\n\npathBranch\x18\x04 \x03(\x05\x12\x12\n\npathCommit\x18\x05 \x03(\x03\x12@\n\x10\x65ntryAccessesMsg\x18\x06 \x01(\x0b\x32&.voldemort.ToDataNode.EntryAccessesMsg\x1a\x31\n\x10\x45ntryAccessesMsg\x12\x0c\n\x04keys\x18\x01 \x03(\x0c\x12\x0f\n\x07\x62\x61seRid\x18\x02 \x02(\x03\"6\n\x08\x45xecList\x12\x0b\n\x03rid\x18\x01 \x03(\x03\x12\x0e\n\x06\x62ranch\x18\x02 \x02(\x05\x12\r\n\x05start\x18\x03 \x02(\x08\"P\n\x08ProxyMsg\x12\x0e\n\x06\x62ranch\x18\x01 \x01(\x05\x12\x10\n\x08restrain\x18\x02 \x01(\x08\x12\x12\n\ntimeTravel\x18\x03 \x01(\x03\x12\x0e\n\x06\x63ommit\x18\x04 \x01(\x03\x42 \n\nundo.protoB\x10\x46romManagerProtoH\x01')
 
 
 
+
+_TODATANODE_ENTRYACCESSESMSG = _descriptor.Descriptor(
+  name='EntryAccessesMsg',
+  full_name='voldemort.ToDataNode.EntryAccessesMsg',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='keys', full_name='voldemort.ToDataNode.EntryAccessesMsg.keys', index=0,
+      number=1, type=12, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='baseRid', full_name='voldemort.ToDataNode.EntryAccessesMsg.baseRid', index=1,
+      number=2, type=3, cpp_type=2, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=218,
+  serialized_end=267,
+)
 
 _TODATANODE = _descriptor.Descriptor(
   name='ToDataNode',
@@ -60,17 +94,24 @@ _TODATANODE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='entryAccessesMsg', full_name='voldemort.ToDataNode.entryAccessesMsg', index=5,
+      number=6, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
-  nested_types=[],
+  nested_types=[_TODATANODE_ENTRYACCESSESMSG, ],
   enum_types=[
   ],
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=33,
-  serialized_end=149,
+  serialized_start=34,
+  serialized_end=267,
 )
 
 
@@ -111,8 +152,8 @@ _EXECLIST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=151,
-  serialized_end=205,
+  serialized_start=269,
+  serialized_end=323,
 )
 
 
@@ -144,6 +185,13 @@ _PROXYMSG = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='commit', full_name='voldemort.ProxyMsg.commit', index=3,
+      number=4, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -153,16 +201,24 @@ _PROXYMSG = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=207,
-  serialized_end=271,
+  serialized_start=325,
+  serialized_end=405,
 )
 
+_TODATANODE_ENTRYACCESSESMSG.containing_type = _TODATANODE;
+_TODATANODE.fields_by_name['entryAccessesMsg'].message_type = _TODATANODE_ENTRYACCESSESMSG
 DESCRIPTOR.message_types_by_name['ToDataNode'] = _TODATANODE
 DESCRIPTOR.message_types_by_name['ExecList'] = _EXECLIST
 DESCRIPTOR.message_types_by_name['ProxyMsg'] = _PROXYMSG
 
 class ToDataNode(_message.Message):
   __metaclass__ = _reflection.GeneratedProtocolMessageType
+
+  class EntryAccessesMsg(_message.Message):
+    __metaclass__ = _reflection.GeneratedProtocolMessageType
+    DESCRIPTOR = _TODATANODE_ENTRYACCESSESMSG
+
+    # @@protoc_insertion_point(class_scope:voldemort.ToDataNode.EntryAccessesMsg)
   DESCRIPTOR = _TODATANODE
 
   # @@protoc_insertion_point(class_scope:voldemort.ToDataNode)

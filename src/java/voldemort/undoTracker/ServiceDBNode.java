@@ -11,18 +11,26 @@ import java.io.IOException;
 import java.net.BindException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 
 import undo.proto.FromManagerProto;
 import undo.proto.FromManagerProto.ToDataNode;
 import undo.proto.ToManagerProto;
+import undo.proto.ToManagerProto.EntryAccessList;
+import undo.proto.ToManagerProto.MsgToManager;
 import undo.proto.ToManagerProto.NodeRegistryMsg;
 import undo.proto.ToManagerProto.NodeRegistryMsg.NodeGroup;
 import voldemort.undoTracker.branching.BranchPath;
+import voldemort.undoTracker.map.Op;
 import voldemort.undoTracker.map.StsBranchPair;
+
+import com.google.protobuf.ByteString;
 
 public class ServiceDBNode extends Thread {
 
@@ -96,6 +104,24 @@ public class ServiceDBNode extends Thread {
         if(cmd.hasRedoOver()) {
             stub.redoOver();
         }
+        if(cmd.hasEntryAccessesMsg()) {
+            HashMap<ByteString, ArrayList<Op>> result = stub.getAccessList(cmd.getEntryAccessesMsg()
+                                                                              .getKeysList(),
+                                                                           cmd.getEntryAccessesMsg()
+                                                                              .getBaseRid());
+            MsgToManager.Builder b = ToManagerProto.MsgToManager.newBuilder();
+            for(Entry<ByteString, ArrayList<Op>> entry: result.entrySet()) {
+                EntryAccessList.Builder entryBuilder = EntryAccessList.newBuilder()
+                                                                      .setKey(entry.getKey());
+                for(Op o: entry.getValue()) {
+                    entryBuilder.addRid(o.rid);
+                }
+                b.addEntryAccessList(entryBuilder);
+            }
+            b.build().writeDelimitedTo(s.getOutputStream());
+            s.getOutputStream().flush();
+        }
+
         if(cmd.getPathBranchCount() != 0 && cmd.getPathCommitCount() != 0) {
             // Retrieve 2 sorted list from most recent to oldest
             Iterator<Long> itCommits = cmd.getPathCommitList().iterator();

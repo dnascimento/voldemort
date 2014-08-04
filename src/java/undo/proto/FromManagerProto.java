@@ -68,6 +68,20 @@ public final class FromManagerProto {
      * <code>repeated int64 pathCommit = 5;</code>
      */
     long getPathCommit(int index);
+
+    // optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;
+    /**
+     * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+     */
+    boolean hasEntryAccessesMsg();
+    /**
+     * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+     */
+    undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg getEntryAccessesMsg();
+    /**
+     * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+     */
+    undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsgOrBuilder getEntryAccessesMsgOrBuilder();
   }
   /**
    * Protobuf type {@code voldemort.ToDataNode}
@@ -181,6 +195,19 @@ public final class FromManagerProto {
               input.popLimit(limit);
               break;
             }
+            case 50: {
+              undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000008) == 0x00000008)) {
+                subBuilder = entryAccessesMsg_.toBuilder();
+              }
+              entryAccessesMsg_ = input.readMessage(undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(entryAccessesMsg_);
+                entryAccessesMsg_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000008;
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -224,6 +251,560 @@ public final class FromManagerProto {
     @java.lang.Override
     public com.google.protobuf.Parser<ToDataNode> getParserForType() {
       return PARSER;
+    }
+
+    public interface EntryAccessesMsgOrBuilder
+        extends com.google.protobuf.MessageOrBuilder {
+
+      // repeated bytes keys = 1;
+      /**
+       * <code>repeated bytes keys = 1;</code>
+       */
+      java.util.List<com.google.protobuf.ByteString> getKeysList();
+      /**
+       * <code>repeated bytes keys = 1;</code>
+       */
+      int getKeysCount();
+      /**
+       * <code>repeated bytes keys = 1;</code>
+       */
+      com.google.protobuf.ByteString getKeys(int index);
+
+      // required int64 baseRid = 2;
+      /**
+       * <code>required int64 baseRid = 2;</code>
+       */
+      boolean hasBaseRid();
+      /**
+       * <code>required int64 baseRid = 2;</code>
+       */
+      long getBaseRid();
+    }
+    /**
+     * Protobuf type {@code voldemort.ToDataNode.EntryAccessesMsg}
+     */
+    public static final class EntryAccessesMsg extends
+        com.google.protobuf.GeneratedMessage
+        implements EntryAccessesMsgOrBuilder {
+      // Use EntryAccessesMsg.newBuilder() to construct.
+      private EntryAccessesMsg(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+        super(builder);
+        this.unknownFields = builder.getUnknownFields();
+      }
+      private EntryAccessesMsg(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+      private static final EntryAccessesMsg defaultInstance;
+      public static EntryAccessesMsg getDefaultInstance() {
+        return defaultInstance;
+      }
+
+      public EntryAccessesMsg getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+
+      private final com.google.protobuf.UnknownFieldSet unknownFields;
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+          getUnknownFields() {
+        return this.unknownFields;
+      }
+      private EntryAccessesMsg(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        initFields();
+        int mutable_bitField0_ = 0;
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+              case 10: {
+                if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                  keys_ = new java.util.ArrayList<com.google.protobuf.ByteString>();
+                  mutable_bitField0_ |= 0x00000001;
+                }
+                keys_.add(input.readBytes());
+                break;
+              }
+              case 16: {
+                bitField0_ |= 0x00000001;
+                baseRid_ = input.readInt64();
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this);
+        } finally {
+          if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+            keys_ = java.util.Collections.unmodifiableList(keys_);
+          }
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
+        }
+      }
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return undo.proto.FromManagerProto.internal_static_voldemort_ToDataNode_EntryAccessesMsg_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return undo.proto.FromManagerProto.internal_static_voldemort_ToDataNode_EntryAccessesMsg_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.class, undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.Builder.class);
+      }
+
+      public static com.google.protobuf.Parser<EntryAccessesMsg> PARSER =
+          new com.google.protobuf.AbstractParser<EntryAccessesMsg>() {
+        public EntryAccessesMsg parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new EntryAccessesMsg(input, extensionRegistry);
+        }
+      };
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<EntryAccessesMsg> getParserForType() {
+        return PARSER;
+      }
+
+      private int bitField0_;
+      // repeated bytes keys = 1;
+      public static final int KEYS_FIELD_NUMBER = 1;
+      private java.util.List<com.google.protobuf.ByteString> keys_;
+      /**
+       * <code>repeated bytes keys = 1;</code>
+       */
+      public java.util.List<com.google.protobuf.ByteString>
+          getKeysList() {
+        return keys_;
+      }
+      /**
+       * <code>repeated bytes keys = 1;</code>
+       */
+      public int getKeysCount() {
+        return keys_.size();
+      }
+      /**
+       * <code>repeated bytes keys = 1;</code>
+       */
+      public com.google.protobuf.ByteString getKeys(int index) {
+        return keys_.get(index);
+      }
+
+      // required int64 baseRid = 2;
+      public static final int BASERID_FIELD_NUMBER = 2;
+      private long baseRid_;
+      /**
+       * <code>required int64 baseRid = 2;</code>
+       */
+      public boolean hasBaseRid() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required int64 baseRid = 2;</code>
+       */
+      public long getBaseRid() {
+        return baseRid_;
+      }
+
+      private void initFields() {
+        keys_ = java.util.Collections.emptyList();
+        baseRid_ = 0L;
+      }
+      private byte memoizedIsInitialized = -1;
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized != -1) return isInitialized == 1;
+
+        if (!hasBaseRid()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        getSerializedSize();
+        for (int i = 0; i < keys_.size(); i++) {
+          output.writeBytes(1, keys_.get(i));
+        }
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          output.writeInt64(2, baseRid_);
+        }
+        getUnknownFields().writeTo(output);
+      }
+
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        {
+          int dataSize = 0;
+          for (int i = 0; i < keys_.size(); i++) {
+            dataSize += com.google.protobuf.CodedOutputStream
+              .computeBytesSizeNoTag(keys_.get(i));
+          }
+          size += dataSize;
+          size += 1 * getKeysList().size();
+        }
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt64Size(2, baseRid_);
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+
+      private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
+        return super.writeReplace();
+      }
+
+      public static undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+      public static undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input);
+      }
+      public static undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      }
+      public static undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code voldemort.ToDataNode.EntryAccessesMsg}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder>
+         implements undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsgOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return undo.proto.FromManagerProto.internal_static_voldemort_ToDataNode_EntryAccessesMsg_descriptor;
+        }
+
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return undo.proto.FromManagerProto.internal_static_voldemort_ToDataNode_EntryAccessesMsg_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.class, undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.Builder.class);
+        }
+
+        // Construct using undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          }
+        }
+        private static Builder create() {
+          return new Builder();
+        }
+
+        public Builder clear() {
+          super.clear();
+          keys_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          baseRid_ = 0L;
+          bitField0_ = (bitField0_ & ~0x00000002);
+          return this;
+        }
+
+        public Builder clone() {
+          return create().mergeFrom(buildPartial());
+        }
+
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return undo.proto.FromManagerProto.internal_static_voldemort_ToDataNode_EntryAccessesMsg_descriptor;
+        }
+
+        public undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg getDefaultInstanceForType() {
+          return undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.getDefaultInstance();
+        }
+
+        public undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg build() {
+          undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        public undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg buildPartial() {
+          undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg result = new undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg(this);
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          if (((bitField0_ & 0x00000001) == 0x00000001)) {
+            keys_ = java.util.Collections.unmodifiableList(keys_);
+            bitField0_ = (bitField0_ & ~0x00000001);
+          }
+          result.keys_ = keys_;
+          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+            to_bitField0_ |= 0x00000001;
+          }
+          result.baseRid_ = baseRid_;
+          result.bitField0_ = to_bitField0_;
+          onBuilt();
+          return result;
+        }
+
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg) {
+            return mergeFrom((undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg other) {
+          if (other == undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.getDefaultInstance()) return this;
+          if (!other.keys_.isEmpty()) {
+            if (keys_.isEmpty()) {
+              keys_ = other.keys_;
+              bitField0_ = (bitField0_ & ~0x00000001);
+            } else {
+              ensureKeysIsMutable();
+              keys_.addAll(other.keys_);
+            }
+            onChanged();
+          }
+          if (other.hasBaseRid()) {
+            setBaseRid(other.getBaseRid());
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+
+        public final boolean isInitialized() {
+          if (!hasBaseRid()) {
+            
+            return false;
+          }
+          return true;
+        }
+
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg) e.getUnfinishedMessage();
+            throw e;
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+        private int bitField0_;
+
+        // repeated bytes keys = 1;
+        private java.util.List<com.google.protobuf.ByteString> keys_ = java.util.Collections.emptyList();
+        private void ensureKeysIsMutable() {
+          if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+            keys_ = new java.util.ArrayList<com.google.protobuf.ByteString>(keys_);
+            bitField0_ |= 0x00000001;
+           }
+        }
+        /**
+         * <code>repeated bytes keys = 1;</code>
+         */
+        public java.util.List<com.google.protobuf.ByteString>
+            getKeysList() {
+          return java.util.Collections.unmodifiableList(keys_);
+        }
+        /**
+         * <code>repeated bytes keys = 1;</code>
+         */
+        public int getKeysCount() {
+          return keys_.size();
+        }
+        /**
+         * <code>repeated bytes keys = 1;</code>
+         */
+        public com.google.protobuf.ByteString getKeys(int index) {
+          return keys_.get(index);
+        }
+        /**
+         * <code>repeated bytes keys = 1;</code>
+         */
+        public Builder setKeys(
+            int index, com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureKeysIsMutable();
+          keys_.set(index, value);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated bytes keys = 1;</code>
+         */
+        public Builder addKeys(com.google.protobuf.ByteString value) {
+          if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureKeysIsMutable();
+          keys_.add(value);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated bytes keys = 1;</code>
+         */
+        public Builder addAllKeys(
+            java.lang.Iterable<? extends com.google.protobuf.ByteString> values) {
+          ensureKeysIsMutable();
+          super.addAll(values, keys_);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated bytes keys = 1;</code>
+         */
+        public Builder clearKeys() {
+          keys_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000001);
+          onChanged();
+          return this;
+        }
+
+        // required int64 baseRid = 2;
+        private long baseRid_ ;
+        /**
+         * <code>required int64 baseRid = 2;</code>
+         */
+        public boolean hasBaseRid() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+        /**
+         * <code>required int64 baseRid = 2;</code>
+         */
+        public long getBaseRid() {
+          return baseRid_;
+        }
+        /**
+         * <code>required int64 baseRid = 2;</code>
+         */
+        public Builder setBaseRid(long value) {
+          bitField0_ |= 0x00000002;
+          baseRid_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required int64 baseRid = 2;</code>
+         */
+        public Builder clearBaseRid() {
+          bitField0_ = (bitField0_ & ~0x00000002);
+          baseRid_ = 0L;
+          onChanged();
+          return this;
+        }
+
+        // @@protoc_insertion_point(builder_scope:voldemort.ToDataNode.EntryAccessesMsg)
+      }
+
+      static {
+        defaultInstance = new EntryAccessesMsg(true);
+        defaultInstance.initFields();
+      }
+
+      // @@protoc_insertion_point(class_scope:voldemort.ToDataNode.EntryAccessesMsg)
     }
 
     private int bitField0_;
@@ -321,18 +902,47 @@ public final class FromManagerProto {
       return pathCommit_.get(index);
     }
 
+    // optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;
+    public static final int ENTRYACCESSESMSG_FIELD_NUMBER = 6;
+    private undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg entryAccessesMsg_;
+    /**
+     * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+     */
+    public boolean hasEntryAccessesMsg() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+     */
+    public undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg getEntryAccessesMsg() {
+      return entryAccessesMsg_;
+    }
+    /**
+     * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+     */
+    public undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsgOrBuilder getEntryAccessesMsgOrBuilder() {
+      return entryAccessesMsg_;
+    }
+
     private void initFields() {
       newCommit_ = 0L;
       resetDependencies_ = false;
       redoOver_ = false;
       pathBranch_ = java.util.Collections.emptyList();
       pathCommit_ = java.util.Collections.emptyList();
+      entryAccessesMsg_ = undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
 
+      if (hasEntryAccessesMsg()) {
+        if (!getEntryAccessesMsg().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -354,6 +964,9 @@ public final class FromManagerProto {
       }
       for (int i = 0; i < pathCommit_.size(); i++) {
         output.writeInt64(5, pathCommit_.get(i));
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeMessage(6, entryAccessesMsg_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -393,6 +1006,10 @@ public final class FromManagerProto {
         }
         size += dataSize;
         size += 1 * getPathCommitList().size();
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, entryAccessesMsg_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -506,6 +1123,7 @@ public final class FromManagerProto {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getEntryAccessesMsgFieldBuilder();
         }
       }
       private static Builder create() {
@@ -524,6 +1142,12 @@ public final class FromManagerProto {
         bitField0_ = (bitField0_ & ~0x00000008);
         pathCommit_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000010);
+        if (entryAccessesMsgBuilder_ == null) {
+          entryAccessesMsg_ = undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.getDefaultInstance();
+        } else {
+          entryAccessesMsgBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000020);
         return this;
       }
 
@@ -574,6 +1198,14 @@ public final class FromManagerProto {
           bitField0_ = (bitField0_ & ~0x00000010);
         }
         result.pathCommit_ = pathCommit_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        if (entryAccessesMsgBuilder_ == null) {
+          result.entryAccessesMsg_ = entryAccessesMsg_;
+        } else {
+          result.entryAccessesMsg_ = entryAccessesMsgBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -619,11 +1251,20 @@ public final class FromManagerProto {
           }
           onChanged();
         }
+        if (other.hasEntryAccessesMsg()) {
+          mergeEntryAccessesMsg(other.getEntryAccessesMsg());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
+        if (hasEntryAccessesMsg()) {
+          if (!getEntryAccessesMsg().isInitialized()) {
+            
+            return false;
+          }
+        }
         return true;
       }
 
@@ -875,6 +1516,123 @@ public final class FromManagerProto {
         bitField0_ = (bitField0_ & ~0x00000010);
         onChanged();
         return this;
+      }
+
+      // optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;
+      private undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg entryAccessesMsg_ = undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg, undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.Builder, undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsgOrBuilder> entryAccessesMsgBuilder_;
+      /**
+       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+       */
+      public boolean hasEntryAccessesMsg() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      /**
+       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+       */
+      public undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg getEntryAccessesMsg() {
+        if (entryAccessesMsgBuilder_ == null) {
+          return entryAccessesMsg_;
+        } else {
+          return entryAccessesMsgBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+       */
+      public Builder setEntryAccessesMsg(undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg value) {
+        if (entryAccessesMsgBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          entryAccessesMsg_ = value;
+          onChanged();
+        } else {
+          entryAccessesMsgBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000020;
+        return this;
+      }
+      /**
+       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+       */
+      public Builder setEntryAccessesMsg(
+          undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.Builder builderForValue) {
+        if (entryAccessesMsgBuilder_ == null) {
+          entryAccessesMsg_ = builderForValue.build();
+          onChanged();
+        } else {
+          entryAccessesMsgBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000020;
+        return this;
+      }
+      /**
+       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+       */
+      public Builder mergeEntryAccessesMsg(undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg value) {
+        if (entryAccessesMsgBuilder_ == null) {
+          if (((bitField0_ & 0x00000020) == 0x00000020) &&
+              entryAccessesMsg_ != undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.getDefaultInstance()) {
+            entryAccessesMsg_ =
+              undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.newBuilder(entryAccessesMsg_).mergeFrom(value).buildPartial();
+          } else {
+            entryAccessesMsg_ = value;
+          }
+          onChanged();
+        } else {
+          entryAccessesMsgBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000020;
+        return this;
+      }
+      /**
+       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+       */
+      public Builder clearEntryAccessesMsg() {
+        if (entryAccessesMsgBuilder_ == null) {
+          entryAccessesMsg_ = undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.getDefaultInstance();
+          onChanged();
+        } else {
+          entryAccessesMsgBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000020);
+        return this;
+      }
+      /**
+       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+       */
+      public undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.Builder getEntryAccessesMsgBuilder() {
+        bitField0_ |= 0x00000020;
+        onChanged();
+        return getEntryAccessesMsgFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+       */
+      public undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsgOrBuilder getEntryAccessesMsgOrBuilder() {
+        if (entryAccessesMsgBuilder_ != null) {
+          return entryAccessesMsgBuilder_.getMessageOrBuilder();
+        } else {
+          return entryAccessesMsg_;
+        }
+      }
+      /**
+       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg, undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.Builder, undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsgOrBuilder> 
+          getEntryAccessesMsgFieldBuilder() {
+        if (entryAccessesMsgBuilder_ == null) {
+          entryAccessesMsgBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg, undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.Builder, undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsgOrBuilder>(
+                  entryAccessesMsg_,
+                  getParentForChildren(),
+                  isClean());
+          entryAccessesMsg_ = null;
+        }
+        return entryAccessesMsgBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:voldemort.ToDataNode)
@@ -1578,6 +2336,16 @@ public final class FromManagerProto {
      * <code>optional int64 timeTravel = 3;</code>
      */
     long getTimeTravel();
+
+    // optional int64 commit = 4;
+    /**
+     * <code>optional int64 commit = 4;</code>
+     */
+    boolean hasCommit();
+    /**
+     * <code>optional int64 commit = 4;</code>
+     */
+    long getCommit();
   }
   /**
    * Protobuf type {@code voldemort.ProxyMsg}
@@ -1647,6 +2415,11 @@ public final class FromManagerProto {
             case 24: {
               bitField0_ |= 0x00000004;
               timeTravel_ = input.readInt64();
+              break;
+            }
+            case 32: {
+              bitField0_ |= 0x00000008;
+              commit_ = input.readInt64();
               break;
             }
           }
@@ -1737,10 +2510,27 @@ public final class FromManagerProto {
       return timeTravel_;
     }
 
+    // optional int64 commit = 4;
+    public static final int COMMIT_FIELD_NUMBER = 4;
+    private long commit_;
+    /**
+     * <code>optional int64 commit = 4;</code>
+     */
+    public boolean hasCommit() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional int64 commit = 4;</code>
+     */
+    public long getCommit() {
+      return commit_;
+    }
+
     private void initFields() {
       branch_ = 0;
       restrain_ = false;
       timeTravel_ = 0L;
+      commit_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -1763,6 +2553,9 @@ public final class FromManagerProto {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeInt64(3, timeTravel_);
       }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeInt64(4, commit_);
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -1783,6 +2576,10 @@ public final class FromManagerProto {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(3, timeTravel_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(4, commit_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1910,6 +2707,8 @@ public final class FromManagerProto {
         bitField0_ = (bitField0_ & ~0x00000002);
         timeTravel_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000004);
+        commit_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -1950,6 +2749,10 @@ public final class FromManagerProto {
           to_bitField0_ |= 0x00000004;
         }
         result.timeTravel_ = timeTravel_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.commit_ = commit_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1974,6 +2777,9 @@ public final class FromManagerProto {
         }
         if (other.hasTimeTravel()) {
           setTimeTravel(other.getTimeTravel());
+        }
+        if (other.hasCommit()) {
+          setCommit(other.getCommit());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -2101,6 +2907,39 @@ public final class FromManagerProto {
         return this;
       }
 
+      // optional int64 commit = 4;
+      private long commit_ ;
+      /**
+       * <code>optional int64 commit = 4;</code>
+       */
+      public boolean hasCommit() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional int64 commit = 4;</code>
+       */
+      public long getCommit() {
+        return commit_;
+      }
+      /**
+       * <code>optional int64 commit = 4;</code>
+       */
+      public Builder setCommit(long value) {
+        bitField0_ |= 0x00000008;
+        commit_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 commit = 4;</code>
+       */
+      public Builder clearCommit() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        commit_ = 0L;
+        onChanged();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:voldemort.ProxyMsg)
     }
 
@@ -2117,6 +2956,11 @@ public final class FromManagerProto {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_voldemort_ToDataNode_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_voldemort_ToDataNode_EntryAccessesMsg_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_voldemort_ToDataNode_EntryAccessesMsg_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_voldemort_ExecList_descriptor;
   private static
@@ -2136,14 +2980,17 @@ public final class FromManagerProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\022from-manager.proto\022\tvoldemort\"t\n\nToDat" +
-      "aNode\022\021\n\tnewCommit\030\001 \001(\003\022\031\n\021resetDepende" +
-      "ncies\030\002 \001(\010\022\020\n\010redoOver\030\003 \001(\010\022\022\n\npathBra" +
-      "nch\030\004 \003(\005\022\022\n\npathCommit\030\005 \003(\003\"6\n\010ExecLis" +
-      "t\022\013\n\003rid\030\001 \003(\003\022\016\n\006branch\030\002 \002(\005\022\r\n\005start\030" +
-      "\003 \002(\010\"@\n\010ProxyMsg\022\016\n\006branch\030\001 \001(\005\022\020\n\010res" +
-      "train\030\002 \001(\010\022\022\n\ntimeTravel\030\003 \001(\003B \n\nundo." +
-      "protoB\020FromManagerProtoH\001"
+      "\n\022from-manager.proto\022\tvoldemort\"\351\001\n\nToDa" +
+      "taNode\022\021\n\tnewCommit\030\001 \001(\003\022\031\n\021resetDepend" +
+      "encies\030\002 \001(\010\022\020\n\010redoOver\030\003 \001(\010\022\022\n\npathBr" +
+      "anch\030\004 \003(\005\022\022\n\npathCommit\030\005 \003(\003\022@\n\020entryA" +
+      "ccessesMsg\030\006 \001(\0132&.voldemort.ToDataNode." +
+      "EntryAccessesMsg\0321\n\020EntryAccessesMsg\022\014\n\004" +
+      "keys\030\001 \003(\014\022\017\n\007baseRid\030\002 \002(\003\"6\n\010ExecList\022" +
+      "\013\n\003rid\030\001 \003(\003\022\016\n\006branch\030\002 \002(\005\022\r\n\005start\030\003 " +
+      "\002(\010\"P\n\010ProxyMsg\022\016\n\006branch\030\001 \001(\005\022\020\n\010restr" +
+      "ain\030\002 \001(\010\022\022\n\ntimeTravel\030\003 \001(\003\022\016\n\006commit\030",
+      "\004 \001(\003B \n\nundo.protoB\020FromManagerProtoH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -2155,7 +3002,13 @@ public final class FromManagerProto {
           internal_static_voldemort_ToDataNode_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_ToDataNode_descriptor,
-              new java.lang.String[] { "NewCommit", "ResetDependencies", "RedoOver", "PathBranch", "PathCommit", });
+              new java.lang.String[] { "NewCommit", "ResetDependencies", "RedoOver", "PathBranch", "PathCommit", "EntryAccessesMsg", });
+          internal_static_voldemort_ToDataNode_EntryAccessesMsg_descriptor =
+            internal_static_voldemort_ToDataNode_descriptor.getNestedTypes().get(0);
+          internal_static_voldemort_ToDataNode_EntryAccessesMsg_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_voldemort_ToDataNode_EntryAccessesMsg_descriptor,
+              new java.lang.String[] { "Keys", "BaseRid", });
           internal_static_voldemort_ExecList_descriptor =
             getDescriptor().getMessageTypes().get(1);
           internal_static_voldemort_ExecList_fieldAccessorTable = new
@@ -2167,7 +3020,7 @@ public final class FromManagerProto {
           internal_static_voldemort_ProxyMsg_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_ProxyMsg_descriptor,
-              new java.lang.String[] { "Branch", "Restrain", "TimeTravel", });
+              new java.lang.String[] { "Branch", "Restrain", "TimeTravel", "Commit", });
           return null;
         }
       };

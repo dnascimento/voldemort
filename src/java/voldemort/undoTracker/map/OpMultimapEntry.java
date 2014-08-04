@@ -180,6 +180,23 @@ public class OpMultimapEntry implements Serializable {
         return lastSentDependency - sentDependency;
     }
 
+    /**
+     * Get a copy of the access list
+     * 
+     * @param baseRid
+     * @return
+     */
+    public synchronized ArrayList<Op> getAccesses(long baseRid) {
+        ArrayList<Op> copy = new ArrayList<Op>(list.size());
+
+        for(Op op: list) {
+            if(op.rid < baseRid) {
+                copy.add(op);
+            }
+        }
+        return copy;
+    }
+
     /******************************************************************************************************/
 
     /**

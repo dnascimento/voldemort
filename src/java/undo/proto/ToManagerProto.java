@@ -80,6 +80,31 @@ public final class ToManagerProto {
      * <code>optional .voldemort.AckMsg ack = 5;</code>
      */
     undo.proto.ToManagerProto.AckMsgOrBuilder getAckOrBuilder();
+
+    // repeated .voldemort.EntryAccessList entryAccessList = 6;
+    /**
+     * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+     */
+    java.util.List<undo.proto.ToManagerProto.EntryAccessList> 
+        getEntryAccessListList();
+    /**
+     * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+     */
+    undo.proto.ToManagerProto.EntryAccessList getEntryAccessList(int index);
+    /**
+     * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+     */
+    int getEntryAccessListCount();
+    /**
+     * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+     */
+    java.util.List<? extends undo.proto.ToManagerProto.EntryAccessListOrBuilder> 
+        getEntryAccessListOrBuilderList();
+    /**
+     * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+     */
+    undo.proto.ToManagerProto.EntryAccessListOrBuilder getEntryAccessListOrBuilder(
+        int index);
   }
   /**
    * Protobuf type {@code voldemort.MsgToManager}
@@ -197,6 +222,14 @@ public final class ToManagerProto {
               bitField0_ |= 0x00000010;
               break;
             }
+            case 50: {
+              if (!((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
+                entryAccessList_ = new java.util.ArrayList<undo.proto.ToManagerProto.EntryAccessList>();
+                mutable_bitField0_ |= 0x00000020;
+              }
+              entryAccessList_.add(input.readMessage(undo.proto.ToManagerProto.EntryAccessList.PARSER, extensionRegistry));
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -205,6 +238,9 @@ public final class ToManagerProto {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
+        if (((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
+          entryAccessList_ = java.util.Collections.unmodifiableList(entryAccessList_);
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -347,12 +383,49 @@ public final class ToManagerProto {
       return ack_;
     }
 
+    // repeated .voldemort.EntryAccessList entryAccessList = 6;
+    public static final int ENTRYACCESSLIST_FIELD_NUMBER = 6;
+    private java.util.List<undo.proto.ToManagerProto.EntryAccessList> entryAccessList_;
+    /**
+     * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+     */
+    public java.util.List<undo.proto.ToManagerProto.EntryAccessList> getEntryAccessListList() {
+      return entryAccessList_;
+    }
+    /**
+     * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+     */
+    public java.util.List<? extends undo.proto.ToManagerProto.EntryAccessListOrBuilder> 
+        getEntryAccessListOrBuilderList() {
+      return entryAccessList_;
+    }
+    /**
+     * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+     */
+    public int getEntryAccessListCount() {
+      return entryAccessList_.size();
+    }
+    /**
+     * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+     */
+    public undo.proto.ToManagerProto.EntryAccessList getEntryAccessList(int index) {
+      return entryAccessList_.get(index);
+    }
+    /**
+     * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+     */
+    public undo.proto.ToManagerProto.EntryAccessListOrBuilder getEntryAccessListOrBuilder(
+        int index) {
+      return entryAccessList_.get(index);
+    }
+
     private void initFields() {
       trackMsg_ = undo.proto.ToManagerProto.TrackMsg.getDefaultInstance();
       startEndMsg_ = undo.proto.ToManagerProto.StartEndMsg.getDefaultInstance();
       trackMsgFromClient_ = undo.proto.ToManagerProto.TrackMsg.getDefaultInstance();
       nodeRegistry_ = undo.proto.ToManagerProto.NodeRegistryMsg.getDefaultInstance();
       ack_ = undo.proto.ToManagerProto.AckMsg.getDefaultInstance();
+      entryAccessList_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -383,6 +456,12 @@ public final class ToManagerProto {
           return false;
         }
       }
+      for (int i = 0; i < getEntryAccessListCount(); i++) {
+        if (!getEntryAccessList(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -404,6 +483,9 @@ public final class ToManagerProto {
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         output.writeMessage(5, ack_);
+      }
+      for (int i = 0; i < entryAccessList_.size(); i++) {
+        output.writeMessage(6, entryAccessList_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -433,6 +515,10 @@ public final class ToManagerProto {
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(5, ack_);
+      }
+      for (int i = 0; i < entryAccessList_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(6, entryAccessList_.get(i));
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -547,6 +633,7 @@ public final class ToManagerProto {
           getTrackMsgFromClientFieldBuilder();
           getNodeRegistryFieldBuilder();
           getAckFieldBuilder();
+          getEntryAccessListFieldBuilder();
         }
       }
       private static Builder create() {
@@ -585,6 +672,12 @@ public final class ToManagerProto {
           ackBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000010);
+        if (entryAccessListBuilder_ == null) {
+          entryAccessList_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000020);
+        } else {
+          entryAccessListBuilder_.clear();
+        }
         return this;
       }
 
@@ -653,6 +746,15 @@ public final class ToManagerProto {
         } else {
           result.ack_ = ackBuilder_.build();
         }
+        if (entryAccessListBuilder_ == null) {
+          if (((bitField0_ & 0x00000020) == 0x00000020)) {
+            entryAccessList_ = java.util.Collections.unmodifiableList(entryAccessList_);
+            bitField0_ = (bitField0_ & ~0x00000020);
+          }
+          result.entryAccessList_ = entryAccessList_;
+        } else {
+          result.entryAccessList_ = entryAccessListBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -684,6 +786,32 @@ public final class ToManagerProto {
         if (other.hasAck()) {
           mergeAck(other.getAck());
         }
+        if (entryAccessListBuilder_ == null) {
+          if (!other.entryAccessList_.isEmpty()) {
+            if (entryAccessList_.isEmpty()) {
+              entryAccessList_ = other.entryAccessList_;
+              bitField0_ = (bitField0_ & ~0x00000020);
+            } else {
+              ensureEntryAccessListIsMutable();
+              entryAccessList_.addAll(other.entryAccessList_);
+            }
+            onChanged();
+          }
+        } else {
+          if (!other.entryAccessList_.isEmpty()) {
+            if (entryAccessListBuilder_.isEmpty()) {
+              entryAccessListBuilder_.dispose();
+              entryAccessListBuilder_ = null;
+              entryAccessList_ = other.entryAccessList_;
+              bitField0_ = (bitField0_ & ~0x00000020);
+              entryAccessListBuilder_ = 
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                   getEntryAccessListFieldBuilder() : null;
+            } else {
+              entryAccessListBuilder_.addAllMessages(other.entryAccessList_);
+            }
+          }
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -709,6 +837,12 @@ public final class ToManagerProto {
         }
         if (hasNodeRegistry()) {
           if (!getNodeRegistry().isInitialized()) {
+            
+            return false;
+          }
+        }
+        for (int i = 0; i < getEntryAccessListCount(); i++) {
+          if (!getEntryAccessList(i).isInitialized()) {
             
             return false;
           }
@@ -1320,6 +1454,246 @@ public final class ToManagerProto {
         return ackBuilder_;
       }
 
+      // repeated .voldemort.EntryAccessList entryAccessList = 6;
+      private java.util.List<undo.proto.ToManagerProto.EntryAccessList> entryAccessList_ =
+        java.util.Collections.emptyList();
+      private void ensureEntryAccessListIsMutable() {
+        if (!((bitField0_ & 0x00000020) == 0x00000020)) {
+          entryAccessList_ = new java.util.ArrayList<undo.proto.ToManagerProto.EntryAccessList>(entryAccessList_);
+          bitField0_ |= 0x00000020;
+         }
+      }
+
+      private com.google.protobuf.RepeatedFieldBuilder<
+          undo.proto.ToManagerProto.EntryAccessList, undo.proto.ToManagerProto.EntryAccessList.Builder, undo.proto.ToManagerProto.EntryAccessListOrBuilder> entryAccessListBuilder_;
+
+      /**
+       * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+       */
+      public java.util.List<undo.proto.ToManagerProto.EntryAccessList> getEntryAccessListList() {
+        if (entryAccessListBuilder_ == null) {
+          return java.util.Collections.unmodifiableList(entryAccessList_);
+        } else {
+          return entryAccessListBuilder_.getMessageList();
+        }
+      }
+      /**
+       * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+       */
+      public int getEntryAccessListCount() {
+        if (entryAccessListBuilder_ == null) {
+          return entryAccessList_.size();
+        } else {
+          return entryAccessListBuilder_.getCount();
+        }
+      }
+      /**
+       * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+       */
+      public undo.proto.ToManagerProto.EntryAccessList getEntryAccessList(int index) {
+        if (entryAccessListBuilder_ == null) {
+          return entryAccessList_.get(index);
+        } else {
+          return entryAccessListBuilder_.getMessage(index);
+        }
+      }
+      /**
+       * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+       */
+      public Builder setEntryAccessList(
+          int index, undo.proto.ToManagerProto.EntryAccessList value) {
+        if (entryAccessListBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureEntryAccessListIsMutable();
+          entryAccessList_.set(index, value);
+          onChanged();
+        } else {
+          entryAccessListBuilder_.setMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+       */
+      public Builder setEntryAccessList(
+          int index, undo.proto.ToManagerProto.EntryAccessList.Builder builderForValue) {
+        if (entryAccessListBuilder_ == null) {
+          ensureEntryAccessListIsMutable();
+          entryAccessList_.set(index, builderForValue.build());
+          onChanged();
+        } else {
+          entryAccessListBuilder_.setMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+       */
+      public Builder addEntryAccessList(undo.proto.ToManagerProto.EntryAccessList value) {
+        if (entryAccessListBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureEntryAccessListIsMutable();
+          entryAccessList_.add(value);
+          onChanged();
+        } else {
+          entryAccessListBuilder_.addMessage(value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+       */
+      public Builder addEntryAccessList(
+          int index, undo.proto.ToManagerProto.EntryAccessList value) {
+        if (entryAccessListBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ensureEntryAccessListIsMutable();
+          entryAccessList_.add(index, value);
+          onChanged();
+        } else {
+          entryAccessListBuilder_.addMessage(index, value);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+       */
+      public Builder addEntryAccessList(
+          undo.proto.ToManagerProto.EntryAccessList.Builder builderForValue) {
+        if (entryAccessListBuilder_ == null) {
+          ensureEntryAccessListIsMutable();
+          entryAccessList_.add(builderForValue.build());
+          onChanged();
+        } else {
+          entryAccessListBuilder_.addMessage(builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+       */
+      public Builder addEntryAccessList(
+          int index, undo.proto.ToManagerProto.EntryAccessList.Builder builderForValue) {
+        if (entryAccessListBuilder_ == null) {
+          ensureEntryAccessListIsMutable();
+          entryAccessList_.add(index, builderForValue.build());
+          onChanged();
+        } else {
+          entryAccessListBuilder_.addMessage(index, builderForValue.build());
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+       */
+      public Builder addAllEntryAccessList(
+          java.lang.Iterable<? extends undo.proto.ToManagerProto.EntryAccessList> values) {
+        if (entryAccessListBuilder_ == null) {
+          ensureEntryAccessListIsMutable();
+          super.addAll(values, entryAccessList_);
+          onChanged();
+        } else {
+          entryAccessListBuilder_.addAllMessages(values);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+       */
+      public Builder clearEntryAccessList() {
+        if (entryAccessListBuilder_ == null) {
+          entryAccessList_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000020);
+          onChanged();
+        } else {
+          entryAccessListBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+       */
+      public Builder removeEntryAccessList(int index) {
+        if (entryAccessListBuilder_ == null) {
+          ensureEntryAccessListIsMutable();
+          entryAccessList_.remove(index);
+          onChanged();
+        } else {
+          entryAccessListBuilder_.remove(index);
+        }
+        return this;
+      }
+      /**
+       * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+       */
+      public undo.proto.ToManagerProto.EntryAccessList.Builder getEntryAccessListBuilder(
+          int index) {
+        return getEntryAccessListFieldBuilder().getBuilder(index);
+      }
+      /**
+       * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+       */
+      public undo.proto.ToManagerProto.EntryAccessListOrBuilder getEntryAccessListOrBuilder(
+          int index) {
+        if (entryAccessListBuilder_ == null) {
+          return entryAccessList_.get(index);  } else {
+          return entryAccessListBuilder_.getMessageOrBuilder(index);
+        }
+      }
+      /**
+       * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+       */
+      public java.util.List<? extends undo.proto.ToManagerProto.EntryAccessListOrBuilder> 
+           getEntryAccessListOrBuilderList() {
+        if (entryAccessListBuilder_ != null) {
+          return entryAccessListBuilder_.getMessageOrBuilderList();
+        } else {
+          return java.util.Collections.unmodifiableList(entryAccessList_);
+        }
+      }
+      /**
+       * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+       */
+      public undo.proto.ToManagerProto.EntryAccessList.Builder addEntryAccessListBuilder() {
+        return getEntryAccessListFieldBuilder().addBuilder(
+            undo.proto.ToManagerProto.EntryAccessList.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+       */
+      public undo.proto.ToManagerProto.EntryAccessList.Builder addEntryAccessListBuilder(
+          int index) {
+        return getEntryAccessListFieldBuilder().addBuilder(
+            index, undo.proto.ToManagerProto.EntryAccessList.getDefaultInstance());
+      }
+      /**
+       * <code>repeated .voldemort.EntryAccessList entryAccessList = 6;</code>
+       */
+      public java.util.List<undo.proto.ToManagerProto.EntryAccessList.Builder> 
+           getEntryAccessListBuilderList() {
+        return getEntryAccessListFieldBuilder().getBuilderList();
+      }
+      private com.google.protobuf.RepeatedFieldBuilder<
+          undo.proto.ToManagerProto.EntryAccessList, undo.proto.ToManagerProto.EntryAccessList.Builder, undo.proto.ToManagerProto.EntryAccessListOrBuilder> 
+          getEntryAccessListFieldBuilder() {
+        if (entryAccessListBuilder_ == null) {
+          entryAccessListBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+              undo.proto.ToManagerProto.EntryAccessList, undo.proto.ToManagerProto.EntryAccessList.Builder, undo.proto.ToManagerProto.EntryAccessListOrBuilder>(
+                  entryAccessList_,
+                  ((bitField0_ & 0x00000020) == 0x00000020),
+                  getParentForChildren(),
+                  isClean());
+          entryAccessList_ = null;
+        }
+        return entryAccessListBuilder_;
+      }
+
       // @@protoc_insertion_point(builder_scope:voldemort.MsgToManager)
     }
 
@@ -1329,6 +1703,570 @@ public final class ToManagerProto {
     }
 
     // @@protoc_insertion_point(class_scope:voldemort.MsgToManager)
+  }
+
+  public interface EntryAccessListOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
+
+    // required bytes key = 1;
+    /**
+     * <code>required bytes key = 1;</code>
+     */
+    boolean hasKey();
+    /**
+     * <code>required bytes key = 1;</code>
+     */
+    com.google.protobuf.ByteString getKey();
+
+    // repeated int64 rid = 2;
+    /**
+     * <code>repeated int64 rid = 2;</code>
+     */
+    java.util.List<java.lang.Long> getRidList();
+    /**
+     * <code>repeated int64 rid = 2;</code>
+     */
+    int getRidCount();
+    /**
+     * <code>repeated int64 rid = 2;</code>
+     */
+    long getRid(int index);
+  }
+  /**
+   * Protobuf type {@code voldemort.EntryAccessList}
+   */
+  public static final class EntryAccessList extends
+      com.google.protobuf.GeneratedMessage
+      implements EntryAccessListOrBuilder {
+    // Use EntryAccessList.newBuilder() to construct.
+    private EntryAccessList(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private EntryAccessList(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final EntryAccessList defaultInstance;
+    public static EntryAccessList getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public EntryAccessList getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private EntryAccessList(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              bitField0_ |= 0x00000001;
+              key_ = input.readBytes();
+              break;
+            }
+            case 16: {
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                rid_ = new java.util.ArrayList<java.lang.Long>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              rid_.add(input.readInt64());
+              break;
+            }
+            case 18: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002) && input.getBytesUntilLimit() > 0) {
+                rid_ = new java.util.ArrayList<java.lang.Long>();
+                mutable_bitField0_ |= 0x00000002;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                rid_.add(input.readInt64());
+              }
+              input.popLimit(limit);
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+          rid_ = java.util.Collections.unmodifiableList(rid_);
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return undo.proto.ToManagerProto.internal_static_voldemort_EntryAccessList_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return undo.proto.ToManagerProto.internal_static_voldemort_EntryAccessList_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              undo.proto.ToManagerProto.EntryAccessList.class, undo.proto.ToManagerProto.EntryAccessList.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<EntryAccessList> PARSER =
+        new com.google.protobuf.AbstractParser<EntryAccessList>() {
+      public EntryAccessList parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new EntryAccessList(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<EntryAccessList> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    // required bytes key = 1;
+    public static final int KEY_FIELD_NUMBER = 1;
+    private com.google.protobuf.ByteString key_;
+    /**
+     * <code>required bytes key = 1;</code>
+     */
+    public boolean hasKey() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required bytes key = 1;</code>
+     */
+    public com.google.protobuf.ByteString getKey() {
+      return key_;
+    }
+
+    // repeated int64 rid = 2;
+    public static final int RID_FIELD_NUMBER = 2;
+    private java.util.List<java.lang.Long> rid_;
+    /**
+     * <code>repeated int64 rid = 2;</code>
+     */
+    public java.util.List<java.lang.Long>
+        getRidList() {
+      return rid_;
+    }
+    /**
+     * <code>repeated int64 rid = 2;</code>
+     */
+    public int getRidCount() {
+      return rid_.size();
+    }
+    /**
+     * <code>repeated int64 rid = 2;</code>
+     */
+    public long getRid(int index) {
+      return rid_.get(index);
+    }
+
+    private void initFields() {
+      key_ = com.google.protobuf.ByteString.EMPTY;
+      rid_ = java.util.Collections.emptyList();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+
+      if (!hasKey()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, key_);
+      }
+      for (int i = 0; i < rid_.size(); i++) {
+        output.writeInt64(2, rid_.get(i));
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, key_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < rid_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt64SizeNoTag(rid_.get(i));
+        }
+        size += dataSize;
+        size += 1 * getRidList().size();
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static undo.proto.ToManagerProto.EntryAccessList parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static undo.proto.ToManagerProto.EntryAccessList parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static undo.proto.ToManagerProto.EntryAccessList parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static undo.proto.ToManagerProto.EntryAccessList parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static undo.proto.ToManagerProto.EntryAccessList parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static undo.proto.ToManagerProto.EntryAccessList parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static undo.proto.ToManagerProto.EntryAccessList parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static undo.proto.ToManagerProto.EntryAccessList parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static undo.proto.ToManagerProto.EntryAccessList parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static undo.proto.ToManagerProto.EntryAccessList parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(undo.proto.ToManagerProto.EntryAccessList prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code voldemort.EntryAccessList}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements undo.proto.ToManagerProto.EntryAccessListOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return undo.proto.ToManagerProto.internal_static_voldemort_EntryAccessList_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return undo.proto.ToManagerProto.internal_static_voldemort_EntryAccessList_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                undo.proto.ToManagerProto.EntryAccessList.class, undo.proto.ToManagerProto.EntryAccessList.Builder.class);
+      }
+
+      // Construct using undo.proto.ToManagerProto.EntryAccessList.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        key_ = com.google.protobuf.ByteString.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        rid_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return undo.proto.ToManagerProto.internal_static_voldemort_EntryAccessList_descriptor;
+      }
+
+      public undo.proto.ToManagerProto.EntryAccessList getDefaultInstanceForType() {
+        return undo.proto.ToManagerProto.EntryAccessList.getDefaultInstance();
+      }
+
+      public undo.proto.ToManagerProto.EntryAccessList build() {
+        undo.proto.ToManagerProto.EntryAccessList result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public undo.proto.ToManagerProto.EntryAccessList buildPartial() {
+        undo.proto.ToManagerProto.EntryAccessList result = new undo.proto.ToManagerProto.EntryAccessList(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.key_ = key_;
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          rid_ = java.util.Collections.unmodifiableList(rid_);
+          bitField0_ = (bitField0_ & ~0x00000002);
+        }
+        result.rid_ = rid_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof undo.proto.ToManagerProto.EntryAccessList) {
+          return mergeFrom((undo.proto.ToManagerProto.EntryAccessList)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(undo.proto.ToManagerProto.EntryAccessList other) {
+        if (other == undo.proto.ToManagerProto.EntryAccessList.getDefaultInstance()) return this;
+        if (other.hasKey()) {
+          setKey(other.getKey());
+        }
+        if (!other.rid_.isEmpty()) {
+          if (rid_.isEmpty()) {
+            rid_ = other.rid_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            ensureRidIsMutable();
+            rid_.addAll(other.rid_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasKey()) {
+          
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        undo.proto.ToManagerProto.EntryAccessList parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (undo.proto.ToManagerProto.EntryAccessList) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      // required bytes key = 1;
+      private com.google.protobuf.ByteString key_ = com.google.protobuf.ByteString.EMPTY;
+      /**
+       * <code>required bytes key = 1;</code>
+       */
+      public boolean hasKey() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required bytes key = 1;</code>
+       */
+      public com.google.protobuf.ByteString getKey() {
+        return key_;
+      }
+      /**
+       * <code>required bytes key = 1;</code>
+       */
+      public Builder setKey(com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        key_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required bytes key = 1;</code>
+       */
+      public Builder clearKey() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        key_ = getDefaultInstance().getKey();
+        onChanged();
+        return this;
+      }
+
+      // repeated int64 rid = 2;
+      private java.util.List<java.lang.Long> rid_ = java.util.Collections.emptyList();
+      private void ensureRidIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          rid_ = new java.util.ArrayList<java.lang.Long>(rid_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+      /**
+       * <code>repeated int64 rid = 2;</code>
+       */
+      public java.util.List<java.lang.Long>
+          getRidList() {
+        return java.util.Collections.unmodifiableList(rid_);
+      }
+      /**
+       * <code>repeated int64 rid = 2;</code>
+       */
+      public int getRidCount() {
+        return rid_.size();
+      }
+      /**
+       * <code>repeated int64 rid = 2;</code>
+       */
+      public long getRid(int index) {
+        return rid_.get(index);
+      }
+      /**
+       * <code>repeated int64 rid = 2;</code>
+       */
+      public Builder setRid(
+          int index, long value) {
+        ensureRidIsMutable();
+        rid_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int64 rid = 2;</code>
+       */
+      public Builder addRid(long value) {
+        ensureRidIsMutable();
+        rid_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int64 rid = 2;</code>
+       */
+      public Builder addAllRid(
+          java.lang.Iterable<? extends java.lang.Long> values) {
+        ensureRidIsMutable();
+        super.addAll(values, rid_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int64 rid = 2;</code>
+       */
+      public Builder clearRid() {
+        rid_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:voldemort.EntryAccessList)
+    }
+
+    static {
+      defaultInstance = new EntryAccessList(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:voldemort.EntryAccessList)
   }
 
   public interface TrackMsgOrBuilder
@@ -6087,6 +7025,11 @@ public final class ToManagerProto {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_voldemort_MsgToManager_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_voldemort_EntryAccessList_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_voldemort_EntryAccessList_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_voldemort_TrackMsg_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -6130,26 +7073,29 @@ public final class ToManagerProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\020to-manager.proto\022\tvoldemort\"\345\001\n\014MsgToM" +
+      "\n\020to-manager.proto\022\tvoldemort\"\232\002\n\014MsgToM" +
       "anager\022%\n\010trackMsg\030\001 \001(\0132\023.voldemort.Tra" +
       "ckMsg\022+\n\013startEndMsg\030\002 \001(\0132\026.voldemort.S" +
       "tartEndMsg\022/\n\022trackMsgFromClient\030\003 \001(\0132\023" +
       ".voldemort.TrackMsg\0220\n\014nodeRegistry\030\004 \001(" +
       "\0132\032.voldemort.NodeRegistryMsg\022\036\n\003ack\030\005 \001" +
-      "(\0132\021.voldemort.AckMsg\"@\n\010TrackMsg\022$\n\005ent" +
-      "ry\030\001 \003(\0132\025.voldemort.TrackEntry\022\016\n\006nodeI" +
-      "d\030\002 \001(\t\"-\n\nTrackEntry\022\013\n\003rid\030\001 \002(\003\022\022\n\nde" +
-      "pendency\030\002 \003(\003\"4\n\013StartEndMsg\022%\n\003msg\030\001 \003",
-      "(\0132\030.voldemort.StartEndEntry\"+\n\rStartEnd" +
-      "Entry\022\r\n\005start\030\001 \002(\003\022\013\n\003end\030\002 \002(\003\"B\n\003RUD" +
-      "\022\013\n\003rid\030\001 \001(\003\022\016\n\006branch\030\002 \001(\005\022\020\n\010restrai" +
-      "n\030\003 \001(\010\022\014\n\004redo\030\004 \001(\010\";\n\006AckMsg\022\014\n\004port\030" +
-      "\001 \001(\005\022\020\n\010hostname\030\002 \001(\t\022\021\n\texception\030\003 \003" +
-      "(\t\"\232\001\n\017NodeRegistryMsg\0223\n\005group\030\001 \002(\0162$." +
-      "voldemort.NodeRegistryMsg.NodeGroup\022\014\n\004p" +
-      "ort\030\002 \002(\005\022\020\n\010hostname\030\003 \002(\t\"2\n\tNodeGroup" +
-      "\022\t\n\005PROXY\020\001\022\013\n\007DB_NODE\020\002\022\r\n\tREDO_NODE\020\003B" +
-      "\036\n\nundo.protoB\016ToManagerProtoH\001"
+      "(\0132\021.voldemort.AckMsg\0223\n\017entryAccessList" +
+      "\030\006 \003(\0132\032.voldemort.EntryAccessList\"+\n\017En" +
+      "tryAccessList\022\013\n\003key\030\001 \002(\014\022\013\n\003rid\030\002 \003(\003\"" +
+      "@\n\010TrackMsg\022$\n\005entry\030\001 \003(\0132\025.voldemort.T",
+      "rackEntry\022\016\n\006nodeId\030\002 \001(\t\"-\n\nTrackEntry\022" +
+      "\013\n\003rid\030\001 \002(\003\022\022\n\ndependency\030\002 \003(\003\"4\n\013Star" +
+      "tEndMsg\022%\n\003msg\030\001 \003(\0132\030.voldemort.StartEn" +
+      "dEntry\"+\n\rStartEndEntry\022\r\n\005start\030\001 \002(\003\022\013" +
+      "\n\003end\030\002 \002(\003\"B\n\003RUD\022\013\n\003rid\030\001 \001(\003\022\016\n\006branc" +
+      "h\030\002 \001(\005\022\020\n\010restrain\030\003 \001(\010\022\014\n\004redo\030\004 \001(\010\"" +
+      ";\n\006AckMsg\022\014\n\004port\030\001 \001(\005\022\020\n\010hostname\030\002 \001(" +
+      "\t\022\021\n\texception\030\003 \003(\t\"\232\001\n\017NodeRegistryMsg" +
+      "\0223\n\005group\030\001 \002(\0162$.voldemort.NodeRegistry" +
+      "Msg.NodeGroup\022\014\n\004port\030\002 \002(\005\022\020\n\010hostname\030",
+      "\003 \002(\t\"2\n\tNodeGroup\022\t\n\005PROXY\020\001\022\013\n\007DB_NODE" +
+      "\020\002\022\r\n\tREDO_NODE\020\003B\036\n\nundo.protoB\016ToManag" +
+      "erProtoH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -6161,45 +7107,51 @@ public final class ToManagerProto {
           internal_static_voldemort_MsgToManager_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_MsgToManager_descriptor,
-              new java.lang.String[] { "TrackMsg", "StartEndMsg", "TrackMsgFromClient", "NodeRegistry", "Ack", });
-          internal_static_voldemort_TrackMsg_descriptor =
+              new java.lang.String[] { "TrackMsg", "StartEndMsg", "TrackMsgFromClient", "NodeRegistry", "Ack", "EntryAccessList", });
+          internal_static_voldemort_EntryAccessList_descriptor =
             getDescriptor().getMessageTypes().get(1);
+          internal_static_voldemort_EntryAccessList_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_voldemort_EntryAccessList_descriptor,
+              new java.lang.String[] { "Key", "Rid", });
+          internal_static_voldemort_TrackMsg_descriptor =
+            getDescriptor().getMessageTypes().get(2);
           internal_static_voldemort_TrackMsg_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_TrackMsg_descriptor,
               new java.lang.String[] { "Entry", "NodeId", });
           internal_static_voldemort_TrackEntry_descriptor =
-            getDescriptor().getMessageTypes().get(2);
+            getDescriptor().getMessageTypes().get(3);
           internal_static_voldemort_TrackEntry_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_TrackEntry_descriptor,
               new java.lang.String[] { "Rid", "Dependency", });
           internal_static_voldemort_StartEndMsg_descriptor =
-            getDescriptor().getMessageTypes().get(3);
+            getDescriptor().getMessageTypes().get(4);
           internal_static_voldemort_StartEndMsg_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_StartEndMsg_descriptor,
               new java.lang.String[] { "Msg", });
           internal_static_voldemort_StartEndEntry_descriptor =
-            getDescriptor().getMessageTypes().get(4);
+            getDescriptor().getMessageTypes().get(5);
           internal_static_voldemort_StartEndEntry_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_StartEndEntry_descriptor,
               new java.lang.String[] { "Start", "End", });
           internal_static_voldemort_RUD_descriptor =
-            getDescriptor().getMessageTypes().get(5);
+            getDescriptor().getMessageTypes().get(6);
           internal_static_voldemort_RUD_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_RUD_descriptor,
               new java.lang.String[] { "Rid", "Branch", "Restrain", "Redo", });
           internal_static_voldemort_AckMsg_descriptor =
-            getDescriptor().getMessageTypes().get(6);
+            getDescriptor().getMessageTypes().get(7);
           internal_static_voldemort_AckMsg_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_AckMsg_descriptor,
               new java.lang.String[] { "Port", "Hostname", "Exception", });
           internal_static_voldemort_NodeRegistryMsg_descriptor =
-            getDescriptor().getMessageTypes().get(7);
+            getDescriptor().getMessageTypes().get(8);
           internal_static_voldemort_NodeRegistryMsg_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_NodeRegistryMsg_descriptor,

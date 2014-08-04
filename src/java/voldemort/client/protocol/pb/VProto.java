@@ -11655,31 +11655,17 @@ public final class VProto {
      */
     com.google.protobuf.ByteString getKey(int index);
 
-    // repeated int32 time = 2;
+    // optional .voldemort.RUD rud = 2;
     /**
-     * <code>repeated int32 time = 2;</code>
-     */
-    java.util.List<java.lang.Integer> getTimeList();
-    /**
-     * <code>repeated int32 time = 2;</code>
-     */
-    int getTimeCount();
-    /**
-     * <code>repeated int32 time = 2;</code>
-     */
-    int getTime(int index);
-
-    // optional .voldemort.RUD rud = 3;
-    /**
-     * <code>optional .voldemort.RUD rud = 3;</code>
+     * <code>optional .voldemort.RUD rud = 2;</code>
      */
     boolean hasRud();
     /**
-     * <code>optional .voldemort.RUD rud = 3;</code>
+     * <code>optional .voldemort.RUD rud = 2;</code>
      */
     undo.proto.ToManagerProto.RUD getRud();
     /**
-     * <code>optional .voldemort.RUD rud = 3;</code>
+     * <code>optional .voldemort.RUD rud = 2;</code>
      */
     undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder();
   }
@@ -11742,28 +11728,7 @@ public final class VProto {
               key_.add(input.readBytes());
               break;
             }
-            case 16: {
-              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-                time_ = new java.util.ArrayList<java.lang.Integer>();
-                mutable_bitField0_ |= 0x00000002;
-              }
-              time_.add(input.readInt32());
-              break;
-            }
             case 18: {
-              int length = input.readRawVarint32();
-              int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002) && input.getBytesUntilLimit() > 0) {
-                time_ = new java.util.ArrayList<java.lang.Integer>();
-                mutable_bitField0_ |= 0x00000002;
-              }
-              while (input.getBytesUntilLimit() > 0) {
-                time_.add(input.readInt32());
-              }
-              input.popLimit(limit);
-              break;
-            }
-            case 26: {
               undo.proto.ToManagerProto.RUD.Builder subBuilder = null;
               if (((bitField0_ & 0x00000001) == 0x00000001)) {
                 subBuilder = rud_.toBuilder();
@@ -11786,9 +11751,6 @@ public final class VProto {
       } finally {
         if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
           key_ = java.util.Collections.unmodifiableList(key_);
-        }
-        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
-          time_ = java.util.Collections.unmodifiableList(time_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -11845,46 +11807,23 @@ public final class VProto {
       return key_.get(index);
     }
 
-    // repeated int32 time = 2;
-    public static final int TIME_FIELD_NUMBER = 2;
-    private java.util.List<java.lang.Integer> time_;
-    /**
-     * <code>repeated int32 time = 2;</code>
-     */
-    public java.util.List<java.lang.Integer>
-        getTimeList() {
-      return time_;
-    }
-    /**
-     * <code>repeated int32 time = 2;</code>
-     */
-    public int getTimeCount() {
-      return time_.size();
-    }
-    /**
-     * <code>repeated int32 time = 2;</code>
-     */
-    public int getTime(int index) {
-      return time_.get(index);
-    }
-
-    // optional .voldemort.RUD rud = 3;
-    public static final int RUD_FIELD_NUMBER = 3;
+    // optional .voldemort.RUD rud = 2;
+    public static final int RUD_FIELD_NUMBER = 2;
     private undo.proto.ToManagerProto.RUD rud_;
     /**
-     * <code>optional .voldemort.RUD rud = 3;</code>
+     * <code>optional .voldemort.RUD rud = 2;</code>
      */
     public boolean hasRud() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>optional .voldemort.RUD rud = 3;</code>
+     * <code>optional .voldemort.RUD rud = 2;</code>
      */
     public undo.proto.ToManagerProto.RUD getRud() {
       return rud_;
     }
     /**
-     * <code>optional .voldemort.RUD rud = 3;</code>
+     * <code>optional .voldemort.RUD rud = 2;</code>
      */
     public undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
       return rud_;
@@ -11892,7 +11831,6 @@ public final class VProto {
 
     private void initFields() {
       key_ = java.util.Collections.emptyList();
-      time_ = java.util.Collections.emptyList();
       rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
@@ -11910,11 +11848,8 @@ public final class VProto {
       for (int i = 0; i < key_.size(); i++) {
         output.writeBytes(1, key_.get(i));
       }
-      for (int i = 0; i < time_.size(); i++) {
-        output.writeInt32(2, time_.get(i));
-      }
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeMessage(3, rud_);
+        output.writeMessage(2, rud_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -11934,18 +11869,9 @@ public final class VProto {
         size += dataSize;
         size += 1 * getKeyList().size();
       }
-      {
-        int dataSize = 0;
-        for (int i = 0; i < time_.size(); i++) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeInt32SizeNoTag(time_.get(i));
-        }
-        size += dataSize;
-        size += 1 * getTimeList().size();
-      }
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, rud_);
+          .computeMessageSize(2, rud_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -12066,14 +11992,12 @@ public final class VProto {
         super.clear();
         key_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
-        time_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000002);
         if (rudBuilder_ == null) {
           rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
         } else {
           rudBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
 
@@ -12107,12 +12031,7 @@ public final class VProto {
           bitField0_ = (bitField0_ & ~0x00000001);
         }
         result.key_ = key_;
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          time_ = java.util.Collections.unmodifiableList(time_);
-          bitField0_ = (bitField0_ & ~0x00000002);
-        }
-        result.time_ = time_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000001;
         }
         if (rudBuilder_ == null) {
@@ -12143,16 +12062,6 @@ public final class VProto {
           } else {
             ensureKeyIsMutable();
             key_.addAll(other.key_);
-          }
-          onChanged();
-        }
-        if (!other.time_.isEmpty()) {
-          if (time_.isEmpty()) {
-            time_ = other.time_;
-            bitField0_ = (bitField0_ & ~0x00000002);
-          } else {
-            ensureTimeIsMutable();
-            time_.addAll(other.time_);
           }
           onChanged();
         }
@@ -12258,84 +12167,18 @@ public final class VProto {
         return this;
       }
 
-      // repeated int32 time = 2;
-      private java.util.List<java.lang.Integer> time_ = java.util.Collections.emptyList();
-      private void ensureTimeIsMutable() {
-        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
-          time_ = new java.util.ArrayList<java.lang.Integer>(time_);
-          bitField0_ |= 0x00000002;
-         }
-      }
-      /**
-       * <code>repeated int32 time = 2;</code>
-       */
-      public java.util.List<java.lang.Integer>
-          getTimeList() {
-        return java.util.Collections.unmodifiableList(time_);
-      }
-      /**
-       * <code>repeated int32 time = 2;</code>
-       */
-      public int getTimeCount() {
-        return time_.size();
-      }
-      /**
-       * <code>repeated int32 time = 2;</code>
-       */
-      public int getTime(int index) {
-        return time_.get(index);
-      }
-      /**
-       * <code>repeated int32 time = 2;</code>
-       */
-      public Builder setTime(
-          int index, int value) {
-        ensureTimeIsMutable();
-        time_.set(index, value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated int32 time = 2;</code>
-       */
-      public Builder addTime(int value) {
-        ensureTimeIsMutable();
-        time_.add(value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated int32 time = 2;</code>
-       */
-      public Builder addAllTime(
-          java.lang.Iterable<? extends java.lang.Integer> values) {
-        ensureTimeIsMutable();
-        super.addAll(values, time_);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated int32 time = 2;</code>
-       */
-      public Builder clearTime() {
-        time_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000002);
-        onChanged();
-        return this;
-      }
-
-      // optional .voldemort.RUD rud = 3;
+      // optional .voldemort.RUD rud = 2;
       private undo.proto.ToManagerProto.RUD rud_ = undo.proto.ToManagerProto.RUD.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder> rudBuilder_;
       /**
-       * <code>optional .voldemort.RUD rud = 3;</code>
+       * <code>optional .voldemort.RUD rud = 2;</code>
        */
       public boolean hasRud() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
+        return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>optional .voldemort.RUD rud = 3;</code>
+       * <code>optional .voldemort.RUD rud = 2;</code>
        */
       public undo.proto.ToManagerProto.RUD getRud() {
         if (rudBuilder_ == null) {
@@ -12345,7 +12188,7 @@ public final class VProto {
         }
       }
       /**
-       * <code>optional .voldemort.RUD rud = 3;</code>
+       * <code>optional .voldemort.RUD rud = 2;</code>
        */
       public Builder setRud(undo.proto.ToManagerProto.RUD value) {
         if (rudBuilder_ == null) {
@@ -12357,11 +12200,11 @@ public final class VProto {
         } else {
           rudBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000002;
         return this;
       }
       /**
-       * <code>optional .voldemort.RUD rud = 3;</code>
+       * <code>optional .voldemort.RUD rud = 2;</code>
        */
       public Builder setRud(
           undo.proto.ToManagerProto.RUD.Builder builderForValue) {
@@ -12371,15 +12214,15 @@ public final class VProto {
         } else {
           rudBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000002;
         return this;
       }
       /**
-       * <code>optional .voldemort.RUD rud = 3;</code>
+       * <code>optional .voldemort.RUD rud = 2;</code>
        */
       public Builder mergeRud(undo.proto.ToManagerProto.RUD value) {
         if (rudBuilder_ == null) {
-          if (((bitField0_ & 0x00000004) == 0x00000004) &&
+          if (((bitField0_ & 0x00000002) == 0x00000002) &&
               rud_ != undo.proto.ToManagerProto.RUD.getDefaultInstance()) {
             rud_ =
               undo.proto.ToManagerProto.RUD.newBuilder(rud_).mergeFrom(value).buildPartial();
@@ -12390,11 +12233,11 @@ public final class VProto {
         } else {
           rudBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000002;
         return this;
       }
       /**
-       * <code>optional .voldemort.RUD rud = 3;</code>
+       * <code>optional .voldemort.RUD rud = 2;</code>
        */
       public Builder clearRud() {
         if (rudBuilder_ == null) {
@@ -12403,19 +12246,19 @@ public final class VProto {
         } else {
           rudBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000004);
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
       /**
-       * <code>optional .voldemort.RUD rud = 3;</code>
+       * <code>optional .voldemort.RUD rud = 2;</code>
        */
       public undo.proto.ToManagerProto.RUD.Builder getRudBuilder() {
-        bitField0_ |= 0x00000004;
+        bitField0_ |= 0x00000002;
         onChanged();
         return getRudFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .voldemort.RUD rud = 3;</code>
+       * <code>optional .voldemort.RUD rud = 2;</code>
        */
       public undo.proto.ToManagerProto.RUDOrBuilder getRudOrBuilder() {
         if (rudBuilder_ != null) {
@@ -12425,7 +12268,7 @@ public final class VProto {
         }
       }
       /**
-       * <code>optional .voldemort.RUD rud = 3;</code>
+       * <code>optional .voldemort.RUD rud = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           undo.proto.ToManagerProto.RUD, undo.proto.ToManagerProto.RUD.Builder, undo.proto.ToManagerProto.RUDOrBuilder> 
@@ -16332,25 +16175,25 @@ public final class VProto {
       "uest\022\013\n\003key\030\001 \002(\014\022\'\n\007version\030\002 \002(\0132\026.vol",
       "demort.VectorClock\022\033\n\003rud\030\003 \001(\0132\016.voldem" +
       "ort.RUD\"B\n\016DeleteResponse\022\017\n\007success\030\001 \002" +
-      "(\010\022\037\n\005error\030\002 \001(\0132\020.voldemort.Error\"G\n\rU" +
-      "nlockRequest\022\013\n\003key\030\001 \003(\014\022\014\n\004time\030\002 \003(\005\022" +
-      "\033\n\003rud\030\003 \001(\0132\016.voldemort.RUD\"(\n\tKeyStatu" +
-      "s\022\013\n\003key\030\001 \002(\014\022\016\n\006status\030\002 \002(\010\"W\n\016Unlock" +
-      "Response\022$\n\006status\030\001 \003(\0132\024.voldemort.Key" +
-      "Status\022\037\n\005error\030\002 \001(\0132\020.voldemort.Error\"" +
-      "6\n\tContainer\022\033\n\003rud\030\001 \002(\0132\016.voldemort.RU" +
-      "D\022\014\n\004data\030\002 \002(\014\"\304\002\n\020VoldemortRequest\022$\n\004",
-      "type\030\001 \002(\0162\026.voldemort.RequestType\022\033\n\014sh" +
-      "ould_route\030\002 \002(\010:\005false\022\r\n\005store\030\003 \002(\t\022\"" +
-      "\n\003get\030\004 \001(\0132\025.voldemort.GetRequest\022(\n\006ge" +
-      "tAll\030\005 \001(\0132\030.voldemort.GetAllRequest\022\"\n\003" +
-      "put\030\006 \001(\0132\025.voldemort.PutRequest\022(\n\006dele" +
-      "te\030\007 \001(\0132\030.voldemort.DeleteRequest\022(\n\006un" +
-      "lock\030\t \001(\0132\030.voldemort.UnlockRequest\022\030\n\020" +
-      "requestRouteType\030\010 \001(\005*U\n\013RequestType\022\007\n" +
-      "\003GET\020\000\022\013\n\007GET_ALL\020\001\022\007\n\003PUT\020\002\022\n\n\006DELETE\020\003" +
-      "\022\017\n\013GET_VERSION\020\004\022\n\n\006UNLOCK\020\005B(\n\034voldemo",
-      "rt.client.protocol.pbB\006VProtoH\001"
+      "(\010\022\037\n\005error\030\002 \001(\0132\020.voldemort.Error\"9\n\rU" +
+      "nlockRequest\022\013\n\003key\030\001 \003(\014\022\033\n\003rud\030\002 \001(\0132\016" +
+      ".voldemort.RUD\"(\n\tKeyStatus\022\013\n\003key\030\001 \002(\014" +
+      "\022\016\n\006status\030\002 \002(\010\"W\n\016UnlockResponse\022$\n\006st" +
+      "atus\030\001 \003(\0132\024.voldemort.KeyStatus\022\037\n\005erro" +
+      "r\030\002 \001(\0132\020.voldemort.Error\"6\n\tContainer\022\033" +
+      "\n\003rud\030\001 \002(\0132\016.voldemort.RUD\022\014\n\004data\030\002 \002(" +
+      "\014\"\304\002\n\020VoldemortRequest\022$\n\004type\030\001 \002(\0162\026.v",
+      "oldemort.RequestType\022\033\n\014should_route\030\002 \002" +
+      "(\010:\005false\022\r\n\005store\030\003 \002(\t\022\"\n\003get\030\004 \001(\0132\025." +
+      "voldemort.GetRequest\022(\n\006getAll\030\005 \001(\0132\030.v" +
+      "oldemort.GetAllRequest\022\"\n\003put\030\006 \001(\0132\025.vo" +
+      "ldemort.PutRequest\022(\n\006delete\030\007 \001(\0132\030.vol" +
+      "demort.DeleteRequest\022(\n\006unlock\030\t \001(\0132\030.v" +
+      "oldemort.UnlockRequest\022\030\n\020requestRouteTy" +
+      "pe\030\010 \001(\005*U\n\013RequestType\022\007\n\003GET\020\000\022\013\n\007GET_" +
+      "ALL\020\001\022\007\n\003PUT\020\002\022\n\n\006DELETE\020\003\022\017\n\013GET_VERSIO" +
+      "N\020\004\022\n\n\006UNLOCK\020\005B(\n\034voldemort.client.prot",
+      "ocol.pbB\006VProtoH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -16452,7 +16295,7 @@ public final class VProto {
           internal_static_voldemort_UnlockRequest_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_UnlockRequest_descriptor,
-              new java.lang.String[] { "Key", "Time", "Rud", });
+              new java.lang.String[] { "Key", "Rud", });
           internal_static_voldemort_KeyStatus_descriptor =
             getDescriptor().getMessageTypes().get(15);
           internal_static_voldemort_KeyStatus_fieldAccessorTable = new
