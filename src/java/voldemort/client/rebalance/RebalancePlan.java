@@ -52,7 +52,7 @@ public class RebalancePlan {
      * (# of zones) * (2) * (# stores) partition-stores being moved. The (2)
      * comes from an upper bound of a single move affecting two-nodes per zone.
      */
-    public final static int BATCH_SIZE = Integer.MAX_VALUE;
+    public static final int BATCH_SIZE = Integer.MAX_VALUE;
 
     private final Cluster currentCluster;
     private final List<StoreDefinition> currentStoreDefs;

@@ -40,9 +40,9 @@ import voldemort.utils.Utils;
  */
 public abstract class DataMaintenanceJob implements Runnable {
 
-    public final static List<String> BLACKLISTED_STORAGE_TYPES = Arrays.asList(ReadOnlyStorageConfiguration.TYPE_NAME);
+    public static final List<String> BLACKLISTED_STORAGE_TYPES = Arrays.asList(ReadOnlyStorageConfiguration.TYPE_NAME);
 
-    protected final static int STAT_RECORDS_INTERVAL = 10000;
+    protected static final int STAT_RECORDS_INTERVAL = 10000;
     protected final ScanPermitWrapper scanPermits;
     protected final StoreRepository storeRepo;
     protected final MetadataStore metadataStore;

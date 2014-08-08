@@ -12,7 +12,7 @@ import voldemort.undoTracker.map.OpMultimap;
 
 public class SaveKeyAccess extends Thread {
 
-    private final static Logger log = Logger.getLogger(SaveKeyAccess.class.getName());
+    private static final Logger log = Logger.getLogger(SaveKeyAccess.class.getName());
 
     private OpMultimap keyAccessLists;
 

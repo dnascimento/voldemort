@@ -91,7 +91,7 @@ import voldemort.versioning.Versioned;
 @SuppressWarnings("deprecation")
 public class VersionedPutPruneJob extends DataMaintenanceJob {
 
-    private final static Logger logger = Logger.getLogger(VersionedPutPruneJob.class.getName());
+    private static final Logger logger = Logger.getLogger(VersionedPutPruneJob.class.getName());
 
     private String storeName;
 

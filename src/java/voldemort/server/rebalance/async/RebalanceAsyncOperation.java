@@ -31,7 +31,7 @@ import voldemort.store.metadata.MetadataStore;
 
 public abstract class RebalanceAsyncOperation extends AsyncOperation {
 
-    protected final static Logger logger = Logger.getLogger(RebalanceAsyncOperation.class);
+    protected static final Logger logger = Logger.getLogger(RebalanceAsyncOperation.class);
 
     protected final VoldemortConfig voldemortConfig;
     protected final MetadataStore metadataStore;

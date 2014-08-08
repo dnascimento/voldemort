@@ -36,8 +36,8 @@ import voldemort.annotations.concurrency.NotThreadsafe;
 @NotThreadsafe
 public class EventThrottler {
 
-    private final static Logger logger = Logger.getLogger(EventThrottler.class);
-    private final static long DEFAULT_CHECK_INTERVAL_MS = 50;
+    private static final Logger logger = Logger.getLogger(EventThrottler.class);
+    private static final long DEFAULT_CHECK_INTERVAL_MS = 50;
 
     private final Time time;
     private final long ratesPerSecond;

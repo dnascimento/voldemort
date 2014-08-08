@@ -57,8 +57,8 @@ public class RebalanceController {
     private final AdminClient adminClient;
     private final Cluster currentCluster;
     private final List<StoreDefinition> currentStoreDefs;
-    public final static int MAX_PARALLEL_REBALANCING = Integer.MAX_VALUE;
-    public final static long PROXY_PAUSE_IN_SECONDS = TimeUnit.MINUTES.toSeconds(5);
+    public static final int MAX_PARALLEL_REBALANCING = Integer.MAX_VALUE;
+    public static final long PROXY_PAUSE_IN_SECONDS = TimeUnit.MINUTES.toSeconds(5);
 
     private final int maxParallelRebalancing;
     private final long proxyPauseSec;

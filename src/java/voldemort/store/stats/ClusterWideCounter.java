@@ -37,7 +37,7 @@ import com.google.common.collect.Maps;
  */
 public class ClusterWideCounter {
 
-    private final static Logger logger = Logger.getLogger(ClusterWideCounter.class);
+    private static final Logger logger = Logger.getLogger(ClusterWideCounter.class);
 
     private final Cluster cluster;
     private final ConcurrentMap<Integer, AtomicLong> values;

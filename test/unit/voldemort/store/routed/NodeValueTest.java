@@ -17,7 +17,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
 public class NodeValueTest {
-    private final static Logger logger = Logger.getLogger(NodeValueTest.class);
+    private static final Logger logger = Logger.getLogger(NodeValueTest.class);
 
     public static Version createVersion(int nodeId, int clockEntry) {
         VectorClock version = TestUtils.getClock(nodeId);

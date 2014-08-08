@@ -50,23 +50,23 @@ public class Repartitioner {
     /**
      * Recommended (default) number of times to attempt repartitioning.
      */
-    public final static int DEFAULT_REPARTITION_ATTEMPTS = 5;
+    public static final int DEFAULT_REPARTITION_ATTEMPTS = 5;
     /**
      * Default number of random partition ID swaps to attempt, if random swaps
      * are enabled.
      */
-    public final static int DEFAULT_RANDOM_SWAP_ATTEMPTS = 100;
+    public static final int DEFAULT_RANDOM_SWAP_ATTEMPTS = 100;
     /**
      * Default number of successful random swaps (i.e., the random swap improves
      * balance) after which reparitioning stops, if random swaps are enabled.
      */
-    public final static int DEFAULT_RANDOM_SWAP_SUCCESSES = 100;
+    public static final int DEFAULT_RANDOM_SWAP_SUCCESSES = 100;
 
     /**
      * Default setting for which zone IDs to run random swap algorithm. Empty
      * implies all zones will be considered.
      */
-    public final static List<Integer> DEFAULT_RANDOM_SWAP_ZONE_IDS = Collections.<Integer> emptyList();
+    public static final List<Integer> DEFAULT_RANDOM_SWAP_ZONE_IDS = Collections.<Integer> emptyList();
 
     /**
      * Default number of greedy partition ID swaps to perform, if greedy swaps
@@ -74,28 +74,28 @@ public class Repartitioner {
      * partitions per node) X (some number of partitions from rest of cluster)
      * and selects the best such swap.
      */
-    public final static int DEFAULT_GREEDY_SWAP_ATTEMPTS = 5;
+    public static final int DEFAULT_GREEDY_SWAP_ATTEMPTS = 5;
 
     /**
      * Default setting for which zone IDs to run greedy swap algorithm. Empty
      * implies all zones will be considered.
      */
-    public final static List<Integer> DEFAULT_GREEDY_SWAP_ZONE_IDS = Collections.<Integer> emptyList();
+    public static final List<Integer> DEFAULT_GREEDY_SWAP_ZONE_IDS = Collections.<Integer> emptyList();
     /**
      * Default (max) number of partition IDs per node to consider, if greedy
      * swaps are enabled.
      */
-    public final static int DEFAULT_GREEDY_MAX_PARTITIONS_PER_NODE = 5;
+    public static final int DEFAULT_GREEDY_MAX_PARTITIONS_PER_NODE = 5;
     /**
      * Default (max) number of partition IDs from all the other nodes in the
      * cluster to consider, if greedy swaps are enabled.
      */
-    public final static int DEFAULT_GREEDY_MAX_PARTITIONS_PER_ZONE = 25;
+    public static final int DEFAULT_GREEDY_MAX_PARTITIONS_PER_ZONE = 25;
     /**
      * Default limit on length of contiguous partition ID run within a zone. 0
      * implies no limit on such runs.
      */
-    public final static int DEFAULT_MAX_CONTIGUOUS_PARTITIONS = 0;
+    public static final int DEFAULT_MAX_CONTIGUOUS_PARTITIONS = 0;
 
     /**
      * Runs a number of distinct algorithms over the specified clusters/store

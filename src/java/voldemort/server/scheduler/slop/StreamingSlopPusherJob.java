@@ -67,10 +67,10 @@ import com.google.common.collect.Sets;
 @SuppressWarnings("unchecked")
 public class StreamingSlopPusherJob extends SlopPusherJob implements Runnable {
 
-    private final static Logger logger = Logger.getLogger(StreamingSlopPusherJob.class.getName());
-    public final static String TYPE_NAME = "streaming";
+    private static final Logger logger = Logger.getLogger(StreamingSlopPusherJob.class.getName());
+    public static final String TYPE_NAME = "streaming";
 
-    private final static Versioned<Slop> END = Versioned.value(null);
+    private static final Versioned<Slop> END = Versioned.value(null);
 
     private ConcurrentMap<Integer, SynchronousQueue<Versioned<Slop>>> slopQueues;
     private ExecutorService consumerExecutor;

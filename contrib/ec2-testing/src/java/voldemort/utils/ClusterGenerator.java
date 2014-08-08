@@ -70,7 +70,7 @@ import voldemort.cluster.Zone;
 
 public class ClusterGenerator {
 
-    private final static long SEED = 5276239082346L;
+    private static final long SEED = 5276239082346L;
 
     /**
      * Creates a list of ClusterNodeDescriptor instances given a list of host

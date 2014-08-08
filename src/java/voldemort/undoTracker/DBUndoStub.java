@@ -54,7 +54,7 @@ public class DBUndoStub {
 
     private static final boolean LOAD_FROM_FILE = false;
 
-    private final static Logger log = Logger.getLogger(DBUndoStub.class.getName());
+    private static final Logger log = Logger.getLogger(DBUndoStub.class.getName());
     Object restrainLocker = new Object();
     BranchController brancher = new BranchController();
 
@@ -278,6 +278,7 @@ public class DBUndoStub {
     public void resetDependencies() {
         log.info("Reset dependency map");
         keyAccessLists.clear();
+        brancher.reset();
     }
 
     /**

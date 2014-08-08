@@ -77,23 +77,23 @@ import com.google.common.collect.Sets;
 @RunWith(Parameterized.class)
 public class HintedHandoffSendHintTest {
 
-    private final static Logger logger = Logger.getLogger(HintedHandoffSendHintTest.class);
+    private static final Logger logger = Logger.getLogger(HintedHandoffSendHintTest.class);
 
-    private final static String STORE_NAME = "test";
-    private final static String SLOP_STORE_NAME = "slop";
+    private static final String STORE_NAME = "test";
+    private static final String SLOP_STORE_NAME = "slop";
 
-    private final static int NUM_NODES_TOTAL = 9;
-    private final static int NUM_NODES_FAILED = 4;
+    private static final int NUM_NODES_TOTAL = 9;
+    private static final int NUM_NODES_FAILED = 4;
 
     private int REPLICATION_FACTOR = 3;
-    private final static int P_READS = 1;
-    private final static int R_READS = 1;
+    private static final int P_READS = 1;
+    private static final int R_READS = 1;
     private int P_WRITES = 1;
     private int R_WRITES = 1;
 
-    private final static int KEY_LENGTH = 32;
-    private final static int VALUE_LENGTH = 32;
-    private final static int SOCKET_TIMEOUT_MS = 500;
+    private static final int KEY_LENGTH = 32;
+    private static final int VALUE_LENGTH = 32;
+    private static final int SOCKET_TIMEOUT_MS = 500;
 
     private final Class<? extends FailureDetector> failureDetectorCls = ThresholdFailureDetector.class;
     private final HintedHandoffStrategyType hintRoutingStrategy;
@@ -115,7 +115,7 @@ public class HintedHandoffSendHintTest {
     private RoutedStore routedStore;
     private final List<ByteArray> keyList = new ArrayList<ByteArray>();
 
-    final static class SocketStoreClientFactoryForTest {
+    static final class SocketStoreClientFactoryForTest {
 
         private final String storeName;
         private final String slopStoreName;

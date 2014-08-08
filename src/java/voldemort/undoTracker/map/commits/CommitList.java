@@ -15,7 +15,7 @@ public class CommitList implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private transient final static Logger log = Logger.getLogger(CommitList.class);
+    private transient static final Logger log = Logger.getLogger(CommitList.class);
 
     /**
      * Commit-Branch list sorted by commit

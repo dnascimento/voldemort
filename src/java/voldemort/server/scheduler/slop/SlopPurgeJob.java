@@ -39,7 +39,7 @@ import voldemort.versioning.Versioned;
  */
 public class SlopPurgeJob extends DataMaintenanceJob {
 
-    private final static Logger logger = Logger.getLogger(SlopPurgeJob.class.getName());
+    private static final Logger logger = Logger.getLogger(SlopPurgeJob.class.getName());
 
     private List<Integer> nodesToPurge;
     private int zoneToPurge;

@@ -41,7 +41,7 @@ import com.google.common.collect.ImmutableList;
 @JmxManaged(description = "A StoreClientFactory which caches clients")
 public class CachingStoreClientFactory implements StoreClientFactory {
 
-    private final static Logger logger = Logger.getLogger(CachingStoreClientFactory.class);
+    private static final Logger logger = Logger.getLogger(CachingStoreClientFactory.class);
 
     private final StoreClientFactory inner;
     private final ConcurrentMap<Pair<String, Object>, StoreClient<?, ?>> cache;

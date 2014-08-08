@@ -127,7 +127,7 @@ public class BaseStreamingClient {
 
     protected List<Integer> faultyNodes;
 
-    private final static int MAX_STORES_PER_SESSION = 100;
+    private static final int MAX_STORES_PER_SESSION = 100;
 
     Calendar calendar = Calendar.getInstance();
 

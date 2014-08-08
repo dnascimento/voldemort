@@ -64,7 +64,7 @@ public class StreamingClientTest {
 
     private long startTime;
     public final String SERVER_LOCAL_URL = "tcp://localhost:";
-    public final static String TEST_STORE_NAME = "test-store-streaming-1";
+    public static final String TEST_STORE_NAME = "test-store-streaming-1";
     public final String STORES_XML_FILE = "test/common/voldemort/config/stores.xml";
     public int numServers;
     private int NUM_KEYS_1 = 4000;

@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
  */
 public class NetworkClassLoader extends ClassLoader {
 
-    private final static Logger logger = Logger.getLogger(NetworkClassLoader.class);
+    private static final Logger logger = Logger.getLogger(NetworkClassLoader.class);
 
     public NetworkClassLoader(ClassLoader parentClassLoader) {
         super(parentClassLoader);

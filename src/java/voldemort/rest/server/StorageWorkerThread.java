@@ -33,10 +33,10 @@ import voldemort.versioning.Versioned;
 
 public class StorageWorkerThread implements Runnable {
 
-    private final static RestGetErrorHandler getErrorHandler = new RestGetErrorHandler();
-    private final static RestDeleteErrorHandler deleteErrorHandler = new RestDeleteErrorHandler();
-    private final static RestGetVersionErrorHandler getVersionErrorHandler = new RestGetVersionErrorHandler();
-    private final static RestPutErrorHandler putErrorHandler = new RestPutErrorHandler();
+    private static final RestGetErrorHandler getErrorHandler = new RestGetErrorHandler();
+    private static final RestDeleteErrorHandler deleteErrorHandler = new RestDeleteErrorHandler();
+    private static final RestGetVersionErrorHandler getVersionErrorHandler = new RestGetVersionErrorHandler();
+    private static final RestPutErrorHandler putErrorHandler = new RestPutErrorHandler();
     private ConcurrentHashMap<String, StoreStats> storeStatsMap;
     private StoreStats performanceStats = null, aggregatedStoreStats = null;
     CompositeVoldemortRequest<ByteArray, byte[]> requestObject;

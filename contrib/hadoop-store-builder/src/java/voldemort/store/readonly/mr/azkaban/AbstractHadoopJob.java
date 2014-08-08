@@ -59,9 +59,9 @@ public abstract class AbstractHadoopJob extends AbstractJob {
     private final Props _props;
     private RunningJob _runningJob;
 
-    private final static String voldemortLibPath = "voldemort.distributedcache";
+    private static final String voldemortLibPath = "voldemort.distributedcache";
 
-    private final static String hadoopLibPath = "hdfs.default.classpath.dir";
+    private static final String hadoopLibPath = "hdfs.default.classpath.dir";
 
     public AbstractHadoopJob(String name, Props props) {
         super(name);

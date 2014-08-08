@@ -33,7 +33,7 @@ public class GetResponseSender extends RestResponseSender {
     private List<Versioned<byte[]>> versionedValues;
     private ByteArray key;
     private String storeName;
-    private final static Logger logger = Logger.getLogger(GetResponseSender.class);
+    private static final Logger logger = Logger.getLogger(GetResponseSender.class);
 
     public GetResponseSender(MessageEvent messageEvent,
                              ByteArray key,

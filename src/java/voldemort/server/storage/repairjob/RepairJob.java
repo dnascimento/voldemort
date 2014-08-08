@@ -39,7 +39,7 @@ import voldemort.utils.ByteArray;
  */
 public class RepairJob extends DataMaintenanceJob {
 
-    private final static Logger logger = Logger.getLogger(RepairJob.class.getName());
+    private static final Logger logger = Logger.getLogger(RepairJob.class.getName());
 
     public RepairJob(StoreRepository storeRepo,
                      MetadataStore metadataStore,

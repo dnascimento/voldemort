@@ -35,7 +35,7 @@ public class UnixCommand {
 
     private final String[] args;
 
-    private final static Logger logger = Logger.getLogger(UnixCommand.class);
+    private static final Logger logger = Logger.getLogger(UnixCommand.class);
 
     public UnixCommand(String hostName, String... args) {
         this.hostName = hostName;

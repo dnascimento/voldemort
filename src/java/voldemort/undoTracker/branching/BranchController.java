@@ -14,9 +14,9 @@ import voldemort.undoTracker.map.StsBranchPair;
 
 public class BranchController {
 
-    private final static Logger log = Logger.getLogger(BranchController.class.getName());
-    public final static long INIT_COMMIT = 0L;
-    public final static short INIT_BRANCH = 0;
+    private static final Logger log = Logger.getLogger(BranchController.class.getName());
+    public static final long INIT_COMMIT = 0L;
+    public static final short INIT_BRANCH = 0;
 
     BranchPath current;
     BranchPath redo;
@@ -75,6 +75,12 @@ public class BranchController {
 
         log.error("isRedo: branch not present: " + branch);
         throw new VoldemortException("isRedo: branch not present: " + branch);
+    }
+
+    public void reset() {
+        StsBranchPair baseBranch = new StsBranchPair(INIT_COMMIT, INIT_BRANCH);
+        current = new BranchPath(baseBranch, baseBranch);
+        redo = null;
     }
 
 }

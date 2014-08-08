@@ -53,13 +53,13 @@ public class HintedHandoffTestEnvironment implements Runnable {
 
     private final Logger logger = Logger.getLogger(HintedHandoffTestEnvironment.class);
     // basic configurations
-    protected final static String STORE_NAME = "test-store";
-    private final static SerializerDefinition SEL_DEF = new SerializerDefinition("identity");
-    protected final static Integer NUM_NODES_TOTAL = 8;
-    private final static Integer DEFAULT_REPLICATION_FACTOR = 3;
-    private final static Integer DEFAULT_P_WRITES = 1;
-    private final static Integer DEFAULT_R_WRITES = 1;
-    private final static HintedHandoffStrategyType DEFAULT_HINT_ROUTING_STRATEGY = HintedHandoffStrategyType.PROXIMITY_STRATEGY;
+    protected static final String STORE_NAME = "test-store";
+    private static final SerializerDefinition SEL_DEF = new SerializerDefinition("identity");
+    protected static final Integer NUM_NODES_TOTAL = 8;
+    private static final Integer DEFAULT_REPLICATION_FACTOR = 3;
+    private static final Integer DEFAULT_P_WRITES = 1;
+    private static final Integer DEFAULT_R_WRITES = 1;
+    private static final HintedHandoffStrategyType DEFAULT_HINT_ROUTING_STRATEGY = HintedHandoffStrategyType.PROXIMITY_STRATEGY;
     protected int minNodesAvailable = 1;
 
     // cluster and servers
@@ -83,8 +83,8 @@ public class HintedHandoffTestEnvironment implements Runnable {
     private static Integer DEFAULT_SLOP_PUSH_INTERVAL_S = 10;
 
     // failures
-    private final static Integer DEFAULT_REFRESH_INTERVAL_S = 8;
-    private final static Integer DEFAULT_ASYNC_RECOVERY_INTERVAL_S = 5;
+    private static final Integer DEFAULT_REFRESH_INTERVAL_S = 8;
+    private static final Integer DEFAULT_ASYNC_RECOVERY_INTERVAL_S = 5;
     protected Integer statusRefreshIntervalSecond = DEFAULT_REFRESH_INTERVAL_S;
     protected Map<Integer, NodeStatus> nodesStatus = new HashMap<Integer, NodeStatus>();
 

@@ -58,7 +58,7 @@ import com.google.common.collect.Maps;
 public class BlockingSlopPusherJob extends SlopPusherJob implements Runnable {
 
     private static final Logger logger = Logger.getLogger(BlockingSlopPusherJob.class.getName());
-    public final static String TYPE_NAME = "blocking";
+    public static final String TYPE_NAME = "blocking";
     private final long maxWriteBytesPerSec;
 
     public BlockingSlopPusherJob(StoreRepository storeRepo,

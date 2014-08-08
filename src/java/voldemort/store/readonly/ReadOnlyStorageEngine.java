@@ -591,7 +591,7 @@ public class ReadOnlyStorageEngine extends AbstractStorageEngine<ByteArray, byte
         return super.getName();
     }
 
-    private final static class KeyValueLocation implements Comparable<KeyValueLocation> {
+    private static final class KeyValueLocation implements Comparable<KeyValueLocation> {
 
         private final int chunk;
         private final ByteArray key;

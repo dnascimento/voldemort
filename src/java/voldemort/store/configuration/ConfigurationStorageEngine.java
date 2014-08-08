@@ -48,7 +48,7 @@ import voldemort.versioning.Versioned;
  */
 public class ConfigurationStorageEngine extends AbstractStorageEngine<String, String, String> {
 
-    private final static Logger logger = Logger.getLogger(ConfigurationStorageEngine.class);
+    private static final Logger logger = Logger.getLogger(ConfigurationStorageEngine.class);
     private final File directory;
 
     public ConfigurationStorageEngine(String name, String directory) {

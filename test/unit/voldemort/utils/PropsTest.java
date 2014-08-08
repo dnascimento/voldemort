@@ -11,10 +11,10 @@ import org.junit.Test;
 
 public class PropsTest {
 
-    private final static Random randomGenerator = new Random();
-    private final static int MAX_STRING_LENGTH = 10;
-    private final static int MAX_PROPS_SIZE = 10;
-    private final static int TIMES = 1000;
+    private static final Random randomGenerator = new Random();
+    private static final int MAX_STRING_LENGTH = 10;
+    private static final int MAX_PROPS_SIZE = 10;
+    private static final int TIMES = 1000;
 
     /**
      * 

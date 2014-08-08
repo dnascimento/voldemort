@@ -94,7 +94,7 @@ import com.google.common.collect.Sets;
  */
 public class HintedHandoffFailureTest {
 
-    private final static String SLOP_STORE_NAME = "slop";
+    private static final String SLOP_STORE_NAME = "slop";
     private static int REPLICATION_FACTOR = 2;
     private static int P_READS = 1;
     private static int R_READS = 1;

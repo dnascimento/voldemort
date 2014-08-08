@@ -51,7 +51,7 @@ import com.google.common.collect.Lists;
  */
 public class Rebalancer implements Runnable {
 
-    private final static Logger logger = Logger.getLogger(Rebalancer.class);
+    private static final Logger logger = Logger.getLogger(Rebalancer.class);
 
     private final MetadataStore metadataStore;
     private final AsyncOperationService asyncService;

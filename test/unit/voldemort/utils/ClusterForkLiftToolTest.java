@@ -41,10 +41,10 @@ import com.google.common.collect.Lists;
 
 public class ClusterForkLiftToolTest {
 
-    final static String STORES_XML = "test/common/voldemort/config/two-stores-replicated.xml";
-    final static String PRIMARY_RESOLVING_STORE_NAME = "test";
-    final static String GLOBALLY_RESOLVING_STORE_NAME = "best";
-    final static String MULTIPLE_VERSIONS_STORE_NAME = "no-res";
+    static final String STORES_XML = "test/common/voldemort/config/two-stores-replicated.xml";
+    static final String PRIMARY_RESOLVING_STORE_NAME = "test";
+    static final String GLOBALLY_RESOLVING_STORE_NAME = "best";
+    static final String MULTIPLE_VERSIONS_STORE_NAME = "no-res";
 
     private String srcBootStrapUrl;
     private String dstBootStrapUrl;

@@ -51,7 +51,7 @@ public class Gossiper implements Runnable {
     private final AdminClient adminClient;
     private final int gossipInterval;
 
-    private final static Logger logger = Logger.getLogger(Gossiper.class);
+    private static final Logger logger = Logger.getLogger(Gossiper.class);
 
     /**
      * Create a <code>Gossiper</code> object, which implements {@link Runnable}

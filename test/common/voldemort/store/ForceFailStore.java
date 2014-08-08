@@ -28,7 +28,7 @@ import voldemort.versioning.Versioned;
 
 public class ForceFailStore<K, V, T> extends DelegatingStore<K, V, T> {
 
-    private final static Logger logger = Logger.getLogger(ForceFailStore.class);
+    private static final Logger logger = Logger.getLogger(ForceFailStore.class);
     private final VoldemortException e;
 
     private volatile boolean fail = false;

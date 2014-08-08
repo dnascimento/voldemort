@@ -56,9 +56,9 @@ public class ConsistencyFixCLI {
 
     private static class Options {
 
-        public final static int defaultParallelism = 8;
-        public final static long defaultProgressPeriodOps = 1000;
-        public final static long defaultPerServerQPSLimit = 100;
+        public static final int defaultParallelism = 8;
+        public static final long defaultProgressPeriodOps = 1000;
+        public static final long defaultPerServerQPSLimit = 100;
 
         public String url = null;
         public String storeName = null;

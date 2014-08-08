@@ -11,8 +11,8 @@ import org.junit.Test;
 
 public class PairTest {
 
-    private final static int TIMES = 10000;
-    private final static Random randomGenerator = new Random();
+    private static final int TIMES = 10000;
+    private static final Random randomGenerator = new Random();
 
     @Test
     public void testGetFirst_and_getSecond() {

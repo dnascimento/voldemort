@@ -26,7 +26,7 @@ import voldemort.VoldemortException;
  */
 public class StorageInitializationException extends VoldemortException {
 
-    private final static long serialVersionUID = 1;
+    private static final long serialVersionUID = 1;
 
     public StorageInitializationException() {}
 

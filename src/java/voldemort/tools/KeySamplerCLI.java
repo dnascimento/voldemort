@@ -63,10 +63,10 @@ public class KeySamplerCLI {
 
     private static Logger logger = Logger.getLogger(KeySamplerCLI.class);
 
-    private final static int DEFAULT_NODE_PARALLELISM = 8;
-    private final static int DEFAULT_RECORDS_PER_PARTITION = 0; // INF
-    private final static int DEFAULT_KEYS_PER_SECOND_LIMIT = 200;
-    private final static int DEFAULT_PROGRESS_PERIOD_OPS = 1000;
+    private static final int DEFAULT_NODE_PARALLELISM = 8;
+    private static final int DEFAULT_RECORDS_PER_PARTITION = 0; // INF
+    private static final int DEFAULT_KEYS_PER_SECOND_LIMIT = 200;
+    private static final int DEFAULT_PROGRESS_PERIOD_OPS = 1000;
 
     private final AdminClient adminClient;
     private final Cluster cluster;

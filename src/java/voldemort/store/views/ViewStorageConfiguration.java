@@ -20,7 +20,7 @@ import voldemort.utils.Utils;
 
 public class ViewStorageConfiguration implements StorageConfiguration {
 
-    public final static String TYPE_NAME = "view";
+    public static final String TYPE_NAME = "view";
 
     private StoreRepository storeRepo;
     private List<StoreDefinition> storeDefs;

@@ -45,7 +45,7 @@ public abstract class RebalanceTask implements Runnable {
     protected long permitAcquisitionTimeMs;
     protected long taskCompletionTimeMs;
 
-    protected final static int INVALID_REBALANCE_ID = -1;
+    protected static final int INVALID_REBALANCE_ID = -1;
 
     public RebalanceTask(final int batchId,
                          final int taskId,

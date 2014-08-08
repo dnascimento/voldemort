@@ -87,7 +87,7 @@ import com.google.common.collect.Multimap;
 // https://github.com/abh1nay/voldemort/compare/proxy-put-metadata-listener
 public class RedirectingStore extends DelegatingStore<ByteArray, byte[], byte[]> {
 
-    private final static Logger logger = Logger.getLogger(RedirectingStore.class);
+    private static final Logger logger = Logger.getLogger(RedirectingStore.class);
     private final MetadataStore metadata;
     private final StoreRepository storeRepository;
     private final SocketStoreFactory storeFactory;

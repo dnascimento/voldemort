@@ -35,7 +35,7 @@ import voldemort.versioning.Versioned;
 public class MetadataVersionStoreUtils {
 
     public static final String VERSIONS_METADATA_KEY = "metadata-versions";
-    private final static Logger logger = Logger.getLogger(MetadataVersionStoreUtils.class);
+    private static final Logger logger = Logger.getLogger(MetadataVersionStoreUtils.class);
 
     /**
      * Retrieves a properties (hashmap) consisting of all the metadata versions

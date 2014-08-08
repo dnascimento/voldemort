@@ -57,16 +57,16 @@ import voldemort.xml.StoreDefinitionsMapper;
 
 public class RoutedStoreParallelismTest {
 
-    private final static String THREAD_POOL_ROUTED_STORE = "threaded";
-    private final static String PIPELINE_ROUTED_STORE = "pipeline";
-    private final static int DEFAULT_NUM_KEYS = 50;
-    private final static int DEFAULT_MAX_CONNECTIONS = new ClientConfig().getMaxConnectionsPerNode();
-    private final static int DEFAULT_MAX_THREADS = new ClientConfig().getMaxThreads();
-    private final static int DEFAULT_NUM_NODES = 2;
-    private final static int DEFAULT_NUM_SLOW_NODES = 1;
-    private final static int DEFAULT_DELAY = 500;
-    private final static int DEFAULT_NUM_CLIENTS = 20;
-    private final static String DEFAULT_ROUTED_STORE_TYPE = PIPELINE_ROUTED_STORE;
+    private static final String THREAD_POOL_ROUTED_STORE = "threaded";
+    private static final String PIPELINE_ROUTED_STORE = "pipeline";
+    private static final int DEFAULT_NUM_KEYS = 50;
+    private static final int DEFAULT_MAX_CONNECTIONS = new ClientConfig().getMaxConnectionsPerNode();
+    private static final int DEFAULT_MAX_THREADS = new ClientConfig().getMaxThreads();
+    private static final int DEFAULT_NUM_NODES = 2;
+    private static final int DEFAULT_NUM_SLOW_NODES = 1;
+    private static final int DEFAULT_DELAY = 500;
+    private static final int DEFAULT_NUM_CLIENTS = 20;
+    private static final String DEFAULT_ROUTED_STORE_TYPE = PIPELINE_ROUTED_STORE;
 
     public static void main(String[] args) throws Throwable {
         OptionParser parser = new OptionParser();

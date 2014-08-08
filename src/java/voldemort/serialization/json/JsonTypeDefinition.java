@@ -36,15 +36,15 @@ public class JsonTypeDefinition implements Serializable {
 
     private static final long serialVersionUID = 1;
 
-    public final static JsonTypeDefinition INT8 = JsonTypeDefinition.fromJson("\"int8\"");
-    public final static JsonTypeDefinition INT16 = JsonTypeDefinition.fromJson("\"int16\"");
-    public final static JsonTypeDefinition INT32 = JsonTypeDefinition.fromJson("\"int32\"");
-    public final static JsonTypeDefinition INT64 = JsonTypeDefinition.fromJson("\"int64\"");
-    public final static JsonTypeDefinition FLOAT32 = JsonTypeDefinition.fromJson("\"float32\"");
-    public final static JsonTypeDefinition FLOAT64 = JsonTypeDefinition.fromJson("\"float64\"");
-    public final static JsonTypeDefinition STRING = JsonTypeDefinition.fromJson("\"string\"");
-    public final static JsonTypeDefinition DATE = JsonTypeDefinition.fromJson("\"date\"");
-    public final static JsonTypeDefinition BOOLEAN = JsonTypeDefinition.fromJson("\"boolean\"");
+    public static final JsonTypeDefinition INT8 = JsonTypeDefinition.fromJson("\"int8\"");
+    public static final JsonTypeDefinition INT16 = JsonTypeDefinition.fromJson("\"int16\"");
+    public static final JsonTypeDefinition INT32 = JsonTypeDefinition.fromJson("\"int32\"");
+    public static final JsonTypeDefinition INT64 = JsonTypeDefinition.fromJson("\"int64\"");
+    public static final JsonTypeDefinition FLOAT32 = JsonTypeDefinition.fromJson("\"float32\"");
+    public static final JsonTypeDefinition FLOAT64 = JsonTypeDefinition.fromJson("\"float64\"");
+    public static final JsonTypeDefinition STRING = JsonTypeDefinition.fromJson("\"string\"");
+    public static final JsonTypeDefinition DATE = JsonTypeDefinition.fromJson("\"date\"");
+    public static final JsonTypeDefinition BOOLEAN = JsonTypeDefinition.fromJson("\"boolean\"");
 
     private Object type;
 

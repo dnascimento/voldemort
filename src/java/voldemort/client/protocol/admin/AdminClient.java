@@ -146,7 +146,7 @@ public class AdminClient {
     private static final String CLUSTER_VERSION_KEY = "cluster.xml";
     private static final String STORES_VERSION_KEY = "stores.xml";
 
-    public final static List<String> restoreStoreEngineBlackList = Arrays.asList(ReadOnlyStorageConfiguration.TYPE_NAME,
+    public static final List<String> restoreStoreEngineBlackList = Arrays.asList(ReadOnlyStorageConfiguration.TYPE_NAME,
                                                                                  ViewStorageConfiguration.TYPE_NAME);
 
     private final ErrorCodeMapper errorMapper;

@@ -48,7 +48,7 @@ public class AsyncOperationService extends AbstractService {
     private final AtomicInteger lastOperationId = new AtomicInteger(0);
     private final SchedulerService scheduler;
 
-    private final static Logger logger = Logger.getLogger(AsyncOperationService.class);
+    private static final Logger logger = Logger.getLogger(AsyncOperationService.class);
 
     public AsyncOperationService(SchedulerService scheduler, int cacheSize) {
         super(ServiceType.ASYNC_SCHEDULER);

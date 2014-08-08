@@ -12,7 +12,7 @@ import com.linkedin.tusk.RestFSException;
 
 public class RestHadoopAuth extends AbstractService {
 
-    private final static Logger logger = Logger.getLogger(RestHadoopAuth.class);
+    private static final Logger logger = Logger.getLogger(RestHadoopAuth.class);
 
     public static String SERVICE_NAME = "rest-hdfs-auth-service";
     public static String KERBEROS_REALM_PROPERTY = "java.security.krb5.realm";

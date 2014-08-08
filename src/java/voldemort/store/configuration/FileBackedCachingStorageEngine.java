@@ -64,7 +64,7 @@ import voldemort.versioning.Versioned;
 public class FileBackedCachingStorageEngine extends
         AbstractStorageEngine<ByteArray, byte[], byte[]> {
 
-    private final static Logger logger = Logger.getLogger(FileBackedCachingStorageEngine.class);
+    private static final Logger logger = Logger.getLogger(FileBackedCachingStorageEngine.class);
     private static final CharSequence NEW_PROPERTY_SEPARATOR = "[name=";
     private static final String NEW_LINE = System.getProperty("line.separator");
 

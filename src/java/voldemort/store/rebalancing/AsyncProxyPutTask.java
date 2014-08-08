@@ -45,7 +45,7 @@ import voldemort.versioning.Versioned;
  */
 public class AsyncProxyPutTask implements Runnable {
 
-    private final static Logger logger = Logger.getLogger(AsyncProxyPutTask.class);
+    private static final Logger logger = Logger.getLogger(AsyncProxyPutTask.class);
 
     private final RedirectingStore redirectingStore;
     private final ByteArray key;

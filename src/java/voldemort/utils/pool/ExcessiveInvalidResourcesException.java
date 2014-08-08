@@ -8,7 +8,7 @@ package voldemort.utils.pool;
  */
 public class ExcessiveInvalidResourcesException extends RuntimeException {
 
-    private final static long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     public ExcessiveInvalidResourcesException(int count) {
         super(count + " successive attempts to create a valid resource failed; "

@@ -43,7 +43,7 @@ import com.google.common.base.Joiner;
 
 public class PartitionAnalysisCLI {
 
-    private final static Logger logger = Logger.getLogger(PartitionAnalysisCLI.class);
+    private static final Logger logger = Logger.getLogger(PartitionAnalysisCLI.class);
 
     private static OptionParser parser;
 

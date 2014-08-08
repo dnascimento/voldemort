@@ -68,9 +68,9 @@ public class KeyVersionFetcherCLI {
 
     private static Logger logger = Logger.getLogger(KeyVersionFetcherCLI.class);
 
-    private final static int DEFAULT_KEY_PARALLELISM = 4;
-    private final static int DEFAULT_PROGRESS_PERIOD_OPS = 1000;
-    private final static int DEFAULT_OUTPUT_BATCH_SIZE = 100;
+    private static final int DEFAULT_KEY_PARALLELISM = 4;
+    private static final int DEFAULT_PROGRESS_PERIOD_OPS = 1000;
+    private static final int DEFAULT_OUTPUT_BATCH_SIZE = 100;
 
     private final AdminClient adminClient;
     private final Cluster cluster;

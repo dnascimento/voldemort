@@ -7,7 +7,7 @@ public class DynamicThrottleLimit {
     private long perNodeRate = 0l;
     private long dynamicRatePerSecond = 0l;
     private int numJobs = 0;
-    private final static Logger logger = Logger.getLogger(DynamicThrottleLimit.class);
+    private static final Logger logger = Logger.getLogger(DynamicThrottleLimit.class);
 
     public DynamicThrottleLimit(long val) {
         this.dynamicRatePerSecond = this.perNodeRate = val;

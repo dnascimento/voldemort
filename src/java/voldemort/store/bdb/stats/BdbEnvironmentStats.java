@@ -22,7 +22,7 @@ import com.sleepycat.je.StatsConfig;
 public class BdbEnvironmentStats {
 
     // Don't fetch entry count/btree stats more than twice a day
-    private final static long INVASIVE_STATS_TTL_MS = 12 * 3600 * 1000;
+    private static final long INVASIVE_STATS_TTL_MS = 12 * 3600 * 1000;
 
     private final Environment environment;
     private final Database database;

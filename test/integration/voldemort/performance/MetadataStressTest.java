@@ -17,7 +17,7 @@ import voldemort.xml.StoreDefinitionsMapper;
 
 public class MetadataStressTest {
 
-    private final static Logger logger = Logger.getLogger(MetadataStressTest.class);
+    private static final Logger logger = Logger.getLogger(MetadataStressTest.class);
 
     public static void main(String[] args) throws Exception {
 

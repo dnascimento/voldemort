@@ -23,7 +23,7 @@ import voldemort.utils.ByteArray;
  */
 public class AsyncPutSynchronizer {
 
-    private final static Logger logger = Logger.getLogger(AsyncPutSynchronizer.class);
+    private static final Logger logger = Logger.getLogger(AsyncPutSynchronizer.class);
     private boolean asyncCallbackShouldSendhint;
     private boolean responseHandlingCutoff;
     private final ConcurrentMap<Node, Boolean> slopDestinations; // the value in

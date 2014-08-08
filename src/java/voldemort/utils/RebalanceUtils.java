@@ -61,12 +61,12 @@ public class RebalanceUtils {
 
     private static Logger logger = Logger.getLogger(RebalanceUtils.class);
 
-    public final static List<String> canRebalanceList = Arrays.asList(BdbStorageConfiguration.TYPE_NAME,
+    public static final List<String> canRebalanceList = Arrays.asList(BdbStorageConfiguration.TYPE_NAME,
                                                                       ReadOnlyStorageConfiguration.TYPE_NAME);
 
-    public final static String currentClusterFileName = "current-cluster.xml";
-    public final static String finalClusterFileName = "final-cluster.xml";
-    public final static String finalStoresFileName = "final-stores.xml";
+    public static final String currentClusterFileName = "current-cluster.xml";
+    public static final String finalClusterFileName = "final-cluster.xml";
+    public static final String finalStoresFileName = "final-stores.xml";
 
     /**
      * Verify store definitions are congruent with cluster definition.

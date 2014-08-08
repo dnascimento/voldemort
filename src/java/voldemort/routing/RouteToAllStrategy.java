@@ -37,7 +37,7 @@ public class RouteToAllStrategy implements RoutingStrategy {
     final private ArrayList<Integer> partitionIds;
 
     // Use partition ID 0 for all keys to implement route to all strategy.
-    final static private int ROUTE_TO_ALL_PARTITION_ID = 0;
+    static final private int ROUTE_TO_ALL_PARTITION_ID = 0;
 
     public RouteToAllStrategy(Collection<Node> nodes) {
         this.nodes = nodes;

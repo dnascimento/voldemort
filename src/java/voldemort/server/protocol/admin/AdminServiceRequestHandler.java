@@ -90,9 +90,9 @@ import com.google.common.collect.Lists;
  */
 public class AdminServiceRequestHandler implements RequestHandler {
 
-    private final static Logger logger = Logger.getLogger(AdminServiceRequestHandler.class);
+    private static final Logger logger = Logger.getLogger(AdminServiceRequestHandler.class);
 
-    private final static Object lock = new Object();
+    private static final Object lock = new Object();
 
     private final ErrorCodeMapper errorCodeMapper;
     private final MetadataStore metadataStore;

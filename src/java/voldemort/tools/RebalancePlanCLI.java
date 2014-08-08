@@ -45,7 +45,7 @@ import com.google.common.base.Joiner;
 
 public class RebalancePlanCLI {
 
-    private final static Logger logger = Logger.getLogger(RebalancePlanCLI.class);
+    private static final Logger logger = Logger.getLogger(RebalancePlanCLI.class);
 
     private static OptionParser parser;
 

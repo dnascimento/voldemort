@@ -51,8 +51,8 @@ import com.google.common.collect.Maps;
  */
 public class RebootstrappingStoreTest {
 
-    private final static String STORE_NAME = "test";
-    private final static String STORES_XML = "test/common/voldemort/config/single-store.xml";
+    private static final String STORE_NAME = "test";
+    private static final String STORES_XML = "test/common/voldemort/config/single-store.xml";
 
     private Cluster cluster;
     private List<VoldemortServer> servers;

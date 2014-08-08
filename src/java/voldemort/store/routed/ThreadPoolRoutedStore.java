@@ -68,7 +68,7 @@ import com.google.common.collect.Maps;
 @Deprecated
 public class ThreadPoolRoutedStore extends RoutedStore {
 
-    private final static StoreOp<Versioned<byte[]>> VERSIONED_OP = new StoreOp<Versioned<byte[]>>() {
+    private static final StoreOp<Versioned<byte[]>> VERSIONED_OP = new StoreOp<Versioned<byte[]>>() {
 
         @Override
         public List<Versioned<byte[]>> execute(Store<ByteArray, byte[], byte[]> store,
@@ -78,7 +78,7 @@ public class ThreadPoolRoutedStore extends RoutedStore {
         }
     };
 
-    private final static StoreOp<Version> VERSION_OP = new StoreOp<Version>() {
+    private static final StoreOp<Version> VERSION_OP = new StoreOp<Version>() {
 
         @Override
         public List<Version> execute(Store<ByteArray, byte[], byte[]> store,
@@ -881,7 +881,7 @@ public class ThreadPoolRoutedStore extends RoutedStore {
         }
     }
 
-    private final static class GetResult<R> {
+    private static final class GetResult<R> {
 
         final Node node;
         final ByteArray key;

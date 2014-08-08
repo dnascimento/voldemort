@@ -18,7 +18,7 @@ import voldemort.store.stats.Tracked;
 
 public class GetMetadataResponseSender extends RestResponseSender {
 
-    private final static Logger logger = Logger.getLogger(GetMetadataResponseSender.class);
+    private static final Logger logger = Logger.getLogger(GetMetadataResponseSender.class);
     private final byte[] responseValue;
 
     public GetMetadataResponseSender(MessageEvent messageEvent, byte[] responseValue) {

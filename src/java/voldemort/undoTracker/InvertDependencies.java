@@ -27,7 +27,7 @@ import com.google.common.collect.LinkedListMultimap;
  */
 public class InvertDependencies extends Thread {
 
-    private final static Logger log = Logger.getLogger(InvertDependencies.class.getName());
+    private static final Logger log = Logger.getLogger(InvertDependencies.class.getName());
 
     private OpMultimap trackLocalAccess;
     private long REFRESH_PERIOD = 1000;

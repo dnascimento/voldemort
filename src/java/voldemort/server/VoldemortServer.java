@@ -74,7 +74,7 @@ public class VoldemortServer extends AbstractService {
     private static final Logger logger = Logger.getLogger(VoldemortServer.class.getName());
     public static final long DEFAULT_PUSHER_POLL_MS = 60 * 1000;
 
-    private final static int ASYNC_REQUEST_CACHE_SIZE = 64;
+    private static final int ASYNC_REQUEST_CACHE_SIZE = 64;
 
     private final Node identityNode;
     private final List<VoldemortService> services;
