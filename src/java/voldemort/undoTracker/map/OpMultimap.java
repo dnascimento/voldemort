@@ -143,6 +143,14 @@ public class OpMultimap implements Serializable {
         return entry;
     }
 
+    /**
+     * Get the access list of a specific key for selective replay, required by
+     * the manager
+     * 
+     * @param keysList
+     * @param baseRid
+     * @return
+     */
     public HashMap<ByteString, ArrayList<Op>> getAccessList(List<ByteString> keysList, long baseRid) {
         HashMap<ByteString, ArrayList<Op>> result = new HashMap<ByteString, ArrayList<Op>>();
         for(ByteString key: keysList) {
@@ -157,7 +165,6 @@ public class OpMultimap implements Serializable {
         return map.keys();
         // TODO this may cause issues, then use keySet which is weakly
         // consistent
-        // return map.keySet();
     }
 
     /**

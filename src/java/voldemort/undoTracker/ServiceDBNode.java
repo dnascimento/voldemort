@@ -104,6 +104,7 @@ public class ServiceDBNode extends Thread {
         if(cmd.hasRedoOver()) {
             stub.redoOver();
         }
+        // Get the access list of a specific key for selective replay
         if(cmd.hasEntryAccessesMsg()) {
             HashMap<ByteString, ArrayList<Op>> result = stub.getAccessList(cmd.getEntryAccessesMsg()
                                                                               .getKeysList(),

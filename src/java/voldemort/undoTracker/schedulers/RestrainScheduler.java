@@ -46,7 +46,7 @@ public class RestrainScheduler extends AccessSchedule {
     @Override
     public StsBranchPair getStart(ByteArray key, RUD rud, BranchPath path) {
         OpMultimapEntry l = archive.get(key);
-        if(l.isModified(path.current.branch)) {
+        if(l.isReplayingInBranch(path.current.branch)) {
             synchronized(flag) {
                 try {
                     flag.wait();
@@ -61,7 +61,7 @@ public class RestrainScheduler extends AccessSchedule {
     @Override
     public StsBranchPair putStart(ByteArray key, RUD rud, BranchPath path) {
         OpMultimapEntry l = archive.get(key);
-        if(l.isModified(path.current.branch)) {
+        if(l.isReplayingInBranch(path.current.branch)) {
             synchronized(flag) {
                 try {
                     flag.wait();
@@ -76,7 +76,7 @@ public class RestrainScheduler extends AccessSchedule {
     @Override
     public StsBranchPair deleteStart(ByteArray key, RUD rud, BranchPath path) {
         OpMultimapEntry l = archive.get(key);
-        if(l.isModified(path.current.branch)) {
+        if(l.isReplayingInBranch(path.current.branch)) {
             synchronized(flag) {
                 try {
                     flag.wait();
@@ -91,7 +91,7 @@ public class RestrainScheduler extends AccessSchedule {
     @Override
     public StsBranchPair getVersionStart(ByteArray key, RUD rud, BranchPath path) {
         OpMultimapEntry l = archive.get(key);
-        if(l.isModified(path.current.branch)) {
+        if(l.isReplayingInBranch(path.current.branch)) {
             synchronized(flag) {
                 try {
                     flag.wait();

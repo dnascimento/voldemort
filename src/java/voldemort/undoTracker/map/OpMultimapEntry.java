@@ -119,7 +119,7 @@ public class OpMultimapEntry implements Serializable {
      * Count if there are some operation running
      * 
      */
-    public boolean hasLocked() {
+    public boolean isLocked() {
         return valueLocker.hasPendent();
     }
 
@@ -148,9 +148,8 @@ public class OpMultimapEntry implements Serializable {
         }
 
         if(lastWrite == -1) {
-            // exception: the first elements of list are get ops because
-            // someone
-            // tried to get the entry before it exists
+            // the first elements of list are get ops, which tried to get the
+            // entry before it exists
             while(sentDependency < list.size()) {
                 if(list.get(sentDependency).type != OpType.Get) {
                     lastWrite = list.get(sentDependency).rid;
@@ -272,8 +271,14 @@ public class OpMultimapEntry implements Serializable {
     }
 
     /*------------------------------ REDO ------------------------------- */
-
-    public synchronized boolean isModified(short redoBranch) {
+    /**
+     * This entry is replaying in the provided branch? The replay process
+     * started on this key?
+     * 
+     * @param redoBranch
+     * @return
+     */
+    public synchronized boolean isReplayingInBranch(short redoBranch) {
         if(getRedoIterator() != null && getRedoIterator().getBranch() == redoBranch)
             return true;
         return false;

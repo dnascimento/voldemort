@@ -333,6 +333,13 @@ public class DBUndoStub {
         opStart(OpType.GetVersion, key, rud);
     }
 
+    /**
+     * Get the access list of a specific key for selective replay
+     * 
+     * @param keysList
+     * @param baseRid
+     * @return
+     */
     public HashMap<ByteString, ArrayList<Op>> getAccessList(List<ByteString> keysList, long baseRid) {
         return keyAccessLists.getAccessList(keysList, baseRid);
     }
