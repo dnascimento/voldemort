@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 import voldemort.VoldemortException;
 import voldemort.store.AbstractStorageEngine;
 import voldemort.store.StoreUtils;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.Pair;
@@ -64,14 +64,14 @@ public class KratiStorageEngine extends AbstractStorageEngine<ByteArray, byte[],
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
                                                           Map<ByteArray, byte[]> transforms,
-                                                          RUD rud) throws VoldemortException {
+                                                          SRD srd) throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
-        return StoreUtils.getAll(this, keys, null, new RUD());
+        return StoreUtils.getAll(this, keys, null, new SRD());
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key, RUD rud) {
-        return StoreUtils.getVersions(get(key, null,rud));
+    public List<Version> getVersions(ByteArray key, SRD srd) {
+        return StoreUtils.getVersions(get(key, null,srd));
     }
 
     @Override
@@ -85,7 +85,7 @@ public class KratiStorageEngine extends AbstractStorageEngine<ByteArray, byte[],
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, RUD rud)
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, SRD srd)
             throws VoldemortException {
         StoreUtils.assertValidKey(key);
         try {
@@ -152,7 +152,7 @@ public class KratiStorageEngine extends AbstractStorageEngine<ByteArray, byte[],
     }
 
     @Override
-    public boolean delete(ByteArray key, Version maxVersion, RUD rud) throws VoldemortException {
+    public boolean delete(ByteArray key, Version maxVersion, SRD srd) throws VoldemortException {
         StoreUtils.assertValidKey(key);
 
         synchronized(this.locks.lockFor(key.get())) {
@@ -165,7 +165,7 @@ public class KratiStorageEngine extends AbstractStorageEngine<ByteArray, byte[],
                 }
             }
 
-            List<Versioned<byte[]>> returnedValuesList = this.get(key, null,rud);
+            List<Versioned<byte[]>> returnedValuesList = this.get(key, null,srd);
 
             // Case if there is nothing to delete
             if(returnedValuesList.size() == 0) {
@@ -195,13 +195,13 @@ public class KratiStorageEngine extends AbstractStorageEngine<ByteArray, byte[],
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, RUD rud)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, SRD srd)
             throws VoldemortException {
         StoreUtils.assertValidKey(key);
 
         synchronized(this.locks.lockFor(key.get())) {
             // First get the value
-            List<Versioned<byte[]>> existingValuesList = this.get(key, null,rud);
+            List<Versioned<byte[]>> existingValuesList = this.get(key, null,srd);
 
             // If no value, add one
             if(existingValuesList.size() == 0) {
@@ -236,7 +236,7 @@ public class KratiStorageEngine extends AbstractStorageEngine<ByteArray, byte[],
     @Override
     public List<Versioned<byte[]>> multiVersionPut(ByteArray key,
                                                    final List<Versioned<byte[]>> values,
-                                                   RUD rud) throws VoldemortException {
+                                                   SRD srd) throws VoldemortException {
         // TODO the day this class implements getAndLock and putAndUnlock, this
         // method can be removed
         StoreUtils.assertValidKey(key);
@@ -244,7 +244,7 @@ public class KratiStorageEngine extends AbstractStorageEngine<ByteArray, byte[],
         List<Versioned<byte[]>> obsoleteVals = null;
 
         synchronized(this.locks.lockFor(key.get())) {
-            valuesInStorage = this.get(key, null,rud);
+            valuesInStorage = this.get(key, null,srd);
             obsoleteVals = resolveAndConstructVersionsToPersist(valuesInStorage, values);
 
             try {
@@ -339,7 +339,7 @@ public class KratiStorageEngine extends AbstractStorageEngine<ByteArray, byte[],
         @Override
         public void remove() {
             Pair<ByteArray, Versioned<byte[]>> currentPair = next();
-            delete(currentPair.getFirst(), currentPair.getSecond().getVersion(), new RUD());
+            delete(currentPair.getFirst(), currentPair.getSecond().getVersion(), new SRD());
         }
 
     }

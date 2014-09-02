@@ -53,7 +53,7 @@ import voldemort.client.StoreClient;
 import voldemort.client.StoreClientFactory;
 import voldemort.cluster.Node;
 import voldemort.cluster.failuredetector.FailureDetector;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 
 /**
  * Ec2FailureDetectorTest creates nodes using EC2 and .
@@ -241,7 +241,7 @@ public class Ec2FailureDetectorTest {
     private void test(StoreClient<String, String> store, int tests) {
         for(int i = 0; i < tests; i++) {
             try {
-                store.get("test_" + i, new RUD());
+                store.get("test_" + i, new SRD());
             } catch(Exception e) {
                 if(logger.isDebugEnabled())
                     logger.debug(e);

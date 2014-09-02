@@ -79,7 +79,7 @@ import voldemort.store.slop.HintedHandoff;
 import voldemort.store.slop.Slop;
 import voldemort.store.slop.SlopStorageEngine;
 import voldemort.store.slop.strategy.HintedHandoffStrategyType;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.versioning.Versioned;
@@ -342,7 +342,7 @@ public class HintedHandoffFailureTest {
     public Set<Slop> getAllSlops(Iterable<ByteArray> slopKeys) {
         Set<Slop> registeredSlops = Sets.newHashSet();
         for(Store<ByteArray, Slop, byte[]> slopStore: slopStores.values()) {
-            Map<ByteArray, List<Versioned<Slop>>> res = slopStore.getAll(slopKeys, null, new RUD());
+            Map<ByteArray, List<Versioned<Slop>>> res = slopStore.getAll(slopKeys, null, new SRD());
             for(Map.Entry<ByteArray, List<Versioned<Slop>>> entry: res.entrySet()) {
                 Slop slop = entry.getValue().get(0).getValue();
                 registeredSlops.add(slop);
@@ -383,7 +383,7 @@ public class HintedHandoffFailureTest {
             fail("Error in setup.");
         }
 
-        this.store.put(keyByteArray, versionedVal, null, new RUD());
+        this.store.put(keyByteArray, versionedVal, null, new SRD());
 
         // Check the slop stores
         Set<ByteArray> failedKeys = Sets.newHashSet();
@@ -429,7 +429,7 @@ public class HintedHandoffFailureTest {
             fail("Error in setup.");
         }
 
-        this.store.put(keyByteArray, versionedVal, null, new RUD());
+        this.store.put(keyByteArray, versionedVal, null, new SRD());
 
         // Check the slop stores
         Set<ByteArray> failedKeys = Sets.newHashSet();
@@ -479,7 +479,7 @@ public class HintedHandoffFailureTest {
         // serial hint.
         delayBeforeHintedHandoff = 0;
 
-        this.store.put(keyByteArray, versionedVal, null, new RUD());
+        this.store.put(keyByteArray, versionedVal, null, new SRD());
 
         // Give enough time for the serial hint to work.
         try {
@@ -535,7 +535,7 @@ public class HintedHandoffFailureTest {
         // serial hint.
         delayBeforeHintedHandoff = 0;
 
-        this.store.put(keyByteArray, versionedVal, null, new RUD());
+        this.store.put(keyByteArray, versionedVal, null, new SRD());
 
         // Give enough time for the serial hint to work.
         try {
@@ -637,7 +637,7 @@ public class HintedHandoffFailureTest {
         @Override
         public void run() {
             try {
-                asyncPutStore.put(keyByteArray, versionedVal, null, new RUD());
+                asyncPutStore.put(keyByteArray, versionedVal, null, new SRD());
                 fail("A put with required writes 2 should've failed for this setup");
             } catch(VoldemortException ve) {
                 // This is expected. Nothing to do.
@@ -720,7 +720,7 @@ public class HintedHandoffFailureTest {
          * pipeline to sleep before doing the actual handoff
          */
         @Override
-        public void put(ByteArray key, Versioned<byte[]> versioned, byte[] transforms, RUD rud)
+        public void put(ByteArray key, Versioned<byte[]> versioned, byte[] transforms, SRD srd)
                 throws VoldemortException {
             PutPipelineData pipelineData = new PutPipelineData();
             pipelineData.setZonesRequired(null);
@@ -760,7 +760,7 @@ public class HintedHandoffFailureTest {
                                                                  versioned,
                                                                  time,
                                                                  Event.MASTER_DETERMINED,
-                                                                rud));
+                                                                srd));
             pipeline.addEventAction(Event.MASTER_DETERMINED,
                                     new PerformParallelPutRequests(pipelineData,
                                                                    Event.RESPONSES_RECEIVED,
@@ -772,7 +772,7 @@ public class HintedHandoffFailureTest {
                                                                    putOpTimeoutInMs,
                                                                    nonblockingStores,
                                                                    hintedHandoff,
-                                                                  rud));
+                                                                  srd));
 
             pipeline.addEventAction(Event.ABORTED, new PerformPutHintedHandoff(pipelineData,
                                                                                Event.ERROR,
@@ -781,7 +781,7 @@ public class HintedHandoffFailureTest {
                                                                                transforms,
                                                                                hintedHandoff,
                                                                                time,
-                                                                              rud));
+                                                                              srd));
 
             // We use INSUFFICIENT_SUCCESSES as the next event (since there is
             // no specific delay event)
@@ -798,7 +798,7 @@ public class HintedHandoffFailureTest {
                                                                 transforms,
                                                                 hintedHandoff,
                                                                 time,
-                                                               rud));
+                                                               srd));
             pipeline.addEventAction(Event.HANDOFF_FINISHED, new IncrementClock(pipelineData,
                                                                                Event.COMPLETED,
                                                                                versioned,

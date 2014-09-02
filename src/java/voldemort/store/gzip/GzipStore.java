@@ -27,7 +27,7 @@ import org.apache.commons.io.IOUtils;
 import voldemort.VoldemortException;
 import voldemort.store.DelegatingStore;
 import voldemort.store.Store;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.versioning.Versioned;
 
 /**
@@ -42,8 +42,8 @@ public class GzipStore<K> extends DelegatingStore<K, byte[], byte[]> {
     }
 
     @Override
-    public List<Versioned<byte[]>> get(K key, byte[] transforms, RUD rud) throws VoldemortException {
-        List<Versioned<byte[]>> found = getInnerStore().get(key, transforms,rud);
+    public List<Versioned<byte[]>> get(K key, byte[] transforms, SRD srd) throws VoldemortException {
+        List<Versioned<byte[]>> found = getInnerStore().get(key, transforms,srd);
         List<Versioned<byte[]>> results = new ArrayList<Versioned<byte[]>>(found.size());
         try {
             for(Versioned<byte[]> item: found)
@@ -57,14 +57,14 @@ public class GzipStore<K> extends DelegatingStore<K, byte[], byte[]> {
     }
 
     @Override
-    public void put(K key, Versioned<byte[]> value, byte[] transforms, RUD rud)
+    public void put(K key, Versioned<byte[]> value, byte[] transforms, SRD srd)
             throws VoldemortException {
         try {
             getInnerStore().put(key,
                                 new Versioned<byte[]>(IOUtils.toByteArray(new GZIPInputStream(new ByteArrayInputStream(value.getValue()))),
                                                       value.getVersion()),
                                 transforms,
-                               rud);
+                               srd);
         } catch(IOException e) {
             throw new VoldemortException(e);
         }

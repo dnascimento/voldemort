@@ -24,7 +24,7 @@ import voldemort.store.routed.BasicPipelineData;
 import voldemort.store.routed.Pipeline;
 import voldemort.store.slop.HintedHandoff;
 import voldemort.store.slop.Slop;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 
 public class PerformUnlockHintedHandoff extends
@@ -34,8 +34,8 @@ public class PerformUnlockHintedHandoff extends
                                       Pipeline.Event completeEvent,
                                       Set<ByteArray> keys,
                                       HintedHandoff hintedHandoff,
-                                      RUD rud) {
-        super(pipelineData, completeEvent, keys, hintedHandoff, rud);
+                                      SRD srd) {
+        super(pipelineData, completeEvent, keys, hintedHandoff, srd);
     }
 
     @Override

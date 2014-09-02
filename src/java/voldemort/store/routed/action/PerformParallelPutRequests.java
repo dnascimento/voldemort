@@ -40,7 +40,7 @@ import voldemort.store.routed.PutPipelineData;
 import voldemort.store.routed.Response;
 import voldemort.store.slop.HintedHandoff;
 import voldemort.store.slop.Slop;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Time;
 import voldemort.versioning.ObsoleteVersionException;
@@ -80,8 +80,8 @@ public class PerformParallelPutRequests extends
                                       long timeoutMs,
                                       Map<Integer, NonblockingStore> nonblockingStores,
                                       HintedHandoff hintedHandoff,
-                                      RUD rud) {
-        super(pipelineData, completeEvent, key,rud);
+                                      SRD srd) {
+        super(pipelineData, completeEvent, key,srd);
         this.failureDetector = failureDetector;
         this.preferred = preferred;
         this.required = required;
@@ -218,7 +218,7 @@ public class PerformParallelPutRequests extends
                              + " request on node " + node.getId() + " for key " + key);
 
             NonblockingStore store = nonblockingStores.get(node.getId());
-            store.submitPutRequest(key, versionedCopy, transforms, callback, timeoutMs,rud);
+            store.submitPutRequest(key, versionedCopy, transforms, callback, timeoutMs,srd);
         }
 
         try {

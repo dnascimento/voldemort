@@ -52,7 +52,7 @@ import azkaban.common.utils.Props;
  */
 public abstract class AbstractHadoopJob extends AbstractJob {
 
-    public static String COMMON_FILE_DATE_PATTERN = "yyyy-MM-dd-HH-mm";
+    public static final String COMMON_FILE_DATE_PATTERN = "yyyy-MM-dd-HH-mm";
     public static final String HADOOP_PREFIX = "hadoop-conf.";
     public static final String LATEST_SUFFIX = "#LATEST";
     public static final String CURRENT_SUFFIX = "#CURRENT";

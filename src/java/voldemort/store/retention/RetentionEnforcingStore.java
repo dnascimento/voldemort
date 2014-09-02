@@ -11,7 +11,7 @@ import voldemort.store.Store;
 import voldemort.store.StoreDefinition;
 import voldemort.store.StoreUtils;
 import voldemort.store.metadata.MetadataStoreListener;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Time;
 import voldemort.versioning.VectorClock;
@@ -74,7 +74,7 @@ public class RetentionEnforcingStore extends DelegatingStore<ByteArray, byte[], 
                 valsIterator.remove();
                 // delete stale value if configured
                 if(deleteExpiredEntries) {
-                    getInnerStore().delete(key, clock, new RUD());
+                    getInnerStore().delete(key, clock, new SRD());
                 }
             }
         }
@@ -84,11 +84,11 @@ public class RetentionEnforcingStore extends DelegatingStore<ByteArray, byte[], 
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
                                                           Map<ByteArray, byte[]> transforms,
-                                                          RUD rud) throws VoldemortException {
+                                                          SRD srd) throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
         Map<ByteArray, List<Versioned<byte[]>>> results = getInnerStore().getAll(keys,
                                                                                  transforms,
-                                                                                rud);
+                                                                                srd);
         if(!storeDef.hasRetentionPeriod())
             return results;
 
@@ -105,10 +105,10 @@ public class RetentionEnforcingStore extends DelegatingStore<ByteArray, byte[], 
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, RUD rud)
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, SRD srd)
             throws VoldemortException {
         StoreUtils.assertValidKey(key);
-        List<Versioned<byte[]>> vals = getInnerStore().get(key, transforms,rud);
+        List<Versioned<byte[]>> vals = getInnerStore().get(key, transforms,srd);
         if(!storeDef.hasRetentionPeriod())
             return vals;
         return filterExpiredEntries(key, vals);

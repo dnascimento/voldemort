@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 import undo.proto.ToManagerProto;
 import undo.proto.ToManagerProto.TrackEntry;
 import undo.proto.ToManagerProto.TrackMsg;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 
 import com.google.common.collect.ArrayListMultimap;
 
@@ -39,8 +39,8 @@ public class ClientSideTracker extends Thread {
         }
     }
 
-    public synchronized void trackGet(RUD rud, RUD dependentRud) {
-        dependencyPerRid.put(rud.rid, dependentRud.rid);
+    public synchronized void trackGet(SRD srd, SRD dependentRud) {
+        dependencyPerRid.put(srd.rid, dependentRud.rid);
     }
 
     public synchronized ArrayListMultimap<Long, Long> extractDependencies() {

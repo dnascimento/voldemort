@@ -62,7 +62,7 @@ import voldemort.store.readonly.checksum.CheckSum.CheckSumType;
 import voldemort.store.readonly.checksum.CheckSumTests;
 import voldemort.store.readonly.fetcher.HdfsFetcher;
 import voldemort.store.serialized.SerializingStore;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.ClosableIterator;
@@ -291,7 +291,7 @@ public class HadoopStoreBuilderTest {
 
         // check values
         for(Map.Entry<String, String> entry: values.entrySet()) {
-            List<Versioned<Object>> found = store.get(entry.getKey(), null, new RUD());
+            List<Versioned<Object>> found = store.get(entry.getKey(), null, new SRD());
             Assert.assertEquals("Incorrect number of results", 1, found.size());
             Assert.assertEquals(entry.getValue(), found.get(0).getValue());
         }

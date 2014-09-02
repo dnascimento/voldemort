@@ -11,7 +11,7 @@ import voldemort.client.StoreClient;
 import voldemort.client.StoreClientFactory;
 import voldemort.serialization.Serializer;
 import voldemort.serialization.json.JsonTypeSerializer;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.Identifiable;
 
 /**
@@ -63,7 +63,7 @@ public class TestVLinkedPagedList extends TestCase {
         StringOrder[] indexValues = new StringOrder[] { new StringOrder(30), new StringOrder(20),
                 new StringOrder(10), new StringOrder(0) };
         int j = 0;
-        List<Map<String, Object>> pageIndex = pageIndexClient.getValue("stringList", new RUD());
+        List<Map<String, Object>> pageIndex = pageIndexClient.getValue("stringList", new SRD());
         for(Map<String, Object> indexEntryMap: pageIndex) {
             VPageIndexEntry<StringOrder> entry = VPageIndexEntry.valueOf(indexEntryMap, serializer);
             assertEquals(Integer.valueOf(pageValues[j]), entry.getPageId());

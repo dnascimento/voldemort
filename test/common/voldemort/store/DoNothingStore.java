@@ -19,7 +19,7 @@ package voldemort.store;
 import java.util.Map;
 
 import voldemort.VoldemortException;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.Version;
 
@@ -35,13 +35,13 @@ public class DoNothingStore<K, V, T> extends AbstractStore<K, V, T> {
     }
 
     @Override
-    public boolean delete(K key, Version value, RUD rud) throws VoldemortException {
+    public boolean delete(K key, Version value, SRD srd) throws VoldemortException {
         // Do nothing
         return true;
     }
 
     @Override
-    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, RUD rud) {
+    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, SRD srd) {
         // Do nothing
         return null;
     }

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import voldemort.VoldemortException;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
@@ -49,33 +49,33 @@ public class FailingStore<K, V, T> extends AbstractStore<K, V, T> {
     }
 
     @Override
-    public List<Versioned<V>> get(K key, T transforms, RUD rud) throws VoldemortException {
+    public List<Versioned<V>> get(K key, T transforms, SRD srd) throws VoldemortException {
         throw exception;
     }
 
     @Override
-    public boolean delete(K key, Version value, RUD rud) throws VoldemortException {
+    public boolean delete(K key, Version value, SRD srd) throws VoldemortException {
         throw exception;
     }
 
     @Override
-    public void put(K key, Versioned<V> value, T transforms, RUD rud) throws VoldemortException {
+    public void put(K key, Versioned<V> value, T transforms, SRD srd) throws VoldemortException {
         throw exception;
     }
 
     @Override
-    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, RUD rud)
+    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, SRD srd)
             throws VoldemortException {
         throw exception;
     }
 
     @Override
-    public java.util.List<Version> getVersions(K key, RUD rud) {
+    public java.util.List<Version> getVersions(K key, SRD srd) {
         throw exception;
     }
 
     @Override
-    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, RUD rud)
+    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, SRD srd)
             throws VoldemortException {
         throw exception;
     }

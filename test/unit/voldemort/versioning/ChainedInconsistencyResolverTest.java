@@ -38,7 +38,7 @@ import voldemort.server.VoldemortServer;
 import voldemort.store.Store;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 
 /*
@@ -108,36 +108,36 @@ public class ChainedInconsistencyResolverTest {
 
     @Test
     public void testVersionedPut() {
-        defaultStoreClient.put(KEY, v1, new RUD());
-        defaultStoreClient.put(KEY, v2, new RUD());
-        Versioned<String> res = defaultStoreClient.get(KEY, new RUD());
-        defaultStoreClient.put(KEY, res, new RUD());
-        List<Versioned<byte[]>> resList = socketStore.get(new ByteArray(KEY.getBytes()), null, new RUD());
+        defaultStoreClient.put(KEY, v1, new SRD());
+        defaultStoreClient.put(KEY, v2, new SRD());
+        Versioned<String> res = defaultStoreClient.get(KEY, new SRD());
+        defaultStoreClient.put(KEY, res, new SRD());
+        List<Versioned<byte[]>> resList = socketStore.get(new ByteArray(KEY.getBytes()), null, new SRD());
         assertEquals(1, resList.size());
     }
 
     @Test
     public void testNormalPut() {
-        defaultStoreClient.put(KEY, v1, new RUD());
-        defaultStoreClient.put(KEY, v2, new RUD());
-        defaultStoreClient.put(KEY, "my-value2", new RUD());
-        List<Versioned<byte[]>> resList = socketStore.get(new ByteArray(KEY.getBytes()), null, new RUD());
+        defaultStoreClient.put(KEY, v1, new SRD());
+        defaultStoreClient.put(KEY, v2, new SRD());
+        defaultStoreClient.put(KEY, "my-value2", new SRD());
+        List<Versioned<byte[]>> resList = socketStore.get(new ByteArray(KEY.getBytes()), null, new SRD());
         assertEquals(1, resList.size());
     }
 
     @Test
     public void testMoreConflicts() {
-        defaultStoreClient.put(KEY, conflict1, new RUD());
-        defaultStoreClient.put(KEY, conflict2, new RUD());
-        defaultStoreClient.put(KEY, conflict3, new RUD());
-        defaultStoreClient.put(KEY, conflict4, new RUD());
-        defaultStoreClient.put(KEY, conflict5, new RUD());
-        defaultStoreClient.put(KEY, conflict6, new RUD());
-        List<Versioned<byte[]>> resList = socketStore.get(new ByteArray(KEY.getBytes()), null, new RUD());
+        defaultStoreClient.put(KEY, conflict1, new SRD());
+        defaultStoreClient.put(KEY, conflict2, new SRD());
+        defaultStoreClient.put(KEY, conflict3, new SRD());
+        defaultStoreClient.put(KEY, conflict4, new SRD());
+        defaultStoreClient.put(KEY, conflict5, new SRD());
+        defaultStoreClient.put(KEY, conflict6, new SRD());
+        List<Versioned<byte[]>> resList = socketStore.get(new ByteArray(KEY.getBytes()), null, new SRD());
         assertEquals(6, resList.size());
-        Versioned<String> res = defaultStoreClient.get(KEY, new RUD());
-        defaultStoreClient.put(KEY, res, new RUD());
-        resList = socketStore.get(new ByteArray(KEY.getBytes()), null, new RUD());
+        Versioned<String> res = defaultStoreClient.get(KEY, new SRD());
+        defaultStoreClient.put(KEY, res, new SRD());
+        resList = socketStore.get(new ByteArray(KEY.getBytes()), null, new SRD());
         assertEquals(1, resList.size());
     }
 }

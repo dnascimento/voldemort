@@ -37,7 +37,7 @@ import voldemort.client.rebalance.RebalanceTaskInfo;
 import voldemort.cluster.Cluster;
 import voldemort.server.rebalance.RebalancerState;
 import voldemort.store.metadata.MetadataStore.VoldemortState;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.versioning.ObsoleteVersionException;
@@ -112,14 +112,14 @@ public class MetadataStoreTest {
     public void testSimpleGetAndPut() {
         for(int i = 0; i <= TEST_RUNS; i++) {
             ByteArray key = getValidKey();
-            VectorClock clock = (VectorClock) metadataStore.get(key, null, new RUD())
+            VectorClock clock = (VectorClock) metadataStore.get(key, null, new SRD())
                                                            .get(0)
                                                            .getVersion();
             Versioned<byte[]> value = new Versioned<byte[]>(getValidValue(key),
                                                             clock.incremented(0, 1));
 
-            metadataStore.put(key, value, null, new RUD());
-            checkValues(value, metadataStore.get(key, null, new RUD()), key);
+            metadataStore.put(key, value, null, new SRD());
+            checkValues(value, metadataStore.get(key, null, new SRD()), key);
         }
     }
 
@@ -129,14 +129,14 @@ public class MetadataStoreTest {
             for(int j = 0; j <= 5; j++) {
                 ByteArray key = getValidKey();
 
-                VectorClock clock = (VectorClock) metadataStore.get(key, null, new RUD())
+                VectorClock clock = (VectorClock) metadataStore.get(key, null, new SRD())
                                                                .get(0)
                                                                .getVersion();
                 Versioned<byte[]> value = new Versioned<byte[]>(getValidValue(key),
                                                                 clock.incremented(0, 1));
 
-                metadataStore.put(key, value, null, new RUD());
-                checkValues(value, metadataStore.get(key, null, new RUD()), key);
+                metadataStore.put(key, value, null, new SRD());
+                checkValues(value, metadataStore.get(key, null, new SRD()), key);
             }
         }
     }
@@ -145,16 +145,16 @@ public class MetadataStoreTest {
     public void testObsoletePut() {
         for(int i = 0; i <= TEST_RUNS; i++) {
             ByteArray key = getValidKey();
-            VectorClock clock = (VectorClock) metadataStore.get(key, null, new RUD())
+            VectorClock clock = (VectorClock) metadataStore.get(key, null, new SRD())
                                                            .get(0)
                                                            .getVersion();
             Versioned<byte[]> value = new Versioned<byte[]>(getValidValue(key),
                                                             clock.incremented(0, 1));
 
             try {
-                metadataStore.put(key, value, null, new RUD());
+                metadataStore.put(key, value, null, new SRD());
                 assertTrue(true);
-                metadataStore.put(key, value, null, new RUD());
+                metadataStore.put(key, value, null, new SRD());
                 fail();
             } catch(ObsoleteVersionException e) {
                 // expected ObsoleteVersionException
@@ -166,7 +166,7 @@ public class MetadataStoreTest {
     public void testSynchronousPut() {
         for(int i = 0; i <= TEST_RUNS; i++) {
             ByteArray key = getValidKey();
-            VectorClock clock = (VectorClock) metadataStore.get(key, null, new RUD())
+            VectorClock clock = (VectorClock) metadataStore.get(key, null, new SRD())
                                                            .get(0)
                                                            .getVersion();
 
@@ -175,13 +175,13 @@ public class MetadataStoreTest {
             Versioned<byte[]> value2 = new Versioned<byte[]>(getValidValue(key),
                                                              clock.incremented(2, 1));
 
-            metadataStore.put(key, value1, null, new RUD());
-            metadataStore.put(key, value2, null, new RUD());
+            metadataStore.put(key, value1, null, new SRD());
+            metadataStore.put(key, value2, null, new SRD());
 
             assertEquals("Only one metadata value should return",
                          1,
-                         metadataStore.get(key, null, new RUD()).size());
-            checkValues(value2, metadataStore.get(key, null, new RUD()), key);
+                         metadataStore.get(key, null, new SRD()).size());
+            checkValues(value2, metadataStore.get(key, null, new SRD()), key);
         }
     }
 
@@ -212,15 +212,15 @@ public class MetadataStoreTest {
         assertTrue("Should be null", null == metadataStore.getRebalancingSourceCluster());
 
         Cluster dummyCluster = ServerTestUtils.getLocalCluster(2);
-        metadataStore.put(MetadataStore.REBALANCING_SOURCE_CLUSTER_XML, dummyCluster, new RUD());
+        metadataStore.put(MetadataStore.REBALANCING_SOURCE_CLUSTER_XML, dummyCluster, new SRD());
         assertEquals("Should be equal", dummyCluster, metadataStore.getRebalancingSourceCluster());
 
-        metadataStore.put(MetadataStore.REBALANCING_SOURCE_CLUSTER_XML, (Object) null, new RUD());
+        metadataStore.put(MetadataStore.REBALANCING_SOURCE_CLUSTER_XML, (Object) null, new SRD());
         assertTrue("Should be null", null == metadataStore.getRebalancingSourceCluster());
 
         List<Versioned<byte[]>> sourceClusterVersions = metadataStore.get(MetadataStore.REBALANCING_SOURCE_CLUSTER_XML,
                                                                           null,
-                                                                          new RUD());
+                                                                          new SRD());
         assertTrue("Just one version expected", 1 == sourceClusterVersions.size());
         assertEquals("Empty string should map to null",
                      "",
@@ -260,7 +260,7 @@ public class MetadataStoreTest {
             logger.info("Now inserting stores with non backward compatible schema. Should see exception");
             metadataStore.put(MetadataStore.STORES_KEY,
                               new StoreDefinitionsMapper().readStoreList(new StringReader(storesXml)),
-                              new RUD());
+                              new SRD());
             Assert.fail("Did not throw exception");
         } catch(VoldemortException e) {
 
@@ -286,7 +286,7 @@ public class MetadataStoreTest {
      */
     private void incrementVersionAndPut(MetadataStore metadataStore, String keyString, Object value) {
         ByteArray key = new ByteArray(ByteUtils.getBytes(keyString, "UTF-8"));
-        VectorClock current = (VectorClock) metadataStore.getVersions(key, new RUD()).get(0);
+        VectorClock current = (VectorClock) metadataStore.getVersions(key, new SRD()).get(0);
 
         metadataStore.put(keyString,
                           new Versioned<Object>(value,

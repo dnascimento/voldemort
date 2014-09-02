@@ -52,7 +52,7 @@ import voldemort.server.socket.SocketService;
 import voldemort.server.storage.StorageService;
 import voldemort.store.configuration.ConfigurationStorageEngine;
 import voldemort.store.metadata.MetadataStore;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.JNAUtils;
 import voldemort.utils.SystemTime;
 import voldemort.utils.Utils;
@@ -120,7 +120,7 @@ public class VoldemortServer extends AbstractService {
                                 new Versioned<String>(new ClusterMapper().writeCluster(cluster),
                                                       version),
                                 null,
-                                new RUD());
+                                new SRD());
         this.metadata = new MetadataStore(metadataInnerEngine, voldemortConfig.getNodeId());
 
         this.services = createServices();

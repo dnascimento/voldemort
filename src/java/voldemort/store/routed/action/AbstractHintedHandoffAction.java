@@ -24,7 +24,7 @@ import voldemort.store.routed.BasicPipelineData;
 import voldemort.store.routed.Pipeline;
 import voldemort.store.routed.Pipeline.Event;
 import voldemort.store.slop.HintedHandoff;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 
 public abstract class AbstractHintedHandoffAction<V, PD extends BasicPipelineData<V>> extends
@@ -38,8 +38,8 @@ public abstract class AbstractHintedHandoffAction<V, PD extends BasicPipelineDat
                                        Pipeline.Event completeEvent,
                                        ByteArray key,
                                        HintedHandoff hintedHandoff,
-                                       RUD rud) {
-        super(pipelineData, completeEvent, key, rud);
+                                       SRD srd) {
+        super(pipelineData, completeEvent, key, srd);
         this.hintedHandoff = hintedHandoff;
         this.failedNodes = pipelineData.getFailedNodes();
     }
@@ -48,8 +48,8 @@ public abstract class AbstractHintedHandoffAction<V, PD extends BasicPipelineDat
                                        Event completeEvent,
                                        Set<ByteArray> keys,
                                        HintedHandoff hintedHandoff,
-                                       RUD rud) {
-        super(pipelineData, completeEvent, keys, rud);
+                                       SRD srd) {
+        super(pipelineData, completeEvent, keys, srd);
         this.hintedHandoff = hintedHandoff;
         this.failedNodes = pipelineData.getFailedNodes();
     }

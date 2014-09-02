@@ -22,7 +22,7 @@ import voldemort.VoldemortException;
 import voldemort.store.Store;
 import voldemort.store.routed.RoutedStore;
 import voldemort.store.socket.SocketStore;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
@@ -68,37 +68,37 @@ public interface NonblockingStore {
                                  byte[] transforms,
                                  NonblockingStoreCallback callback,
                                  long timeoutMs,
-                                 RUD rud);
+                                 SRD srd);
 
     public void submitGetAllRequest(Iterable<ByteArray> keys,
                                     Map<ByteArray, byte[]> transforms,
                                     NonblockingStoreCallback callback,
                                     long timeoutMs,
-                                    RUD rud);
+                                    SRD srd);
 
     public void submitGetVersionsRequest(ByteArray key,
                                          NonblockingStoreCallback callback,
                                          long timeoutMs,
-                                         RUD rud);
+                                         SRD srd);
 
     public void submitPutRequest(ByteArray key,
                                  Versioned<byte[]> value,
                                  byte[] transforms,
                                  NonblockingStoreCallback callback,
                                  long timeoutMs,
-                                 RUD rud);
+                                 SRD srd);
 
     public void submitDeleteRequest(ByteArray key,
                                     Version version,
                                     NonblockingStoreCallback callback,
                                     long timeoutMs,
-                                    RUD rud);
+                                    SRD srd);
 
     public void close() throws VoldemortException;
 
     public void submitUnlockRequest(Iterable<ByteArray> keys,
                                     NonblockingStoreCallback callback,
                                     long timeoutMs,
-                                    RUD rud);
+                                    SRD srd);
 
 }

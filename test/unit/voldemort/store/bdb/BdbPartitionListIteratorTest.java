@@ -37,7 +37,7 @@ import voldemort.routing.RoutingStrategy;
 import voldemort.server.VoldemortConfig;
 import voldemort.store.PartitionListIterator;
 import voldemort.store.StoreDefinition;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Props;
 import voldemort.versioning.Versioned;
@@ -90,7 +90,7 @@ public class BdbPartitionListIteratorTest {
             store.put(new ByteArray(key.getBytes()),
                       new Versioned<byte[]>(key.getBytes()),
                       null,
-                      new RUD());
+                      new SRD());
             partitionEntries.get(p).add(key);
         }
     }

@@ -28,7 +28,7 @@ import voldemort.client.protocol.admin.AdminClientConfig;
 import voldemort.cluster.Cluster;
 import voldemort.server.VoldemortServer;
 import voldemort.store.StoreDefinition;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.RebalanceUtils;
 import voldemort.versioning.Versioned;
 import voldemort.xml.ClusterMapper;
@@ -88,8 +88,8 @@ public class ZoneShrinkageClientTest {
         // do some operations against the stores from zone 0.
         for(int i = 0; i < 10; i++) {
             try {
-                client.put("key" + i, "val" + i, new RUD());
-                assertEquals("Must read value back", "val" + i, client.get("key" + i, new RUD())
+                client.put("key" + i, "val" + i, new SRD());
+                assertEquals("Must read value back", "val" + i, client.get("key" + i, new SRD())
                                                                       .getValue());
             } catch(Exception e) {
                 fail("Should be not see any failures");
@@ -121,8 +121,8 @@ public class ZoneShrinkageClientTest {
         for(int i = 0; i < 10; i++) {
             long startMs = System.currentTimeMillis();
             try {
-                client.put("key" + i, "val" + i, new RUD());
-                assertEquals("Must read value back", "val" + i, client.get("key" + i, new RUD())
+                client.put("key" + i, "val" + i, new SRD());
+                assertEquals("Must read value back", "val" + i, client.get("key" + i, new SRD())
                                                                       .getValue());
                 fail("Should be not see any successes");
             } catch(Exception e) {

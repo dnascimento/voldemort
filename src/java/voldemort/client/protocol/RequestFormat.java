@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import voldemort.server.RequestRoutingType;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.VectorClock;
 import voldemort.versioning.Version;
@@ -44,7 +44,7 @@ public interface RequestFormat {
                                 ByteArray key,
                                 byte[] transforms,
                                 RequestRoutingType routingType,
-                                RUD rud) throws IOException;
+                                SRD srd) throws IOException;
 
     public boolean isCompleteGetResponse(ByteBuffer buffer);
 
@@ -54,7 +54,7 @@ public interface RequestFormat {
                                        String storeName,
                                        ByteArray key,
                                        RequestRoutingType routingType,
-                                       RUD rud) throws IOException;
+                                       SRD srd) throws IOException;
 
     public boolean isCompleteGetVersionResponse(ByteBuffer buffer);
 
@@ -65,7 +65,7 @@ public interface RequestFormat {
                                    Iterable<ByteArray> key,
                                    Map<ByteArray, byte[]> transforms,
                                    RequestRoutingType routingType,
-                                   RUD rud) throws IOException;
+                                   SRD srd) throws IOException;
 
     public boolean isCompleteGetAllResponse(ByteBuffer buffer);
 
@@ -79,7 +79,7 @@ public interface RequestFormat {
                                 byte[] transforms,
                                 VectorClock version,
                                 RequestRoutingType routingType,
-                                RUD rud) throws IOException;
+                                SRD srd) throws IOException;
 
     public boolean isCompletePutResponse(ByteBuffer buffer);
 
@@ -90,7 +90,7 @@ public interface RequestFormat {
                                    ByteArray key,
                                    VectorClock version,
                                    RequestRoutingType routingType,
-                                   RUD rud) throws IOException;
+                                   SRD srd) throws IOException;
 
     public boolean isCompleteDeleteResponse(ByteBuffer buffer);
 
@@ -100,7 +100,7 @@ public interface RequestFormat {
                                    String storeName,
                                    Iterable<ByteArray> keys,
                                    RequestRoutingType routingType,
-                                   RUD rud) throws IOException;
+                                   SRD srd) throws IOException;
 
     public Map<ByteArray, Boolean> readUnlockResponse(DataInputStream input) throws IOException;
 

@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import voldemort.undoTracker.DBUndoStub;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.DBProxy;
+import voldemort.undoTracker.SRD;
 import voldemort.undoTracker.branching.BranchController;
 import voldemort.utils.ByteArray;
 
@@ -17,29 +17,29 @@ public class CommitTesting {
     private boolean contained = false;
 
     /**
-     * Read always the most recent version if rud > STS
+     * Read always the most recent version if srd > STS
      */
     @Test
     public void testCommitRead() {
-        DBUndoStub stub = new DBUndoStub(true);
-        stub.putStart(k1, new RUD(1, branch, contained));
+        DBProxy stub = new DBProxy(true);
+        stub.putStart(k1, new SRD(1, branch, contained));
         assertEquals(init_commit, stub.getKeyCommit(k1));
-        stub.putEnd(k1, new RUD(1, branch, contained));
+        stub.putEnd(k1, new SRD(1, branch, contained));
 
         k1 = new ByteArray("key1".getBytes());
-        stub.putStart(k1, new RUD(2, branch, contained));
+        stub.putStart(k1, new SRD(2, branch, contained));
         assertEquals(init_commit, stub.getKeyCommit(k1));
-        stub.putEnd(k1, new RUD(2, branch, contained));
+        stub.putEnd(k1, new SRD(2, branch, contained));
 
         k1 = new ByteArray("key1".getBytes());
-        stub.getStart(k1, new RUD(3, branch, contained));
+        stub.getStart(k1, new SRD(3, branch, contained));
         assertEquals(init_commit, stub.getKeyCommit(k1));
-        stub.getEnd(k1, new RUD(3, branch, contained));
+        stub.getEnd(k1, new SRD(3, branch, contained));
 
         k1 = new ByteArray("key1".getBytes());
-        stub.deleteStart(k1, new RUD(4, branch, contained));
+        stub.deleteStart(k1, new SRD(4, branch, contained));
         assertEquals(init_commit, stub.getKeyCommit(k1));
-        stub.deleteEnd(k1, new RUD(4, branch, contained));
+        stub.deleteEnd(k1, new SRD(4, branch, contained));
     }
 
     /**
@@ -49,55 +49,55 @@ public class CommitTesting {
     @Test
     public void testSnap() {
 
-        DBUndoStub stub = new DBUndoStub(true);
+        DBProxy stub = new DBProxy(true);
         stub.scheduleNewCommit(200);// schedule a commit
 
         // write before commit
-        stub.putStart(k1, new RUD(100, branch, contained));
+        stub.putStart(k1, new SRD(100, branch, contained));
         assertEquals(init_commit, stub.getKeyCommit(k1));
-        stub.putEnd(k1, new RUD(100, branch, contained));
+        stub.putEnd(k1, new SRD(100, branch, contained));
 
         // Write after commit (Access new version)
         k1 = new ByteArray("key1".getBytes());
-        stub.putStart(k1, new RUD(300, branch, contained));
+        stub.putStart(k1, new SRD(300, branch, contained));
         assertEquals(200, stub.getKeyCommit(k1));
-        stub.putEnd(k1, new RUD(200, branch, contained));
+        stub.putEnd(k1, new SRD(200, branch, contained));
 
         // read old version
         k1 = new ByteArray("key1".getBytes());
-        stub.getStart(k1, new RUD(101, branch, contained));
+        stub.getStart(k1, new SRD(101, branch, contained));
         assertEquals(init_commit, stub.getKeyCommit(k1));
-        stub.getEnd(k1, new RUD(101, branch, contained));
+        stub.getEnd(k1, new SRD(101, branch, contained));
 
         // read new version
         k1 = new ByteArray("key1".getBytes());
-        stub.getStart(k1, new RUD(301, branch, contained));
+        stub.getStart(k1, new SRD(301, branch, contained));
         assertEquals(200, stub.getKeyCommit(k1));
-        stub.getEnd(k1, new RUD(301, branch, contained));
+        stub.getEnd(k1, new SRD(301, branch, contained));
 
         // Test overwrites
         // write before commit
-        stub.putStart(k1, new RUD(102, branch, contained));
+        stub.putStart(k1, new SRD(102, branch, contained));
         assertEquals(init_commit, stub.getKeyCommit(k1));
-        stub.putEnd(k1, new RUD(102, branch, contained));
+        stub.putEnd(k1, new SRD(102, branch, contained));
 
         // Write after commit (Access new version)
         k1 = new ByteArray("key1".getBytes());
-        stub.putStart(k1, new RUD(302, branch, contained));
+        stub.putStart(k1, new SRD(302, branch, contained));
         assertEquals(200, stub.getKeyCommit(k1));
-        stub.putEnd(k1, new RUD(302, branch, contained));
+        stub.putEnd(k1, new SRD(302, branch, contained));
 
         // read old version
         k1 = new ByteArray("key1".getBytes());
-        stub.getStart(k1, new RUD(103, branch, contained));
+        stub.getStart(k1, new SRD(103, branch, contained));
         assertEquals(init_commit, stub.getKeyCommit(k1));
-        stub.getEnd(k1, new RUD(103, branch, contained));
+        stub.getEnd(k1, new SRD(103, branch, contained));
 
         // read new version
         k1 = new ByteArray("key1".getBytes());
-        stub.getStart(k1, new RUD(303, branch, contained));
+        stub.getStart(k1, new SRD(303, branch, contained));
         assertEquals(200, stub.getKeyCommit(k1));
-        stub.getEnd(k1, new RUD(303, branch, contained));
+        stub.getEnd(k1, new SRD(303, branch, contained));
     }
 
 }

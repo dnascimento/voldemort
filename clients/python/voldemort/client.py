@@ -349,7 +349,7 @@ class StoreClient:
         req.store = store_name
         req.type = protocol.GET
         req.get.key = key
-        if rud is not None:
+        if srd is not None:
             req.get.rid = rid
 
         # send request
@@ -369,7 +369,7 @@ class StoreClient:
         return self._get_with_connection(self.connection, self.store_name, key, True,rid)
 
 
-    def get(self, key, rud = None):
+    def get(self, key, srd = None):
         """Execute a get request. Returns a list of (value, version) pairs."""
         raw_key = self.key_serializer.writes(key)
         return [(self.value_serializer.reads(value), version)
@@ -426,7 +426,7 @@ class StoreClient:
         req.store = self.store_name
         req.type = protocol.PUT
         req.put.key = key
-        if rud is not None:
+        if srd is not None:
             req.put.rid = rid
             
         req.put.versioned.value = value
@@ -470,7 +470,7 @@ class StoreClient:
         req.store = self.store_name
         req.type = protocol.DELETE
         req.delete.key = key
-        if rud is not None:
+        if srd is not None:
             req.delete.rid = rid
         req.delete.version.MergeFrom(version)
 

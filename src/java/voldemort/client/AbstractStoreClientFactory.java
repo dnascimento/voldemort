@@ -63,7 +63,7 @@ import voldemort.store.stats.StoreClientFactoryStatsJmx;
 import voldemort.store.stats.StoreStats;
 import voldemort.store.stats.StoreStatsJmx;
 import voldemort.store.versioned.InconsistencyResolvingStore;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.JmxUtils;
 import voldemort.utils.Pair;
@@ -561,7 +561,7 @@ public abstract class AbstractStoreClientFactory implements StoreClientFactory {
                                                                     new StringSerializer("UTF-8"),
                                                                     new StringSerializer("UTF-8"),
                                                                     new IdentitySerializer());
-        return store.get(key, null, new RUD());
+        return store.get(key, null, new SRD());
     }
 
     public URI[] validateUrls(String[] urls) {

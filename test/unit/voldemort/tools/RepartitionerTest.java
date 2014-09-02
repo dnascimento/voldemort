@@ -530,7 +530,7 @@ public class RepartitionerTest {
 
     /**
      * Helper to decide if a cluster has contiguous runs of partitions that are
-     * "too long". Remember that getting rud of contiguous runs of partitions is
+     * "too long". Remember that getting srd of contiguous runs of partitions is
      * a stochastic and so cutoff should be higher than the target run length
      * given to repartitioning algorithm.
      * 
@@ -567,7 +567,7 @@ public class RepartitionerTest {
         // Confirm current cluster has contiguous runs that are too long
         assertFalse(verifyNoncontiguousPartitions(currentCluster, maxContigRun + 1));
 
-        // Do not do any repartitioning other than that necessary to get rud of
+        // Do not do any repartitioning other than that necessary to get srd of
         // contiguous runs
         boolean disableNodeBalancing = true;
         repartitionedCluster = Repartitioner.repartition(currentCluster,

@@ -71,7 +71,7 @@ import voldemort.store.slop.strategy.HintedHandoffStrategyType;
 import voldemort.store.stats.StatTrackingStore;
 import voldemort.store.stats.Tracked;
 import voldemort.store.versioned.InconsistencyResolvingStore;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.Time;
@@ -304,8 +304,8 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
         int count = 0;
         for(Store<ByteArray, byte[], byte[]> store: routedStore.getInnerStores().values())
             try {
-                if(store.get(key, null, new RUD()).size() > 0
-                   && Utils.deepEquals(store.get(key, null, new RUD()).get(0), value))
+                if(store.get(key, null, new SRD()).size() > 0
+                   && Utils.deepEquals(store.get(key, null, new SRD()).get(0), value))
                     count += 1;
             } catch(VoldemortException e) {
                 // This is normal for the failing store...
@@ -363,24 +363,24 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
 
         VectorClock clock = getClock(1);
         Versioned<byte[]> versioned = new Versioned<byte[]>(aValue, clock);
-        routedStore.put(aKey, versioned, aTransform, new RUD());
+        routedStore.put(aKey, versioned, aTransform, new SRD());
 
         waitForOperationToComplete(customSleepTime);
         assertNOrMoreEqual(routedStore, cluster.getNumberOfNodes() - failures, aKey, versioned);
 
-        List<Versioned<byte[]>> found = store.get(aKey, aTransform, new RUD());
+        List<Versioned<byte[]>> found = store.get(aKey, aTransform, new SRD());
         assertEquals(1, found.size());
         assertEquals(versioned, found.get(0));
 
         waitForOperationToComplete(customSleepTime);
         assertNOrMoreEqual(routedStore, cluster.getNumberOfNodes() - failures, aKey, versioned);
 
-        assertTrue(routedStore.delete(aKey, versioned.getVersion(), new RUD()));
+        assertTrue(routedStore.delete(aKey, versioned.getVersion(), new SRD()));
 
         waitForOperationToComplete(customSleepTime);
         assertNEqual(routedStore, 0, aKey, versioned);
 
-        assertTrue(!routedStore.delete(aKey, versioned.getVersion(), new RUD()));
+        assertTrue(!routedStore.delete(aKey, versioned.getVersion(), new SRD()));
     }
 
     @Test
@@ -592,19 +592,19 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
         }
 
         try {
-            routedStore.put(aKey, versioned, aTransform, new RUD());
+            routedStore.put(aKey, versioned, aTransform, new SRD());
             fail("Put succeeded with too few operational nodes.");
         } catch(InsufficientOperationalNodesException e) {
             // expected
         }
         try {
-            routedStore.get(aKey, aTransform, new RUD());
+            routedStore.get(aKey, aTransform, new SRD());
             fail("Get succeeded with too few operational nodes.");
         } catch(InsufficientOperationalNodesException e) {
             // expected
         }
         try {
-            routedStore.delete(aKey, versioned.getVersion(), new RUD());
+            routedStore.delete(aKey, versioned.getVersion(), new SRD());
             fail("Get succeeded with too few operational nodes.");
         } catch(InsufficientOperationalNodesException e) {
             // expected
@@ -715,8 +715,8 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
         Store<ByteArray, byte[], byte[]> store = getStore();
         VectorClock clock = new VectorClock();
         VectorClock copy = clock.clone();
-        store.put(aKey, new Versioned<byte[]>(getValue(), clock), aTransform, new RUD());
-        List<Versioned<byte[]>> found = store.get(aKey, aTransform, new RUD());
+        store.put(aKey, new Versioned<byte[]>(getValue(), clock), aTransform, new SRD());
+        List<Versioned<byte[]>> found = store.get(aKey, aTransform, new SRD());
         assertEquals("Invalid number of items found.", 1, found.size());
         assertEquals("Version not incremented properly",
                      Occurred.BEFORE,
@@ -728,8 +728,8 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
         Store<ByteArray, byte[], byte[]> store = getZonedStore();
         VectorClock clock = new VectorClock();
         VectorClock copy = clock.clone();
-        store.put(aKey, new Versioned<byte[]>(getValue(), clock), aTransform, new RUD());
-        List<Versioned<byte[]>> found = store.get(aKey, aTransform, new RUD());
+        store.put(aKey, new Versioned<byte[]>(getValue(), clock), aTransform, new SRD());
+        List<Versioned<byte[]>> found = store.get(aKey, aTransform, new SRD());
         assertEquals("Invalid number of items found.", 1, found.size());
         assertEquals("Version not incremented properly",
                      Occurred.BEFORE,
@@ -770,17 +770,17 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
 
         start = System.nanoTime();
         try {
-            s1.put(new ByteArray("test".getBytes()), versioned, null, new RUD());
+            s1.put(new ByteArray("test".getBytes()), versioned, null, new SRD());
         } finally {
             long elapsed = (System.nanoTime() - start) / Time.NS_PER_MS;
             assertTrue(elapsed + " < " + SLEEPY_TIME, elapsed < SLEEPY_TIME);
         }
         // Putting extra key to test getAll
-        s1.put(new ByteArray("test2".getBytes()), versioned, null, new RUD());
+        s1.put(new ByteArray("test2".getBytes()), versioned, null, new SRD());
 
         start = System.nanoTime();
         try {
-            s1.get(new ByteArray("test".getBytes()), null, new RUD());
+            s1.get(new ByteArray("test".getBytes()), null, new SRD());
         } finally {
             long elapsed = (System.nanoTime() - start) / Time.NS_PER_MS;
             assertTrue(elapsed + " < " + SLEEPY_TIME, elapsed < SLEEPY_TIME);
@@ -788,7 +788,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
 
         start = System.nanoTime();
         try {
-            List<Version> versions = s1.getVersions(new ByteArray("test".getBytes()), new RUD());
+            List<Version> versions = s1.getVersions(new ByteArray("test".getBytes()), new SRD());
             for(Version version: versions) {
                 assertEquals(version.compare(versioned.getVersion()), Occurred.BEFORE);
             }
@@ -799,7 +799,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
 
         start = System.nanoTime();
         try {
-            s1.delete(new ByteArray("test".getBytes()), versioned.getVersion(), new RUD());
+            s1.delete(new ByteArray("test".getBytes()), versioned.getVersion(), new SRD());
         } finally {
             long elapsed = (System.nanoTime() - start) / Time.NS_PER_MS;
             assertTrue(elapsed + " < " + SLEEPY_TIME, elapsed < SLEEPY_TIME);
@@ -812,7 +812,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
         List<ByteArray> keys = Lists.newArrayList(new ByteArray("test".getBytes()),
                                                   new ByteArray("test2".getBytes()));
 
-        Map<ByteArray, List<Versioned<byte[]>>> values = s1.getAll(keys, null, new RUD());
+        Map<ByteArray, List<Versioned<byte[]>>> values = s1.getAll(keys, null, new SRD());
         assertFalse("'test' did not get deleted.",
                     values.containsKey(new ByteArray("test".getBytes())));
         ByteUtils.compare(values.get(new ByteArray("test2".getBytes())).get(0).getValue(),
@@ -836,15 +836,15 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
         start = System.nanoTime();
 
         try {
-            s2.put(new ByteArray("test".getBytes()), versioned, null, new RUD());
+            s2.put(new ByteArray("test".getBytes()), versioned, null, new SRD());
         } finally {
             long elapsed = (System.nanoTime() - start) / Time.NS_PER_MS;
             assertTrue(elapsed + " > " + SLEEPY_TIME, elapsed >= SLEEPY_TIME);
         }
-        s2.put(new ByteArray("test2".getBytes()), versioned, null, new RUD());
+        s2.put(new ByteArray("test2".getBytes()), versioned, null, new SRD());
 
         try {
-            s2.get(new ByteArray("test".getBytes()), null, new RUD());
+            s2.get(new ByteArray("test".getBytes()), null, new SRD());
             fail("Should have shown exception");
         } catch(InsufficientZoneResponsesException e) {
             /*
@@ -854,7 +854,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
         }
 
         try {
-            s2.getVersions(new ByteArray("test".getBytes()), new RUD());
+            s2.getVersions(new ByteArray("test".getBytes()), new SRD());
             fail("Should have shown exception");
         } catch(InsufficientZoneResponsesException e) {
             /*
@@ -864,7 +864,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
         }
 
         try {
-            s2.delete(new ByteArray("test".getBytes()), null, new RUD());
+            s2.delete(new ByteArray("test".getBytes()), null, new SRD());
         } catch(InsufficientZoneResponsesException e) {
             /*
              * Why would you want responses from two zones and wait for only one
@@ -872,7 +872,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
              */
         }
 
-        values = s2.getAll(keys, null, new RUD());
+        values = s2.getAll(keys, null, new SRD());
         assertFalse("'test' did not get deleted.",
                     values.containsKey(new ByteArray("test".getBytes())));
         ByteUtils.compare(values.get(new ByteArray("test2".getBytes())).get(0).getValue(),
@@ -896,17 +896,17 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
 
         start = System.nanoTime();
         try {
-            s3.put(new ByteArray("test".getBytes()), versioned, null, new RUD());
+            s3.put(new ByteArray("test".getBytes()), versioned, null, new SRD());
         } finally {
             long elapsed = (System.nanoTime() - start) / Time.NS_PER_MS;
             assertTrue(elapsed + " < " + SLEEPY_TIME, elapsed < SLEEPY_TIME);
         }
         // Putting extra key to test getAll
-        s3.put(new ByteArray("test2".getBytes()), versioned, null, new RUD());
+        s3.put(new ByteArray("test2".getBytes()), versioned, null, new SRD());
 
         start = System.nanoTime();
         try {
-            List<Version> versions = s3.getVersions(new ByteArray("test".getBytes()), new RUD());
+            List<Version> versions = s3.getVersions(new ByteArray("test".getBytes()), new SRD());
             for(Version version: versions) {
                 assertEquals(version.compare(versioned.getVersion()), Occurred.BEFORE);
             }
@@ -917,7 +917,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
 
         start = System.nanoTime();
         try {
-            s3.get(new ByteArray("test".getBytes()), null, new RUD());
+            s3.get(new ByteArray("test".getBytes()), null, new SRD());
         } finally {
             long elapsed = (System.nanoTime() - start) / Time.NS_PER_MS;
             assertTrue(elapsed + " < " + SLEEPY_TIME, elapsed < SLEEPY_TIME);
@@ -925,7 +925,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
 
         start = System.nanoTime();
         try {
-            s3.delete(new ByteArray("test".getBytes()), versioned.getVersion(), new RUD());
+            s3.delete(new ByteArray("test".getBytes()), versioned.getVersion(), new SRD());
         } finally {
             long elapsed = (System.nanoTime() - start) / Time.NS_PER_MS;
             assertTrue(elapsed + " < " + SLEEPY_TIME, elapsed < SLEEPY_TIME);
@@ -951,7 +951,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
             s4.put(new ByteArray("test".getBytes()),
                    new Versioned<byte[]>(new byte[] { 1 }),
                    null,
-                   new RUD());
+                   new SRD());
             fail("Should have shown exception");
         } catch(InsufficientZoneResponsesException e) {
             /*
@@ -960,7 +960,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
         }
 
         try {
-            s4.getVersions(new ByteArray("test".getBytes()), new RUD());
+            s4.getVersions(new ByteArray("test".getBytes()), new SRD());
             fail("Should have shown exception");
         } catch(InsufficientZoneResponsesException e) {
             /*
@@ -969,7 +969,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
         }
 
         try {
-            s4.get(new ByteArray("test".getBytes()), null, new RUD());
+            s4.get(new ByteArray("test".getBytes()), null, new SRD());
             fail("Should have shown exception");
         } catch(InsufficientZoneResponsesException e) {
             /*
@@ -978,7 +978,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
         }
 
         try {
-            s4.delete(new ByteArray("test".getBytes()), versioned.getVersion(), new RUD());
+            s4.delete(new ByteArray("test".getBytes()), versioned.getVersion(), new SRD());
             fail("Should have shown exception");
         } catch(InsufficientZoneResponsesException e) {
             /*
@@ -1002,7 +1002,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
                                                        RoutingStrategyType.TO_ALL_STRATEGY,
                                                        new VoldemortException());
         try {
-            s1.put(aKey, new Versioned<byte[]>(aValue), aTransform, new RUD());
+            s1.put(aKey, new Versioned<byte[]>(aValue), aTransform, new SRD());
             fail("Failure is expected");
         } catch(InsufficientOperationalNodesException e) { /* expected */
         }
@@ -1019,7 +1019,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
                                                        RoutingStrategyType.TO_ALL_STRATEGY,
                                                        new UnreachableStoreException("no go"));
         try {
-            s2.put(aKey, new Versioned<byte[]>(aValue), aTransform, new RUD());
+            s2.put(aKey, new Versioned<byte[]>(aValue), aTransform, new SRD());
             fail("Failure is expected");
         } catch(InsufficientOperationalNodesException e) { /* expected */
         }
@@ -1037,7 +1037,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
                       RoutingStrategyType.TO_ALL_STRATEGY,
                       new VoldemortException());
         try {
-            s1.get(aKey, aTransform, new RUD());
+            s1.get(aKey, aTransform, new SRD());
             fail("Failure is expected");
         } catch(InsufficientOperationalNodesException e) { /* expected */
         }
@@ -1054,7 +1054,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
                       RoutingStrategyType.TO_ALL_STRATEGY,
                       new UnreachableStoreException("no go"));
         try {
-            s2.get(aKey, aTransform, new RUD());
+            s2.get(aKey, aTransform, new SRD());
             fail("Failure is expected");
         } catch(InsufficientOperationalNodesException e) { /* expected */
         }
@@ -1072,7 +1072,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
                       RoutingStrategyType.TO_ALL_STRATEGY,
                       new VoldemortException());
         try {
-            s1.delete(aKey, new VectorClock(), new RUD());
+            s1.delete(aKey, new VectorClock(), new SRD());
             fail("Failure is expected");
         } catch(InsufficientOperationalNodesException e) { /* expected */
         }
@@ -1089,7 +1089,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
                       RoutingStrategyType.TO_ALL_STRATEGY,
                       new UnreachableStoreException("no go"));
         try {
-            s2.delete(aKey, new VectorClock(), new RUD());
+            s2.delete(aKey, new VectorClock(), new SRD());
             fail("Failure is expected");
         } catch(InsufficientOperationalNodesException e) { /* expected */
         }
@@ -1102,15 +1102,15 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
         ByteArray key = keys.get(0);
         byte[] value = getValue();
         Store<ByteArray, byte[], byte[]> store = getStore();
-        store.put(key, Versioned.value(value), null, new RUD());
-        List<Versioned<byte[]>> versioneds = store.get(key, null, new RUD());
-        List<Version> versions = store.getVersions(key, new RUD());
+        store.put(key, Versioned.value(value), null, new SRD());
+        List<Versioned<byte[]>> versioneds = store.get(key, null, new SRD());
+        List<Version> versions = store.getVersions(key, new SRD());
         assertEquals(1, versioneds.size());
         assertEquals(9, versions.size());
         for(int i = 0; i < versions.size(); i++)
             assertEquals(versioneds.get(0).getVersion(), versions.get(i));
 
-        assertEquals(0, store.getVersions(keys.get(1), new RUD()).size());
+        assertEquals(0, store.getVersions(keys.get(1), new SRD()).size());
     }
 
     @Test
@@ -1119,15 +1119,15 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
         ByteArray key = keys.get(0);
         byte[] value = getValue();
         Store<ByteArray, byte[], byte[]> store = getZonedStore();
-        store.put(key, Versioned.value(value), null, new RUD());
-        List<Versioned<byte[]>> versioneds = store.get(key, null, new RUD());
-        List<Version> versions = store.getVersions(key, new RUD());
+        store.put(key, Versioned.value(value), null, new SRD());
+        List<Versioned<byte[]>> versioneds = store.get(key, null, new SRD());
+        List<Version> versions = store.getVersions(key, new SRD());
         assertEquals(1, versioneds.size());
         assertEquals(9, versions.size());
         for(int i = 0; i < versions.size(); i++)
             assertEquals(versioneds.get(0).getVersion(), versions.get(i));
 
-        assertEquals(0, store.getVersions(keys.get(1), new RUD()).size());
+        assertEquals(0, store.getVersions(keys.get(1), new SRD()).size());
     }
 
     /**
@@ -1142,7 +1142,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
         for(byte i = 1; i < 11; ++i) {
             ByteArray key = new ByteArray(new byte[] { i });
             byte[] value = new byte[] { (byte) (i + 50) };
-            store.put(key, Versioned.value(value), null, new RUD());
+            store.put(key, Versioned.value(value), null, new SRD());
             expectedValues.put(key, value);
         }
 
@@ -1150,7 +1150,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
 
         Map<ByteArray, List<Versioned<byte[]>>> all = store.getAll(expectedValues.keySet(),
                                                                    null,
-                                                                   new RUD());
+                                                                   new SRD());
         assertEquals(expectedValues.size(), all.size());
         for(Map.Entry<ByteArray, List<Versioned<byte[]>>> mapEntry: all.entrySet()) {
             byte[] value = expectedValues.get(mapEntry.getKey());
@@ -1250,20 +1250,20 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
         for(byte i = 1; i < 11; ++i) {
             ByteArray key = new ByteArray(new byte[] { i });
             byte[] value = new byte[] { (byte) (i + 50) };
-            routedStore.put(key, Versioned.value(value), null, new RUD());
+            routedStore.put(key, Versioned.value(value), null, new SRD());
             expectedValues.put(key, value);
         }
 
         /* 1. positive test; if partial is on, should get something back */
         Map<ByteArray, List<Versioned<byte[]>>> all = routedStore.getAll(expectedValues.keySet(),
                                                                          null,
-                                                                         new RUD());
+                                                                         new SRD());
         assert (expectedValues.size() > all.size());
 
         /* 2. negative test; if partial is off, should fail the whole operation */
         timeoutConfig.setPartialGetAllAllowed(false);
         try {
-            all = routedStore.getAll(expectedValues.keySet(), null, new RUD());
+            all = routedStore.getAll(expectedValues.keySet(), null, new SRD());
             fail("Should have failed");
         } catch(Exception e) {
 
@@ -1344,20 +1344,20 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
         for(byte i = 1; i < 11; ++i) {
             ByteArray key = new ByteArray(new byte[] { i });
             byte[] value = new byte[] { (byte) (i + 50) };
-            routedStore.put(key, Versioned.value(value), null, new RUD());
+            routedStore.put(key, Versioned.value(value), null, new SRD());
             expectedValues.put(key, value);
         }
 
         /* 1. positive test; if partial is on, should get something back */
         Map<ByteArray, List<Versioned<byte[]>>> all = routedStore.getAll(expectedValues.keySet(),
                                                                          null,
-                                                                         new RUD());
+                                                                         new SRD());
         assert (expectedValues.size() > all.size());
 
         /* 2. negative test; if partial is off, should fail the whole operation */
         timeoutConfig.setPartialGetAllAllowed(false);
         try {
-            all = routedStore.getAll(expectedValues.keySet(), null, new RUD());
+            all = routedStore.getAll(expectedValues.keySet(), null, new SRD());
             fail("Should have failed");
         } catch(Exception e) {
             // Expected
@@ -1400,13 +1400,13 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
         for(byte i = 1; i < 11; ++i) {
             ByteArray key = new ByteArray(new byte[] { i });
             byte[] value = new byte[] { (byte) (i + 50) };
-            store.put(key, Versioned.value(value), null, new RUD());
+            store.put(key, Versioned.value(value), null, new SRD());
             expectedValues.put(key, value);
         }
 
         Map<ByteArray, List<Versioned<byte[]>>> all = store.getAll(expectedValues.keySet(),
                                                                    null,
-                                                                   new RUD());
+                                                                   new SRD());
         assertEquals(expectedValues.size(), all.size());
         for(Map.Entry<ByteArray, List<Versioned<byte[]>>> mapEntry: all.entrySet()) {
             byte[] value = expectedValues.get(mapEntry.getKey());
@@ -1470,13 +1470,13 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
         for(byte i = 1; i < 11; ++i) {
             ByteArray key = new ByteArray(new byte[] { i });
             byte[] value = new byte[] { (byte) (i + 50) };
-            store.put(key, Versioned.value(value), null, new RUD());
+            store.put(key, Versioned.value(value), null, new SRD());
             expectedValues.put(key, value);
         }
 
         Map<ByteArray, List<Versioned<byte[]>>> all = store.getAll(expectedValues.keySet(),
                                                                    null,
-                                                                   new RUD());
+                                                                   new SRD());
         assertEquals(expectedValues.size(), all.size());
         for(Map.Entry<ByteArray, List<Versioned<byte[]>>> mapEntry: all.entrySet()) {
             byte[] value = expectedValues.get(mapEntry.getKey());
@@ -1521,12 +1521,12 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
 
         Store<ByteArray, byte[], byte[]> store = new InconsistencyResolvingStore<ByteArray, byte[], byte[]>(routedStore,
                                                                                                             new VectorClockInconsistencyResolver<byte[]>());
-        store.put(aKey, Versioned.value(aValue), aTransform, new RUD());
+        store.put(aKey, Versioned.value(aValue), aTransform, new SRD());
         recordException(failureDetector, cluster.getNodes().iterator().next());
         Map<ByteArray, List<Versioned<byte[]>>> all = store.getAll(Arrays.asList(aKey),
                                                                    Collections.singletonMap(aKey,
                                                                                             aTransform),
-                                                                   new RUD());
+                                                                   new SRD());
         assertEquals(1, all.size());
         assertTrue(Arrays.equals(aValue, all.values().iterator().next().get(0).getValue()));
     }
@@ -1552,7 +1552,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
         recordException(failureDetector, primaryNode);
         Store<ByteArray, byte[], byte[]> store = new InconsistencyResolvingStore<ByteArray, byte[], byte[]>(routedStore,
                                                                                                             new VectorClockInconsistencyResolver<byte[]>());
-        store.put(aKey, new Versioned<byte[]>(aValue), null, new RUD());
+        store.put(aKey, new Versioned<byte[]>(aValue), null, new SRD());
 
         byte[] anotherValue = "john".getBytes();
 
@@ -1566,7 +1566,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
         // will be [1:1, 6:1] across the replicas, except for the secondary
         // which will be [6:1]
         VectorClock clock = getClock(6);
-        store.put(aKey, new Versioned<byte[]>(anotherValue, clock), null, new RUD());
+        store.put(aKey, new Versioned<byte[]>(anotherValue, clock), null, new SRD());
 
         // Enable secondary and disable primary, the following get should cause
         // a read repair on the secondary in the code path that is only executed
@@ -1574,7 +1574,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
         // superceding clock [1:1,6:1]
         recordException(failureDetector, primaryNode);
         recordSuccess(failureDetector, secondaryNode);
-        List<Versioned<byte[]>> versioneds = store.get(aKey, null, new RUD());
+        List<Versioned<byte[]>> versioneds = store.get(aKey, null, new SRD());
         assertEquals(1, versioneds.size());
         assertEquals(new ByteArray(anotherValue), new ByteArray(versioneds.get(0).getValue()));
 
@@ -1587,7 +1587,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
             if(replicatingNodes.contains(innerStoreEntry.getKey())) {
                 List<Versioned<byte[]>> innerVersioneds = innerStoreEntry.getValue().get(aKey,
                                                                                          null,
-                                                                                         new RUD());
+                                                                                         new SRD());
                 assertEquals(1, versioneds.size());
                 assertEquals(new ByteArray(anotherValue), new ByteArray(innerVersioneds.get(0)
                                                                                        .getValue()));
@@ -1630,9 +1630,9 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
 
         try {
             // Do the initial put with all nodes up
-            store.put(aKey, new Versioned<byte[]>(aValue), null, new RUD());
+            store.put(aKey, new Versioned<byte[]>(aValue), null, new SRD());
 
-            List<Version> initialVersions = store.getVersions(aKey, new RUD());
+            List<Version> initialVersions = store.getVersions(aKey, new SRD());
             assertEquals(6, initialVersions.size());
 
             Version mainVersion = initialVersions.get(0);
@@ -1650,7 +1650,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
             recordException(failureDetector, cluster.getNodeById(0));
             recordException(failureDetector, cluster.getNodeById(1));
             Version newVersion = ((VectorClock) mainVersion).clone();
-            store.put(aKey, new Versioned<byte[]>(anotherValue, newVersion), null, new RUD());
+            store.put(aKey, new Versioned<byte[]>(anotherValue, newVersion), null, new SRD());
 
             waitForOperationToComplete(500);
 
@@ -1659,7 +1659,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
             // from all the zones and do the essential read repairs.
             recordSuccess(failureDetector, cluster.getNodeById(0));
             recordSuccess(failureDetector, cluster.getNodeById(1));
-            List<Versioned<byte[]>> versioneds = store.get(aKey, null, new RUD());
+            List<Versioned<byte[]>> versioneds = store.get(aKey, null, new SRD());
             assertEquals(1, versioneds.size());
             assertEquals(new ByteArray(anotherValue), new ByteArray(versioneds.get(0).getValue()));
 
@@ -1674,7 +1674,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
                     List<Versioned<byte[]>> innerVersioneds = innerStoreEntry.getValue()
                                                                              .get(aKey,
                                                                                   null,
-                                                                                  new RUD());
+                                                                                  new SRD());
                     assertEquals(1, versioneds.size());
                     assertEquals(new ByteArray(anotherValue),
                                  new ByteArray(innerVersioneds.get(0).getValue()));
@@ -1734,7 +1734,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
 
         Store<ByteArray, byte[], byte[]> store = new InconsistencyResolvingStore<ByteArray, byte[], byte[]>(routedStore,
                                                                                                             new VectorClockInconsistencyResolver<byte[]>());
-        store.put(aKey, new Versioned<byte[]>(aValue), aTransform, new RUD());
+        store.put(aKey, new Versioned<byte[]>(aValue), aTransform, new SRD());
     }
 
     /**
@@ -1780,7 +1780,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
                                                                                                             new VectorClockInconsistencyResolver<byte[]>());
 
         try {
-            store.put(aKey, new Versioned<byte[]>(aValue), aTransform, new RUD());
+            store.put(aKey, new Versioned<byte[]>(aValue), aTransform, new SRD());
         } catch(VoldemortException ve) {
             fail("Unknown exception occurred : " + ve);
         }
@@ -1830,7 +1830,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
             routedStore.put(new ByteArray("test".getBytes()),
                             new Versioned<byte[]>(new byte[] { 1 }),
                             null,
-                            new RUD());
+                            new SRD());
             fail("Should have thrown");
         } catch(InsufficientOperationalNodesException e) {
             long elapsed = (System.nanoTime() - start) / Time.NS_PER_MS;
@@ -1879,7 +1879,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
 
         long start = System.nanoTime();
         try {
-            routedStore.get(new ByteArray("test".getBytes()), null, new RUD());
+            routedStore.get(new ByteArray("test".getBytes()), null, new SRD());
             fail("Should have thrown");
         } catch(InsufficientOperationalNodesException e) {
             long elapsed = (System.nanoTime() - start) / Time.NS_PER_MS;
@@ -1953,7 +1953,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
 
         long start = System.nanoTime();
         try {
-            routedStore.get(new ByteArray("test".getBytes()), null, new RUD());
+            routedStore.get(new ByteArray("test".getBytes()), null, new SRD());
             fail("Should have thrown");
         } catch(InsufficientOperationalNodesException e) {
             long elapsed = (System.nanoTime() - start) / Time.NS_PER_MS;
@@ -1965,7 +1965,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
             routedStore.put(new ByteArray("test".getBytes()),
                             new Versioned<byte[]>(new byte[] { 1 }),
                             null,
-                            new RUD());
+                            new SRD());
             fail("Should have thrown");
         } catch(InsufficientOperationalNodesException e) {
             long elapsed = (System.nanoTime() - start) / Time.NS_PER_MS;
@@ -2015,13 +2015,13 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
             routedStore.put(new ByteArray("test".getBytes()),
                             new Versioned<byte[]>(new byte[] { 1 }),
                             null,
-                            new RUD());
+                            new SRD());
         } catch(InsufficientOperationalNodesException e) {
             fail("Should not have failed");
         }
 
         try {
-            routedStore.get(new ByteArray("test".getBytes()), null, new RUD());
+            routedStore.get(new ByteArray("test".getBytes()), null, new SRD());
             fail("Should have thrown");
         } catch(InsufficientOperationalNodesException e) {
 
@@ -2066,12 +2066,12 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
                                                             createConfig(BANNAGE_PERIOD));
 
         ByteArray key1 = aKey;
-        routedStore.put(key1, Versioned.value("value1".getBytes()), null, new RUD());
+        routedStore.put(key1, Versioned.value("value1".getBytes()), null, new SRD());
         ByteArray key2 = TestUtils.toByteArray("voldemort");
-        routedStore.put(key2, Versioned.value("value2".getBytes()), null, new RUD());
+        routedStore.put(key2, Versioned.value("value2".getBytes()), null, new SRD());
 
         long putCount = statTrackingStore.getStats().getCount(Tracked.PUT);
-        routedStore.getAll(Arrays.asList(key1, key2), null, new RUD());
+        routedStore.getAll(Arrays.asList(key1, key2), null, new SRD());
         /* Read repair happens asynchronously, so we wait a bit */
         Thread.sleep(500);
         assertEquals("put count should remain the same if there are no read repairs",
@@ -2114,7 +2114,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
                                                             failureDetector,
                                                             createConfig(1000L));
 
-        routedStore.put(aKey, Versioned.value(aValue), null, new RUD());
+        routedStore.put(aKey, Versioned.value(aValue), null, new SRD());
 
         routedStoreFactory = createFactory();
 
@@ -2124,7 +2124,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
                                                 failureDetector,
                                                 createConfig(sleepTimeMs / 2));
 
-        List<Versioned<byte[]>> versioneds = routedStore.get(aKey, null, new RUD());
+        List<Versioned<byte[]>> versioneds = routedStore.get(aKey, null, new SRD());
         assertEquals(2, versioneds.size());
 
         // Let's make sure that if the response *does* come in late, that it
@@ -2168,7 +2168,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
                                                             failureDetector,
                                                             createConfig(10000L));
 
-        routedStore.put(aKey, Versioned.value(aValue), null, new RUD());
+        routedStore.put(aKey, Versioned.value(aValue), null, new SRD());
 
         routedStoreFactory = createFactory();
 
@@ -2178,7 +2178,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
                                                 failureDetector,
                                                 createConfig(sleepTimeMs / 2));
 
-        List<Versioned<byte[]>> versioneds = routedStore.get(aKey, null, new RUD());
+        List<Versioned<byte[]>> versioneds = routedStore.get(aKey, null, new SRD());
         assertEquals(2, versioneds.size());
     }
 
@@ -2232,7 +2232,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
         List<Node> nodesRoutedTo = routingStrategy.routeRequest("test".getBytes());
         long start = System.nanoTime(), elapsed;
         try {
-            s1.put(new ByteArray("test".getBytes()), versioned, null, new RUD());
+            s1.put(new ByteArray("test".getBytes()), versioned, null, new SRD());
         } finally {
             elapsed = (System.nanoTime() - start) / Time.NS_PER_MS;
             assertTrue(elapsed + " < " + SLEEPY_TIME, elapsed < SLEEPY_TIME);
@@ -2242,7 +2242,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
 
         for(Node node: nodesRoutedTo) {
             assertEquals(subStores.get(node.getId())
-                                  .get(new ByteArray("test".getBytes()), null, new RUD())
+                                  .get(new ByteArray("test".getBytes()), null, new SRD())
                                   .get(0),
                          versioned);
         }
@@ -2251,7 +2251,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
         Thread.sleep(BANNAGE_PERIOD + 100);
         start = System.nanoTime();
         try {
-            s1.delete(new ByteArray("test".getBytes()), versioned.getVersion(), new RUD());
+            s1.delete(new ByteArray("test".getBytes()), versioned.getVersion(), new SRD());
         } finally {
             elapsed = (System.nanoTime() - start) / Time.NS_PER_MS;
             assertTrue(elapsed + " < " + SLEEPY_TIME, elapsed < SLEEPY_TIME);
@@ -2261,7 +2261,7 @@ public class RoutedStoreTest extends AbstractByteArrayStoreTest {
 
         for(Node node: nodesRoutedTo) {
             assertEquals(subStores.get(node.getId())
-                                  .get(new ByteArray("test".getBytes()), null, new RUD())
+                                  .get(new ByteArray("test".getBytes()), null, new SRD())
                                   .size(),
                          0);
         }

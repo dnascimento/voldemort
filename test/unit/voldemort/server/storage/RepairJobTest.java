@@ -52,7 +52,7 @@ import voldemort.store.StoreDefinition;
 import voldemort.store.metadata.MetadataStore;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.versioning.Versioned;
@@ -163,7 +163,7 @@ public class RepairJobTest {
                             .put(keyBytes,
                                  new Versioned<byte[]>(ByteUtils.getBytes(entry.getValue(), "UTF-8")),
                                  null,
-                                 new RUD());
+                                 new SRD());
                 } catch(Exception e) {
                     // Don't do anything with the exception. Exception are
                     // expected here as we are
@@ -212,7 +212,7 @@ public class RepairJobTest {
                 try {
                     List<Versioned<byte[]>> retVal = storeMap.get(nodeId).get(keyBytes,
                                                                               null,
-                                                                              new RUD());
+                                                                              new SRD());
                     assertEquals("Repair did not run properly as it left the key it should have"
                                  + " deleted", retVal.isEmpty(), true);
                 } catch(Exception e) {
@@ -228,7 +228,7 @@ public class RepairJobTest {
                 try {
                     List<Versioned<byte[]>> retVal = storeMap.get(nodeId).get(keyBytes,
                                                                               null,
-                                                                              new RUD());
+                                                                              new SRD());
                     assertEquals("Repair job has deleted keys that it should not have",
                                  retVal.isEmpty(),
                                  false);

@@ -14,8 +14,8 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import voldemort.VoldemortException;
-import voldemort.undoTracker.DBUndoStub;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.DBProxy;
+import voldemort.undoTracker.SRD;
 import voldemort.undoTracker.branching.BranchPath;
 import voldemort.undoTracker.map.Op.OpType;
 import voldemort.undoTracker.map.commits.CommitList;
@@ -203,14 +203,14 @@ public class OpMultimapEntry implements Serializable {
      * returns the correct branch to use. The client can query the branch to
      * know the version
      * 
-     * @param rud
+     * @param srd
      * @param sts
      * @return
      */
-    public synchronized StsBranchPair getVersionToPut(RUD rud, BranchPath path) {
-        if(rud.rid < path.current.sts) {
+    public synchronized StsBranchPair getVersionToPut(SRD srd, BranchPath path) {
+        if(srd.rid < path.current.sts) {
             // write only over old values
-            return commitList.getBiggestSmallerCommit(path, rud.rid);
+            return commitList.getBiggestSmallerCommit(path, srd.rid);
         } else {
             // write in the new commit
             return commitList.getLatest(path);
@@ -227,14 +227,14 @@ public class OpMultimapEntry implements Serializable {
      * @param sts
      * @return
      */
-    public synchronized StsBranchPair trackReadAccess(RUD rud, BranchPath path) {
-        Op op = new Op(rud.rid, OpType.Get);
+    public synchronized StsBranchPair trackReadAccess(SRD srd, BranchPath path) {
+        Op op = new Op(srd.rid, OpType.Get);
         list.add(op);
 
         /* If rid < commit timestamp, read only old values */
-        if(rud.rid < path.current.sts) {
+        if(srd.rid < path.current.sts) {
             // read only old values
-            return commitList.getBiggestSmallerCommit(path, rud.rid);
+            return commitList.getBiggestSmallerCommit(path, srd.rid);
         } else {
             // read the most recent
             return commitList.getLatest(path);
@@ -251,20 +251,20 @@ public class OpMultimapEntry implements Serializable {
      * @param sts
      * @return
      */
-    public synchronized StsBranchPair trackWriteAccess(OpType type, RUD rud, BranchPath path) {
-        Op op = new Op(rud.rid, type);
+    public synchronized StsBranchPair trackWriteAccess(OpType type, SRD srd, BranchPath path) {
+        Op op = new Op(srd.rid, type);
         list.add(op);
 
         /* If rid < commit timestamp, write only old values */
-        if(rud.rid < path.current.sts) {
+        if(srd.rid < path.current.sts) {
             // write only old values
-            return commitList.getBiggestSmallerCommit(path, rud.rid);
+            return commitList.getBiggestSmallerCommit(path, srd.rid);
         } else {
             StsBranchPair latest = commitList.getLatest(path);
             // write in the current commit and branch
             if(path.current.sts > latest.sts) {
                 // new commit
-                return commitList.addNewCommit(path.current.sts, rud.branch);
+                return commitList.addNewCommit(path.current.sts, srd.branch);
             }
             return latest;
         }
@@ -288,22 +288,22 @@ public class OpMultimapEntry implements Serializable {
      * To be the next operation, it must exist in table. Otherwise, it add
      * itself to the table and waits.
      * 
-     * @param rud
+     * @param srd
      */
-    private synchronized void startRedoOp(Op op, RUD rud, long baseCommit) {
-        log.info("isNextOp " + rud.rid);
-        RedoIterator it = getOrNewRedoIterator(rud.branch, baseCommit);
-        while(!it.allows(op)) {
-            log.info("Operation locked " + rud.rid + " on key: " + DBUndoStub.hexStringToAscii(key));
+    private synchronized void startRedoOp(Op op, SRD srd, long baseCommit) {
+        log.info("isNextOp " + srd.rid);
+        RedoIterator it = getOrNewRedoIterator(srd.branch, baseCommit);
+        while(!it.operationIsAllowed(op)) {
+            log.info("Operation locked " + srd.rid + " on key: " + DBProxy.hexStringToAscii(key));
             log.info(it.toString());
             try {
                 this.wait();
             } catch(InterruptedException e) {
                 log.error(e);
             }
-            log.info("Trying to be unlocked " + rud.rid);
+            log.info("Trying to be unlocked " + srd.rid);
         }
-        log.info("free to go: " + rud.rid);
+        log.info("free to go: " + srd.rid);
 
     }
 
@@ -312,12 +312,12 @@ public class OpMultimapEntry implements Serializable {
      * 
      * @param type
      */
-    public synchronized void endRedoOp(OpType type, RUD rud, BranchPath path) {
-        RedoIterator it = getOrNewRedoIterator(rud.branch, path.current.sts);
-        log.info("Op end: " + type + " " + rud.rid);
-        Op op = new Op(rud.rid, type);
+    public synchronized void endRedoOp(OpType type, SRD srd, BranchPath path) {
+        RedoIterator it = getOrNewRedoIterator(srd.branch, path.current.sts);
+        log.info("Op end: " + type + " " + srd.rid);
+        Op op = new Op(srd.rid, type);
         if(it.endOp(op)) {
-            log.info("Waking the threads of key: " + DBUndoStub.hexStringToAscii(key));
+            log.info("Waking the threads of key: " + DBProxy.hexStringToAscii(key));
             this.notifyAll();
         }
     }
@@ -325,13 +325,13 @@ public class OpMultimapEntry implements Serializable {
     /**
      * Simulate the end of the original action to unlock the remain actions
      * 
-     * @param rud
+     * @param srd
      * @return was it locking other actions?
      */
-    public synchronized boolean ignore(RUD rud, BranchPath path) {
-        RedoIterator it = getOrNewRedoIterator(rud.branch, path.current.sts);
-        if(it.ignore(rud.rid)) {
-            log.info("Waking the threads on key: " + DBUndoStub.hexStringToAscii(key));
+    public synchronized boolean ignore(SRD srd, BranchPath path) {
+        RedoIterator it = getOrNewRedoIterator(srd.branch, path.current.sts);
+        if(it.ignore(srd.rid)) {
+            log.info("Waking the threads on key: " + DBProxy.hexStringToAscii(key));
             this.notifyAll();
         }
         return true;
@@ -361,17 +361,17 @@ public class OpMultimapEntry implements Serializable {
      * Commit: redoBaseCommit
      * Branch: redoBranch or the baseCommit's branch
      * 
-     * @param rud
+     * @param srd
      * @param sts: branch base Commit
      * @return
      */
-    public StsBranchPair redoRead(RUD rud, BranchPath path) {
+    public StsBranchPair redoRead(SRD srd, BranchPath path) {
         if(path == null) {
             log.error("Attempt to read using the redo stub without path");
             throw new VoldemortException("New operation on redo");
         }
         // serialize
-        startRedoOp(new Op(rud.rid, OpType.Get), rud, path.current.sts);
+        startRedoOp(new Op(srd.rid, OpType.Get), srd, path.current.sts);
         return commitList.redoRead(path);
     }
 
@@ -379,11 +379,11 @@ public class OpMultimapEntry implements Serializable {
      * Commit: baseCommit (provided by request)
      * Branch: redo (in request)
      * 
-     * @param rud
+     * @param srd
      * @return
      */
-    public StsBranchPair redoWrite(OpType opType, RUD rud, BranchPath path) {
-        startRedoOp(new Op(rud.rid, opType), rud, path.current.sts);
+    public StsBranchPair redoWrite(OpType opType, SRD srd, BranchPath path) {
+        startRedoOp(new Op(srd.rid, opType), srd, path.current.sts);
         return commitList.redoWrite(path);
     }
 

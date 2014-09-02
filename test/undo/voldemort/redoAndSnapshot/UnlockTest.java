@@ -9,8 +9,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import voldemort.undoTracker.DBUndoStub;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.DBProxy;
+import voldemort.undoTracker.SRD;
 import voldemort.undoTracker.branching.BranchController;
 import voldemort.undoTracker.branching.BranchPath;
 import voldemort.undoTracker.map.Op;
@@ -27,7 +27,7 @@ public class UnlockTest {
 
     ByteArray k2 = new ByteArray("key2".getBytes());
     ByteArray k3 = new ByteArray("key3".getBytes());
-    DBUndoStub stub;
+    DBProxy stub;
 
     List<Thread> tList;
 
@@ -40,18 +40,18 @@ public class UnlockTest {
         currentCommit = BranchController.INIT_COMMIT;
         branch = BranchController.INIT_BRANCH;
         contained = false;
-        stub = new DBUndoStub(true);
+        stub = new DBProxy(true);
 
         tList = new ArrayList<Thread>();
-        tList.add(new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(1, branch, contained)));
-        tList.add(new ExecOpT(k1.clone(), OpType.Get, stub, db, new RUD(2, branch, contained)));
-        tList.add(new ExecOpT(k1.clone(), OpType.Get, stub, db, new RUD(3, branch, contained)));
-        tList.add(new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(4, branch, contained)));
-        tList.add(new ExecOpT(k1.clone(), OpType.Get, stub, db, new RUD(5, branch, contained)));
-        tList.add(new ExecOpT(k1.clone(), OpType.Get, stub, db, new RUD(6, branch, contained)));
-        tList.add(new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(7, branch, contained)));
-        tList.add(new ExecOpT(k1.clone(), OpType.Get, stub, db, new RUD(8, branch, contained)));
-        tList.add(new ExecOpT(k1.clone(), OpType.Get, stub, db, new RUD(9, branch, contained)));
+        tList.add(new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(1, branch, contained)));
+        tList.add(new ExecOpT(k1.clone(), OpType.Get, stub, db, new SRD(2, branch, contained)));
+        tList.add(new ExecOpT(k1.clone(), OpType.Get, stub, db, new SRD(3, branch, contained)));
+        tList.add(new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(4, branch, contained)));
+        tList.add(new ExecOpT(k1.clone(), OpType.Get, stub, db, new SRD(5, branch, contained)));
+        tList.add(new ExecOpT(k1.clone(), OpType.Get, stub, db, new SRD(6, branch, contained)));
+        tList.add(new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(7, branch, contained)));
+        tList.add(new ExecOpT(k1.clone(), OpType.Get, stub, db, new SRD(8, branch, contained)));
+        tList.add(new ExecOpT(k1.clone(), OpType.Get, stub, db, new SRD(9, branch, contained)));
     }
 
     /**
@@ -82,23 +82,23 @@ public class UnlockTest {
 
         tList = new ArrayList<Thread>();
         int i = 1;
-        tList.add(new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(1, branch, contained)));
-        tList.add(new ExecOpT(k1.clone(), OpType.Get, stub, db, new RUD(2, branch, contained)));
-        tList.add(new ExecOpT(k1.clone(), OpType.Get, stub, db, new RUD(3, branch, contained)));
+        tList.add(new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(1, branch, contained)));
+        tList.add(new ExecOpT(k1.clone(), OpType.Get, stub, db, new SRD(2, branch, contained)));
+        tList.add(new ExecOpT(k1.clone(), OpType.Get, stub, db, new SRD(3, branch, contained)));
         execOperations(true);
         tList.clear();
 
         // unlock the put
 
-        tList.add(new ExecOpT(k1.clone(), OpType.Get, stub, db, new RUD(5, branch, contained)));
+        tList.add(new ExecOpT(k1.clone(), OpType.Get, stub, db, new SRD(5, branch, contained)));
         // I
-        tList.add(new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(7, branch, contained)));
-        tList.add(new ExecOpT(k1.clone(), OpType.Get, stub, db, new RUD(8, branch, contained)));
+        tList.add(new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(7, branch, contained)));
+        tList.add(new ExecOpT(k1.clone(), OpType.Get, stub, db, new SRD(8, branch, contained)));
 
-        tList.add(new ExecOpT(k1.clone(), OpType.Get, stub, db, new RUD(9, branch, contained)));
-        tList.add(new ExecOpT(k1.clone(), OpType.UNLOCK, stub, db, new RUD(4, branch, contained)));
+        tList.add(new ExecOpT(k1.clone(), OpType.Get, stub, db, new SRD(9, branch, contained)));
+        tList.add(new ExecOpT(k1.clone(), OpType.UNLOCK, stub, db, new SRD(4, branch, contained)));
 
-        tList.add(new ExecOpT(k1.clone(), OpType.UNLOCK, stub, db, new RUD(6, branch, contained)));
+        tList.add(new ExecOpT(k1.clone(), OpType.UNLOCK, stub, db, new SRD(6, branch, contained)));
 
         execOperations(true);
 

@@ -16,8 +16,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
 
-import voldemort.undoTracker.DBUndoStub;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.DBProxy;
+import voldemort.undoTracker.SRD;
 import voldemort.undoTracker.branching.BranchPath;
 import voldemort.undoTracker.map.Op.OpType;
 import voldemort.utils.ByteArray;
@@ -49,20 +49,20 @@ public class OpMultimap implements Serializable {
      * 
      * @param key
      * @param type
-     * @param rud
+     * @param srd
      * @param current
      * @return
      */
-    public StsBranchPair trackReadAccess(ByteArray key, RUD rud, BranchPath current) {
+    public StsBranchPair trackReadAccess(ByteArray key, SRD srd, BranchPath current) {
         OpMultimapEntry entry = get(key);
         entry.lockRead();
-        return entry.trackReadAccess(rud, current);
+        return entry.trackReadAccess(srd, current);
     }
 
-    public StsBranchPair trackWriteAccess(ByteArray key, OpType writeType, RUD rud, BranchPath path) {
+    public StsBranchPair trackWriteAccess(ByteArray key, OpType writeType, SRD srd, BranchPath path) {
         OpMultimapEntry entry = get(key);
         entry.lockWrite();
-        return entry.trackWriteAccess(writeType, rud, path);
+        return entry.trackWriteAccess(writeType, srd, path);
     }
 
     public void endReadAccess(ByteArray key) {
@@ -77,9 +77,9 @@ public class OpMultimap implements Serializable {
         l.unlockWrite();
     }
 
-    public StsBranchPair getVersionToPut(ByteArray key, RUD rud, BranchPath current) {
+    public StsBranchPair getVersionToPut(ByteArray key, SRD srd, BranchPath current) {
         OpMultimapEntry entry = get(key);
-        return entry.getVersionToPut(rud, current);
+        return entry.getVersionToPut(srd, current);
     }
 
     // // Map Management ////
@@ -185,7 +185,7 @@ public class OpMultimap implements Serializable {
             try {
                 newDeps += entry.updateDependencies(dependencyPerRid);
             } catch(Exception e) {
-                log.error(DBUndoStub.hexStringToAscii(key), e);
+                log.error(DBProxy.hexStringToAscii(key), e);
             }
             verified++;
         }

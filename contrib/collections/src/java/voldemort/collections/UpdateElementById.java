@@ -4,7 +4,7 @@ import java.util.Map;
 
 import voldemort.client.StoreClient;
 import voldemort.client.UpdateAction;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.versioning.ObsoleteVersionException;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
@@ -38,7 +38,7 @@ public class UpdateElementById<K, E> extends UpdateAction<Map<String, Object>, M
 
     @Override
     public void update(StoreClient<Map<String, Object>, Map<String, Object>> storeClient) {
-        Versioned<Map<String, Object>> nodeMap = storeClient.get(_key.mapValue(), new RUD());
+        Versioned<Map<String, Object>> nodeMap = storeClient.get(_key.mapValue(), new SRD());
         if(nodeMap == null)
             throw new IndexOutOfBoundsException("invalid id " + _key.getId());
         Version version = (_version != null) ? _version : nodeMap.getVersion();
@@ -53,7 +53,7 @@ public class UpdateElementById<K, E> extends UpdateAction<Map<String, Object>, M
                                                 listNode.getNextId(),
                                                 true);
         storeClient.put(_key.mapValue(), new Versioned<Map<String, Object>>(newNode.mapValue(),
-                                                                            version), new RUD());
+                                                                            version), new SRD());
 
     }
 

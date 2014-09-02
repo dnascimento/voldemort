@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 
 import voldemort.VoldemortException;
 import voldemort.store.StoreUtils;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.versioning.Versioned;
 
 /**
@@ -56,7 +56,7 @@ public class InMemoryPutAssertionStorageEngine<K, V, T> extends InMemoryStorageE
     }
 
     @Override
-    public synchronized void put(K key, Versioned<V> value, T transforms, RUD rud)
+    public synchronized void put(K key, Versioned<V> value, T transforms, SRD srd)
             throws VoldemortException {
         // try to delete from assertion
         // do real put if has not been asserted
@@ -66,7 +66,7 @@ public class InMemoryPutAssertionStorageEngine<K, V, T> extends InMemoryStorageE
 
             logger.info("PUT key: " + key + " (never asserted) assertionMap size: "
                         + assertionMap.size());
-            super.put(key, value, transforms,rud);
+            super.put(key, value, transforms,srd);
             if(logger.isTraceEnabled()) {
                 logger.trace("PUT key: " + key + " (never asserted) assertionMap size: "
                              + assertionMap.size());
@@ -86,7 +86,7 @@ public class InMemoryPutAssertionStorageEngine<K, V, T> extends InMemoryStorageE
     @Override
     public synchronized List<Versioned<V>> multiVersionPut(K key,
                                                            final List<Versioned<V>> values,
-                                                           RUD rud) {
+                                                           SRD srd) {
         Boolean result = assertionMap.remove(key);
         if(result == null) {
             if(logger.isTraceEnabled()) {
@@ -100,7 +100,7 @@ public class InMemoryPutAssertionStorageEngine<K, V, T> extends InMemoryStorageE
                              + assertionMap.size());
             }
         }
-        List<Versioned<V>> obsoleteVals = super.multiVersionPut(key, values,rud);
+        List<Versioned<V>> obsoleteVals = super.multiVersionPut(key, values,srd);
         return obsoleteVals;
     }
 

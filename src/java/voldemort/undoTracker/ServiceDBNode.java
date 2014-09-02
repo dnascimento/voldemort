@@ -36,12 +36,12 @@ public class ServiceDBNode extends Thread {
 
     private final Logger log = Logger.getLogger(ServiceDBNode.class.getName());
     private ServerSocket serverSocket;
-    private DBUndoStub stub;
+    private DBProxy stub;
     private boolean running = false;
 
-    public ServiceDBNode(DBUndoStub stub) throws IOException {
+    public ServiceDBNode(DBProxy stub) throws IOException {
         try {
-            serverSocket = new ServerSocket(DBUndoStub.MY_PORT);
+            serverSocket = new ServerSocket(DBProxy.MY_PORT);
             this.stub = stub;
             running = true;
             log.info("DBNode service listening....");
@@ -54,10 +54,10 @@ public class ServiceDBNode extends Thread {
     private void registryToManger() {
         Socket s = new Socket();
         try {
-            s.connect(DBUndoStub.MANAGER_ADDRESS);
+            s.connect(DBProxy.MANAGER_ADDRESS);
             NodeRegistryMsg c = ToManagerProto.NodeRegistryMsg.newBuilder()
                                                               .setHostname("localhost")
-                                                              .setPort(DBUndoStub.MY_PORT)
+                                                              .setPort(DBProxy.MY_PORT)
                                                               .setGroup(NodeGroup.DB_NODE)
                                                               .build();
             ToManagerProto.MsgToManager.newBuilder()

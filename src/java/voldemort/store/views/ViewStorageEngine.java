@@ -15,7 +15,7 @@ import voldemort.store.StoreCapabilityType;
 import voldemort.store.StoreUtils;
 import voldemort.store.compress.CompressionStrategy;
 import voldemort.store.serialized.SerializingStore;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.Pair;
@@ -105,14 +105,14 @@ public class ViewStorageEngine extends AbstractStorageEngine<ByteArray, byte[], 
     }
 
     @Override
-    public boolean delete(ByteArray key, Version version, RUD rud) throws VoldemortException {
-        return target.delete(key, version,rud);
+    public boolean delete(ByteArray key, Version version, SRD srd) throws VoldemortException {
+        return target.delete(key, version,srd);
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, RUD rud)
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, SRD srd)
             throws VoldemortException {
-        List<Versioned<byte[]>> values = target.get(key, null,rud);
+        List<Versioned<byte[]>> values = target.get(key, null,srd);
 
         List<Versioned<byte[]>> results = new ArrayList<Versioned<byte[]>>();
 
@@ -133,17 +133,17 @@ public class ViewStorageEngine extends AbstractStorageEngine<ByteArray, byte[], 
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
                                                           Map<ByteArray, byte[]> transforms,
-                                                          RUD rud) throws VoldemortException {
-        return StoreUtils.getAll(this, keys, transforms,rud);
+                                                          SRD srd) throws VoldemortException {
+        return StoreUtils.getAll(this, keys, transforms,srd);
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key, RUD rud) {
-        return target.getVersions(key,rud);
+    public List<Version> getVersions(ByteArray key, SRD srd) {
+        return target.getVersions(key,srd);
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, RUD rud)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, SRD srd)
             throws VoldemortException {
         if(valueCompressionStrategy != null)
             value = inflateValue(value);
@@ -153,7 +153,7 @@ public class ViewStorageEngine extends AbstractStorageEngine<ByteArray, byte[], 
                                                    value.getVersion());
         if(valueCompressionStrategy != null)
             result = deflateValue(result);
-        target.put(key, result, null,rud);
+        target.put(key, result, null,srd);
     }
 
     @Override
@@ -181,7 +181,7 @@ public class ViewStorageEngine extends AbstractStorageEngine<ByteArray, byte[], 
         ViewIterator iterator = new ViewIterator(target.entries());
         while(iterator.hasNext()) {
             Pair<ByteArray, Versioned<byte[]>> pair = iterator.next();
-            target.delete(pair.getFirst(), pair.getSecond().getVersion(), new RUD());
+            target.delete(pair.getFirst(), pair.getSecond().getVersion(), new SRD());
         }
     }
 

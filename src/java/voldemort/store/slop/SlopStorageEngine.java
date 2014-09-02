@@ -30,7 +30,7 @@ import voldemort.store.StorageEngine;
 import voldemort.store.StoreCapabilityType;
 import voldemort.store.serialized.SerializingStorageEngine;
 import voldemort.store.stats.SlopStats;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.Pair;
@@ -110,27 +110,27 @@ public class SlopStorageEngine extends AbstractStorageEngine<ByteArray, byte[], 
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, RUD rud)
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, SRD srd)
             throws VoldemortException {
-        return slopEngine.get(key, transforms,rud);
+        return slopEngine.get(key, transforms,srd);
     }
 
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
                                                           Map<ByteArray, byte[]> transforms,
-                                                          RUD rud) throws VoldemortException {
-        return slopEngine.getAll(keys, transforms,rud);
+                                                          SRD srd) throws VoldemortException {
+        return slopEngine.getAll(keys, transforms,srd);
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, RUD rud)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, SRD srd)
             throws VoldemortException {
-        slopEngine.put(key, value, transforms,rud);
+        slopEngine.put(key, value, transforms,srd);
     }
 
     @Override
-    public boolean delete(ByteArray key, Version version, RUD rud) throws VoldemortException {
-        return slopEngine.delete(key, version,rud);
+    public boolean delete(ByteArray key, Version version, SRD srd) throws VoldemortException {
+        return slopEngine.delete(key, version,srd);
     }
 
     @Override
@@ -144,8 +144,8 @@ public class SlopStorageEngine extends AbstractStorageEngine<ByteArray, byte[], 
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key, RUD rud) {
-        return slopEngine.getVersions(key,rud);
+    public List<Version> getVersions(ByteArray key, SRD srd) {
+        return slopEngine.getVersions(key,srd);
     }
 
     @Override

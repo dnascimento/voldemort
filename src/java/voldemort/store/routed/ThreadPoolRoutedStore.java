@@ -46,7 +46,7 @@ import voldemort.store.Store;
 import voldemort.store.StoreDefinition;
 import voldemort.store.StoreUtils;
 import voldemort.store.UnreachableStoreException;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.SystemTime;
@@ -74,7 +74,7 @@ public class ThreadPoolRoutedStore extends RoutedStore {
         public List<Versioned<byte[]>> execute(Store<ByteArray, byte[], byte[]> store,
                                                ByteArray key,
                                                byte[] transforms) {
-            return store.get(key, transforms, new RUD());
+            return store.get(key, transforms, new SRD());
         }
     };
 
@@ -84,7 +84,7 @@ public class ThreadPoolRoutedStore extends RoutedStore {
         public List<Version> execute(Store<ByteArray, byte[], byte[]> store,
                                      ByteArray key,
                                      byte[] transforms) {
-            return store.getVersions(key, new RUD());
+            return store.getVersions(key, new SRD());
         }
     };
 
@@ -155,7 +155,7 @@ public class ThreadPoolRoutedStore extends RoutedStore {
     }
 
     @Override
-    public boolean delete(final ByteArray key, final Version version, RUD rud)
+    public boolean delete(final ByteArray key, final Version version, SRD srd)
             throws VoldemortException {
         StoreUtils.assertValidKey(key);
         final List<Node> nodes = availableNodes(routingStrategy.routeRequest(key.get()));
@@ -190,7 +190,7 @@ public class ThreadPoolRoutedStore extends RoutedStore {
                     try {
                         boolean deleted = innerStores.get(node.getId()).delete(key,
                                                                                version,
-                                                                               new RUD());
+                                                                               new SRD());
                         successes.incrementAndGet();
                         deletedSomething.compareAndSet(false, deleted);
                         recordSuccess(node, startNs);
@@ -250,7 +250,7 @@ public class ThreadPoolRoutedStore extends RoutedStore {
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
                                                           Map<ByteArray, byte[]> transforms,
-                                                          RUD rud) throws VoldemortException {
+                                                          SRD srd) throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
 
         Map<ByteArray, List<Versioned<byte[]>>> result = StoreUtils.newEmptyHashMap(keys);
@@ -382,7 +382,7 @@ public class ThreadPoolRoutedStore extends RoutedStore {
                                                                         .get(key,
                                                                              transforms == null ? null
                                                                                                : transforms.get(key),
-                                                                             new RUD());
+                                                                             new SRD());
                             fillRepairReadsValues(nodeValues, key, node, values);
                             List<Versioned<byte[]>> versioneds = result.get(key);
                             if(versioneds == null)
@@ -426,7 +426,7 @@ public class ThreadPoolRoutedStore extends RoutedStore {
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, final byte[] transforms, RUD rud) {
+    public List<Versioned<byte[]>> get(ByteArray key, final byte[] transforms, SRD srd) {
         Function<List<GetResult<Versioned<byte[]>>>, Void> readRepairFunction = new Function<List<GetResult<Versioned<byte[]>>>, Void>() {
 
             @Override
@@ -606,7 +606,7 @@ public class ThreadPoolRoutedStore extends RoutedStore {
                         innerStores.get(v.getNodeId()).put(v.getKey(),
                                                            v.getVersioned(),
                                                            null,
-                                                           new RUD());
+                                                           new SRD());
                     } catch(VoldemortApplicationException e) {
                         if(logger.isDebugEnabled())
                             logger.debug("Read repair cancelled due to application level exception on node "
@@ -652,7 +652,7 @@ public class ThreadPoolRoutedStore extends RoutedStore {
     public void put(final ByteArray key,
                     final Versioned<byte[]> versioned,
                     final byte[] transforms,
-                    RUD rud) throws VoldemortException {
+                    SRD srd) throws VoldemortException {
         long startNs = System.nanoTime();
         StoreUtils.assertValidKey(key);
         final List<Node> nodes = availableNodes(routingStrategy.routeRequest(key.get()));
@@ -682,7 +682,7 @@ public class ThreadPoolRoutedStore extends RoutedStore {
             long startNsLocal = System.nanoTime();
             try {
                 versionedCopy = incremented(versioned, current.getId());
-                innerStores.get(current.getId()).put(key, versionedCopy, transforms, new RUD());
+                innerStores.get(current.getId()).put(key, versionedCopy, transforms, new SRD());
                 successes.getAndIncrement();
                 recordSuccess(current, startNsLocal);
                 master = current;
@@ -724,7 +724,7 @@ public class ThreadPoolRoutedStore extends RoutedStore {
                         innerStores.get(node.getId()).put(key,
                                                           finalVersionedCopy,
                                                           transforms,
-                                                          new RUD());
+                                                          new SRD());
                         successes.incrementAndGet();
                         recordSuccess(node, startNsLocal);
                     } catch(UnreachableStoreException e) {
@@ -831,7 +831,7 @@ public class ThreadPoolRoutedStore extends RoutedStore {
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key, RUD rud) {
+    public List<Version> getVersions(ByteArray key, SRD srd) {
         return get(key, null, VERSION_OP, null);
     }
 
@@ -918,7 +918,7 @@ public class ThreadPoolRoutedStore extends RoutedStore {
             List<NodeValue<ByteArray, byte[]>> nodeValues = Lists.newArrayList();
             long startNs = System.nanoTime();
             try {
-                retrieved = innerStores.get(node.getId()).getAll(nodeKeys, transforms, new RUD());
+                retrieved = innerStores.get(node.getId()).getAll(nodeKeys, transforms, new SRD());
                 if(repairReads) {
                     for(Map.Entry<ByteArray, List<Versioned<byte[]>>> entry: retrieved.entrySet())
                         fillRepairReadsValues(nodeValues, entry.getKey(), node, entry.getValue());
@@ -969,7 +969,7 @@ public class ThreadPoolRoutedStore extends RoutedStore {
     }
 
     @Override
-    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, RUD rud) {
+    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, SRD srd) {
         // TODO
         throw new RuntimeException("NOT IMPLEMENTED thread pool routed store");
     }

@@ -38,7 +38,7 @@ import voldemort.store.metadata.MetadataStore;
 import voldemort.store.slop.Slop;
 import voldemort.store.slop.Slop.Operation;
 import voldemort.store.slop.SlopStorageEngine;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Props;
 import voldemort.versioning.Versioned;
@@ -93,7 +93,7 @@ public class BlockingSlopPusherTest extends TestCase {
     private void pushSlop(Versioned<Slop>... slops) {
         // put all the slop in the slop store
         for(Versioned<Slop> s: slops)
-            repo.getSlopStore().asSlopStore().put(s.getValue().makeKey(), s, null, new RUD());
+            repo.getSlopStore().asSlopStore().put(s.getValue().makeKey(), s, null, new SRD());
 
         // run the pusher
         pusher.run();
@@ -110,9 +110,9 @@ public class BlockingSlopPusherTest extends TestCase {
             Slop slop = vs.getValue();
             assertEquals("Slop remains.",
                          0,
-                         repo.getSlopStore().get(slop.makeKey(), null, new RUD()).size());
+                         repo.getSlopStore().get(slop.makeKey(), null, new SRD()).size());
             assertTrue(bytesEqual(slop.getValue(), repo.getNodeStore(STORE_NAME, slop.getNodeId())
-                                                       .get(slop.getKey(), null, new RUD())
+                                                       .get(slop.getKey(), null, new SRD())
                                                        .get(0)
                                                        .getValue()));
         }
@@ -121,7 +121,7 @@ public class BlockingSlopPusherTest extends TestCase {
             Slop slop = vs.getValue();
             assertEquals("Slop is gone!",
                          1,
-                         repo.getSlopStore().get(slop.makeKey(), null, new RUD()).size(),
+                         repo.getSlopStore().get(slop.makeKey(), null, new SRD()).size(),
                          0L);
         }
     }

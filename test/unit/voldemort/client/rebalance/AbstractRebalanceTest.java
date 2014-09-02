@@ -47,7 +47,7 @@ import voldemort.store.metadata.MetadataStore;
 import voldemort.store.metadata.MetadataStore.VoldemortState;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.Pair;
@@ -253,7 +253,7 @@ public abstract class AbstractRebalanceTest {
             if(StoreRoutingPlan.checkKeyBelongsToPartition(partitions,
                                                            node.getPartitionIds(),
                                                            flattenedPresentTuples)) {
-                List<Versioned<byte[]>> values = store.get(keyBytes, null, new RUD());
+                List<Versioned<byte[]>> values = store.get(keyBytes, null, new SRD());
 
                 // expecting exactly one version
                 if(values.size() == 0) {

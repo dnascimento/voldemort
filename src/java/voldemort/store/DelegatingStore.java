@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import voldemort.VoldemortException;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Utils;
 import voldemort.versioning.Version;
@@ -49,28 +49,28 @@ public class DelegatingStore<K, V, T> extends AbstractStore<K, V, T> {
     }
 
     @Override
-    public boolean delete(K key, Version version, RUD rud) throws VoldemortException {
+    public boolean delete(K key, Version version, SRD srd) throws VoldemortException {
         StoreUtils.assertValidKey(key);
-        return innerStore.delete(key, version, rud);
+        return innerStore.delete(key, version, srd);
     }
 
     @Override
-    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, RUD rud)
+    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, SRD srd)
             throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
-        return innerStore.getAll(keys, transforms, rud);
+        return innerStore.getAll(keys, transforms, srd);
     }
 
     @Override
-    public List<Versioned<V>> get(K key, T transform, RUD rud) throws VoldemortException {
+    public List<Versioned<V>> get(K key, T transform, SRD srd) throws VoldemortException {
         StoreUtils.assertValidKey(key);
-        return innerStore.get(key, transform, rud);
+        return innerStore.get(key, transform, srd);
     }
 
     @Override
-    public void put(K key, Versioned<V> value, T transform, RUD rud) throws VoldemortException {
+    public void put(K key, Versioned<V> value, T transform, SRD srd) throws VoldemortException {
         StoreUtils.assertValidKey(key);
-        innerStore.put(key, value, transform, rud);
+        innerStore.put(key, value, transform, srd);
     }
 
     public Store<K, V, T> getInnerStore() {
@@ -88,8 +88,8 @@ public class DelegatingStore<K, V, T> extends AbstractStore<K, V, T> {
     }
 
     @Override
-    public List<Version> getVersions(K key, RUD rud) {
-        return innerStore.getVersions(key, rud);
+    public List<Version> getVersions(K key, SRD srd) {
+        return innerStore.getVersions(key, srd);
     }
 
     @Override
@@ -117,7 +117,7 @@ public class DelegatingStore<K, V, T> extends AbstractStore<K, V, T> {
     }
 
     @Override
-    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, RUD rud) {
-        return innerStore.unlockKeys(keys, rud);
+    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, SRD srd) {
+        return innerStore.unlockKeys(keys, srd);
     }
 }

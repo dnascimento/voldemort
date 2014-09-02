@@ -22,7 +22,7 @@ import voldemort.cluster.Node;
 import voldemort.store.InsufficientOperationalNodesException;
 import voldemort.store.Store;
 import voldemort.store.memory.InMemoryPutAssertionStorageEngine;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 
 @RunWith(Parameterized.class)
@@ -94,7 +94,7 @@ public class LongHintedHandoffTest {
             byte[] value = TestUtils.randomBytes(VALUE_LENGTH);
             // put to nodes
             try {
-                client.put(key.get(), value, new RUD());
+                client.put(key.get(), value, new SRD());
                 // if put does not throw exception
                 List<Node> routes = testEnv.routeRequest(key.get());
                 for(Node node: routes) {

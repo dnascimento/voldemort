@@ -48,7 +48,7 @@ import voldemort.store.slop.strategy.HintedHandoffStrategyType;
 import voldemort.store.slow.SlowStorageConfiguration;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.versioning.ObsoleteVersionException;
 
 /**
@@ -240,7 +240,7 @@ public class E2EClientRequestExecutorPoolAndFailureDetectorTest {
             String key = getKey();
             String value = getValue();
             try {
-                super.storeClient.put(key, value, new RUD());
+                super.storeClient.put(key, value, new SRD());
             } catch(ObsoleteVersionException e) {
                 // System.out.println("ObsoleteVersionException caught on put.");
             }
@@ -256,7 +256,7 @@ public class E2EClientRequestExecutorPoolAndFailureDetectorTest {
         @Override
         public void doOp() {
             String key = getKey();
-            super.storeClient.get(key, new RUD());
+            super.storeClient.get(key, new SRD());
         }
     }
 

@@ -422,7 +422,7 @@ public class ConsistencyFix {
             // "version("
             // _01234567_
             // => 8 is the magic offset to elide "version("
-            // '-1' gets rud of the last ")"
+            // '-1' gets srd of the last ")"
             String clockEntryList = parsed[0].substring(8, parsed[0].length() - 1);
             logger.trace("clockEntryList: <" + clockEntryList + ">");
             String parsedClockEntryList[] = clockEntryList.split(", ");

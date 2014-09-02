@@ -41,7 +41,7 @@ import voldemort.store.routed.Pipeline.Event;
 import voldemort.store.routed.Response;
 import voldemort.store.slop.HintedHandoff;
 import voldemort.store.slop.Slop;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Time;
 import voldemort.utils.Utils;
@@ -77,8 +77,8 @@ public class PerformParallelDeleteRequests<V, PD extends BasicPipelineData<V>> e
                                          Map<Integer, NonblockingStore> nonblockingStores,
                                          HintedHandoff hintedHandoff,
                                          Version version,
-                                         RUD rud) {
-        super(pipelineData, completeEvent, key,rud);
+                                         SRD srd) {
+        super(pipelineData, completeEvent, key,srd);
         this.failureDetector = failureDetector;
         this.preferred = preferred;
         this.required = required;
@@ -165,7 +165,7 @@ public class PerformParallelDeleteRequests<V, PD extends BasicPipelineData<V>> e
                             + " request on node " + node.getId());
 
             NonblockingStore store = nonblockingStores.get(node.getId());
-            store.submitDeleteRequest(key, version, callback, timeoutMs,rud);
+            store.submitDeleteRequest(key, version, callback, timeoutMs,srd);
         }
 
         try {

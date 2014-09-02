@@ -27,7 +27,7 @@ import voldemort.VoldemortException;
 import voldemort.store.Store;
 import voldemort.store.StoreRequest;
 import voldemort.store.UnreachableStoreException;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Time;
 import voldemort.utils.Utils;
@@ -53,12 +53,12 @@ public class ThreadPoolBasedNonblockingStoreImpl implements NonblockingStore {
                                     final Map<ByteArray, byte[]> transforms,
                                     final NonblockingStoreCallback callback,
                                     long timeoutMs,
-                                    final RUD rud) {
+                                    final SRD srd) {
         submit(new StoreRequest<Map<ByteArray, List<Versioned<byte[]>>>>() {
 
             @Override
             public Map<ByteArray, List<Versioned<byte[]>>> request(Store<ByteArray, byte[], byte[]> store) {
-                return innerStore.getAll(keys, transforms, rud);
+                return innerStore.getAll(keys, transforms, srd);
             }
         },
                callback,
@@ -71,12 +71,12 @@ public class ThreadPoolBasedNonblockingStoreImpl implements NonblockingStore {
                                  final byte[] transforms,
                                  NonblockingStoreCallback callback,
                                  long timeoutMs,
-                                 final RUD rud) {
+                                 final SRD srd) {
         submit(new StoreRequest<List<Versioned<byte[]>>>() {
 
             @Override
             public List<Versioned<byte[]>> request(Store<ByteArray, byte[], byte[]> store) {
-                return innerStore.get(key, transforms, rud);
+                return innerStore.get(key, transforms, srd);
             }
 
         }, callback, timeoutMs, "get");
@@ -86,12 +86,12 @@ public class ThreadPoolBasedNonblockingStoreImpl implements NonblockingStore {
     public void submitGetVersionsRequest(final ByteArray key,
                                          NonblockingStoreCallback callback,
                                          long timeoutMs,
-                                         final RUD rud) {
+                                         final SRD srd) {
         submit(new StoreRequest<List<Version>>() {
 
             @Override
             public List<Version> request(Store<ByteArray, byte[], byte[]> store) {
-                return innerStore.getVersions(key, rud);
+                return innerStore.getVersions(key, srd);
             }
 
         }, callback, timeoutMs, "submit");
@@ -103,12 +103,12 @@ public class ThreadPoolBasedNonblockingStoreImpl implements NonblockingStore {
                                  final byte[] transforms,
                                  NonblockingStoreCallback callback,
                                  long timeoutMs,
-                                 final RUD rud) {
+                                 final SRD srd) {
         submit(new StoreRequest<Void>() {
 
             @Override
             public Void request(Store<ByteArray, byte[], byte[]> store) {
-                innerStore.put(key, value, transforms, rud);
+                innerStore.put(key, value, transforms, srd);
                 return null;
             }
 
@@ -120,12 +120,12 @@ public class ThreadPoolBasedNonblockingStoreImpl implements NonblockingStore {
                                     final Version version,
                                     NonblockingStoreCallback callback,
                                     long timeoutMs,
-                                    final RUD rud) {
+                                    final SRD srd) {
         submit(new StoreRequest<Boolean>() {
 
             @Override
             public Boolean request(Store<ByteArray, byte[], byte[]> store) {
-                return innerStore.delete(key, version, rud);
+                return innerStore.delete(key, version, srd);
             }
 
         }, callback, timeoutMs, "delete");
@@ -191,12 +191,12 @@ public class ThreadPoolBasedNonblockingStoreImpl implements NonblockingStore {
     public void submitUnlockRequest(final Iterable<ByteArray> keys,
                                     NonblockingStoreCallback callback,
                                     long timeoutMs,
-                                    final RUD rud) {
+                                    final SRD srd) {
         submit(new StoreRequest<Map<ByteArray, Boolean>>() {
 
             @Override
             public Map<ByteArray, Boolean> request(Store<ByteArray, byte[], byte[]> store) {
-                return innerStore.unlockKeys(keys, rud);
+                return innerStore.unlockKeys(keys, srd);
             }
         }, callback, timeoutMs, "unlock");
     }

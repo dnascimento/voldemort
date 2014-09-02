@@ -27,7 +27,7 @@ import voldemort.server.storage.KeyLockHandle;
 import voldemort.store.PersistenceFailureException;
 import voldemort.store.StoreBinaryFormat;
 import voldemort.store.StoreUtils;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.Pair;
@@ -101,21 +101,21 @@ public class PartitionPrefixedBdbStorageEngine extends BdbStorageEngine {
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, RUD rud)
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, SRD srd)
             throws PersistenceFailureException {
-        return super.get(validateAndConstructKey(key), transforms,rud);
+        return super.get(validateAndConstructKey(key), transforms,srd);
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, RUD rud)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, SRD srd)
             throws PersistenceFailureException {
-        super.put(validateAndConstructKey(key), value, transforms,rud);
+        super.put(validateAndConstructKey(key), value, transforms,srd);
     }
 
     @Override
-    public boolean delete(ByteArray key, Version version, RUD rud)
+    public boolean delete(ByteArray key, Version version, SRD srd)
             throws PersistenceFailureException {
-        return super.delete(validateAndConstructKey(key), version,rud);
+        return super.delete(validateAndConstructKey(key), version,srd);
     }
 
     @Override

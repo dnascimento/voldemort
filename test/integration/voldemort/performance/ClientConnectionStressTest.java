@@ -29,7 +29,7 @@ import voldemort.client.SocketStoreClientFactory;
 import voldemort.client.StoreClient;
 import voldemort.client.StoreClientFactory;
 import voldemort.client.TimeoutConfig;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.CmdUtils;
 
 /**
@@ -82,7 +82,7 @@ public class ClientConnectionStressTest {
                             StoreClient<String, String> client = factory.getStoreClient(storeName);
 
                             for(int k = 0; k < reqsPerConn; k++)
-                                client.get(Integer.toString(k), new RUD());
+                                client.get(Integer.toString(k), new SRD());
                         } finally {
                             latch.countDown();
                         }

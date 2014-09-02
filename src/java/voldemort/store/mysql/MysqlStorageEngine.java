@@ -31,7 +31,7 @@ import voldemort.VoldemortException;
 import voldemort.store.AbstractStorageEngine;
 import voldemort.store.PersistenceFailureException;
 import voldemort.store.StoreUtils;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.Pair;
@@ -164,7 +164,7 @@ public class MysqlStorageEngine extends AbstractStorageEngine<ByteArray, byte[],
     }
 
     @Override
-    public boolean delete(ByteArray key, Version maxVersion, RUD rud)
+    public boolean delete(ByteArray key, Version maxVersion, SRD srd)
             throws PersistenceFailureException {
         StoreUtils.assertValidKey(key);
         Connection conn = null;
@@ -215,7 +215,7 @@ public class MysqlStorageEngine extends AbstractStorageEngine<ByteArray, byte[],
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
                                                           Map<ByteArray, byte[]> transforms,
-                                                          RUD rud) throws VoldemortException {
+                                                          SRD srd) throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -248,14 +248,14 @@ public class MysqlStorageEngine extends AbstractStorageEngine<ByteArray, byte[],
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, RUD rud)
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, SRD srd)
             throws PersistenceFailureException {
         StoreUtils.assertValidKey(key);
-        return StoreUtils.get(this, key, transforms,rud);
+        return StoreUtils.get(this, key, transforms,srd);
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, RUD rud)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, SRD srd)
             throws PersistenceFailureException {
         StoreUtils.assertValidKey(key);
         boolean doCommit = false;
@@ -405,7 +405,7 @@ public class MysqlStorageEngine extends AbstractStorageEngine<ByteArray, byte[],
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key, RUD rud) {
-        return StoreUtils.getVersions(get(key, null,rud));
+    public List<Version> getVersions(ByteArray key, SRD srd) {
+        return StoreUtils.getVersions(get(key, null,srd));
     }
 }

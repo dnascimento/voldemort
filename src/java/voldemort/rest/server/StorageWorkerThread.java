@@ -25,7 +25,7 @@ import voldemort.store.CompositeVoldemortRequest;
 import voldemort.store.Store;
 import voldemort.store.stats.StoreStats;
 import voldemort.store.stats.StoreStatsJmx;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.JmxUtils;
 import voldemort.versioning.Version;
@@ -105,7 +105,7 @@ public class StorageWorkerThread implements Runnable {
                         try {
                             List<Versioned<byte[]>> versionedValues = store.get(requestObject.getKey(),
                                                                                 null,
-                                                                                new RUD());
+                                                                                new SRD());
                             // handle non existing key
                             if(versionedValues.size() > 0) {
                                 GetResponseSender responseConstructor = new GetResponseSender(messageEvent,
@@ -135,7 +135,7 @@ public class StorageWorkerThread implements Runnable {
                         try {
                             Map<ByteArray, List<Versioned<byte[]>>> keyValuesMap = store.getAll(requestObject.getIterableKeys(),
                                                                                                 null,
-                                                                                                new RUD());
+                                                                                                new SRD());
                             // check if there is atleast one valid key
                             // before sending response
                             boolean hasAtleastOneValidKey = false;
@@ -171,7 +171,7 @@ public class StorageWorkerThread implements Runnable {
                             store.put(requestObject.getKey(),
                                       requestObject.getValue(),
                                       null,
-                                      new RUD());
+                                      new SRD());
                             PutResponseSender responseConstructor = new PutResponseSender(messageEvent);
                             responseConstructor.sendResponse(performanceStats,
                                                              fromLocalZone,
@@ -188,7 +188,7 @@ public class StorageWorkerThread implements Runnable {
                         try {
                             boolean result = store.delete(requestObject.getKey(),
                                                           requestObject.getVersion(),
-                                                          new RUD());
+                                                          new SRD());
                             if(!result) {
                                 logger.error("Error when doing delete. Non Existing key/version. Nothing to delete");
                                 RestErrorHandler.writeErrorResponse(messageEvent,
@@ -212,7 +212,7 @@ public class StorageWorkerThread implements Runnable {
                         }
                         try {
                             List<Version> versions = store.getVersions(requestObject.getKey(),
-                                                                       new RUD());
+                                                                       new SRD());
 
                             // handle non existing key
                             if(versions.size() > 0) {

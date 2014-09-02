@@ -9,7 +9,7 @@ package voldemort.undoTracker.schedulers;
 
 import org.apache.log4j.Logger;
 
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.undoTracker.branching.BranchPath;
 import voldemort.undoTracker.map.OpMultimap;
 import voldemort.undoTracker.map.OpMultimapEntry;
@@ -35,16 +35,16 @@ public class RestrainScheduler extends AccessSchedule {
     }
 
     @Override
-    public void getEnd(ByteArray key, RUD rud, BranchPath path) {}
+    public void getEnd(ByteArray key, SRD srd, BranchPath path) {}
 
     @Override
-    public void putEnd(ByteArray key, RUD rud, BranchPath path) {}
+    public void putEnd(ByteArray key, SRD srd, BranchPath path) {}
 
     @Override
-    public void deleteEnd(ByteArray key, RUD rud, BranchPath path) {}
+    public void deleteEnd(ByteArray key, SRD srd, BranchPath path) {}
 
     @Override
-    public StsBranchPair getStart(ByteArray key, RUD rud, BranchPath path) {
+    public StsBranchPair getStart(ByteArray key, SRD srd, BranchPath path) {
         OpMultimapEntry l = archive.get(key);
         if(l.isReplayingInBranch(path.current.branch)) {
             synchronized(flag) {
@@ -59,7 +59,7 @@ public class RestrainScheduler extends AccessSchedule {
     }
 
     @Override
-    public StsBranchPair putStart(ByteArray key, RUD rud, BranchPath path) {
+    public StsBranchPair putStart(ByteArray key, SRD srd, BranchPath path) {
         OpMultimapEntry l = archive.get(key);
         if(l.isReplayingInBranch(path.current.branch)) {
             synchronized(flag) {
@@ -74,7 +74,7 @@ public class RestrainScheduler extends AccessSchedule {
     }
 
     @Override
-    public StsBranchPair deleteStart(ByteArray key, RUD rud, BranchPath path) {
+    public StsBranchPair deleteStart(ByteArray key, SRD srd, BranchPath path) {
         OpMultimapEntry l = archive.get(key);
         if(l.isReplayingInBranch(path.current.branch)) {
             synchronized(flag) {
@@ -89,7 +89,7 @@ public class RestrainScheduler extends AccessSchedule {
     }
 
     @Override
-    public StsBranchPair getVersionStart(ByteArray key, RUD rud, BranchPath path) {
+    public StsBranchPair getVersionStart(ByteArray key, SRD srd, BranchPath path) {
         OpMultimapEntry l = archive.get(key);
         if(l.isReplayingInBranch(path.current.branch)) {
             synchronized(flag) {

@@ -20,7 +20,7 @@ import voldemort.VoldemortException;
 import voldemort.store.DelegatingStore;
 import voldemort.store.Store;
 import voldemort.store.StoreCapabilityType;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.Time;
 import voldemort.versioning.VectorClock;
 import voldemort.versioning.Versioned;
@@ -46,11 +46,11 @@ public class VersionIncrementingStore<K, V, T> extends DelegatingStore<K, V, T> 
     }
 
     @Override
-    public void put(K key, Versioned<V> value, T transforms, RUD rud) throws VoldemortException {
+    public void put(K key, Versioned<V> value, T transforms, SRD srd) throws VoldemortException {
         value = value.cloneVersioned();
         VectorClock clock = (VectorClock) value.getVersion();
         clock.incrementVersion(nodeId, time.getMilliseconds());
-        super.put(key, value, transforms,rud);
+        super.put(key, value, transforms,srd);
     }
 
     @Override

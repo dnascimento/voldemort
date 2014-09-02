@@ -6,7 +6,7 @@ import java.util.Map;
 import voldemort.client.StoreClient;
 import voldemort.client.UpdateAction;
 import voldemort.serialization.Serializer;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.versioning.Versioned;
 
 /**
@@ -28,7 +28,7 @@ public class UpdatePageIndex<I, LK extends Comparable<LK>> extends
     @Override
     public void update(StoreClient<I, List<Map<String, Object>>> storeClient) {
         Versioned<List<Map<String, Object>>> versionedIndex = storeClient.get(_identifier,
-                                                                              new RUD());
+                                                                              new SRD());
 
         List<Map<String, Object>> pageIndex = versionedIndex.getValue();
         VPageIndexEntry<LK> oldIndexEntry = VPageIndexEntry.valueOf(pageIndex.remove(0),
@@ -48,7 +48,7 @@ public class UpdatePageIndex<I, LK extends Comparable<LK>> extends
         storeClient.put(_identifier,
                         new Versioned<List<Map<String, Object>>>(pageIndex,
                                                                  versionedIndex.getVersion()),
-                        new RUD());
+                        new SRD());
     }
 
 }

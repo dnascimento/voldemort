@@ -6,7 +6,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
-import voldemort.undoTracker.DBUndoStub;
+import voldemort.undoTracker.DBProxy;
 import voldemort.undoTracker.map.Op;
 import voldemort.undoTracker.map.Op.OpType;
 import voldemort.undoTracker.map.OpMultimap;
@@ -97,7 +97,7 @@ public class ConcurrentMultimapTest {
     @Test
     public void putGet() {
         // TODO check
-        DBUndoStub stub = new DBUndoStub();
+        DBProxy stub = new DBProxy();
         ByteArray k1 = new ByteArray("key1".getBytes());
         ByteArray k2 = k1.clone();
         stub.modifyKey(k1, (short) 0, 0L);

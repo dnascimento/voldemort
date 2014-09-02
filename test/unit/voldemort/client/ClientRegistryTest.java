@@ -42,7 +42,7 @@ import voldemort.server.VoldemortServer;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
 import voldemort.store.system.SystemStoreConstants;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Pair;
 import voldemort.versioning.Versioned;
@@ -128,7 +128,7 @@ public class ClientRegistryTest {
                                                       .setEnableLazy(false);
         SocketStoreClientFactory socketFactory = new SocketStoreClientFactory(clientConfig);
         StoreClient<String, String> client1 = socketFactory.getStoreClient(TEST_STORE_NAME);
-        client1.put("k", "v", new RUD());
+        client1.put("k", "v", new SRD());
         Iterator<Pair<ByteArray, Versioned<byte[]>>> it = adminClient.bulkFetchOps.fetchEntries(0,
                                                                                                 SystemStoreConstants.SystemStoreName.voldsys$_client_registry.name(),
                                                                                                 emptyPartitionList,
@@ -198,8 +198,8 @@ public class ClientRegistryTest {
         StoreClient<String, String> client1 = socketFactory.getStoreClient(TEST_STORE_NAME);
         StoreClient<String, String> client2 = socketFactory.getStoreClient(TEST_STORE_NAME);
 
-        client1.put("k1", "v1", new RUD());
-        client2.put("k2", "v2", new RUD());
+        client1.put("k1", "v1", new SRD());
+        client2.put("k2", "v2", new SRD());
 
         Iterator<Pair<ByteArray, Versioned<byte[]>>> it = adminClient.bulkFetchOps.fetchEntries(0,
                                                                                                 SystemStoreConstants.SystemStoreName.voldsys$_client_registry.name(),
@@ -287,8 +287,8 @@ public class ClientRegistryTest {
         StoreClient<String, String> client1 = socketFactory.getStoreClient(TEST_STORE_NAME);
         StoreClient<String, String> client2 = socketFactory.getStoreClient(TEST_STORE_NAME2);
 
-        client1.put("k1", "v1", new RUD());
-        client2.put("k2", "v2", new RUD());
+        client1.put("k1", "v1", new SRD());
+        client2.put("k2", "v2", new SRD());
 
         Iterator<Pair<ByteArray, Versioned<byte[]>>> it = adminClient.bulkFetchOps.fetchEntries(0,
                                                                                                 SystemStoreConstants.SystemStoreName.voldsys$_client_registry.name(),
@@ -405,8 +405,8 @@ public class ClientRegistryTest {
         StoreClient<String, String> client1 = socketFactory1.getStoreClient(TEST_STORE_NAME);
         StoreClient<String, String> client2 = socketFactory2.getStoreClient(TEST_STORE_NAME2);
 
-        client1.put("k1", "v1", new RUD());
-        client2.put("k2", "v2", new RUD());
+        client1.put("k1", "v1", new SRD());
+        client2.put("k2", "v2", new SRD());
 
         Iterator<Pair<ByteArray, Versioned<byte[]>>> it = adminClient.bulkFetchOps.fetchEntries(0,
                                                                                                 SystemStoreConstants.SystemStoreName.voldsys$_client_registry.name(),
@@ -546,8 +546,8 @@ public class ClientRegistryTest {
         StoreClient<String, String> client1 = socketFactory1.getStoreClient(TEST_STORE_NAME);
         StoreClient<String, String> client2 = socketFactory2.getStoreClient(TEST_STORE_NAME2);
 
-        client1.put("k1", "v1", new RUD());
-        client2.put("k2", "v2", new RUD());
+        client1.put("k1", "v1", new SRD());
+        client2.put("k2", "v2", new SRD());
 
         Iterator<Pair<ByteArray, Versioned<byte[]>>> it = adminClient.bulkFetchOps.fetchEntries(1,
                                                                                                 SystemStoreConstants.SystemStoreName.voldsys$_client_registry.name(),
@@ -656,8 +656,8 @@ public class ClientRegistryTest {
             StoreClient<String, String> client1 = socketFactory1.getStoreClient(TEST_STORE_NAME);
             StoreClient<String, String> client2 = socketFactory2.getStoreClient(TEST_STORE_NAME2);
 
-            client1.put("k1", "v1", new RUD());
-            client2.put("k2", "v2", new RUD());
+            client1.put("k1", "v1", new SRD());
+            client2.put("k2", "v2", new SRD());
 
         }
 
@@ -711,8 +711,8 @@ public class ClientRegistryTest {
             StoreClient<String, String> client1 = socketFactory1.getStoreClient(TEST_STORE_NAME);
             StoreClient<String, String> client2 = socketFactory2.getStoreClient(TEST_STORE_NAME2);
 
-            client1.put("k1", "v1", new RUD());
-            client2.put("k2", "v2", new RUD());
+            client1.put("k1", "v1", new SRD());
+            client2.put("k2", "v2", new SRD());
 
             Iterator<Pair<ByteArray, Versioned<byte[]>>> it = adminClient.bulkFetchOps.fetchEntries(1,
                                                                                                     SystemStoreConstants.SystemStoreName.voldsys$_client_registry.name(),

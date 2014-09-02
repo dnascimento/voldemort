@@ -10,7 +10,7 @@ import voldemort.server.VoldemortConfig;
 import voldemort.server.storage.KeyLockHandle;
 import voldemort.store.ErrorCodeMapper;
 import voldemort.store.StorageEngine;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.NetworkClassLoader;
 import voldemort.versioning.VectorClock;
@@ -48,7 +48,7 @@ public class TimeBasedUpdatePartitionEntriesStreamRequestHandler extends
     }
 
     @Override
-    protected void processEntry(ByteArray key, Versioned<byte[]> value, RUD rud)
+    protected void processEntry(ByteArray key, Versioned<byte[]> value, SRD srd)
             throws IOException {
         KeyLockHandle<byte[]> handle = null;
         try {

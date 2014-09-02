@@ -18,7 +18,7 @@ package voldemort.store.socket.clientrequest;
 
 import voldemort.client.protocol.RequestFormat;
 import voldemort.server.RequestRoutingType;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 
 public abstract class AbstractStoreClientRequest<T> extends AbstractClientRequest<T> {
 
@@ -28,16 +28,16 @@ public abstract class AbstractStoreClientRequest<T> extends AbstractClientReques
 
     protected final RequestRoutingType requestRoutingType;
 
-    protected final RUD rud;
+    protected final SRD srd;
 
     public AbstractStoreClientRequest(String storeName,
                                       RequestFormat requestFormat,
                                       RequestRoutingType requestRoutingType,
-                                      RUD rud) {
+                                      SRD srd) {
         this.storeName = storeName;
         this.requestFormat = requestFormat;
         this.requestRoutingType = requestRoutingType;
-        this.rud = rud;
+        this.srd = srd;
     }
 
 }

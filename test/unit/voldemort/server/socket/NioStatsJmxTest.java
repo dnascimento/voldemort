@@ -39,7 +39,7 @@ import voldemort.server.niosocket.NioSocketService;
 import voldemort.store.Store;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.JmxUtils;
 import voldemort.versioning.Versioned;
@@ -99,7 +99,7 @@ public class NioStatsJmxTest {
         while(((System.currentTimeMillis()) - start) <= MAX_TRAFFIC_TIME_MS) {
             dataGen.nextBytes(data);
             ByteArray key = new ByteArray(data);
-            socketStore.put(key, new Versioned<byte[]>(data), null, new RUD());
+            socketStore.put(key, new Versioned<byte[]>(data), null, new SRD());
         }
 
         // has to be 1, since we configure client with 1 connection and do

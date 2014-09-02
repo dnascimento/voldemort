@@ -27,7 +27,7 @@ import voldemort.store.CompositeVoldemortRequest;
 import voldemort.store.DelegatingStore;
 import voldemort.store.Store;
 import voldemort.store.StoreCapabilityType;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.ObsoleteVersionException;
 import voldemort.versioning.Version;
@@ -48,10 +48,10 @@ public class StatTrackingStore extends DelegatingStore<ByteArray, byte[], byte[]
     }
 
     @Override
-    public boolean delete(ByteArray key, Version version, RUD rud) throws VoldemortException {
+    public boolean delete(ByteArray key, Version version, SRD srd) throws VoldemortException {
         long start = System.nanoTime();
         try {
-            return super.delete(key, version,rud);
+            return super.delete(key, version,srd);
         } catch(VoldemortException e) {
             stats.recordTime(Tracked.EXCEPTION, System.nanoTime() - start);
             throw e;
@@ -61,11 +61,11 @@ public class StatTrackingStore extends DelegatingStore<ByteArray, byte[], byte[]
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key, RUD rud) throws VoldemortException {
+    public List<Version> getVersions(ByteArray key, SRD srd) throws VoldemortException {
         List<Version> result = null;
         long start = System.nanoTime();
         try {
-            result = super.getVersions(key,rud);
+            result = super.getVersions(key,srd);
             return result;
         } catch(VoldemortException e) {
             stats.recordTime(Tracked.EXCEPTION, System.nanoTime() - start);
@@ -81,12 +81,12 @@ public class StatTrackingStore extends DelegatingStore<ByteArray, byte[], byte[]
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, RUD rud)
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, SRD srd)
             throws VoldemortException {
         List<Versioned<byte[]>> result = null;
         long start = System.nanoTime();
         try {
-            result = super.get(key, transforms,rud);
+            result = super.get(key, transforms,srd);
             return result;
         } catch(VoldemortException e) {
             stats.recordTime(Tracked.EXCEPTION, System.nanoTime() - start);
@@ -108,11 +108,11 @@ public class StatTrackingStore extends DelegatingStore<ByteArray, byte[], byte[]
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
                                                           Map<ByteArray, byte[]> transforms,
-                                                          RUD rud) throws VoldemortException {
+                                                          SRD srd) throws VoldemortException {
         Map<ByteArray, List<Versioned<byte[]>>> result = null;
         long start = System.nanoTime();
         try {
-            result = super.getAll(keys, transforms,rud);
+            result = super.getAll(keys, transforms,srd);
             return result;
         } catch(VoldemortException e) {
             stats.recordTime(Tracked.EXCEPTION, System.nanoTime() - start);
@@ -150,11 +150,11 @@ public class StatTrackingStore extends DelegatingStore<ByteArray, byte[], byte[]
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, RUD rud)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, SRD srd)
             throws VoldemortException {
         long start = System.nanoTime();
         try {
-            super.put(key, value, transforms,rud);
+            super.put(key, value, transforms,srd);
         } catch(ObsoleteVersionException e) {
             stats.recordTime(Tracked.OBSOLETE, System.nanoTime() - start);
             throw e;

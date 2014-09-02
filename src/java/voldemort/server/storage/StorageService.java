@@ -101,7 +101,7 @@ import voldemort.store.system.SystemStoreConstants;
 import voldemort.store.versioned.InconsistencyResolvingStore;
 import voldemort.store.views.ViewStorageConfiguration;
 import voldemort.store.views.ViewStorageEngine;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.ConfigurationException;
@@ -451,7 +451,7 @@ public class StorageService extends AbstractService {
             ByteArray metadataVersionsKey = new ByteArray(VERSIONS_METADATA_STORE.getBytes());
             List<Versioned<byte[]>> versionList = versionStore.get(metadataVersionsKey,
                                                                    null,
-                                                                   new RUD());
+                                                                   new SRD());
             VectorClock newClock = null;
 
             if(versionList != null && versionList.size() > 0) {
@@ -489,7 +489,7 @@ public class StorageService extends AbstractService {
             versionStore.put(metadataVersionsKey,
                              new Versioned<byte[]>(finalVersionList.toString().getBytes(), newClock),
                              null,
-                             new RUD());
+                             new SRD());
 
         } catch(Exception e) {
             e.printStackTrace();

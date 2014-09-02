@@ -44,7 +44,7 @@ import voldemort.store.StoreDefinition;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
 import voldemort.store.system.SystemStoreConstants;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.SystemTime;
 import voldemort.xml.ClusterMapper;
 import voldemort.xml.StoreDefinitionsMapper;
@@ -143,8 +143,8 @@ public class EndToEndRebootstrapTest {
         String key = "city";
         String value = "SF";
         try {
-            storeClient.put(key, value, new RUD());
-            String received = storeClient.getValue(key, new RUD());
+            storeClient.put(key, value, new SRD());
+            String received = storeClient.getValue(key, new SRD());
             assertEquals(value, received);
         } catch(VoldemortException ve) {
             fail("Error in doing basic get, put");
@@ -154,7 +154,7 @@ public class EndToEndRebootstrapTest {
     private String getPropertyFromClientInfo(String propertyName) {
         String bootstrapTime = "";
         try {
-            String clientInfo = clientRegistryStore.getSysStore(storeClient.getClientId(), new RUD())
+            String clientInfo = clientRegistryStore.getSysStore(storeClient.getClientId(), new SRD())
                                                    .getValue();
 
             Properties props = new Properties();

@@ -35,7 +35,7 @@ import voldemort.serialization.ObjectSerializer;
 import voldemort.serialization.Serializer;
 import voldemort.serialization.SerializerDefinition;
 import voldemort.serialization.SerializerFactory;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.xml.ClusterMapper;
 
 /**
@@ -98,8 +98,8 @@ public abstract class AbstractStoreClientFactoryTest {
                                                                        getValidBootstrapUrl()).getStoreClient(getValidStoreName());
         String key = "hello";
         Date value = new Date();
-        factory.put(key, value, new RUD());
-        assertEquals(value, factory.getValue(key, new RUD()));
+        factory.put(key, value, new SRD());
+        assertEquals(value, factory.getValue(key, new SRD()));
     }
 
     private class CustomSerializerFactory implements SerializerFactory {

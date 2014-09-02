@@ -1,7 +1,7 @@
 package voldemort.store.contained;
 
 import voldemort.client.protocol.pb.VProto;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.Pair;
 
 import com.google.protobuf.ByteString;
@@ -12,13 +12,13 @@ public class ContainingSerializer {
     /**
      * To database
      */
-    public byte[] pack(byte[] object, RUD rud) {
-        if(rud.rid == 0) {
+    public byte[] pack(byte[] object, SRD srd) {
+        if(srd.rid == 0) {
             return object;
         } else {
             return VProto.Container.newBuilder()
                                    .setData(ByteString.copyFrom(object))
-                                   .setRud(rud.toProto())
+                                   .setRud(srd.toProto())
                                    .build()
                                    .toByteArray();
         }
@@ -27,14 +27,14 @@ public class ContainingSerializer {
     /**
      * Retrieve from database (unpack)
      */
-    public Pair<RUD, byte[]> unpack(byte[] bytes) {
+    public Pair<SRD, byte[]> unpack(byte[] bytes) {
         // This is were get dependencies can be founded
         try {
             VProto.Container c = VProto.Container.parseFrom(bytes);
-            RUD rud = new RUD(c.getRud());
-            return new Pair<RUD, byte[]>(rud, c.getData().toByteArray());
+            SRD srd = new SRD(c.getRud());
+            return new Pair<SRD, byte[]>(srd, c.getData().toByteArray());
         } catch(InvalidProtocolBufferException e) {
-            return new Pair<RUD, byte[]>(new RUD(), bytes);
+            return new Pair<SRD, byte[]>(new SRD(), bytes);
         }
     }
 

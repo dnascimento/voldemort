@@ -50,7 +50,7 @@ import voldemort.store.memory.InMemoryStorageConfiguration;
 import voldemort.store.slow.SlowStorageConfiguration;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.versioning.ObsoleteVersionException;
 
 /**
@@ -246,7 +246,7 @@ public class E2ENonblockingCheckoutTest {
                 System.out.println("START " + context);
                 long startTimeMs = System.currentTimeMillis();
                 try {
-                    storeClient.put(I, I, new RUD());
+                    storeClient.put(I, I, new SRD());
                 } catch(ObsoleteVersionException e) {
                     System.out.println("ObsoleteVersionException caught on put." + context);
                 }

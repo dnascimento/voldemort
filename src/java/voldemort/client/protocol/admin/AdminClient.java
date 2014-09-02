@@ -92,7 +92,7 @@ import voldemort.store.socket.SocketStore;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
 import voldemort.store.system.SystemStoreConstants;
 import voldemort.store.views.ViewStorageConfiguration;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.MetadataVersionStoreUtils;
@@ -2256,7 +2256,7 @@ public class AdminClient {
             SocketStore socketStore = adminStoreClient.getSocketStore(nodeKeyValue.getNodeId(),
                                                                       storeName);
 
-            socketStore.put(nodeKeyValue.getKey(), nodeKeyValue.getVersioned(), null, new RUD());
+            socketStore.put(nodeKeyValue.getKey(), nodeKeyValue.getVersioned(), null, new SRD());
         }
 
         /**
@@ -2270,7 +2270,7 @@ public class AdminClient {
          */
         public List<Versioned<byte[]>> getNodeKey(String storeName, int nodeId, ByteArray key) {
             SocketStore socketStore = adminStoreClient.getSocketStore(nodeId, storeName);
-            return socketStore.get(key, null, new RUD());
+            return socketStore.get(key, null, new SRD());
         }
 
         // As needed, add 'getall', 'delete', and so on interfaces...
@@ -2478,7 +2478,7 @@ public class AdminClient {
                         key = keys.next();
                     }
                     try {
-                        value = store.get(key, null, new RUD());
+                        value = store.get(key, null, new SRD());
                         return new QueryKeyResult(key, value);
                     } catch(Exception e) {
                         return new QueryKeyResult(key, e);
@@ -3648,21 +3648,21 @@ public class AdminClient {
             quotaSysStoreClient.putSysStore(QuotaUtils.makeQuotaKey(storeName,
                                                                     QuotaType.valueOf(quotaType)),
                                             new Versioned<String>(quotaValue, denseClock),
-                                            new RUD());
+                                            new SRD());
             logger.info("Set quota " + quotaType + " to " + quotaValue + " for store " + storeName);
         }
 
         public void unsetQuota(String storeName, String quotaType) {
             quotaSysStoreClient.deleteSysStore(QuotaUtils.makeQuotaKey(storeName,
                                                                        QuotaType.valueOf(quotaType)),
-                                               new RUD());
+                                               new SRD());
             logger.info("Unset quota " + quotaType + " for store " + storeName);
         }
 
         public Versioned<String> getQuota(String storeName, String quotaType) {
             return quotaSysStoreClient.getSysStore(QuotaUtils.makeQuotaKey(storeName,
                                                                            QuotaType.valueOf(quotaType)),
-                                                   new RUD());
+                                                   new SRD());
         }
 
         /**

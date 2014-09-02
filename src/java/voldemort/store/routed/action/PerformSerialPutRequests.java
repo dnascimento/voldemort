@@ -29,7 +29,7 @@ import voldemort.store.routed.Pipeline;
 import voldemort.store.routed.Pipeline.Event;
 import voldemort.store.routed.PipelineRoutedStore;
 import voldemort.store.routed.PutPipelineData;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.Time;
@@ -63,8 +63,8 @@ public class PerformSerialPutRequests extends
                                     Versioned<byte[]> versioned,
                                     Time time,
                                     Event masterDeterminedEvent,
-                                    RUD rud) {
-        super(pipelineData, completeEvent, key,rud);
+                                    SRD srd) {
+        super(pipelineData, completeEvent, key,srd);
         this.failureDetector = failureDetector;
         this.stores = stores;
         this.required = required;
@@ -107,7 +107,7 @@ public class PerformSerialPutRequests extends
             long start = System.nanoTime();
 
             try {
-                stores.get(node.getId()).put(key, versionedCopy, transforms,rud);
+                stores.get(node.getId()).put(key, versionedCopy, transforms,srd);
                 long requestTime = (System.nanoTime() - start) / Time.NS_PER_MS;
                 pipelineData.incrementSuccesses();
                 failureDetector.recordSuccess(node, requestTime);

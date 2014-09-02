@@ -27,7 +27,7 @@ import voldemort.store.routed.Pipeline;
 import voldemort.store.routed.Pipeline.Event;
 import voldemort.store.routed.Response;
 import voldemort.store.routed.UnlockPipelineData;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 
 public class PerformParallelUnlockRequests extends
@@ -39,7 +39,7 @@ public class PerformParallelUnlockRequests extends
 
     private final FailureDetector failureDetector;
 
-    private final RUD rud;
+    private final SRD srd;
 
     private Event insufficientSuccesses;
 
@@ -49,12 +49,12 @@ public class PerformParallelUnlockRequests extends
                                          long timeoutMs,
                                          Map<Integer, NonblockingStore> nonblockingStores,
                                          Event insufficientSuccesses,
-                                         RUD rud) {
+                                         SRD srd) {
         super(pipelineData, completeEvent);
         this.failureDetector = failureDetector;
         this.timeoutMs = timeoutMs;
         this.nonblockingStores = nonblockingStores;
-        this.rud = rud;
+        this.srd = srd;
         this.insufficientSuccesses = insufficientSuccesses;
     }
 
@@ -112,7 +112,7 @@ public class PerformParallelUnlockRequests extends
                              + " request on node " + node.getId());
 
             NonblockingStore store = nonblockingStores.get(node.getId());
-            store.submitUnlockRequest(keys, callback, timeoutMs, rud);
+            store.submitUnlockRequest(keys, callback, timeoutMs, srd);
         }
 
         try {

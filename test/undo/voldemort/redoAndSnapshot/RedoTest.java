@@ -10,8 +10,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import voldemort.undoTracker.DBUndoStub;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.DBProxy;
+import voldemort.undoTracker.SRD;
 import voldemort.undoTracker.branching.BranchController;
 import voldemort.undoTracker.branching.BranchPath;
 import voldemort.undoTracker.map.Op;
@@ -29,7 +29,7 @@ public class RedoTest {
 
     ByteArray k2 = new ByteArray("key2".getBytes());
     ByteArray k3 = new ByteArray("key3".getBytes());
-    DBUndoStub stub;
+    DBProxy stub;
 
     List<Thread> tList;
     LinkedList<OpType> order;
@@ -75,7 +75,7 @@ public class RedoTest {
     public void redoIsolated() throws InterruptedException {
         System.out.println("----- Start test: Redo Isolated -------");
 
-        stub = new DBUndoStub(true);
+        stub = new DBProxy(true);
 
         execOperations(false);
         // the database is populated and stub has the operation ordering
@@ -110,44 +110,44 @@ public class RedoTest {
     public void restrain() throws InterruptedException {
         System.out.println("----- Start test: Restrain -------");
 
-        stub = new DBUndoStub(true);
+        stub = new DBProxy(true);
         BranchPath redoPath = new BranchPath(new StsBranchPair(0L, 1),
                                              new StsBranchPair(0L, 0),
                                              new StsBranchPair(0L, 1));
         stub.newRedo(redoPath);
 
-        new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(1, 0, false)).exec();
+        new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(1, 0, false)).exec();
 
-        new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(2, 0, false)).exec();
-        new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(3, 0, false)).exec();
-
-        // redo
-        new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(1, 1, false)).exec();
-
-        new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(4, 0, false)).exec();
+        new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(2, 0, false)).exec();
+        new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(3, 0, false)).exec();
 
         // redo
-        new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(2, 1, false)).exec();
-        new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(3, 1, false)).exec();
+        new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(1, 1, false)).exec();
 
-        new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(5, 0, false)).exec();
+        new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(4, 0, false)).exec();
 
         // redo
-        new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(4, 1, false)).exec();
+        new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(2, 1, false)).exec();
+        new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(3, 1, false)).exec();
 
-        new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(6, 0, false)).exec();
+        new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(5, 0, false)).exec();
+
+        // redo
+        new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(4, 1, false)).exec();
+
+        new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(6, 0, false)).exec();
         // restrain 7:2
 
-        Thread t1 = new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(7, 1, true));
+        Thread t1 = new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(7, 1, true));
         t1.start();
 
-        new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(5, 1, false)).exec();
+        new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(5, 1, false)).exec();
 
         // restrain 8:2
-        Thread t2 = new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(8, 1, true));
+        Thread t2 = new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(8, 1, true));
         t2.start();
 
-        new ExecOpT(k1.clone(), OpType.Put, stub, db, new RUD(6, 1, false)).exec();
+        new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(6, 1, false)).exec();
 
         stub.redoOver();
 
@@ -169,7 +169,7 @@ public class RedoTest {
             OpType t = order.get(i);
             Op o = new Op(i + 1, t);
             opList.add(o);
-            tList.add(new ExecOpT(k1.clone(), t, stub, db, new RUD(i + 1, branch, contained)));
+            tList.add(new ExecOpT(k1.clone(), t, stub, db, new SRD(i + 1, branch, contained)));
         }
 
         // Populate the stub to set the ordering in archive

@@ -25,7 +25,7 @@ import java.util.Map;
 
 import voldemort.client.protocol.RequestFormat;
 import voldemort.server.RequestRoutingType;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.Versioned;
 
@@ -40,8 +40,8 @@ public class GetAllClientRequest extends
                                RequestRoutingType requestRoutingType,
                                Iterable<ByteArray> keys,
                                Map<ByteArray, byte[]> transforms,
-                               RUD rud) {
-        super(storeName, requestFormat, requestRoutingType,rud);
+                               SRD srd) {
+        super(storeName, requestFormat, requestRoutingType,srd);
         this.keys = keys;
         this.transforms = transforms;
     }
@@ -58,7 +58,7 @@ public class GetAllClientRequest extends
                                          keys,
                                          transforms,
                                          requestRoutingType,
-                                        rud);
+                                        srd);
     }
 
     @Override

@@ -55,7 +55,7 @@ import voldemort.routing.RoutingStrategyType;
 import voldemort.store.Store;
 import voldemort.store.StoreDefinition;
 import voldemort.store.memory.InMemoryStorageEngine;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Time;
 import voldemort.versioning.Versioned;
@@ -163,24 +163,24 @@ public class ReadRepairerTest {
                                                                                                                  false)));
 
         recordException(failureDetector, Iterables.get(cluster.getNodes(), 0));
-        store.put(key, new Versioned<byte[]>(value), null, new RUD());
+        store.put(key, new Versioned<byte[]>(value), null, new SRD());
         recordSuccess(failureDetector, Iterables.get(cluster.getNodes(), 0));
         time.sleep(2000);
 
-        assertEquals(2, store.get(key, null, new RUD()).size());
+        assertEquals(2, store.get(key, null, new SRD()).size());
         // Last get should have repaired the missing key from node 0 so all
         // stores should now return a value
-        assertEquals(3, store.get(key, null, new RUD()).size());
+        assertEquals(3, store.get(key, null, new SRD()).size());
 
         ByteArray anotherKey = TestUtils.toByteArray("anotherKey");
         // Try again, now use getAll to read repair
         recordException(failureDetector, Iterables.get(cluster.getNodes(), 0));
-        store.put(anotherKey, new Versioned<byte[]>(value), null, new RUD());
+        store.put(anotherKey, new Versioned<byte[]>(value), null, new SRD());
         recordSuccess(failureDetector, Iterables.get(cluster.getNodes(), 0));
-        assertEquals(2, store.getAll(Arrays.asList(anotherKey), null, new RUD())
+        assertEquals(2, store.getAll(Arrays.asList(anotherKey), null, new SRD())
                              .get(anotherKey)
                              .size());
-        assertEquals(3, store.get(anotherKey, null, new RUD()).size());
+        assertEquals(3, store.get(anotherKey, null, new SRD()).size());
     }
 
     /**

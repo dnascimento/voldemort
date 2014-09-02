@@ -1682,6 +1682,16 @@ public final class FromManagerProto {
      * <code>required bool start = 3;</code>
      */
     boolean getStart();
+
+    // required bool selective = 4;
+    /**
+     * <code>required bool selective = 4;</code>
+     */
+    boolean hasSelective();
+    /**
+     * <code>required bool selective = 4;</code>
+     */
+    boolean getSelective();
   }
   /**
    * Protobuf type {@code voldemort.ExecList}
@@ -1767,6 +1777,11 @@ public final class FromManagerProto {
             case 24: {
               bitField0_ |= 0x00000002;
               start_ = input.readBool();
+              break;
+            }
+            case 32: {
+              bitField0_ |= 0x00000004;
+              selective_ = input.readBool();
               break;
             }
           }
@@ -1867,10 +1882,27 @@ public final class FromManagerProto {
       return start_;
     }
 
+    // required bool selective = 4;
+    public static final int SELECTIVE_FIELD_NUMBER = 4;
+    private boolean selective_;
+    /**
+     * <code>required bool selective = 4;</code>
+     */
+    public boolean hasSelective() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>required bool selective = 4;</code>
+     */
+    public boolean getSelective() {
+      return selective_;
+    }
+
     private void initFields() {
       rid_ = java.util.Collections.emptyList();
       branch_ = 0;
       start_ = false;
+      selective_ = false;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -1882,6 +1914,10 @@ public final class FromManagerProto {
         return false;
       }
       if (!hasStart()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasSelective()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -1900,6 +1936,9 @@ public final class FromManagerProto {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeBool(3, start_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBool(4, selective_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -1926,6 +1965,10 @@ public final class FromManagerProto {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(3, start_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(4, selective_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -2053,6 +2096,8 @@ public final class FromManagerProto {
         bitField0_ = (bitField0_ & ~0x00000002);
         start_ = false;
         bitField0_ = (bitField0_ & ~0x00000004);
+        selective_ = false;
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -2094,6 +2139,10 @@ public final class FromManagerProto {
           to_bitField0_ |= 0x00000002;
         }
         result.start_ = start_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.selective_ = selective_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -2126,6 +2175,9 @@ public final class FromManagerProto {
         if (other.hasStart()) {
           setStart(other.getStart());
         }
+        if (other.hasSelective()) {
+          setSelective(other.getSelective());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -2136,6 +2188,10 @@ public final class FromManagerProto {
           return false;
         }
         if (!hasStart()) {
+          
+          return false;
+        }
+        if (!hasSelective()) {
           
           return false;
         }
@@ -2289,6 +2345,39 @@ public final class FromManagerProto {
       public Builder clearStart() {
         bitField0_ = (bitField0_ & ~0x00000004);
         start_ = false;
+        onChanged();
+        return this;
+      }
+
+      // required bool selective = 4;
+      private boolean selective_ ;
+      /**
+       * <code>required bool selective = 4;</code>
+       */
+      public boolean hasSelective() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>required bool selective = 4;</code>
+       */
+      public boolean getSelective() {
+        return selective_;
+      }
+      /**
+       * <code>required bool selective = 4;</code>
+       */
+      public Builder setSelective(boolean value) {
+        bitField0_ |= 0x00000008;
+        selective_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required bool selective = 4;</code>
+       */
+      public Builder clearSelective() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        selective_ = false;
         onChanged();
         return this;
       }
@@ -2986,11 +3075,12 @@ public final class FromManagerProto {
       "anch\030\004 \003(\005\022\022\n\npathCommit\030\005 \003(\003\022@\n\020entryA" +
       "ccessesMsg\030\006 \001(\0132&.voldemort.ToDataNode." +
       "EntryAccessesMsg\0321\n\020EntryAccessesMsg\022\014\n\004" +
-      "keys\030\001 \003(\014\022\017\n\007baseRid\030\002 \002(\003\"6\n\010ExecList\022" +
+      "keys\030\001 \003(\014\022\017\n\007baseRid\030\002 \002(\003\"I\n\010ExecList\022" +
       "\013\n\003rid\030\001 \003(\003\022\016\n\006branch\030\002 \002(\005\022\r\n\005start\030\003 " +
-      "\002(\010\"P\n\010ProxyMsg\022\016\n\006branch\030\001 \001(\005\022\020\n\010restr" +
-      "ain\030\002 \001(\010\022\022\n\ntimeTravel\030\003 \001(\003\022\016\n\006commit\030",
-      "\004 \001(\003B \n\nundo.protoB\020FromManagerProtoH\001"
+      "\002(\010\022\021\n\tselective\030\004 \002(\010\"P\n\010ProxyMsg\022\016\n\006br" +
+      "anch\030\001 \001(\005\022\020\n\010restrain\030\002 \001(\010\022\022\n\ntimeTrav",
+      "el\030\003 \001(\003\022\016\n\006commit\030\004 \001(\003B \n\nundo.protoB\020" +
+      "FromManagerProtoH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -3014,7 +3104,7 @@ public final class FromManagerProto {
           internal_static_voldemort_ExecList_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_ExecList_descriptor,
-              new java.lang.String[] { "Rid", "Branch", "Start", });
+              new java.lang.String[] { "Rid", "Branch", "Start", "Selective", });
           internal_static_voldemort_ProxyMsg_descriptor =
             getDescriptor().getMessageTypes().get(2);
           internal_static_voldemort_ProxyMsg_fieldAccessorTable = new

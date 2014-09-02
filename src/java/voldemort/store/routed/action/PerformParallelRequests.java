@@ -37,7 +37,7 @@ import voldemort.store.routed.Pipeline;
 import voldemort.store.routed.Pipeline.Event;
 import voldemort.store.routed.Pipeline.Operation;
 import voldemort.store.routed.Response;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.Utils;
@@ -72,8 +72,8 @@ public class PerformParallelRequests<V, PD extends BasicPipelineData<V>> extends
                                    Map<Integer, NonblockingStore> nonblockingStores,
                                    Event insufficientSuccessesEvent,
                                    Event insufficientZonesEvent,
-                                   RUD rud) {
-        super(pipelineData, completeEvent, key,rud);
+                                   SRD srd) {
+        super(pipelineData, completeEvent, key,srd);
         this.failureDetector = failureDetector;
         this.preferred = preferred;
         this.required = required;
@@ -149,9 +149,9 @@ public class PerformParallelRequests<V, PD extends BasicPipelineData<V>> extends
             NonblockingStore store = nonblockingStores.get(node.getId());
 
             if(pipeline.getOperation() == Operation.GET)
-                store.submitGetRequest(key, transforms, callback, timeoutMs,rud);
+                store.submitGetRequest(key, transforms, callback, timeoutMs,srd);
             else if(pipeline.getOperation() == Operation.GET_VERSIONS)
-                store.submitGetVersionsRequest(key, callback, timeoutMs,rud);
+                store.submitGetVersionsRequest(key, callback, timeoutMs,srd);
             else
                 throw new IllegalStateException(getClass().getName()
                                                 + " does not support pipeline operation "

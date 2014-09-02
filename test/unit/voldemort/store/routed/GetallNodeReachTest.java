@@ -27,7 +27,7 @@ import voldemort.store.StoreDefinition;
 import voldemort.store.StoreDefinitionBuilder;
 import voldemort.store.memory.InMemoryStorageConfiguration;
 import voldemort.store.memory.InMemoryStorageEngine;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.Versioned;
 
@@ -82,25 +82,25 @@ public class GetallNodeReachTest {
                                                .build();
         makeStore();
         Versioned<byte[]> v = Versioned.value("v".getBytes());
-        subStores.get(0).put(TestUtils.toByteArray("k011_zone0_only"), v, null, new RUD());
-        subStores.get(1).put(TestUtils.toByteArray("k011_zone0_only"), v, null, new RUD());
-        subStores.get(2).put(TestUtils.toByteArray("k100_zone1_only"), v, null, new RUD());
+        subStores.get(0).put(TestUtils.toByteArray("k011_zone0_only"), v, null, new SRD());
+        subStores.get(1).put(TestUtils.toByteArray("k011_zone0_only"), v, null, new SRD());
+        subStores.get(2).put(TestUtils.toByteArray("k100_zone1_only"), v, null, new SRD());
         /* test single key getall */
         List<ByteArray> keys011 = new ArrayList<ByteArray>();
         keys011.add(TestUtils.toByteArray("k011_zone0_only"));
         List<ByteArray> keys100 = new ArrayList<ByteArray>();
         keys100.add(TestUtils.toByteArray("k100_zone1_only"));
         assertEquals(2,
-                     store.getAll(keys011, null, new RUD())
+                     store.getAll(keys011, null, new SRD())
                           .get(TestUtils.toByteArray("k011_zone0_only"))
                           .size());
-        assertFalse(store.getAll(keys100, null, new RUD())
+        assertFalse(store.getAll(keys100, null, new SRD())
                          .containsKey(TestUtils.toByteArray("k100_zone1_only")));
         /* test multiple keys getall */
         List<ByteArray> keys = new ArrayList<ByteArray>();
         keys.add(TestUtils.toByteArray("k011_zone0_only"));
         keys.add(TestUtils.toByteArray("k100_zone1_only"));
-        Map<ByteArray, List<Versioned<byte[]>>> result = store.getAll(keys, null, new RUD());
+        Map<ByteArray, List<Versioned<byte[]>>> result = store.getAll(keys, null, new SRD());
         assertEquals(2, result.get(TestUtils.toByteArray("k011_zone0_only")).size());
         assertFalse(result.containsKey(TestUtils.toByteArray("k100_zone1_only")));
     }
@@ -133,18 +133,18 @@ public class GetallNodeReachTest {
         // k**1 means this key exists at least on node 0
         // k*1* means this key exists at least on node 1
         // k0** means this key does not exist on node 2
-        subStores.get(0).put(TestUtils.toByteArray("k001"), v, null, new RUD());
-        subStores.get(0).put(TestUtils.toByteArray("k011"), v, null, new RUD());
-        subStores.get(0).put(TestUtils.toByteArray("k101"), v, null, new RUD());
-        subStores.get(0).put(TestUtils.toByteArray("k111"), v, null, new RUD());
-        subStores.get(1).put(TestUtils.toByteArray("k010"), v, null, new RUD());
-        subStores.get(1).put(TestUtils.toByteArray("k011"), v, null, new RUD());
-        subStores.get(1).put(TestUtils.toByteArray("k110"), v, null, new RUD());
-        subStores.get(1).put(TestUtils.toByteArray("k111"), v, null, new RUD());
-        subStores.get(2).put(TestUtils.toByteArray("k100"), v, null, new RUD());
-        subStores.get(2).put(TestUtils.toByteArray("k101"), v, null, new RUD());
-        subStores.get(2).put(TestUtils.toByteArray("k110"), v, null, new RUD());
-        subStores.get(2).put(TestUtils.toByteArray("k111"), v, null, new RUD());
+        subStores.get(0).put(TestUtils.toByteArray("k001"), v, null, new SRD());
+        subStores.get(0).put(TestUtils.toByteArray("k011"), v, null, new SRD());
+        subStores.get(0).put(TestUtils.toByteArray("k101"), v, null, new SRD());
+        subStores.get(0).put(TestUtils.toByteArray("k111"), v, null, new SRD());
+        subStores.get(1).put(TestUtils.toByteArray("k010"), v, null, new SRD());
+        subStores.get(1).put(TestUtils.toByteArray("k011"), v, null, new SRD());
+        subStores.get(1).put(TestUtils.toByteArray("k110"), v, null, new SRD());
+        subStores.get(1).put(TestUtils.toByteArray("k111"), v, null, new SRD());
+        subStores.get(2).put(TestUtils.toByteArray("k100"), v, null, new SRD());
+        subStores.get(2).put(TestUtils.toByteArray("k101"), v, null, new SRD());
+        subStores.get(2).put(TestUtils.toByteArray("k110"), v, null, new SRD());
+        subStores.get(2).put(TestUtils.toByteArray("k111"), v, null, new SRD());
 
         /* test multiple keys getall */
         List<ByteArray> keys = new ArrayList<ByteArray>();
@@ -156,7 +156,7 @@ public class GetallNodeReachTest {
         keys.add(TestUtils.toByteArray("k101"));
         keys.add(TestUtils.toByteArray("k110"));
         keys.add(TestUtils.toByteArray("k111"));
-        Map<ByteArray, List<Versioned<byte[]>>> result = store.getAll(keys, null, new RUD());
+        Map<ByteArray, List<Versioned<byte[]>>> result = store.getAll(keys, null, new SRD());
         assertFalse(result.containsKey(TestUtils.toByteArray("not_included")));
         assertFalse(result.containsKey(TestUtils.toByteArray("k000")));
         assertEquals(1, result.get(TestUtils.toByteArray("k011")).size());
@@ -194,18 +194,18 @@ public class GetallNodeReachTest {
                                                .build();
         makeStore();
         Versioned<byte[]> v = Versioned.value("v".getBytes());
-        subStores.get(0).put(TestUtils.toByteArray("k001"), v, null, new RUD());
-        subStores.get(0).put(TestUtils.toByteArray("k011"), v, null, new RUD());
-        subStores.get(0).put(TestUtils.toByteArray("k101"), v, null, new RUD());
-        subStores.get(0).put(TestUtils.toByteArray("k111"), v, null, new RUD());
-        subStores.get(1).put(TestUtils.toByteArray("k010"), v, null, new RUD());
-        subStores.get(1).put(TestUtils.toByteArray("k011"), v, null, new RUD());
-        subStores.get(1).put(TestUtils.toByteArray("k110"), v, null, new RUD());
-        subStores.get(1).put(TestUtils.toByteArray("k111"), v, null, new RUD());
-        subStores.get(2).put(TestUtils.toByteArray("k100"), v, null, new RUD());
-        subStores.get(2).put(TestUtils.toByteArray("k101"), v, null, new RUD());
-        subStores.get(2).put(TestUtils.toByteArray("k110"), v, null, new RUD());
-        subStores.get(2).put(TestUtils.toByteArray("k111"), v, null, new RUD());
+        subStores.get(0).put(TestUtils.toByteArray("k001"), v, null, new SRD());
+        subStores.get(0).put(TestUtils.toByteArray("k011"), v, null, new SRD());
+        subStores.get(0).put(TestUtils.toByteArray("k101"), v, null, new SRD());
+        subStores.get(0).put(TestUtils.toByteArray("k111"), v, null, new SRD());
+        subStores.get(1).put(TestUtils.toByteArray("k010"), v, null, new SRD());
+        subStores.get(1).put(TestUtils.toByteArray("k011"), v, null, new SRD());
+        subStores.get(1).put(TestUtils.toByteArray("k110"), v, null, new SRD());
+        subStores.get(1).put(TestUtils.toByteArray("k111"), v, null, new SRD());
+        subStores.get(2).put(TestUtils.toByteArray("k100"), v, null, new SRD());
+        subStores.get(2).put(TestUtils.toByteArray("k101"), v, null, new SRD());
+        subStores.get(2).put(TestUtils.toByteArray("k110"), v, null, new SRD());
+        subStores.get(2).put(TestUtils.toByteArray("k111"), v, null, new SRD());
 
         /* test multiple keys getall */
         List<ByteArray> keys = new ArrayList<ByteArray>();
@@ -217,7 +217,7 @@ public class GetallNodeReachTest {
         keys.add(TestUtils.toByteArray("k101"));
         keys.add(TestUtils.toByteArray("k110"));
         keys.add(TestUtils.toByteArray("k111"));
-        Map<ByteArray, List<Versioned<byte[]>>> result = store.getAll(keys, null, new RUD());
+        Map<ByteArray, List<Versioned<byte[]>>> result = store.getAll(keys, null, new SRD());
         assertFalse(result.containsKey(TestUtils.toByteArray("not_included")));
         /* client will first try all the nodes in local zone */
         assertFalse(result.containsKey(TestUtils.toByteArray("k000")));
@@ -252,26 +252,26 @@ public class GetallNodeReachTest {
                                                .build();
         makeStore();
         Versioned<byte[]> v = Versioned.value("v".getBytes());
-        subStores.get(0).put(TestUtils.toByteArray("k1111_1111"), v, null, new RUD());
-        subStores.get(0).put(TestUtils.toByteArray("k0000_1111"), v, null, new RUD());
+        subStores.get(0).put(TestUtils.toByteArray("k1111_1111"), v, null, new SRD());
+        subStores.get(0).put(TestUtils.toByteArray("k0000_1111"), v, null, new SRD());
 
-        subStores.get(1).put(TestUtils.toByteArray("k1111_1111"), v, null, new RUD());
-        subStores.get(1).put(TestUtils.toByteArray("k0000_1111"), v, null, new RUD());
+        subStores.get(1).put(TestUtils.toByteArray("k1111_1111"), v, null, new SRD());
+        subStores.get(1).put(TestUtils.toByteArray("k0000_1111"), v, null, new SRD());
 
-        subStores.get(2).put(TestUtils.toByteArray("k1111_1111"), v, null, new RUD());
-        subStores.get(2).put(TestUtils.toByteArray("k0000_1111"), v, null, new RUD());
+        subStores.get(2).put(TestUtils.toByteArray("k1111_1111"), v, null, new SRD());
+        subStores.get(2).put(TestUtils.toByteArray("k0000_1111"), v, null, new SRD());
 
-        subStores.get(3).put(TestUtils.toByteArray("k0000_1111"), v, null, new RUD());
-        subStores.get(3).put(TestUtils.toByteArray("k1111_1111"), v, null, new RUD());
+        subStores.get(3).put(TestUtils.toByteArray("k0000_1111"), v, null, new SRD());
+        subStores.get(3).put(TestUtils.toByteArray("k1111_1111"), v, null, new SRD());
 
-        subStores.get(4).put(TestUtils.toByteArray("k1111_1111"), v, null, new RUD());
-        subStores.get(4).put(TestUtils.toByteArray("k1111_0000"), v, null, new RUD());
-        subStores.get(5).put(TestUtils.toByteArray("k1111_1111"), v, null, new RUD());
-        subStores.get(5).put(TestUtils.toByteArray("k1111_0000"), v, null, new RUD());
-        subStores.get(6).put(TestUtils.toByteArray("k1111_1111"), v, null, new RUD());
-        subStores.get(6).put(TestUtils.toByteArray("k1111_0000"), v, null, new RUD());
-        subStores.get(7).put(TestUtils.toByteArray("k1111_1111"), v, null, new RUD());
-        subStores.get(7).put(TestUtils.toByteArray("k1111_0000"), v, null, new RUD());
+        subStores.get(4).put(TestUtils.toByteArray("k1111_1111"), v, null, new SRD());
+        subStores.get(4).put(TestUtils.toByteArray("k1111_0000"), v, null, new SRD());
+        subStores.get(5).put(TestUtils.toByteArray("k1111_1111"), v, null, new SRD());
+        subStores.get(5).put(TestUtils.toByteArray("k1111_0000"), v, null, new SRD());
+        subStores.get(6).put(TestUtils.toByteArray("k1111_1111"), v, null, new SRD());
+        subStores.get(6).put(TestUtils.toByteArray("k1111_0000"), v, null, new SRD());
+        subStores.get(7).put(TestUtils.toByteArray("k1111_1111"), v, null, new SRD());
+        subStores.get(7).put(TestUtils.toByteArray("k1111_0000"), v, null, new SRD());
 
         /* test multiple keys getall */
         List<ByteArray> keys = new ArrayList<ByteArray>();
@@ -279,7 +279,7 @@ public class GetallNodeReachTest {
         keys.add(TestUtils.toByteArray("k0000_1111"));
         keys.add(TestUtils.toByteArray("k1111_0000"));
         keys.add(TestUtils.toByteArray("k1111_1111"));
-        Map<ByteArray, List<Versioned<byte[]>>> result = store.getAll(keys, null, new RUD());
+        Map<ByteArray, List<Versioned<byte[]>>> result = store.getAll(keys, null, new SRD());
         assertFalse(result.containsKey(TestUtils.toByteArray("not_included")));
         assertFalse(result.containsKey(TestUtils.toByteArray("k0000_0000")));
         assertEquals(2, result.get(TestUtils.toByteArray("k0000_1111")).size());

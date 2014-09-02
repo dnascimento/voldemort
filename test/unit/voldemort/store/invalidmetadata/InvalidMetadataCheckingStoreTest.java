@@ -30,7 +30,7 @@ import voldemort.store.InvalidMetadataException;
 import voldemort.store.Store;
 import voldemort.store.StoreDefinition;
 import voldemort.store.metadata.MetadataStore;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.versioning.Versioned;
@@ -143,16 +143,16 @@ public class InvalidMetadataCheckingStoreTest extends TestCase {
                 i++; // increment count
                 switch(i % 4) {
                     case 0:
-                        store.get(key, null, new RUD());
+                        store.get(key, null, new SRD());
                         break;
                     case 1:
-                        store.delete(key, null, new RUD());
+                        store.delete(key, null, new SRD());
                         break;
                     case 2:
-                        store.put(key, new Versioned<byte[]>(value), null, new RUD());
+                        store.put(key, new Versioned<byte[]>(value), null, new SRD());
                         break;
                     case 3:
-                        store.getAll(ImmutableList.of(key), null, new RUD());
+                        store.getAll(ImmutableList.of(key), null, new SRD());
                         break;
                 }
             }

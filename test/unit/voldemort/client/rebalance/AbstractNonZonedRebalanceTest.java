@@ -74,7 +74,7 @@ import voldemort.store.readonly.ReadOnlyStorageConfiguration;
 import voldemort.store.readonly.ReadOnlyStorageEngineTestInstance;
 import voldemort.store.readonly.ReadOnlyStorageFormat;
 import voldemort.store.readonly.swapper.AdminStoreSwapper;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.UpdateClusterUtils;
@@ -798,7 +798,7 @@ public abstract class AbstractNonZonedRebalanceTest extends AbstractRebalanceTes
                             // should get a valid value
                             try {
                                 Versioned<String> value = storeClientRW.get(keys.get(index),
-                                                                            new RUD());
+                                                                            new SRD());
                                 assertNotSame("StoreClient get() should not return null.",
                                               null,
                                               value);
@@ -806,7 +806,7 @@ public abstract class AbstractNonZonedRebalanceTest extends AbstractRebalanceTes
                                              new Versioned<String>(testEntries.get(keys.get(index))),
                                              value);
 
-                                value = storeClientRO.get(keys.get(index), new RUD());
+                                value = storeClientRO.get(keys.get(index), new SRD());
                                 assertNotSame("StoreClient get() should not return null.",
                                               null,
                                               value);
@@ -955,7 +955,7 @@ public abstract class AbstractNonZonedRebalanceTest extends AbstractRebalanceTes
                                 if(ByteUtils.getString(server.getMetadataStore()
                                                              .get(MetadataStore.SERVER_STATE_KEY,
                                                                   null,
-                                                                  new RUD())
+                                                                  new SRD())
                                                              .get(0)
                                                              .getValue(),
                                                        "UTF-8")
@@ -993,7 +993,7 @@ public abstract class AbstractNonZonedRebalanceTest extends AbstractRebalanceTes
                                     }
                                     String keyStr = ByteUtils.getString(movingKey.get(), "UTF-8");
                                     String valStr = "proxy_write";
-                                    storeClientRW.put(keyStr, valStr, new RUD());
+                                    storeClientRW.put(keyStr, valStr, new SRD());
                                     baselineTuples.put(keyStr, valStr);
                                     // all these keys will have [2:1] vector
                                     // clock
@@ -1161,7 +1161,7 @@ public abstract class AbstractNonZonedRebalanceTest extends AbstractRebalanceTes
                                 List<Versioned<byte[]>> values = serverSideRoutingStoreRW.get(new ByteArray(ByteUtils.getBytes(keys.get(index),
                                                                                                                                "UTF-8")),
                                                                                               null,
-                                                                                              new RUD());
+                                                                                              new SRD());
 
                                 assertEquals("serverSideRoutingStore should return value.",
                                              1,
@@ -1175,7 +1175,7 @@ public abstract class AbstractNonZonedRebalanceTest extends AbstractRebalanceTes
                                 values = serverSideRoutingStoreRO.get(new ByteArray(ByteUtils.getBytes(keys.get(index),
                                                                                                        "UTF-8")),
                                                                       null,
-                                                                      new RUD());
+                                                                      new SRD());
 
                                 assertEquals("serverSideRoutingStore should return value.",
                                              1,
@@ -1277,7 +1277,7 @@ public abstract class AbstractNonZonedRebalanceTest extends AbstractRebalanceTes
                                      new Versioned<byte[]>(ByteUtils.getBytes(entry.getValue(),
                                                                               "UTF-8")),
                                      null,
-                                     new RUD());
+                                     new SRD());
                     } catch(ObsoleteVersionException e) {
                         logger.info("Why are we seeing this at all here ?? ");
                         e.printStackTrace();

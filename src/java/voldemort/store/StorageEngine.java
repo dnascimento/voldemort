@@ -19,7 +19,7 @@ package voldemort.store;
 import java.util.List;
 
 import voldemort.server.storage.KeyLockHandle;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.Pair;
 import voldemort.versioning.Versioned;
@@ -134,7 +134,7 @@ public interface StorageEngine<K, V, T> extends Store<K, V, T> {
      * @param values List of versioned values to be written atomically.
      * @return list of obsolete versions that were rejected
      */
-    public List<Versioned<V>> multiVersionPut(K key, List<Versioned<V>> values, RUD rud);
+    public List<Versioned<V>> multiVersionPut(K key, List<Versioned<V>> values, SRD srd);
 
     /**
      * Returns the list of versions stored for the key, at the same time locking

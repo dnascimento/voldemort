@@ -9,7 +9,7 @@ import java.util.Map;
 
 import voldemort.client.StoreClient;
 import voldemort.serialization.Serializer;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.versioning.Versioned;
 
 /**
@@ -91,7 +91,7 @@ public class VLinkedPagedList<I, LK extends Comparable<LK>> implements Iterable<
             VPageIndexEntry<LK> indexEntry = new VPageIndexEntry<LK>(0, linearKey, _serializer);
             ArrayList<Map<String, Object>> pageIndexList = new ArrayList<Map<String, Object>>(1);
             pageIndexList.add(indexEntry.mapValue());
-            _pageIndex.put(_identifier, pageIndexList, new RUD());
+            _pageIndex.put(_identifier, pageIndexList, new SRD());
         } else {
             List<byte[]> keyListValue = keyList.getValue();
             if(keyListValue.size() >= _maxSize) {
@@ -107,7 +107,7 @@ public class VLinkedPagedList<I, LK extends Comparable<LK>> implements Iterable<
                 LK lastIndex = _serializer.toObject(truncList.get(truncList.size() - 1));
                 _pageIndex.applyUpdate(new UpdatePageIndex<I, LK>(_identifier,
                                                                   lastIndex,
-                                                                  _serializer), new RUD());
+                                                                  _serializer), new SRD());
             } else {
                 // add to existing node
                 keyListValue.add(0, _serializer.toBytes(linearKey));
@@ -149,7 +149,7 @@ public class VLinkedPagedList<I, LK extends Comparable<LK>> implements Iterable<
             if(next) {
                 indexPage = 0;
             } else {
-                List<Map<String, Object>> indexList = _pageIndex.getValue(_identifier, new RUD());
+                List<Map<String, Object>> indexList = _pageIndex.getValue(_identifier, new SRD());
                 if(indexList != null) {
                     VPageIndexEntry<LK> entry = VPageIndexEntry.valueOf(indexList.get(indexList.size()),
                                                                         _serializer);
@@ -157,7 +157,7 @@ public class VLinkedPagedList<I, LK extends Comparable<LK>> implements Iterable<
                 }
             }
         } else {
-            List<Map<String, Object>> indexList = _pageIndex.getValue(_identifier, new RUD());
+            List<Map<String, Object>> indexList = _pageIndex.getValue(_identifier, new SRD());
             if(indexList != null) {
                 Map<String, Object> searchKey = new VPageIndexEntry<LK>(0, linearKey, _serializer).mapValue();
                 int position = Collections.binarySearch(indexList, searchKey, _pageIndexComparator);

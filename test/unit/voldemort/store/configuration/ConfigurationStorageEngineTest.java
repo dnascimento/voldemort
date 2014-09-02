@@ -30,7 +30,7 @@ import org.apache.commons.io.FileDeleteStrategy;
 import voldemort.TestUtils;
 import voldemort.store.AbstractStoreTest;
 import voldemort.store.Store;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.versioning.VectorClock;
 import voldemort.versioning.Versioned;
 
@@ -78,20 +78,20 @@ public class ConfigurationStorageEngineTest extends AbstractStoreTest<String, St
         String value = getValue();
 
         // can't delete something that isn't there
-        assertTrue(!store.delete(key, c1, new RUD()));
+        assertTrue(!store.delete(key, c1, new SRD()));
 
-        store.put(key, new Versioned<String>(value, c1), null, new RUD());
-        assertEquals(1, store.get(key, null, new RUD()).size());
+        store.put(key, new Versioned<String>(value, c1), null, new SRD());
+        assertEquals(1, store.get(key, null, new SRD()).size());
 
         // now delete that version too
-        assertTrue("Delete failed!", store.delete(key, c1, new RUD()));
-        assertEquals(0, store.get(key, null, new RUD()).size());
+        assertTrue("Delete failed!", store.delete(key, c1, new SRD()));
+        assertEquals(0, store.get(key, null, new SRD()).size());
     }
 
     @Override
     public void testGetAndDeleteNonExistentKey() {
         try {
-            assertEquals("Size should be 0", 0, getStore().get("unknown_key", null, new RUD())
+            assertEquals("Size should be 0", 0, getStore().get("unknown_key", null, new SRD())
                                                           .size());
         } catch(Exception e) {
             fail();
@@ -102,7 +102,7 @@ public class ConfigurationStorageEngineTest extends AbstractStoreTest<String, St
     public void testNullKeys() {
         // insert of null keys should not be allowed
         try {
-            getStore().put("test.key", new Versioned<String>(null), null, new RUD());
+            getStore().put("test.key", new Versioned<String>(null), null, new SRD());
             fail();
         } catch(Exception e) {
             // expected
@@ -118,10 +118,10 @@ public class ConfigurationStorageEngineTest extends AbstractStoreTest<String, St
         Store<String, String, String> store = getStore();
         String keyName = "testkey.xml";
 
-        store.put(keyName, new Versioned<String>("testValue"), null, new RUD());
+        store.put(keyName, new Versioned<String>("testValue"), null, new SRD());
         assertEquals("Only one file of name key should be present.",
                      1,
-                     store.get(keyName, null, new RUD()).size());
+                     store.get(keyName, null, new SRD()).size());
 
         // Now create a emacs style temp file
         new File(tempDir, keyName + "#").createNewFile();
@@ -131,18 +131,18 @@ public class ConfigurationStorageEngineTest extends AbstractStoreTest<String, St
 
         assertEquals("Only one file of name key should be present.",
                      1,
-                     store.get(keyName, null, new RUD()).size());
+                     store.get(keyName, null, new SRD()).size());
 
         // do a new put
-        VectorClock clock = (VectorClock) store.get(keyName, null, new RUD()).get(0).getVersion();
+        VectorClock clock = (VectorClock) store.get(keyName, null, new SRD()).get(0).getVersion();
         store.put(keyName,
                   new Versioned<String>("testValue1", clock.incremented(0, 1)),
                   null,
-                  new RUD());
+                  new SRD());
         assertEquals("Only one file of name key should be present.",
                      1,
-                     store.get(keyName, null, new RUD()).size());
-        assertEquals("Value should match.", "testValue1", store.get(keyName, null, new RUD())
+                     store.get(keyName, null, new SRD()).size());
+        assertEquals("Value should match.", "testValue1", store.get(keyName, null, new SRD())
                                                                .get(0)
                                                                .getValue());
 
@@ -150,7 +150,7 @@ public class ConfigurationStorageEngineTest extends AbstractStoreTest<String, St
         Map<String, List<Versioned<String>>> map = store.getAll(Arrays.asList(keyName),
                                                                 Collections.<String, String> singletonMap(keyName,
                                                                                                           null),
-                                                                new RUD());
+                                                                new SRD());
         assertEquals("Only one file of name key should be present.", 1, map.get(keyName).size());
         assertEquals("Value should match.", "testValue1", map.get(keyName).get(0).getValue());
     }

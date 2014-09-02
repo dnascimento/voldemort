@@ -55,7 +55,7 @@ import voldemort.rest.RestUtils;
 import voldemort.rest.VectorClockWrapper;
 import voldemort.store.AbstractStore;
 import voldemort.store.InsufficientOperationalNodesException;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.ObsoleteVersionException;
 import voldemort.versioning.VectorClock;
@@ -170,7 +170,7 @@ public class R2Store extends AbstractStore<ByteArray, byte[], byte[]> {
     }
 
     @Override
-    public boolean delete(ByteArray key, Version version, RUD rud) throws VoldemortException {
+    public boolean delete(ByteArray key, Version version, SRD srd) throws VoldemortException {
         try {
             // Create the REST request with this byte array
             String base64Key = RestUtils.encodeVoldemortKey(key.get());
@@ -264,7 +264,7 @@ public class R2Store extends AbstractStore<ByteArray, byte[], byte[]> {
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, RUD rud)
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, SRD srd)
             throws VoldemortException {
         List<Versioned<byte[]>> resultList = new ArrayList<Versioned<byte[]>>();
         String base64Key = RestUtils.encodeVoldemortKey(key.get());
@@ -401,7 +401,7 @@ public class R2Store extends AbstractStore<ByteArray, byte[], byte[]> {
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transform, RUD rud)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transform, SRD srd)
             throws VoldemortException {
         RestResponse response = null;
 
@@ -503,7 +503,7 @@ public class R2Store extends AbstractStore<ByteArray, byte[], byte[]> {
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
                                                           Map<ByteArray, byte[]> transforms,
-                                                          RUD rud) throws VoldemortException {
+                                                          SRD srd) throws VoldemortException {
 
         Map<ByteArray, List<Versioned<byte[]>>> resultMap = new HashMap<ByteArray, List<Versioned<byte[]>>>();
         int numberOfKeys = 0;
@@ -536,7 +536,7 @@ public class R2Store extends AbstractStore<ByteArray, byte[], byte[]> {
                 if(transforms != null) {
                     singleKeyTransforms = transforms.get(key);
                 }
-                resultList = this.get(key, singleKeyTransforms, rud);
+                resultList = this.get(key, singleKeyTransforms, srd);
                 resultMap.put(key, resultList);
             } else {
 
@@ -688,7 +688,7 @@ public class R2Store extends AbstractStore<ByteArray, byte[], byte[]> {
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key, RUD rud) {
+    public List<Version> getVersions(ByteArray key, SRD srd) {
         List<Version> resultList = new ArrayList<Version>();
         String base64Key = RestUtils.encodeVoldemortKey(key.get());
         RestRequestBuilder rb = null;
@@ -741,7 +741,7 @@ public class R2Store extends AbstractStore<ByteArray, byte[], byte[]> {
     }
 
     @Override
-    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, RUD rud) {
+    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, SRD srd) {
         // TODO implement REST HTTP unlock
         throw new NotImplementedException("REST HTTP UNLOCK");
     }

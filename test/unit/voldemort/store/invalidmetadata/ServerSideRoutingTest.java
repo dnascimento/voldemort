@@ -42,7 +42,7 @@ import voldemort.routing.RoutingStrategy;
 import voldemort.server.VoldemortConfig;
 import voldemort.server.VoldemortServer;
 import voldemort.store.Store;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.versioning.VectorClock;
@@ -116,7 +116,7 @@ public class ServerSideRoutingTest extends TestCase {
                       Versioned.value(entry.getValue(),
                                       new VectorClock().incremented(0, System.currentTimeMillis())),
                       null,
-                      new RUD());
+                      new SRD());
         }
 
         // try fetching them from server0
@@ -128,7 +128,7 @@ public class ServerSideRoutingTest extends TestCase {
             if(hasNode(nodes, 0)) {
                 assertTrue("ServerSideRouting should return keys from other nodes.",
                            ByteUtils.compare(entry.getValue(),
-                                             store.get(entry.getKey(), null, new RUD())
+                                             store.get(entry.getKey(), null, new SRD())
                                                   .get(0)
                                                   .getValue()) == 0);
             }

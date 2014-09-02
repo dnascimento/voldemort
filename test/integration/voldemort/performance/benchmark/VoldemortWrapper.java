@@ -18,7 +18,7 @@ package voldemort.performance.benchmark;
 
 import voldemort.client.StoreClient;
 import voldemort.client.UpdateAction;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.Time;
 import voldemort.versioning.Versioned;
 
@@ -62,7 +62,7 @@ public class VoldemortWrapper {
 
     public void read(Object key, Object expectedValue, Object transforms) {
         long startNs = System.nanoTime();
-        Versioned<Object> returnedValue = voldemortStore.get(key, transforms, new RUD());
+        Versioned<Object> returnedValue = voldemortStore.get(key, transforms, new SRD());
         long endNs = System.nanoTime();
         measurement.recordLatency(Operations.Read.getOpString(),
                                   (int) ((endNs - startNs) / Time.NS_PER_MS));
@@ -86,14 +86,14 @@ public class VoldemortWrapper {
             @Override
             public void update(StoreClient<Object, Object> storeClient) {
                 long startNs = System.nanoTime();
-                Versioned<Object> vs = storeClient.get(key, new RUD());
+                Versioned<Object> vs = storeClient.get(key, new SRD());
                 if(vs != null)
-                    storeClient.put(key, newValue, transforms, new RUD());
+                    storeClient.put(key, newValue, transforms, new SRD());
                 long endNs = System.nanoTime();
                 measurement.recordLatency(Operations.Mixed.getOpString(),
                                           (int) ((endNs - startNs) / Time.NS_PER_MS));
             }
-        }, new RUD());
+        }, new SRD());
 
         ReturnCode res = ReturnCode.Error;
         if(updated) {
@@ -110,12 +110,12 @@ public class VoldemortWrapper {
             @Override
             public void update(StoreClient<Object, Object> storeClient) {
                 long startNs = System.nanoTime();
-                storeClient.put(key, value, transforms, new RUD());
+                storeClient.put(key, value, transforms, new SRD());
                 long endNs = System.nanoTime();
                 measurement.recordLatency(Operations.Write.getOpString(),
                                           (int) ((endNs - startNs) / Time.NS_PER_MS));
             }
-        }, new RUD());
+        }, new SRD());
 
         ReturnCode res = ReturnCode.Error;
         if(written) {
@@ -127,7 +127,7 @@ public class VoldemortWrapper {
 
     public void delete(Object key) {
         long startNs = System.nanoTime();
-        boolean deleted = voldemortStore.delete(key, new RUD());
+        boolean deleted = voldemortStore.delete(key, new SRD());
         long endNs = System.nanoTime();
 
         ReturnCode res = ReturnCode.Error;

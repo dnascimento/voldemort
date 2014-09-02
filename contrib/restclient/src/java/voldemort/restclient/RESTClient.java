@@ -26,7 +26,7 @@ import voldemort.client.StoreClient;
 import voldemort.client.UpdateAction;
 import voldemort.cluster.Node;
 import voldemort.store.Store;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.InconsistentDataException;
 import voldemort.versioning.ObsoleteVersionException;
@@ -58,13 +58,13 @@ public class RESTClient<K, V> implements StoreClient<K, V> {
     }
 
     @Override
-    public V getValue(K key, RUD rud) {
-        return getValue(key, null, rud);
+    public V getValue(K key, SRD srd) {
+        return getValue(key, null, srd);
     }
 
     @Override
-    public V getValue(K key, V defaultValue, RUD rud) {
-        Versioned<V> retVal = get(key, rud);
+    public V getValue(K key, V defaultValue, SRD srd) {
+        Versioned<V> retVal = get(key, srd);
         if(retVal == null) {
             return defaultValue;
         } else {
@@ -73,26 +73,26 @@ public class RESTClient<K, V> implements StoreClient<K, V> {
     }
 
     @Override
-    public Versioned<V> get(K key, RUD rud) {
-        return get(key, null, rud);
+    public Versioned<V> get(K key, SRD srd) {
+        return get(key, null, srd);
     }
 
     @Override
-    public Versioned<V> get(K key, Object transforms, RUD rud) {
-        List<Versioned<V>> resultList = this.clientStore.get(key, null, rud);
-        return getItemOrThrow(key, null, resultList, rud);
+    public Versioned<V> get(K key, Object transforms, SRD srd) {
+        List<Versioned<V>> resultList = this.clientStore.get(key, null, srd);
+        return getItemOrThrow(key, null, resultList, srd);
     }
 
     @Override
-    public Versioned<V> get(K key, Versioned<V> defaultValue, RUD rud) {
-        List<Versioned<V>> resultList = this.clientStore.get(key, null, rud);
-        return getItemOrThrow(key, defaultValue, resultList, rud);
+    public Versioned<V> get(K key, Versioned<V> defaultValue, SRD srd) {
+        List<Versioned<V>> resultList = this.clientStore.get(key, null, srd);
+        return getItemOrThrow(key, defaultValue, resultList, srd);
     }
 
     protected Versioned<V> getItemOrThrow(K key,
                                           Versioned<V> defaultValue,
                                           List<Versioned<V>> items,
-                                          RUD rud) {
+                                          SRD srd) {
         if(items.size() == 0)
             return defaultValue;
         else if(items.size() == 1)
@@ -103,18 +103,18 @@ public class RESTClient<K, V> implements StoreClient<K, V> {
     }
 
     @Override
-    public Map<K, Versioned<V>> getAll(Iterable<K> keys, RUD rud) {
-        return getAll(keys, null, rud);
+    public Map<K, Versioned<V>> getAll(Iterable<K> keys, SRD srd) {
+        return getAll(keys, null, srd);
     }
 
     @Override
-    public Map<K, Versioned<V>> getAll(Iterable<K> keys, Map<K, Object> transforms, RUD rud) {
+    public Map<K, Versioned<V>> getAll(Iterable<K> keys, Map<K, Object> transforms, SRD srd) {
         Map<K, List<Versioned<V>>> items = null;
-        items = this.clientStore.getAll(keys, null, rud);
+        items = this.clientStore.getAll(keys, null, srd);
         Map<K, Versioned<V>> result = Maps.newHashMapWithExpectedSize(items.size());
 
         for(Entry<K, List<Versioned<V>>> mapEntry: items.entrySet()) {
-            Versioned<V> value = getItemOrThrow(mapEntry.getKey(), null, mapEntry.getValue(), rud);
+            Versioned<V> value = getItemOrThrow(mapEntry.getKey(), null, mapEntry.getValue(), srd);
             result.put(mapEntry.getKey(), value);
         }
         return result;
@@ -126,25 +126,25 @@ public class RESTClient<K, V> implements StoreClient<K, V> {
      * to the Receiver of this request.
      */
     @Override
-    public Version put(K key, V value, RUD rud) {
-        return put(key, new Versioned<V>(value), rud);
+    public Version put(K key, V value, SRD srd) {
+        return put(key, new Versioned<V>(value), srd);
     }
 
     @Override
-    public Version put(K key, V value, Object transforms, RUD rud) {
-        return put(key, value, rud);
+    public Version put(K key, V value, Object transforms, SRD srd) {
+        return put(key, value, srd);
     }
 
     @Override
-    public Version put(K key, Versioned<V> versioned, RUD rud) throws ObsoleteVersionException {
-        clientStore.put(key, versioned, null, rud);
+    public Version put(K key, Versioned<V> versioned, SRD srd) throws ObsoleteVersionException {
+        clientStore.put(key, versioned, null, srd);
         return versioned.getVersion();
     }
 
     @Override
-    public boolean putIfNotObsolete(K key, Versioned<V> versioned, RUD rud) {
+    public boolean putIfNotObsolete(K key, Versioned<V> versioned, SRD srd) {
         try {
-            put(key, versioned, rud);
+            put(key, versioned, srd);
             return true;
         } catch(ObsoleteVersionException e) {
             return false;
@@ -152,12 +152,12 @@ public class RESTClient<K, V> implements StoreClient<K, V> {
     }
 
     @Override
-    public boolean applyUpdate(UpdateAction<K, V> action, RUD rud) {
-        return applyUpdate(action, 3, rud);
+    public boolean applyUpdate(UpdateAction<K, V> action, SRD srd) {
+        return applyUpdate(action, 3, srd);
     }
 
     @Override
-    public boolean applyUpdate(UpdateAction<K, V> action, int maxTries, RUD rud) {
+    public boolean applyUpdate(UpdateAction<K, V> action, int maxTries, SRD srd) {
         boolean success = false;
         try {
             for(int i = 0; i < maxTries; i++) {
@@ -180,21 +180,21 @@ public class RESTClient<K, V> implements StoreClient<K, V> {
     }
 
     @Override
-    public boolean delete(K key, RUD rud) {
-        Versioned<V> versioned = get(key, rud);
+    public boolean delete(K key, SRD srd) {
+        Versioned<V> versioned = get(key, srd);
         if(versioned == null)
             return false;
-        return this.clientStore.delete(key, versioned.getVersion(), rud);
+        return this.clientStore.delete(key, versioned.getVersion(), srd);
     }
 
     @Override
-    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, RUD rud) {
-        return this.clientStore.unlockKeys(keys, rud);
+    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, SRD srd) {
+        return this.clientStore.unlockKeys(keys, srd);
     }
 
     @Override
-    public boolean delete(K key, Version version, RUD rud) {
-        return this.clientStore.delete(key, version, rud);
+    public boolean delete(K key, Version version, SRD srd) {
+        return this.clientStore.delete(key, version, srd);
     }
 
     @Override

@@ -28,7 +28,7 @@ import voldemort.store.Store;
 import voldemort.store.UnreachableStoreException;
 import voldemort.store.metadata.MetadataStore;
 import voldemort.store.socket.SocketStoreFactory;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Utils;
 
@@ -79,7 +79,7 @@ public class ServerStoreVerifier implements StoreVerifier {
             }
         }
 
-        store.get(KEY, null, new RUD());
+        store.get(KEY, null, new SRD());
     }
 
     @Override

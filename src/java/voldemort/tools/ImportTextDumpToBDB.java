@@ -40,7 +40,7 @@ import voldemort.server.VoldemortConfig;
 import voldemort.store.StorageEngine;
 import voldemort.store.StoreDefinition;
 import voldemort.store.bdb.BdbStorageConfiguration;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.Pair;
@@ -235,7 +235,7 @@ public class ImportTextDumpToBDB {
                     for(Node node: nodeList) {
                         if(nodeId == node.getId()) {
                             try {
-                                engine.put(key, entry.getSecond(), null, new RUD());
+                                engine.put(key, entry.getSecond(), null, new SRD());
                                 inserted++;
                             } catch(ObsoleteVersionException e) {
                                 e.printStackTrace();

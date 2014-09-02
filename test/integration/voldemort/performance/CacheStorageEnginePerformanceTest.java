@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import voldemort.TestUtils;
 import voldemort.store.Store;
 import voldemort.store.memory.CacheStorageConfiguration;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Utils;
 import voldemort.versioning.ObsoleteVersionException;
@@ -52,9 +52,9 @@ public class CacheStorageEnginePerformanceTest {
                     byte[] bytes = Integer.toString(index % valueRange).getBytes();
                     ByteArray key = new ByteArray(bytes);
                     if(index % mod < readMax)
-                        store.get(key, null, new RUD());
+                        store.get(key, null, new SRD());
                     else
-                        store.put(key, new Versioned<byte[]>(bytes), null, new RUD());
+                        store.put(key, new Versioned<byte[]>(bytes), null, new SRD());
                 } catch(ObsoleteVersionException e) {
                     obsoletes.incrementAndGet();
                 }

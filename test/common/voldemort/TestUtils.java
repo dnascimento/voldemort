@@ -41,7 +41,7 @@ import voldemort.routing.RoutingStrategyFactory;
 import voldemort.routing.StoreRoutingPlan;
 import voldemort.store.Store;
 import voldemort.store.StoreDefinition;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Utils;
 import voldemort.versioning.ClockEntry;
@@ -232,7 +232,7 @@ public class TestUtils {
     }
 
     public static <K, V, T> void assertContains(Store<K, V, T> store, K key, V... values) {
-        List<Versioned<V>> found = store.get(key, null, new RUD());
+        List<Versioned<V>> found = store.get(key, null, new SRD());
         if(found.size() != values.length)
             throw new AssertionFailedError("Expected to find " + values.length
                                            + " values in store, but found only " + found.size()

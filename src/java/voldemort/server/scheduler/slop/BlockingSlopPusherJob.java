@@ -36,7 +36,7 @@ import voldemort.store.metadata.MetadataStore;
 import voldemort.store.slop.Slop;
 import voldemort.store.slop.Slop.Operation;
 import voldemort.store.slop.SlopStorageEngine;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.EventThrottler;
@@ -154,20 +154,20 @@ public class BlockingSlopPusherJob extends SlopPusherJob implements Runnable {
                                           new Versioned<byte[]>(slop.getValue(),
                                                                 versioned.getVersion()),
                                           slop.getTransforms(),
-                                          new RUD());
+                                          new SRD());
                                 nBytes += slop.getValue().length
                                           + ((VectorClock) versioned.getVersion()).sizeInBytes()
                                           + 1;
 
                             } else if(slop.getOperation() == Operation.DELETE) {
                                 nBytes += ((VectorClock) versioned.getVersion()).sizeInBytes() + 1;
-                                store.delete(slop.getKey(), versioned.getVersion(), new RUD());
+                                store.delete(slop.getKey(), versioned.getVersion(), new SRD());
                             } else {
                                 logger.error("Unknown slop operation: " + slop.getOperation());
                                 continue;
                             }
                             failureDetector.recordSuccess(node, deltaMs(startNs));
-                            slopStore.delete(slop.makeKey(), versioned.getVersion(), new RUD());
+                            slopStore.delete(slop.makeKey(), versioned.getVersion(), new SRD());
 
                             slopsPushed++;
                             // Increment succeeded
@@ -180,7 +180,7 @@ public class BlockingSlopPusherJob extends SlopPusherJob implements Runnable {
                         } catch(ObsoleteVersionException e) {
 
                             // okay it is old, just delete it
-                            slopStore.delete(slop.makeKey(), versioned.getVersion(), new RUD());
+                            slopStore.delete(slop.makeKey(), versioned.getVersion(), new SRD());
                             slopsPushed++;
 
                             // Increment succeeded

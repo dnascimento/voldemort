@@ -24,7 +24,7 @@ import voldemort.restclient.RESTClientFactory;
 import voldemort.server.VoldemortServer;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.SystemTime;
 import voldemort.versioning.ObsoleteVersionException;
 import voldemort.versioning.VectorClock;
@@ -114,16 +114,16 @@ public class RestClientTest extends DefaultStoreClientTest {
     public void testGetWithDefault() {
         assertEquals("GET of missing key should return default.",
                      new Versioned<String>("v"),
-                     client.get("k", new Versioned<String>("v"), new RUD()));
+                     client.get("k", new Versioned<String>("v"), new SRD()));
         assertEquals("null should be an acceptable default value.",
                      null,
-                     client.getValue("k", null, new RUD()));
-        client.put("k", "v", new RUD());
+                     client.getValue("k", null, new SRD()));
+        client.put("k", "v", new SRD());
         VectorClock expectedVC = new VectorClock().incremented(nodeId, time.getMilliseconds());
         assertEquals("If there is a value for k, get(k) should return it.",
                      "v",
-                     client.get("k", new Versioned<String>("v2"), new RUD()).getValue());
-        assertNotNull(client.get("k", new RUD()).getVersion());
+                     client.get("k", new Versioned<String>("v2"), new SRD()).getValue());
+        assertNotNull(client.get("k", new SRD()).getVersion());
     }
 
     @Override
@@ -133,8 +133,8 @@ public class RestClientTest extends DefaultStoreClientTest {
         vc.incrementVersion(this.nodeId, System.currentTimeMillis());
         VectorClock initialVC = vc.clone();
 
-        client.put("k", new Versioned<String>("v", vc), new RUD());
-        Versioned<String> v = client.get("k", new RUD());
+        client.put("k", new Versioned<String>("v", vc), new SRD());
+        Versioned<String> v = client.get("k", new SRD());
         assertEquals("GET should return the version set by PUT.", "v", v.getValue());
 
         VectorClock expected = initialVC.clone();
@@ -143,7 +143,7 @@ public class RestClientTest extends DefaultStoreClientTest {
                      expected.getEntries(),
                      ((VectorClock) v.getVersion()).getEntries());
         try {
-            client.put("k", new Versioned<String>("v", initialVC), new RUD());
+            client.put("k", new Versioned<String>("v", initialVC), new SRD());
             fail("Put of obsolete version should throw exception.");
         } catch(ObsoleteVersionException e) {
             // this is good
@@ -153,13 +153,13 @@ public class RestClientTest extends DefaultStoreClientTest {
                    new Versioned<String>("v2",
                                          new VectorClock().incremented(nodeId + 1,
                                                                        time.getMilliseconds())),
-                   new RUD());
+                   new SRD());
         assertEquals("GET should return the new value set by PUT.",
                      "v2",
-                     client.getValue("k", new RUD()));
+                     client.getValue("k", new SRD()));
         assertEquals("GET should return the new version set by PUT.",
                      expected.incremented(nodeId + 1, time.getMilliseconds()),
-                     client.get("k", new RUD()).getVersion());
+                     client.get("k", new SRD()).getVersion());
     }
 
     @Override
@@ -169,14 +169,14 @@ public class RestClientTest extends DefaultStoreClientTest {
         vc.incrementVersion(this.nodeId, System.currentTimeMillis());
         VectorClock initialVC = vc.clone();
 
-        client.putIfNotObsolete("k", new Versioned<String>("v", vc), new RUD());
+        client.putIfNotObsolete("k", new Versioned<String>("v", vc), new SRD());
         assertEquals("PUT of non-obsolete version should succeed.",
                      "v",
-                     client.getValue("k", new RUD()));
-        assertFalse(client.putIfNotObsolete("k", new Versioned<String>("v2", initialVC), new RUD()));
+                     client.getValue("k", new SRD()));
+        assertFalse(client.putIfNotObsolete("k", new Versioned<String>("v2", initialVC), new SRD()));
         assertEquals("Failed PUT should not change the value stored.",
                      "v",
-                     client.getValue("k", new RUD()));
+                     client.getValue("k", new SRD()));
     }
 
     @Override
@@ -187,17 +187,17 @@ public class RestClientTest extends DefaultStoreClientTest {
         VectorClock initialVC = vc.clone();
 
         assertFalse("Delete of non-existant key should be false.",
-                    client.delete("k", vc, new RUD()));
-        client.put("k", new Versioned<String>("v", vc), new RUD());
+                    client.delete("k", vc, new SRD()));
+        client.put("k", new Versioned<String>("v", vc), new SRD());
         assertFalse("Delete of a lesser version should be false.",
-                    client.delete("k", initialVC, new RUD()));
+                    client.delete("k", initialVC, new SRD()));
         assertNotNull("After failed delete, value should still be there.",
-                      client.get("k", new RUD()));
+                      client.get("k", new SRD()));
         assertTrue("Delete of k, with the current version should succeed.",
                    client.delete("k",
                                  initialVC.incremented(this.nodeId, time.getMilliseconds()),
-                                 new RUD()));
+                                 new SRD()));
         assertNull("After a successful delete(k), get(k) should return null.",
-                   client.get("k", new RUD()));
+                   client.get("k", new SRD()));
     }
 }

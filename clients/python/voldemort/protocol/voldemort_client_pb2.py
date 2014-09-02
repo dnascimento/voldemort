@@ -15,7 +15,7 @@ import to_manager_pb2
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='voldemort-client.proto',
   package='voldemort',
-  serialized_pb='\n\x16voldemort-client.proto\x12\tvoldemort\x1a\x10to-manager.proto\".\n\nClockEntry\x12\x0f\n\x07node_id\x18\x01 \x02(\x05\x12\x0f\n\x07version\x18\x02 \x02(\x03\"H\n\x0bVectorClock\x12&\n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x15.voldemort.ClockEntry\x12\x11\n\ttimestamp\x18\x02 \x01(\x03\"C\n\tVersioned\x12\r\n\x05value\x18\x01 \x02(\x0c\x12\'\n\x07version\x18\x02 \x02(\x0b\x32\x16.voldemort.VectorClock\"2\n\x05\x45rror\x12\x12\n\nerror_code\x18\x01 \x02(\x05\x12\x15\n\rerror_message\x18\x02 \x02(\t\"a\n\rKeyedVersions\x12\x0b\n\x03key\x18\x01 \x02(\x0c\x12&\n\x08versions\x18\x02 \x03(\x0b\x32\x14.voldemort.Versioned\x12\x1b\n\x03rud\x18\x03 \x01(\x0b\x32\x0e.voldemort.RUD\"J\n\nGetRequest\x12\x0b\n\x03key\x18\x01 \x01(\x0c\x12\x12\n\ntransforms\x18\x02 \x01(\x0c\x12\x1b\n\x03rud\x18\x03 \x01(\x0b\x32\x0e.voldemort.RUD\"t\n\x0bGetResponse\x12\'\n\tversioned\x18\x01 \x03(\x0b\x32\x14.voldemort.Versioned\x12\x1f\n\x05\x65rror\x18\x02 \x01(\x0b\x32\x10.voldemort.Error\x12\x1b\n\x03rud\x18\x03 \x01(\x0b\x32\x0e.voldemort.RUD\"|\n\x12GetVersionResponse\x12(\n\x08versions\x18\x01 \x03(\x0b\x32\x16.voldemort.VectorClock\x12\x1f\n\x05\x65rror\x18\x02 \x01(\x0b\x32\x10.voldemort.Error\x12\x1b\n\x03rud\x18\x03 \x01(\x0b\x32\x0e.voldemort.RUD\"\xab\x01\n\rGetAllRequest\x12\x0c\n\x04keys\x18\x01 \x03(\x0c\x12<\n\ntransforms\x18\x02 \x03(\x0b\x32(.voldemort.GetAllRequest.GetAllTransform\x12\x1b\n\x03rud\x18\x03 \x01(\x0b\x32\x0e.voldemort.RUD\x1a\x31\n\x0fGetAllTransform\x12\x0b\n\x03key\x18\x01 \x02(\x0c\x12\x11\n\ttransform\x18\x02 \x02(\x0c\"[\n\x0eGetAllResponse\x12(\n\x06values\x18\x01 \x03(\x0b\x32\x18.voldemort.KeyedVersions\x12\x1f\n\x05\x65rror\x18\x02 \x01(\x0b\x32\x10.voldemort.Error\"s\n\nPutRequest\x12\x0b\n\x03key\x18\x01 \x02(\x0c\x12\'\n\tversioned\x18\x02 \x02(\x0b\x32\x14.voldemort.Versioned\x12\x12\n\ntransforms\x18\x03 \x01(\x0c\x12\x1b\n\x03rud\x18\x04 \x01(\x0b\x32\x0e.voldemort.RUD\".\n\x0bPutResponse\x12\x1f\n\x05\x65rror\x18\x01 \x01(\x0b\x32\x10.voldemort.Error\"b\n\rDeleteRequest\x12\x0b\n\x03key\x18\x01 \x02(\x0c\x12\'\n\x07version\x18\x02 \x02(\x0b\x32\x16.voldemort.VectorClock\x12\x1b\n\x03rud\x18\x03 \x01(\x0b\x32\x0e.voldemort.RUD\"B\n\x0e\x44\x65leteResponse\x12\x0f\n\x07success\x18\x01 \x02(\x08\x12\x1f\n\x05\x65rror\x18\x02 \x01(\x0b\x32\x10.voldemort.Error\"9\n\rUnlockRequest\x12\x0b\n\x03key\x18\x01 \x03(\x0c\x12\x1b\n\x03rud\x18\x02 \x01(\x0b\x32\x0e.voldemort.RUD\"(\n\tKeyStatus\x12\x0b\n\x03key\x18\x01 \x02(\x0c\x12\x0e\n\x06status\x18\x02 \x02(\x08\"W\n\x0eUnlockResponse\x12$\n\x06status\x18\x01 \x03(\x0b\x32\x14.voldemort.KeyStatus\x12\x1f\n\x05\x65rror\x18\x02 \x01(\x0b\x32\x10.voldemort.Error\"6\n\tContainer\x12\x1b\n\x03rud\x18\x01 \x02(\x0b\x32\x0e.voldemort.RUD\x12\x0c\n\x04\x64\x61ta\x18\x02 \x02(\x0c\"\xc4\x02\n\x10VoldemortRequest\x12$\n\x04type\x18\x01 \x02(\x0e\x32\x16.voldemort.RequestType\x12\x1b\n\x0cshould_route\x18\x02 \x02(\x08:\x05\x66\x61lse\x12\r\n\x05store\x18\x03 \x02(\t\x12\"\n\x03get\x18\x04 \x01(\x0b\x32\x15.voldemort.GetRequest\x12(\n\x06getAll\x18\x05 \x01(\x0b\x32\x18.voldemort.GetAllRequest\x12\"\n\x03put\x18\x06 \x01(\x0b\x32\x15.voldemort.PutRequest\x12(\n\x06\x64\x65lete\x18\x07 \x01(\x0b\x32\x18.voldemort.DeleteRequest\x12(\n\x06unlock\x18\t \x01(\x0b\x32\x18.voldemort.UnlockRequest\x12\x18\n\x10requestRouteType\x18\x08 \x01(\x05*U\n\x0bRequestType\x12\x07\n\x03GET\x10\x00\x12\x0b\n\x07GET_ALL\x10\x01\x12\x07\n\x03PUT\x10\x02\x12\n\n\x06\x44\x45LETE\x10\x03\x12\x0f\n\x0bGET_VERSION\x10\x04\x12\n\n\x06UNLOCK\x10\x05\x42(\n\x1cvoldemort.client.protocol.pbB\x06VProtoH\x01')
+  serialized_pb='\n\x16voldemort-client.proto\x12\tvoldemort\x1a\x10to-manager.proto\".\n\nClockEntry\x12\x0f\n\x07node_id\x18\x01 \x02(\x05\x12\x0f\n\x07version\x18\x02 \x02(\x03\"H\n\x0bVectorClock\x12&\n\x07\x65ntries\x18\x01 \x03(\x0b\x32\x15.voldemort.ClockEntry\x12\x11\n\ttimestamp\x18\x02 \x01(\x03\"C\n\tVersioned\x12\r\n\x05value\x18\x01 \x02(\x0c\x12\'\n\x07version\x18\x02 \x02(\x0b\x32\x16.voldemort.VectorClock\"2\n\x05\x45rror\x12\x12\n\nerror_code\x18\x01 \x02(\x05\x12\x15\n\rerror_message\x18\x02 \x02(\t\"a\n\rKeyedVersions\x12\x0b\n\x03key\x18\x01 \x02(\x0c\x12&\n\x08versions\x18\x02 \x03(\x0b\x32\x14.voldemort.Versioned\x12\x1b\n\x03srd\x18\x03 \x01(\x0b\x32\x0e.voldemort.SRD\"J\n\nGetRequest\x12\x0b\n\x03key\x18\x01 \x01(\x0c\x12\x12\n\ntransforms\x18\x02 \x01(\x0c\x12\x1b\n\x03srd\x18\x03 \x01(\x0b\x32\x0e.voldemort.SRD\"t\n\x0bGetResponse\x12\'\n\tversioned\x18\x01 \x03(\x0b\x32\x14.voldemort.Versioned\x12\x1f\n\x05\x65rror\x18\x02 \x01(\x0b\x32\x10.voldemort.Error\x12\x1b\n\x03srd\x18\x03 \x01(\x0b\x32\x0e.voldemort.SRD\"|\n\x12GetVersionResponse\x12(\n\x08versions\x18\x01 \x03(\x0b\x32\x16.voldemort.VectorClock\x12\x1f\n\x05\x65rror\x18\x02 \x01(\x0b\x32\x10.voldemort.Error\x12\x1b\n\x03srd\x18\x03 \x01(\x0b\x32\x0e.voldemort.SRD\"\xab\x01\n\rGetAllRequest\x12\x0c\n\x04keys\x18\x01 \x03(\x0c\x12<\n\ntransforms\x18\x02 \x03(\x0b\x32(.voldemort.GetAllRequest.GetAllTransform\x12\x1b\n\x03srd\x18\x03 \x01(\x0b\x32\x0e.voldemort.SRD\x1a\x31\n\x0fGetAllTransform\x12\x0b\n\x03key\x18\x01 \x02(\x0c\x12\x11\n\ttransform\x18\x02 \x02(\x0c\"[\n\x0eGetAllResponse\x12(\n\x06values\x18\x01 \x03(\x0b\x32\x18.voldemort.KeyedVersions\x12\x1f\n\x05\x65rror\x18\x02 \x01(\x0b\x32\x10.voldemort.Error\"s\n\nPutRequest\x12\x0b\n\x03key\x18\x01 \x02(\x0c\x12\'\n\tversioned\x18\x02 \x02(\x0b\x32\x14.voldemort.Versioned\x12\x12\n\ntransforms\x18\x03 \x01(\x0c\x12\x1b\n\x03srd\x18\x04 \x01(\x0b\x32\x0e.voldemort.SRD\".\n\x0bPutResponse\x12\x1f\n\x05\x65rror\x18\x01 \x01(\x0b\x32\x10.voldemort.Error\"b\n\rDeleteRequest\x12\x0b\n\x03key\x18\x01 \x02(\x0c\x12\'\n\x07version\x18\x02 \x02(\x0b\x32\x16.voldemort.VectorClock\x12\x1b\n\x03srd\x18\x03 \x01(\x0b\x32\x0e.voldemort.SRD\"B\n\x0e\x44\x65leteResponse\x12\x0f\n\x07success\x18\x01 \x02(\x08\x12\x1f\n\x05\x65rror\x18\x02 \x01(\x0b\x32\x10.voldemort.Error\"9\n\rUnlockRequest\x12\x0b\n\x03key\x18\x01 \x03(\x0c\x12\x1b\n\x03srd\x18\x02 \x01(\x0b\x32\x0e.voldemort.SRD\"(\n\tKeyStatus\x12\x0b\n\x03key\x18\x01 \x02(\x0c\x12\x0e\n\x06status\x18\x02 \x02(\x08\"W\n\x0eUnlockResponse\x12$\n\x06status\x18\x01 \x03(\x0b\x32\x14.voldemort.KeyStatus\x12\x1f\n\x05\x65rror\x18\x02 \x01(\x0b\x32\x10.voldemort.Error\"6\n\tContainer\x12\x1b\n\x03srd\x18\x01 \x02(\x0b\x32\x0e.voldemort.SRD\x12\x0c\n\x04\x64\x61ta\x18\x02 \x02(\x0c\"\xc4\x02\n\x10VoldemortRequest\x12$\n\x04type\x18\x01 \x02(\x0e\x32\x16.voldemort.RequestType\x12\x1b\n\x0cshould_route\x18\x02 \x02(\x08:\x05\x66\x61lse\x12\r\n\x05store\x18\x03 \x02(\t\x12\"\n\x03get\x18\x04 \x01(\x0b\x32\x15.voldemort.GetRequest\x12(\n\x06getAll\x18\x05 \x01(\x0b\x32\x18.voldemort.GetAllRequest\x12\"\n\x03put\x18\x06 \x01(\x0b\x32\x15.voldemort.PutRequest\x12(\n\x06\x64\x65lete\x18\x07 \x01(\x0b\x32\x18.voldemort.DeleteRequest\x12(\n\x06unlock\x18\t \x01(\x0b\x32\x18.voldemort.UnlockRequest\x12\x18\n\x10requestRouteType\x18\x08 \x01(\x05*U\n\x0bRequestType\x12\x07\n\x03GET\x10\x00\x12\x0b\n\x07GET_ALL\x10\x01\x12\x07\n\x03PUT\x10\x02\x12\n\n\x06\x44\x45LETE\x10\x03\x12\x0f\n\x0bGET_VERSION\x10\x04\x12\n\n\x06UNLOCK\x10\x05\x42(\n\x1cvoldemort.client.protocol.pbB\x06VProtoH\x01')
 
 _REQUESTTYPE = _descriptor.EnumDescriptor(
   name='RequestType',
@@ -226,7 +226,7 @@ _KEYEDVERSIONS = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='rud', full_name='voldemort.KeyedVersions.rud', index=2,
+      name='srd', full_name='voldemort.KeyedVersions.srd', index=2,
       number=3, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -268,7 +268,7 @@ _GETREQUEST = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='rud', full_name='voldemort.GetRequest.rud', index=2,
+      name='srd', full_name='voldemort.GetRequest.srd', index=2,
       number=3, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -310,7 +310,7 @@ _GETRESPONSE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='rud', full_name='voldemort.GetResponse.rud', index=2,
+      name='srd', full_name='voldemort.GetResponse.srd', index=2,
       number=3, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -352,7 +352,7 @@ _GETVERSIONRESPONSE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='rud', full_name='voldemort.GetVersionResponse.rud', index=2,
+      name='srd', full_name='voldemort.GetVersionResponse.srd', index=2,
       number=3, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -428,7 +428,7 @@ _GETALLREQUEST = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='rud', full_name='voldemort.GetAllRequest.rud', index=2,
+      name='srd', full_name='voldemort.GetAllRequest.srd', index=2,
       number=3, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -512,7 +512,7 @@ _PUTREQUEST = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='rud', full_name='voldemort.PutRequest.rud', index=3,
+      name='srd', full_name='voldemort.PutRequest.srd', index=3,
       number=4, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -582,7 +582,7 @@ _DELETEREQUEST = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='rud', full_name='voldemort.DeleteRequest.rud', index=2,
+      name='srd', full_name='voldemort.DeleteRequest.srd', index=2,
       number=3, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -652,7 +652,7 @@ _UNLOCKREQUEST = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='rud', full_name='voldemort.UnlockRequest.rud', index=1,
+      name='srd', full_name='voldemort.UnlockRequest.srd', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -750,7 +750,7 @@ _CONTAINER = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='rud', full_name='voldemort.Container.rud', index=0,
+      name='srd', full_name='voldemort.Container.srd', index=0,
       number=1, type=11, cpp_type=10, label=2,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -863,29 +863,29 @@ _VOLDEMORTREQUEST = _descriptor.Descriptor(
 _VECTORCLOCK.fields_by_name['entries'].message_type = _CLOCKENTRY
 _VERSIONED.fields_by_name['version'].message_type = _VECTORCLOCK
 _KEYEDVERSIONS.fields_by_name['versions'].message_type = _VERSIONED
-_KEYEDVERSIONS.fields_by_name['rud'].message_type = to_manager_pb2._RUD
-_GETREQUEST.fields_by_name['rud'].message_type = to_manager_pb2._RUD
+_KEYEDVERSIONS.fields_by_name['srd'].message_type = to_manager_pb2._SRD
+_GETREQUEST.fields_by_name['srd'].message_type = to_manager_pb2._SRD
 _GETRESPONSE.fields_by_name['versioned'].message_type = _VERSIONED
 _GETRESPONSE.fields_by_name['error'].message_type = _ERROR
-_GETRESPONSE.fields_by_name['rud'].message_type = to_manager_pb2._RUD
+_GETRESPONSE.fields_by_name['srd'].message_type = to_manager_pb2._SRD
 _GETVERSIONRESPONSE.fields_by_name['versions'].message_type = _VECTORCLOCK
 _GETVERSIONRESPONSE.fields_by_name['error'].message_type = _ERROR
-_GETVERSIONRESPONSE.fields_by_name['rud'].message_type = to_manager_pb2._RUD
+_GETVERSIONRESPONSE.fields_by_name['srd'].message_type = to_manager_pb2._SRD
 _GETALLREQUEST_GETALLTRANSFORM.containing_type = _GETALLREQUEST;
 _GETALLREQUEST.fields_by_name['transforms'].message_type = _GETALLREQUEST_GETALLTRANSFORM
-_GETALLREQUEST.fields_by_name['rud'].message_type = to_manager_pb2._RUD
+_GETALLREQUEST.fields_by_name['srd'].message_type = to_manager_pb2._SRD
 _GETALLRESPONSE.fields_by_name['values'].message_type = _KEYEDVERSIONS
 _GETALLRESPONSE.fields_by_name['error'].message_type = _ERROR
 _PUTREQUEST.fields_by_name['versioned'].message_type = _VERSIONED
-_PUTREQUEST.fields_by_name['rud'].message_type = to_manager_pb2._RUD
+_PUTREQUEST.fields_by_name['srd'].message_type = to_manager_pb2._SRD
 _PUTRESPONSE.fields_by_name['error'].message_type = _ERROR
 _DELETEREQUEST.fields_by_name['version'].message_type = _VECTORCLOCK
-_DELETEREQUEST.fields_by_name['rud'].message_type = to_manager_pb2._RUD
+_DELETEREQUEST.fields_by_name['srd'].message_type = to_manager_pb2._SRD
 _DELETERESPONSE.fields_by_name['error'].message_type = _ERROR
-_UNLOCKREQUEST.fields_by_name['rud'].message_type = to_manager_pb2._RUD
+_UNLOCKREQUEST.fields_by_name['srd'].message_type = to_manager_pb2._SRD
 _UNLOCKRESPONSE.fields_by_name['status'].message_type = _KEYSTATUS
 _UNLOCKRESPONSE.fields_by_name['error'].message_type = _ERROR
-_CONTAINER.fields_by_name['rud'].message_type = to_manager_pb2._RUD
+_CONTAINER.fields_by_name['srd'].message_type = to_manager_pb2._SRD
 _VOLDEMORTREQUEST.fields_by_name['type'].enum_type = _REQUESTTYPE
 _VOLDEMORTREQUEST.fields_by_name['get'].message_type = _GETREQUEST
 _VOLDEMORTREQUEST.fields_by_name['getAll'].message_type = _GETALLREQUEST

@@ -22,7 +22,7 @@ import voldemort.store.routed.Pipeline;
 import voldemort.store.routed.Pipeline.Event;
 import voldemort.store.routed.Response;
 import voldemort.store.routed.UnlockPipelineData;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.Time;
@@ -38,7 +38,7 @@ public class PerformSerialUnlockRequests extends
 
     private final int required;
 
-    private RUD rud;
+    private SRD srd;
 
     public PerformSerialUnlockRequests(UnlockPipelineData pipelineData,
                                        Event completeEvent,
@@ -46,13 +46,13 @@ public class PerformSerialUnlockRequests extends
                                        FailureDetector failureDetector,
                                        Map<Integer, Store<ByteArray, byte[], byte[]>> stores,
                                        int required,
-                                       RUD rud) {
+                                       SRD srd) {
         super(pipelineData, completeEvent);
         this.keys = keys;
         this.failureDetector = failureDetector;
         this.stores = stores;
         this.required = required;
-        this.rud = rud;
+        this.srd = srd;
     }
 
     @Override
@@ -100,7 +100,7 @@ public class PerformSerialUnlockRequests extends
                     Store<ByteArray, byte[], byte[]> store = stores.get(node.getId());
                     ArrayList<ByteArray> keyIt = new ArrayList<ByteArray>();
                     keyIt.add(key);
-                    Map<ByteArray, Boolean> keyResult = store.unlockKeys(keyIt, rud);
+                    Map<ByteArray, Boolean> keyResult = store.unlockKeys(keyIt, srd);
                     result.put(key, keyResult.get(key));
 
                     Response<Iterable<ByteArray>, Map<ByteArray, Boolean>> response = new Response<Iterable<ByteArray>, Map<ByteArray, Boolean>>(node,

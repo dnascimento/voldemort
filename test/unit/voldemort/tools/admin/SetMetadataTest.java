@@ -44,7 +44,7 @@ import voldemort.store.metadata.MetadataStore;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
 import voldemort.store.system.SystemStoreConstants;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.MetadataVersionStoreUtils;
@@ -117,7 +117,7 @@ public class SetMetadataTest {
         for(VoldemortServer vs: vservers.values()) {
             List<Versioned<byte[]>> result = vs.getStoreRepository()
                                                .getLocalStore(sysStoreName)
-                                               .get(metadataKey, null, new RUD());
+                                               .get(metadataKey, null, new SRD());
             String versionInfo = new String(result.get(0).getValue());
             System.out.format("[INITIAL]Version values on node [%d] is: \n %s\n",
                               vs.getIdentityNode().getId(),
@@ -147,7 +147,7 @@ public class SetMetadataTest {
         for(VoldemortServer vs: vservers.values()) {
             List<Versioned<byte[]>> result = vs.getStoreRepository()
                                                .getLocalStore(sysStoreName)
-                                               .get(metadataKey, null, new RUD());
+                                               .get(metadataKey, null, new SRD());
             String versionInfo = new String(result.get(0).getValue());
             System.out.format("[FINAL]Version values on node [%d] is: \n %s\n",
                               vs.getIdentityNode().getId(),

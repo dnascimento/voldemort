@@ -37,7 +37,7 @@ import voldemort.cluster.Node;
 import voldemort.store.AbstractByteArrayStoreTest;
 import voldemort.store.Store;
 import voldemort.store.UnreachableStoreException;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.VoldemortIOUtils;
 import voldemort.versioning.VectorClock;
@@ -95,17 +95,17 @@ public class HttpStoreTest extends AbstractByteArrayStoreTest {
             badUrlHttpStore.put(key,
                                 new Versioned<byte[]>("value".getBytes(), new VectorClock()),
                                 null,
-                                new RUD());
+                                new SRD());
         } catch(Exception e) {
             assertTrue(e.getClass().equals(expected));
         }
         try {
-            badUrlHttpStore.get(key, null, new RUD());
+            badUrlHttpStore.get(key, null, new SRD());
         } catch(Exception e) {
             assertTrue(e.getClass().equals(expected));
         }
         try {
-            badUrlHttpStore.delete(key, new VectorClock(), new RUD());
+            badUrlHttpStore.delete(key, new VectorClock(), new SRD());
         } catch(Exception e) {
             assertTrue(e.getClass().equals(expected));
         }

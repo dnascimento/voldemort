@@ -36,7 +36,7 @@ import voldemort.TestUtils;
 import voldemort.server.VoldemortConfig;
 import voldemort.store.StorageInitializationException;
 import voldemort.store.StoreDefinition;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.Props;
 import voldemort.versioning.Versioned;
@@ -84,7 +84,7 @@ public class BdbCachePartitioningTest {
     }
 
     private long getAndCheckCacheSize(BdbStorageEngine engine, StoreDefinition storeDef, String key) {
-        engine.get(TestUtils.toByteArray(key), null, new RUD());
+        engine.get(TestUtils.toByteArray(key), null, new SRD());
         return getStats(bdbStorage.getEnvironment(storeDef)).getCacheTotalBytes();
     }
 
@@ -155,15 +155,15 @@ public class BdbCachePartitioningTest {
                 storeA.put(TestUtils.toByteArray("testKey" + i),
                            new Versioned<byte[]>(value),
                            null,
-                           new RUD());
+                           new SRD());
                 storeB.put(TestUtils.toByteArray("testKey" + i),
                            new Versioned<byte[]>(value),
                            null,
-                           new RUD());
+                           new SRD());
                 storeC.put(TestUtils.toByteArray("testKey" + i),
                            new Versioned<byte[]>(value),
                            null,
-                           new RUD());
+                           new SRD());
             }
 
             // we will bring all of that data into the cache, by doing a
@@ -322,11 +322,11 @@ public class BdbCachePartitioningTest {
             storeA.put(TestUtils.toByteArray("testKey" + i),
                        new Versioned<byte[]>(value),
                        null,
-                       new RUD());
+                       new SRD());
             storeB.put(TestUtils.toByteArray("testKey" + i),
                        new Versioned<byte[]>(value),
                        null,
-                       new RUD());
+                       new SRD());
         }
 
         // 1. start with 10MB reserved cache for A and the rest 10MB for B

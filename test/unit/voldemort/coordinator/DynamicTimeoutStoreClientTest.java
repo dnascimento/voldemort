@@ -39,7 +39,7 @@ import voldemort.store.CompositePutVoldemortRequest;
 import voldemort.store.InsufficientOperationalNodesException;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.Versioned;
 import voldemort.xml.ClusterMapper;
@@ -131,7 +131,7 @@ public class DynamicTimeoutStoreClientTest {
         String newValue = "Second";
 
         try {
-            this.dynamicTimeoutClient.put(new ByteArray(key.getBytes()), value.getBytes(), new RUD());
+            this.dynamicTimeoutClient.put(new ByteArray(key.getBytes()), value.getBytes(), new SRD());
         } catch(Exception e) {
             fail("Error in regular put.");
         }

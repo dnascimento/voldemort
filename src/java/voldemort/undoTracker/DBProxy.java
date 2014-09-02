@@ -45,7 +45,7 @@ import com.google.protobuf.ByteString;
  * @author darionascimento
  * 
  */
-public class DBUndoStub {
+public class DBProxy {
 
     public static final int MY_PORT = 11200;
     public static final InetSocketAddress MANAGER_ADDRESS = new InetSocketAddress("localhost",
@@ -54,7 +54,7 @@ public class DBUndoStub {
 
     private static final boolean LOAD_FROM_FILE = false;
 
-    private static final Logger log = Logger.getLogger(DBUndoStub.class.getName());
+    private static final Logger log = Logger.getLogger(DBProxy.class.getName());
     Object restrainLocker = new Object();
     BranchController brancher = new BranchController();
 
@@ -63,11 +63,11 @@ public class DBUndoStub {
     OpMultimap keyAccessLists;
     RestrainScheduler restrainScheduler;
 
-    public DBUndoStub() {
+    public DBProxy() {
         this(loadKeyAccessList(LOAD_FROM_FILE), false);
     }
 
-    public DBUndoStub(boolean testing) {
+    public DBProxy(boolean testing) {
         this(new OpMultimap(), testing);
     }
 
@@ -76,7 +76,7 @@ public class DBUndoStub {
      * 
      * @throws IOException
      */
-    private DBUndoStub(OpMultimap keyAccessLists, boolean testing) {
+    private DBProxy(OpMultimap keyAccessLists, boolean testing) {
         DOMConfigurator.configure("log4j.xml");
         Runtime.getRuntime().addShutdownHook(new SaveKeyAccess(keyAccessLists));
 
@@ -96,37 +96,37 @@ public class DBUndoStub {
         }
     }
 
-    private void opStart(OpType op, ByteArray key, RUD rud) {
-        if(rud.rid == 0) {
-            log.info(op + " " + hexStringToAscii(key) + " with rud: " + rud);
+    private void opStart(OpType op, ByteArray key, SRD srd) {
+        if(srd.rid == 0) {
+            log.info(op + " " + hexStringToAscii(key) + " with srd: " + srd);
             return;
         }
         StringBuilder sb = new StringBuilder();
-        Path p = brancher.getPath(rud.branch);
+        Path p = brancher.getPath(srd.branch);
         BranchPath path = p.path;
         StsBranchPair access;
         if(p.isRedo) {
             // use redo branch
             sb.append(" -> REDO: ");
-            log.info("Redo Start: " + op + " " + hexStringToAscii(key) + " " + rud);
-            access = redoScheduler.opStart(op, key.clone(), rud, path);
+            log.info("Redo Start: " + op + " " + hexStringToAscii(key) + " " + srd);
+            access = redoScheduler.opStart(op, key.clone(), srd, path);
         } else {
-            if(rud.restrain) {
+            if(srd.restrain) {
                 sb.append(" -> RESTRAIN: ");
                 // new request but may need to wait to avoid dirty reads
-                restrainScheduler.opStart(op, key.clone(), rud, path);
+                restrainScheduler.opStart(op, key.clone(), srd, path);
                 path = brancher.getCurrent();
-                rud.branch = path.current.branch; // update the branch
+                srd.branch = path.current.branch; // update the branch
                 sb.append(" -> AFTER RESTRAIN: ");
             }
             sb.append(" -> DO: ");
             // Read old/common branch, may create a new commit - for new
             // requests
-            access = newRequestsScheduler.opStart(op, key.clone(), rud, path);
+            access = newRequestsScheduler.opStart(op, key.clone(), srd, path);
         }
         modifyKey(key, access.branch, access.sts);
         if(log.isInfoEnabled()) {
-            sb.append(rud.rid);
+            sb.append(srd.rid);
             sb.append(" : ");
             sb.append(op);
             sb.append(" key: ");
@@ -139,21 +139,21 @@ public class DBUndoStub {
         }
     }
 
-    public void opEnd(OpType op, ByteArray key, RUD rud) {
-        if(rud.rid != 0) {
-            Path p = brancher.getPath(rud.branch);
+    public void opEnd(OpType op, ByteArray key, SRD srd) {
+        if(srd.rid != 0) {
+            Path p = brancher.getPath(srd.branch);
             BranchPath path = p.path;
             removeKeyVersion(key);
-            Boolean isRedo = brancher.isRedo(rud.branch);
+            Boolean isRedo = brancher.isRedo(srd.branch);
             if(isRedo) {
-                if(rud.restrain) {
-                    restrainScheduler.opEnd(op, key.clone(), rud, path);
-                    newRequestsScheduler.opEnd(op, key.clone(), rud, path);
+                if(srd.restrain) {
+                    restrainScheduler.opEnd(op, key.clone(), srd, path);
+                    newRequestsScheduler.opEnd(op, key.clone(), srd, path);
                 } else {
-                    redoScheduler.opEnd(op, key.clone(), rud, path);
+                    redoScheduler.opEnd(op, key.clone(), srd, path);
                 }
             } else {
-                newRequestsScheduler.opEnd(op, key.clone(), rud, path);
+                newRequestsScheduler.opEnd(op, key.clone(), srd, path);
             }
         }
     }
@@ -162,19 +162,19 @@ public class DBUndoStub {
      * Unlock operation to simulate the redo of these keys operations
      * 
      * @param keys
-     * @param rud
+     * @param srd
      * @return
      * @throws VoldemortException
      */
-    public Map<ByteArray, Boolean> unlockKey(List<ByteArray> keys, RUD rud)
+    public Map<ByteArray, Boolean> unlockKey(List<ByteArray> keys, SRD srd)
             throws VoldemortException {
         HashMap<ByteArray, Boolean> result = new HashMap<ByteArray, Boolean>();
-        Path p = brancher.getPath(rud.branch);
+        Path p = brancher.getPath(srd.branch);
 
-        Boolean isRedo = brancher.isRedo(rud.branch);
+        Boolean isRedo = brancher.isRedo(srd.branch);
         if(isRedo) {
             for(ByteArray key: keys) {
-                boolean status = redoScheduler.ignore(key.clone(), rud, p.path);
+                boolean status = redoScheduler.ignore(key.clone(), srd, p.path);
                 result.put(key, status);
             }
         } else {
@@ -191,7 +191,7 @@ public class DBUndoStub {
             sb.append(" : ");
         }
         sb.append("by request: ");
-        sb.append(rud.rid);
+        sb.append(srd.rid);
         log.info(sb.toString());
 
         return result;
@@ -305,32 +305,32 @@ public class DBUndoStub {
         return new OpMultimap();
     }
 
-    public void getStart(ByteArray key, RUD rud) {
-        opStart(OpType.Get, key, rud);
+    public void getStart(ByteArray key, SRD srd) {
+        opStart(OpType.Get, key, srd);
     }
 
-    public void getEnd(ByteArray key, RUD rud) {
-        opEnd(OpType.Get, key, rud);
+    public void getEnd(ByteArray key, SRD srd) {
+        opEnd(OpType.Get, key, srd);
     }
 
-    public void putStart(ByteArray key, RUD rud) {
-        opStart(OpType.Put, key, rud);
+    public void putStart(ByteArray key, SRD srd) {
+        opStart(OpType.Put, key, srd);
     }
 
-    public void putEnd(ByteArray key, RUD rud) {
-        opEnd(OpType.Put, key, rud);
+    public void putEnd(ByteArray key, SRD srd) {
+        opEnd(OpType.Put, key, srd);
     }
 
-    public void deleteStart(ByteArray key, RUD rud) {
-        opStart(OpType.Delete, key, rud);
+    public void deleteStart(ByteArray key, SRD srd) {
+        opStart(OpType.Delete, key, srd);
     }
 
-    public void deleteEnd(ByteArray key, RUD rud) {
-        opEnd(OpType.Delete, key, rud);
+    public void deleteEnd(ByteArray key, SRD srd) {
+        opEnd(OpType.Delete, key, srd);
     }
 
-    public void getVersion(ByteArray key, RUD rud) {
-        opStart(OpType.GetVersion, key, rud);
+    public void getVersion(ByteArray key, SRD srd) {
+        opStart(OpType.GetVersion, key, srd);
     }
 
     /**

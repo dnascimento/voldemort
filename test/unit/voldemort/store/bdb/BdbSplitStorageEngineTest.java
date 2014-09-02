@@ -34,7 +34,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import voldemort.TestUtils;
 import voldemort.server.VoldemortConfig;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.Props;
 import voldemort.versioning.Versioned;
@@ -105,28 +105,28 @@ public class BdbSplitStorageEngineTest {
         storeA.put(TestUtils.toByteArray("testKey1"),
                    new Versioned<byte[]>("value".getBytes()),
                    null,
-                   new RUD());
+                   new SRD());
         storeA.put(TestUtils.toByteArray("testKey2"),
                    new Versioned<byte[]>("value".getBytes()),
                    null,
-                   new RUD());
+                   new SRD());
         storeA.put(TestUtils.toByteArray("testKey3"),
                    new Versioned<byte[]>("value".getBytes()),
                    null,
-                   new RUD());
+                   new SRD());
 
         storeB.put(TestUtils.toByteArray("testKey1"),
                    new Versioned<byte[]>("value".getBytes()),
                    null,
-                   new RUD());
+                   new SRD());
         storeB.put(TestUtils.toByteArray("testKey2"),
                    new Versioned<byte[]>("value".getBytes()),
                    null,
-                   new RUD());
+                   new SRD());
         storeB.put(TestUtils.toByteArray("testKey3"),
                    new Versioned<byte[]>("value".getBytes()),
                    null,
-                   new RUD());
+                   new SRD());
 
         storeA.close();
         storeB.close();
@@ -160,28 +160,28 @@ public class BdbSplitStorageEngineTest {
         storeA.put(TestUtils.toByteArray("testKey1"),
                    new Versioned<byte[]>("value".getBytes()),
                    null,
-                   new RUD());
+                   new SRD());
         storeA.put(TestUtils.toByteArray("testKey2"),
                    new Versioned<byte[]>("value".getBytes()),
                    null,
-                   new RUD());
+                   new SRD());
         storeA.put(TestUtils.toByteArray("testKey3"),
                    new Versioned<byte[]>("value".getBytes()),
                    null,
-                   new RUD());
+                   new SRD());
 
         storeB.put(TestUtils.toByteArray("testKey1"),
                    new Versioned<byte[]>("value".getBytes()),
                    null,
-                   new RUD());
+                   new SRD());
         storeB.put(TestUtils.toByteArray("testKey2"),
                    new Versioned<byte[]>("value".getBytes()),
                    null,
-                   new RUD());
+                   new SRD());
         storeB.put(TestUtils.toByteArray("testKey3"),
                    new Versioned<byte[]>("value".getBytes()),
                    null,
-                   new RUD());
+                   new SRD());
 
         storeA.close();
         storeB.close();
@@ -268,14 +268,14 @@ public class BdbSplitStorageEngineTest {
             storeA.put(TestUtils.toByteArray(i + "A"),
                        new Versioned<byte[]>(value),
                        null,
-                       new RUD());
-            storeA.get(TestUtils.toByteArray(i + "A"), null, new RUD());
+                       new SRD());
+            storeA.get(TestUtils.toByteArray(i + "A"), null, new SRD());
 
             storeB.put(TestUtils.toByteArray(i + "B"),
                        new Versioned<byte[]>(value),
                        null,
-                       new RUD());
-            storeB.get(TestUtils.toByteArray(i + "B"), null, new RUD());
+                       new SRD());
+            storeB.get(TestUtils.toByteArray(i + "B"), null, new SRD());
 
             EnvironmentStats statsA = environmentA.getStats(new StatsConfig());
             EnvironmentStats statsB = environmentB.getStats(new StatsConfig());

@@ -24,7 +24,7 @@ public class SaveKeyAccess extends Thread {
     public void run() {
         try {
             log.info("Saving key access list....");
-            FileOutputStream fout = new FileOutputStream(DBUndoStub.KEY_ACCESS_LIST_FILE);
+            FileOutputStream fout = new FileOutputStream(DBProxy.KEY_ACCESS_LIST_FILE);
             ObjectOutputStream oos = new ObjectOutputStream(fout);
             oos.writeObject(keyAccessLists);
             oos.close();

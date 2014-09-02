@@ -34,7 +34,7 @@ import voldemort.store.Store;
 import voldemort.store.metadata.MetadataStore;
 import voldemort.store.routed.RoutedStore;
 import voldemort.store.socket.SocketStoreFactory;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.ObsoleteVersionException;
 import voldemort.versioning.Version;
@@ -75,7 +75,7 @@ public class RebootstrappingStore extends DelegatingStore<ByteArray, byte[], byt
                                                                     voldemortConfig.getClientMaxConnectionsPerNode());
         try {
             Versioned<Cluster> latestCluster = adminClient.rebalanceOps.getLatestCluster(new ArrayList<Integer>());
-            metadata.put(MetadataStore.CLUSTER_KEY, latestCluster.getValue(), new RUD());
+            metadata.put(MetadataStore.CLUSTER_KEY, latestCluster.getValue(), new SRD());
 
             checkAndAddNodeStore();
 
@@ -113,10 +113,10 @@ public class RebootstrappingStore extends DelegatingStore<ByteArray, byte[], byt
     }
 
     @Override
-    public boolean delete(final ByteArray key, final Version version, RUD rud) {
+    public boolean delete(final ByteArray key, final Version version, SRD srd) {
         for(int attempts = 0; attempts < this.maxMetadataRefreshAttempts; attempts++) {
             try {
-                return super.delete(key, version,rud);
+                return super.delete(key, version,srd);
             } catch(InvalidMetadataException e) {
                 reinit();
             }
@@ -126,10 +126,10 @@ public class RebootstrappingStore extends DelegatingStore<ByteArray, byte[], byt
     }
 
     @Override
-    public List<Version> getVersions(ByteArray key, RUD rud) {
+    public List<Version> getVersions(ByteArray key, SRD srd) {
         for(int attempts = 0; attempts < this.maxMetadataRefreshAttempts; attempts++) {
             try {
-                return super.getVersions(key,rud);
+                return super.getVersions(key,srd);
             } catch(InvalidMetadataException e) {
                 reinit();
             }
@@ -139,10 +139,10 @@ public class RebootstrappingStore extends DelegatingStore<ByteArray, byte[], byt
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, RUD rud) {
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, SRD srd) {
         for(int attempts = 0; attempts < this.maxMetadataRefreshAttempts; attempts++) {
             try {
-                return super.get(key, transforms,rud);
+                return super.get(key, transforms,srd);
             } catch(InvalidMetadataException e) {
                 reinit();
             }
@@ -154,10 +154,10 @@ public class RebootstrappingStore extends DelegatingStore<ByteArray, byte[], byt
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
                                                           Map<ByteArray, byte[]> transforms,
-                                                          RUD rud) {
+                                                          SRD srd) {
         for(int attempts = 0; attempts < this.maxMetadataRefreshAttempts; attempts++) {
             try {
-                return super.getAll(keys, transforms,rud);
+                return super.getAll(keys, transforms,srd);
             } catch(InvalidMetadataException e) {
                 reinit();
             }
@@ -170,10 +170,10 @@ public class RebootstrappingStore extends DelegatingStore<ByteArray, byte[], byt
     public void put(final ByteArray key,
                     final Versioned<byte[]> versioned,
                     final byte[] transforms,
-                    RUD rud) throws ObsoleteVersionException {
+                    SRD srd) throws ObsoleteVersionException {
         for(int attempts = 0; attempts < this.maxMetadataRefreshAttempts; attempts++) {
             try {
-                super.put(key, versioned, transforms,rud);
+                super.put(key, versioned, transforms,srd);
                 return;
             } catch(InvalidMetadataException e) {
                 reinit();

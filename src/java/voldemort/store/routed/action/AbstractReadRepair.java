@@ -27,7 +27,7 @@ import voldemort.store.routed.Pipeline;
 import voldemort.store.routed.Pipeline.Event;
 import voldemort.store.routed.PipelineData;
 import voldemort.store.routed.ReadRepairer;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.versioning.VectorClock;
@@ -108,7 +108,7 @@ public abstract class AbstractReadRepair<K, V, PD extends PipelineData<K, V>> ex
                                      + v.getVersion() + ".");
 
                     NonblockingStore store = nonblockingStores.get(v.getNodeId());
-                    store.submitPutRequest(v.getKey(), v.getVersioned(), null, null, timeoutMs, new RUD());
+                    store.submitPutRequest(v.getKey(), v.getVersioned(), null, null, timeoutMs, new SRD());
                 } catch(VoldemortApplicationException e) {
                     if(logger.isDebugEnabled())
                         logger.debug("Read repair cancelled due to application level exception on node "

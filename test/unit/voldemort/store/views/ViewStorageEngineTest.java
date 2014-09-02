@@ -11,7 +11,7 @@ import voldemort.serialization.json.JsonTypeSerializer;
 import voldemort.store.Store;
 import voldemort.store.memory.InMemoryStorageEngine;
 import voldemort.store.serialized.SerializingStore;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.VectorClock;
 import voldemort.versioning.Version;
@@ -48,11 +48,11 @@ public class ViewStorageEngineTest extends TestCase {
 
     @Override
     public void setUp() {
-        target1.put("hello", Versioned.value("world"), null, new RUD());
+        target1.put("hello", Versioned.value("world"), null, new SRD());
         Integer[] values1 = { 1, 2, 3, 4, 5, 6, 7, 8 };
         Integer[] values2 = { 100, 200, 300, 400, 500, 600, 700 };
-        target2.put(1, Versioned.value(Arrays.asList(values1)), null, new RUD());
-        target2.put(100, Versioned.value(Arrays.asList(values2)), null, new RUD());
+        target2.put(1, Versioned.value(Arrays.asList(values1)), null, new SRD());
+        target2.put(100, Versioned.value(Arrays.asList(values2)), null, new SRD());
     }
 
     public Store<String, String, String> getEngine1(View<?, ?, ?, ?> valTrans) {
@@ -79,23 +79,23 @@ public class ViewStorageEngineTest extends TestCase {
     }
 
     public void testGetWithValueTransform() {
-        assertEquals("View should add 42", "world42", valView.get("hello", "concat", new RUD())
+        assertEquals("View should add 42", "world42", valView.get("hello", "concat", new SRD())
                                                              .get(0)
                                                              .getValue());
         assertEquals("Null value should return empty list",
                      0,
-                     valView.get("laksjdf", "concat", new RUD()).size());
+                     valView.get("laksjdf", "concat", new SRD()).size());
     }
 
     public void testGetAll() {
-        target1.put("a", Versioned.value("a"), null, new RUD());
-        target1.put("b", Versioned.value("b"), null, new RUD());
+        target1.put("a", Versioned.value("a"), null, new SRD());
+        target1.put("b", Versioned.value("b"), null, new SRD());
         Map<String, List<Versioned<String>>> found = valView.getAll(ImmutableList.of("a", "b"),
                                                                     ImmutableMap.of("a",
                                                                                     "concat",
                                                                                     "b",
                                                                                     "concat"),
-                                                                    new RUD());
+                                                                    new SRD());
         assertTrue(found.containsKey("a"));
         assertTrue(found.containsKey("b"));
         assertEquals("a42", found.get("a").get(0).getValue());
@@ -103,16 +103,16 @@ public class ViewStorageEngineTest extends TestCase {
     }
 
     public void testPut() {
-        valView.put("abc", Versioned.value("cde"), null, new RUD());
-        assertEquals("c", target1.get("abc", null, new RUD()).get(0).getValue());
+        valView.put("abc", Versioned.value("cde"), null, new SRD());
+        assertEquals("c", target1.get("abc", null, new SRD()).get(0).getValue());
     }
 
     public void testGetWithTransforms() {
         Integer[] filter2 = { 5, 8 };
-        assertEquals(4, view.get(1, Arrays.asList(filter2), new RUD()).get(0).getValue().size());
+        assertEquals(4, view.get(1, Arrays.asList(filter2), new SRD()).get(0).getValue().size());
 
         Integer[] filter1 = { 1, 5 };
-        assertEquals(5, view.get(1, Arrays.asList(filter1), new RUD()).get(0).getValue().size());
+        assertEquals(5, view.get(1, Arrays.asList(filter1), new SRD()).get(0).getValue().size());
 
     }
 
@@ -123,14 +123,14 @@ public class ViewStorageEngineTest extends TestCase {
         Versioned<List<Integer>> values = Versioned.value(Arrays.asList(values1));
         VectorClock clock = (VectorClock) values.getVersion();
         clock.incrementVersion(0, System.currentTimeMillis());
-        view.put(1, Versioned.value(values.getValue(), clock), Arrays.asList(filter1), new RUD());
+        view.put(1, Versioned.value(values.getValue(), clock), Arrays.asList(filter1), new SRD());
 
-        assertEquals(10, view.get(1, Arrays.asList(filter1), new RUD()).get(0).getValue().size());
+        assertEquals(10, view.get(1, Arrays.asList(filter1), new SRD()).get(0).getValue().size());
 
         Integer[] filter2 = { 5, 10 };
-        assertEquals(6, view.get(1, Arrays.asList(filter2), new RUD()).get(0).getValue().size());
+        assertEquals(6, view.get(1, Arrays.asList(filter2), new SRD()).get(0).getValue().size());
 
-        Version updatedVersion = view.get(1, Arrays.asList(filter2), new RUD()).get(0).getVersion();
+        Version updatedVersion = view.get(1, Arrays.asList(filter2), new SRD()).get(0).getVersion();
 
         Integer[] filter3 = { 1, 50 };
 
@@ -140,9 +140,9 @@ public class ViewStorageEngineTest extends TestCase {
         view.put(1,
                  Versioned.value(Arrays.asList(values2), clock1),
                  Arrays.asList(filter3),
-                 new RUD());
+                 new SRD());
 
-        assertEquals(12, view.get(1, Arrays.asList(filter3), new RUD()).get(0).getValue().size());
+        assertEquals(12, view.get(1, Arrays.asList(filter3), new SRD()).get(0).getValue().size());
     }
 
     /* A view that just adds or subtracts the given string */

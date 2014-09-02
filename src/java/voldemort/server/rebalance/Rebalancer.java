@@ -34,7 +34,7 @@ import voldemort.store.StoreDefinition;
 import voldemort.store.metadata.MetadataStore;
 import voldemort.store.readonly.ReadOnlyStorageConfiguration;
 import voldemort.store.readonly.ReadOnlyStorageEngine;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.versioning.VectorClock;
 import voldemort.versioning.Versioned;
 
@@ -386,14 +386,14 @@ public class Rebalancer implements Runnable {
                                         final List<StoreDefinition> storeDefs) {
         metadataStore.writeLock.lock();
         try {
-            VectorClock updatedVectorClock = ((VectorClock) metadataStore.get(clusterKey, null, new RUD())
+            VectorClock updatedVectorClock = ((VectorClock) metadataStore.get(clusterKey, null, new SRD())
                                                                          .get(0)
                                                                          .getVersion()).incremented(metadataStore.getNodeId(),
                                                                                                     System.currentTimeMillis());
             metadataStore.put(clusterKey, Versioned.value((Object) cluster, updatedVectorClock));
 
             // now put new stores
-            updatedVectorClock = ((VectorClock) metadataStore.get(storesKey, null, new RUD())
+            updatedVectorClock = ((VectorClock) metadataStore.get(storesKey, null, new SRD())
                                                              .get(0)
                                                              .getVersion()).incremented(metadataStore.getNodeId(),
                                                                                         System.currentTimeMillis());

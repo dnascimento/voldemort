@@ -33,7 +33,7 @@ import voldemort.store.nonblockingstore.NonblockingStore;
 import voldemort.store.nonblockingstore.NonblockingStoreCallback;
 import voldemort.store.routed.Response;
 import voldemort.store.slop.strategy.HintedHandoffStrategy;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Time;
 import voldemort.utils.Utils;
@@ -191,7 +191,7 @@ public class HintedHandoff {
 
             }
         };
-        nonblockingStore.submitPutRequest(slopKey, slopVersioned, null, callback, timeoutMs, new RUD());
+        nonblockingStore.submitPutRequest(slopKey, slopVersioned, null, callback, timeoutMs, new SRD());
     }
 
     /**
@@ -224,7 +224,7 @@ public class HintedHandoff {
                                      + failedNode + " to node " + node);
 
                     // No transform needs to applied to the slop
-                    slopStore.put(slop.makeKey(), new Versioned<Slop>(slop, version), null, new RUD());
+                    slopStore.put(slop.makeKey(), new Versioned<Slop>(slop, version), null, new SRD());
 
                     persisted = true;
                     failureDetector.recordSuccess(node, (System.nanoTime() - startNs)

@@ -43,7 +43,7 @@ import voldemort.store.http.HttpStore;
 import voldemort.store.memory.InMemoryStorageEngine;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Utils;
 import voldemort.utils.VoldemortIOUtils;
@@ -67,7 +67,7 @@ public class RemoteStoreComparisonTest {
             @Override
             public void doOperation(int i) {
                 byte[] key = String.valueOf(i).getBytes();
-                memStore.put(key, new Versioned<byte[]>(key), null, new RUD());
+                memStore.put(key, new Versioned<byte[]>(key), null, new SRD());
             }
         };
         System.out.println("###########################################");
@@ -81,7 +81,7 @@ public class RemoteStoreComparisonTest {
             @Override
             public void doOperation(int i) {
                 try {
-                    memStore.get(String.valueOf(i).getBytes(), null, new RUD());
+                    memStore.get(String.valueOf(i).getBytes(), null, new SRD());
                 } catch(Exception e) {
                     System.out.println("Failure on i = " + i);
                     e.printStackTrace();
@@ -119,7 +119,7 @@ public class RemoteStoreComparisonTest {
             public void doOperation(int i) {
                 byte[] bytes = String.valueOf(i).getBytes();
                 ByteArray key = new ByteArray(bytes);
-                socketStore.put(key, new Versioned<byte[]>(bytes), null, new RUD());
+                socketStore.put(key, new Versioned<byte[]>(bytes), null, new SRD());
             }
         };
         System.out.println("###########################################");
@@ -133,7 +133,7 @@ public class RemoteStoreComparisonTest {
             @Override
             public void doOperation(int i) {
                 try {
-                    socketStore.get(TestUtils.toByteArray(String.valueOf(i)), null, new RUD());
+                    socketStore.get(TestUtils.toByteArray(String.valueOf(i)), null, new SRD());
                 } catch(Exception e) {
                     System.out.println("Failure on i = " + i);
                     e.printStackTrace();
@@ -191,7 +191,7 @@ public class RemoteStoreComparisonTest {
             @Override
             public void doOperation(int i) {
                 byte[] key = String.valueOf(i).getBytes();
-                httpStore.put(new ByteArray(key), new Versioned<byte[]>(key), null, new RUD());
+                httpStore.put(new ByteArray(key), new Versioned<byte[]>(key), null, new SRD());
             }
         };
         System.out.println("###########################################");
@@ -204,7 +204,7 @@ public class RemoteStoreComparisonTest {
 
             @Override
             public void doOperation(int i) {
-                httpStore.get(new ByteArray(String.valueOf(i).getBytes()), null, new RUD());
+                httpStore.get(new ByteArray(String.valueOf(i).getBytes()), null, new SRD());
             }
         };
         System.out.println("Performing HTTP read test.");

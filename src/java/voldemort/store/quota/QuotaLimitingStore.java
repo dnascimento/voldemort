@@ -28,7 +28,7 @@ import voldemort.store.Store;
 import voldemort.store.configuration.FileBackedCachingStorageEngine;
 import voldemort.store.stats.StoreStats;
 import voldemort.store.stats.Tracked;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
@@ -100,30 +100,30 @@ public class QuotaLimitingStore extends DelegatingStore<ByteArray, byte[], byte[
     }
 
     @Override
-    public boolean delete(ByteArray key, Version version, RUD rud) throws VoldemortException {
+    public boolean delete(ByteArray key, Version version, SRD srd) throws VoldemortException {
         checkRateLimit(deleteQuotaKey, Tracked.DELETE);
-        return super.delete(key, version,rud);
+        return super.delete(key, version,srd);
     }
 
     @Override
-    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, RUD rud)
+    public List<Versioned<byte[]>> get(ByteArray key, byte[] transforms, SRD srd)
             throws VoldemortException {
         checkRateLimit(getQuotaKey, Tracked.GET);
-        return super.get(key, transforms,rud);
+        return super.get(key, transforms,srd);
     }
 
     @Override
     public Map<ByteArray, List<Versioned<byte[]>>> getAll(Iterable<ByteArray> keys,
                                                           Map<ByteArray, byte[]> transforms,
-                                                          RUD rud) throws VoldemortException {
+                                                          SRD srd) throws VoldemortException {
         checkRateLimit(getAllQuotaKey, Tracked.GET_ALL);
-        return super.getAll(keys, transforms,rud);
+        return super.getAll(keys, transforms,srd);
     }
 
     @Override
-    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, RUD rud)
+    public void put(ByteArray key, Versioned<byte[]> value, byte[] transforms, SRD srd)
             throws VoldemortException {
         checkRateLimit(putQuotaKey, Tracked.PUT);
-        super.put(key, value, transforms,rud);
+        super.put(key, value, transforms,srd);
     }
 }

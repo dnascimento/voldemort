@@ -25,7 +25,7 @@ import voldemort.restclient.RESTClientConfig;
 import voldemort.server.VoldemortServer;
 import voldemort.store.AbstractByteArrayStoreTest;
 import voldemort.store.Store;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.VectorClock;
 import voldemort.versioning.Version;
@@ -134,13 +134,13 @@ public class RestServiceR2StoreTest extends AbstractByteArrayStoreTest {
         VectorClock clock = getClock(1, 1, 2, 3, 3, 4);
         byte[] value = getValue();
         System.out.println("Value chosen : " + value);
-        List<Versioned<byte[]>> resultList = store.get(key, null, new RUD());
+        List<Versioned<byte[]>> resultList = store.get(key, null, new SRD());
         assertNotNull("Null result list obtained from a get request", resultList);
         assertEquals("Store not empty at start!", 0, resultList.size());
         Versioned<byte[]> versioned = new Versioned<byte[]>(value, clock);
-        store.put(key, versioned, null, new RUD());
+        store.put(key, versioned, null, new SRD());
 
-        List<Versioned<byte[]>> found = store.get(key, null, new RUD());
+        List<Versioned<byte[]>> found = store.get(key, null, new SRD());
         assertEquals("Should only be one version stored.", 1, found.size());
 
         System.out.println("individual bytes");
@@ -175,7 +175,7 @@ public class RestServiceR2StoreTest extends AbstractByteArrayStoreTest {
             store.put(null,
                       new Versioned<byte[]>(getValue(), getNewIncrementedVectorClock()),
                       null,
-                      new RUD());
+                      new SRD());
             fail("Store should not put null keys!");
         } catch(IllegalArgumentException e) {
             // this is good
@@ -183,7 +183,7 @@ public class RestServiceR2StoreTest extends AbstractByteArrayStoreTest {
             // this is good
         }
         try {
-            store.get(null, null, new RUD());
+            store.get(null, null, new SRD());
             fail("Store should not get null keys!");
         } catch(IllegalArgumentException e) {
             // this is good
@@ -191,7 +191,7 @@ public class RestServiceR2StoreTest extends AbstractByteArrayStoreTest {
             // this is good
         }
         try {
-            store.getAll(null, null, new RUD());
+            store.getAll(null, null, new SRD());
             fail("Store should not getAll null keys!");
         } catch(IllegalArgumentException e) {
             // this is good
@@ -201,7 +201,7 @@ public class RestServiceR2StoreTest extends AbstractByteArrayStoreTest {
         try {
             store.getAll(Collections.<ByteArray> singleton(null),
                          Collections.<ByteArray, byte[]> singletonMap(null, null),
-                         new RUD());
+                         new SRD());
             fail("Store should not getAll null keys!");
         } catch(IllegalArgumentException e) {
             // this is good
@@ -209,7 +209,7 @@ public class RestServiceR2StoreTest extends AbstractByteArrayStoreTest {
             // this is good
         }
         try {
-            store.delete(null, new VectorClock(), new RUD());
+            store.delete(null, new VectorClock(), new SRD());
             fail("Store should not delete null keys!");
         } catch(IllegalArgumentException e) {
             // this is good
@@ -226,15 +226,15 @@ public class RestServiceR2StoreTest extends AbstractByteArrayStoreTest {
         byte[] value = getValue();
         VectorClock vc = getClock(0, 0);
         Store<ByteArray, byte[], byte[]> store = getStore();
-        store.put(key, Versioned.value(value, vc), null, new RUD());
-        List<Versioned<byte[]>> versioneds = store.get(key, null, new RUD());
-        List<Version> versions = store.getVersions(key, new RUD());
+        store.put(key, Versioned.value(value, vc), null, new SRD());
+        List<Versioned<byte[]>> versioneds = store.get(key, null, new SRD());
+        List<Version> versions = store.getVersions(key, new SRD());
         assertEquals(1, versioneds.size());
         assertTrue(versions.size() > 0);
         for(int i = 0; i < versions.size(); i++)
             assertEquals(versioneds.get(0).getVersion(), versions.get(i));
 
-        assertEquals(0, store.getVersions(keys.get(1), new RUD()).size());
+        assertEquals(0, store.getVersions(keys.get(1), new SRD()).size());
     }
 
     @Override
@@ -247,13 +247,13 @@ public class RestServiceR2StoreTest extends AbstractByteArrayStoreTest {
         assertEquals(putCount, values.size());
         for(int i = 0; i < putCount; i++) {
             VectorClock vc = getClock(0, 0);
-            store.put(keys.get(i), new Versioned<byte[]>(values.get(i), vc), null, new RUD());
+            store.put(keys.get(i), new Versioned<byte[]>(values.get(i), vc), null, new SRD());
         }
 
         int countForGet = putCount / 2;
         List<ByteArray> keysForGet = keys.subList(0, countForGet);
         List<byte[]> valuesForGet = values.subList(0, countForGet);
-        Map<ByteArray, List<Versioned<byte[]>>> result = store.getAll(keysForGet, null, new RUD());
+        Map<ByteArray, List<Versioned<byte[]>>> result = store.getAll(keysForGet, null, new SRD());
         assertEquals(countForGet, result.size());
         for(int i = 0; i < keysForGet.size(); ++i) {
             ByteArray key = keysForGet.get(i);

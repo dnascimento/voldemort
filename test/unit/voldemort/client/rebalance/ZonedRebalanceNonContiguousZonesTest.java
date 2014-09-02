@@ -65,7 +65,7 @@ import voldemort.store.bdb.BdbStorageConfiguration;
 import voldemort.store.metadata.MetadataStore;
 import voldemort.store.metadata.MetadataStore.VoldemortState;
 import voldemort.store.slop.strategy.HintedHandoffStrategyType;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.RebalanceUtils;
@@ -690,7 +690,7 @@ public class ZonedRebalanceNonContiguousZonesTest extends AbstractRebalanceTest 
                                 // should get a valid value
                                 try {
                                     Versioned<String> value = storeClientRW.get(keys.get(index),
-                                                                                new RUD());
+                                                                                new SRD());
                                     assertNotSame("StoreClient get() should not return null.",
                                                   null,
                                                   value);
@@ -880,7 +880,7 @@ public class ZonedRebalanceNonContiguousZonesTest extends AbstractRebalanceTest 
                                 if(ByteUtils.getString(server.getMetadataStore()
                                                              .get(MetadataStore.SERVER_STATE_KEY,
                                                                   null,
-                                                                  new RUD())
+                                                                  new SRD())
                                                              .get(0)
                                                              .getValue(),
                                                        "UTF-8")
@@ -914,7 +914,7 @@ public class ZonedRebalanceNonContiguousZonesTest extends AbstractRebalanceTest 
                                 try {
                                     String keyStr = ByteUtils.getString(movingKey.get(), "UTF-8");
                                     String valStr = "proxy_write";
-                                    storeClientRW.put(keyStr, valStr, new RUD());
+                                    storeClientRW.put(keyStr, valStr, new SRD());
                                     baselineTuples.put(keyStr, valStr);
                                     baselineVersions.get(keyStr)
                                                     .incrementVersion(11,
@@ -1023,7 +1023,7 @@ public class ZonedRebalanceNonContiguousZonesTest extends AbstractRebalanceTest 
                             .put(keyBytes,
                                  new Versioned<byte[]>(ByteUtils.getBytes(entry.getValue(), "UTF-8")),
                                  null,
-                                 new RUD());
+                                 new SRD());
                 } catch(ObsoleteVersionException e) {
                     logger.info("Why are we seeing this at all here ?? ");
                     e.printStackTrace();

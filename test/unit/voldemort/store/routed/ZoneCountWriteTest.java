@@ -33,7 +33,7 @@ import voldemort.store.Store;
 import voldemort.store.StoreDefinition;
 import voldemort.store.socket.SocketStoreFactory;
 import voldemort.store.socket.clientrequest.ClientRequestExecutorPool;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.Versioned;
 
@@ -182,7 +182,7 @@ public class ZoneCountWriteTest {
     @Test
     public void testFastPath() {
         try {
-            client.put("AB", new Versioned<String>("CD"), null, new RUD());
+            client.put("AB", new Versioned<String>("CD"), null, new SRD());
             try {
                 Thread.sleep(100);
             } catch(InterruptedException e) {
@@ -192,7 +192,7 @@ public class ZoneCountWriteTest {
                 VoldemortServer vs = vservers.get(nodeId);
                 Store<ByteArray, byte[], byte[]> store = vs.getStoreRepository()
                                                            .getLocalStore(storeDef.getName());
-                byte[] real = store.get(new ByteArray("AB".getBytes()), null, new RUD()).get(0).getValue();
+                byte[] real = store.get(new ByteArray("AB".getBytes()), null, new SRD()).get(0).getValue();
                 assertTrue(Arrays.equals(real, "CD".getBytes()));
             }
         } catch(InsufficientOperationalNodesException e) {
@@ -206,7 +206,7 @@ public class ZoneCountWriteTest {
             for(Integer nodeId: stoppedServersForRemoteZoneNodeFail) {
                 vservers.get(nodeId).stop();
             }
-            client.put("AB", new Versioned<String>("CD"), null, new RUD());
+            client.put("AB", new Versioned<String>("CD"), null, new SRD());
             try {
                 Thread.sleep(100);
             } catch(InterruptedException e) {}
@@ -218,7 +218,7 @@ public class ZoneCountWriteTest {
                 VoldemortServer vs = vservers.get(nodeId);
                 Store<ByteArray, byte[], byte[]> store = vs.getStoreRepository()
                                                            .getLocalStore(storeDef.getName());
-                byte[] real = store.get(new ByteArray("AB".getBytes()), null, new RUD()).get(0).getValue();
+                byte[] real = store.get(new ByteArray("AB".getBytes()), null, new SRD()).get(0).getValue();
                 assertTrue(Arrays.equals(real, "CD".getBytes()));
             }
         } catch(InsufficientOperationalNodesException e) {
@@ -233,7 +233,7 @@ public class ZoneCountWriteTest {
             vservers.get(nodeId).stop();
         }
         try {
-            client.put("AB", new Versioned<String>("CD"), null, new RUD());
+            client.put("AB", new Versioned<String>("CD"), null, new SRD());
             fail("Didn't throw exception");
         } catch(InsufficientZoneResponsesException e) {}
     }

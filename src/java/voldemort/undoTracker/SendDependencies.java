@@ -52,7 +52,7 @@ public class SendDependencies extends Thread {
         log.info("Sending dependencies to manager");
         Socket socket = new Socket();
         try {
-            socket.connect(DBUndoStub.MANAGER_ADDRESS);
+            socket.connect(DBProxy.MANAGER_ADDRESS);
             MsgToManager msg = ToManagerProto.MsgToManager.newBuilder().setTrackMsg(list).build();
             msg.writeDelimitedTo(socket.getOutputStream());
         } catch(ConnectException e) {

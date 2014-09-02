@@ -31,7 +31,7 @@ import voldemort.store.AbstractStorageEngine;
 import voldemort.store.StoreCapabilityType;
 import voldemort.store.StoreUtils;
 import voldemort.store.metadata.MetadataStore;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.Pair;
 import voldemort.versioning.ObsoleteVersionException;
@@ -75,7 +75,7 @@ public class ConfigurationStorageEngine extends AbstractStorageEngine<String, St
     }
 
     @Override
-    public synchronized boolean delete(String key, Version version, RUD rud)
+    public synchronized boolean delete(String key, Version version, SRD srd)
             throws VoldemortException {
         StoreUtils.assertValidKey(key);
         for(File file: getDirectory(key).listFiles()) {
@@ -94,15 +94,15 @@ public class ConfigurationStorageEngine extends AbstractStorageEngine<String, St
     }
 
     @Override
-    public synchronized List<Versioned<String>> get(String key, String transforms, RUD rud)
+    public synchronized List<Versioned<String>> get(String key, String transforms, SRD srd)
             throws VoldemortException {
         StoreUtils.assertValidKey(key);
         return get(key, getDirectory(key).listFiles());
     }
 
     @Override
-    public List<Version> getVersions(String key, RUD rud) {
-        List<Versioned<String>> values = get(key, (String) null,rud);
+    public List<Version> getVersions(String key, SRD srd) {
+        List<Versioned<String>> values = get(key, (String) null,srd);
         List<Version> versions = new ArrayList<Version>(values.size());
         for(Versioned<?> value: values) {
             versions.add(value.getVersion());
@@ -113,7 +113,7 @@ public class ConfigurationStorageEngine extends AbstractStorageEngine<String, St
     @Override
     public synchronized Map<String, List<Versioned<String>>> getAll(Iterable<String> keys,
                                                                     Map<String, String> transforms,
-                                                                    RUD rud)
+                                                                    SRD srd)
             throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
         Map<String, List<Versioned<String>>> result = StoreUtils.newEmptyHashMap(keys);
@@ -126,7 +126,7 @@ public class ConfigurationStorageEngine extends AbstractStorageEngine<String, St
     }
 
     @Override
-    public synchronized void put(String key, Versioned<String> value, String transforms, RUD rud)
+    public synchronized void put(String key, Versioned<String> value, String transforms, SRD srd)
             throws VoldemortException {
         StoreUtils.assertValidKey(key);
 

@@ -23,7 +23,7 @@ import voldemort.store.routed.BasicPipelineData;
 import voldemort.store.routed.Pipeline;
 import voldemort.store.slop.HintedHandoff;
 import voldemort.store.slop.Slop;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.Version;
 
@@ -37,8 +37,8 @@ public class PerformDeleteHintedHandoff extends
                                       ByteArray key,
                                       Version version,
                                       HintedHandoff hintedHandoff,
-                                      RUD rud) {
-        super(pipelineData, completeEvent, key, hintedHandoff,rud);
+                                      SRD srd) {
+        super(pipelineData, completeEvent, key, hintedHandoff,srd);
         this.version = version;
     }
 

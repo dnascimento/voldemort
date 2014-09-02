@@ -27,7 +27,7 @@ import org.junit.Test;
 
 import voldemort.serialization.Serializer;
 import voldemort.serialization.StringSerializer;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.SystemTime;
 
 /**
@@ -61,7 +61,7 @@ public class LazyStoreClientTest extends DefaultStoreClientTest {
 
         // Check that we initialize once and only once
         for(int i = 0; i < 10; i++)
-            spyLazyClient.get("test", new RUD());
+            spyLazyClient.get("test", new SRD());
 
         verify(spyFactory, times(1)).getStoreClient("test");
         verify(spyLazyClient, times(1)).initStoreClient();

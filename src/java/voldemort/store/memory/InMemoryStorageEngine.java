@@ -30,7 +30,7 @@ import voldemort.VoldemortException;
 import voldemort.annotations.concurrency.NotThreadsafe;
 import voldemort.store.AbstractStorageEngine;
 import voldemort.store.StoreUtils;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.Pair;
 import voldemort.utils.Utils;
@@ -64,12 +64,12 @@ public class InMemoryStorageEngine<K, V, T> extends AbstractStorageEngine<K, V, 
         this.map.clear();
     }
 
-    public boolean delete(K key, RUD rud) {
-        return delete(key, null,rud);
+    public boolean delete(K key, SRD srd) {
+        return delete(key, null,srd);
     }
 
     @Override
-    public synchronized boolean delete(K key, Version version, RUD rud) {
+    public synchronized boolean delete(K key, Version version, SRD srd) {
         StoreUtils.assertValidKey(key);
 
         List<Versioned<V>> values = map.get(key);
@@ -101,12 +101,12 @@ public class InMemoryStorageEngine<K, V, T> extends AbstractStorageEngine<K, V, 
     }
 
     @Override
-    public List<Version> getVersions(K key, RUD rud) {
-        return StoreUtils.getVersions(get(key, null,rud));
+    public List<Version> getVersions(K key, SRD srd) {
+        return StoreUtils.getVersions(get(key, null,srd));
     }
 
     @Override
-    public synchronized List<Versioned<V>> get(K key, T transform, RUD rud)
+    public synchronized List<Versioned<V>> get(K key, T transform, SRD srd)
             throws VoldemortException {
         StoreUtils.assertValidKey(key);
         List<Versioned<V>> results = map.get(key);
@@ -118,14 +118,14 @@ public class InMemoryStorageEngine<K, V, T> extends AbstractStorageEngine<K, V, 
     }
 
     @Override
-    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, RUD rud)
+    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, SRD srd)
             throws VoldemortException {
         StoreUtils.assertValidKeys(keys);
-        return StoreUtils.getAll(this, keys, transforms, new RUD());
+        return StoreUtils.getAll(this, keys, transforms, new SRD());
     }
 
     @Override
-    public synchronized void put(K key, Versioned<V> value, T transforms, RUD rud)
+    public synchronized void put(K key, Versioned<V> value, T transforms, SRD srd)
             throws VoldemortException {
         StoreUtils.assertValidKey(key);
         List<Versioned<V>> items = map.get(key);
@@ -153,7 +153,7 @@ public class InMemoryStorageEngine<K, V, T> extends AbstractStorageEngine<K, V, 
     @Override
     public synchronized List<Versioned<V>> multiVersionPut(K key,
                                                            final List<Versioned<V>> values,
-                                                           RUD rud) {
+                                                           SRD srd) {
         // TODO the day this class implements getAndLock and putAndUnlock, this
         // method can be removed
         StoreUtils.assertValidKey(key);

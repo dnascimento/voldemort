@@ -25,7 +25,7 @@ import voldemort.store.CompositeVoldemortRequest;
 import voldemort.store.DelegatingStore;
 import voldemort.store.Store;
 import voldemort.store.StoreCapabilityType;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.SystemTime;
 import voldemort.utils.Time;
 import voldemort.versioning.Version;
@@ -83,13 +83,13 @@ public class LoggingStore<K, V, T> extends DelegatingStore<K, V, T> {
     }
 
     @Override
-    public boolean delete(K key, Version version, RUD rud) throws VoldemortException {
+    public boolean delete(K key, Version version, SRD srd) throws VoldemortException {
         long startTimeNs = 0;
         boolean succeeded = false;
         if(logger.isDebugEnabled())
             startTimeNs = time.getNanoseconds();
         try {
-            boolean deletedSomething = getInnerStore().delete(key, version,rud);
+            boolean deletedSomething = getInnerStore().delete(key, version,srd);
             succeeded = true;
             return deletedSomething;
         } finally {
@@ -98,13 +98,13 @@ public class LoggingStore<K, V, T> extends DelegatingStore<K, V, T> {
     }
 
     @Override
-    public List<Versioned<V>> get(K key, T transform, RUD rud) throws VoldemortException {
+    public List<Versioned<V>> get(K key, T transform, SRD srd) throws VoldemortException {
         long startTimeNs = 0;
         boolean succeeded = false;
         if(logger.isDebugEnabled())
             startTimeNs = time.getNanoseconds();
         try {
-            List<Versioned<V>> l = getInnerStore().get(key, transform,rud);
+            List<Versioned<V>> l = getInnerStore().get(key, transform,srd);
             succeeded = true;
             return l;
         } finally {
@@ -113,14 +113,14 @@ public class LoggingStore<K, V, T> extends DelegatingStore<K, V, T> {
     }
 
     @Override
-    public void put(K key, Versioned<V> value, T transform, RUD rud) throws VoldemortException {
+    public void put(K key, Versioned<V> value, T transform, SRD srd) throws VoldemortException {
         long startTimeNs = 0;
         boolean succeeded = false;
         if(logger.isDebugEnabled()) {
             startTimeNs = time.getNanoseconds();
         }
         try {
-            getInnerStore().put(key, value, transform,rud);
+            getInnerStore().put(key, value, transform,srd);
             succeeded = true;
         } finally {
             printTimedMessage("PUT", succeeded, startTimeNs);

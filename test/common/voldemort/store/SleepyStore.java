@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import voldemort.VoldemortException;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
 
@@ -38,41 +38,41 @@ public class SleepyStore<K, V, T> extends DelegatingStore<K, V, T> {
     }
 
     @Override
-    public boolean delete(K key, Version version, RUD rud) throws VoldemortException {
+    public boolean delete(K key, Version version, SRD srd) throws VoldemortException {
         try {
             Thread.sleep(sleepTimeMs);
-            return getInnerStore().delete(key, version,rud);
+            return getInnerStore().delete(key, version,srd);
         } catch(InterruptedException e) {
             throw new VoldemortException(e);
         }
     }
 
     @Override
-    public List<Versioned<V>> get(K key, T transforms, RUD rud) throws VoldemortException {
+    public List<Versioned<V>> get(K key, T transforms, SRD srd) throws VoldemortException {
         try {
             Thread.sleep(sleepTimeMs);
-            return getInnerStore().get(key, transforms,rud);
+            return getInnerStore().get(key, transforms,srd);
         } catch(InterruptedException e) {
             throw new VoldemortException(e);
         }
     }
 
     @Override
-    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, RUD rud)
+    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, SRD srd)
             throws VoldemortException {
         try {
             Thread.sleep(sleepTimeMs);
-            return getInnerStore().getAll(keys, transforms,rud);
+            return getInnerStore().getAll(keys, transforms,srd);
         } catch(InterruptedException e) {
             throw new VoldemortException(e);
         }
     }
 
     @Override
-    public void put(K key, Versioned<V> value, T transforms, RUD rud) throws VoldemortException {
+    public void put(K key, Versioned<V> value, T transforms, SRD srd) throws VoldemortException {
         try {
             Thread.sleep(sleepTimeMs);
-            getInnerStore().put(key, value, transforms,rud);
+            getInnerStore().put(key, value, transforms,srd);
         } catch(InterruptedException e) {
             throw new VoldemortException(e);
         }

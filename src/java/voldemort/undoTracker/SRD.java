@@ -13,12 +13,12 @@ import voldemort.utils.ByteArray;
 import com.google.common.collect.ArrayListMultimap;
 
 /**
- * Request Undo Data
+ * Shuttle Request Data
  * 
  * @author darionascimento
  * 
  */
-public class RUD {
+public class SRD {
 
     public enum OpType {
         Put,
@@ -32,23 +32,23 @@ public class RUD {
     public ArrayListMultimap<ByteArray, KeyAccess> accessedKeys;
     public final boolean redo;
 
-    public RUD() {
+    public SRD() {
         this(0L, 0, false, false);
     }
 
-    public RUD(long rid) {
+    public SRD(long rid) {
         this(rid, 0, false, false);
     }
 
-    public RUD(undo.proto.ToManagerProto.RUD rud) {
-        this(rud.getRid(), rud.getBranch(), rud.getRestrain(), rud.getRedo());
+    public SRD(undo.proto.ToManagerProto.SRD srd) {
+        this(srd.getRid(), srd.getBranch(), srd.getRestrain(), srd.getRedo());
     }
 
-    public RUD(long rid, int branch, boolean restrain) {
+    public SRD(long rid, int branch, boolean restrain) {
         this(rid, branch, restrain, false);
     }
 
-    public RUD(long rid, int branch, boolean restrain, boolean redo) {
+    public SRD(long rid, int branch, boolean restrain, boolean redo) {
         this.rid = rid;
         this.branch = (short) branch;
         this.restrain = restrain;
@@ -56,8 +56,8 @@ public class RUD {
         this.accessedKeys = null;
     }
 
-    public ToManagerProto.RUD toProto() {
-        return ToManagerProto.RUD.newBuilder()
+    public ToManagerProto.SRD toProto() {
+        return ToManagerProto.SRD.newBuilder()
                                  .setBranch(branch)
                                  .setRid(rid)
                                  .setRestrain(restrain)

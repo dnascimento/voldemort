@@ -10,7 +10,7 @@ import voldemort.annotations.jmx.JmxOperation;
 import voldemort.store.AbstractStorageEngine;
 import voldemort.store.StoreCapabilityType;
 import voldemort.store.memory.InMemoryStorageEngine;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.Pair;
 import voldemort.versioning.Version;
@@ -45,9 +45,9 @@ public class PausableStorageEngine<K, V, T> extends AbstractStorageEngine<K, V, 
     }
 
     @Override
-    public boolean delete(K key, Version version, RUD rud) {
+    public boolean delete(K key, Version version, SRD srd) {
         blockIfNecessary();
-        return inner.delete(key,rud);
+        return inner.delete(key,srd);
     }
 
     private void blockIfNecessary() {
@@ -63,27 +63,27 @@ public class PausableStorageEngine<K, V, T> extends AbstractStorageEngine<K, V, 
     }
 
     @Override
-    public List<Versioned<V>> get(K key, T transforms, RUD rud) {
+    public List<Versioned<V>> get(K key, T transforms, SRD srd) {
         blockIfNecessary();
-        return inner.get(key, transforms,rud);
+        return inner.get(key, transforms,srd);
     }
 
     @Override
-    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, RUD rud) {
+    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, SRD srd) {
         blockIfNecessary();
-        return inner.getAll(keys, transforms,rud);
+        return inner.getAll(keys, transforms,srd);
     }
 
     @Override
-    public void put(K key, Versioned<V> value, T transforms, RUD rud) {
+    public void put(K key, Versioned<V> value, T transforms, SRD srd) {
         blockIfNecessary();
-        inner.put(key, value, transforms,rud);
+        inner.put(key, value, transforms,srd);
     }
 
     @Override
-    public List<Versioned<V>> multiVersionPut(K key, final List<Versioned<V>> values, RUD rud) {
+    public List<Versioned<V>> multiVersionPut(K key, final List<Versioned<V>> values, SRD srd) {
         blockIfNecessary();
-        return inner.multiVersionPut(key, values,rud);
+        return inner.multiVersionPut(key, values,srd);
     }
 
     @Override
@@ -117,9 +117,9 @@ public class PausableStorageEngine<K, V, T> extends AbstractStorageEngine<K, V, 
     }
 
     @Override
-    public List<Version> getVersions(K key, RUD rud) {
+    public List<Version> getVersions(K key, SRD srd) {
         blockIfNecessary();
-        return inner.getVersions(key,rud);
+        return inner.getVersions(key,srd);
     }
 
     @Override

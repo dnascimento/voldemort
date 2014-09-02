@@ -32,7 +32,7 @@ public class RedoIterator {
     /**
      * Allowed operations which are sleeping
      */
-    private final ArrayList<Op> sleeping = new ArrayList<Op>();
+    private final ArrayList<Op> waiting = new ArrayList<Op>();
 
     /**
      * Operations to ignore (different execution), the request was processed
@@ -73,27 +73,29 @@ public class RedoIterator {
      * @param op
      * @return true if allowed to execute, false if must go sleep
      */
-    public boolean allows(Op op) {
+    public boolean operationIsAllowed(Op op) {
         // If no operation allowed or executing, fetch next
         while(allowed.isEmpty() && executing.isEmpty()) {
             fetchNextAllowed();
-            removeIgnored();
         }
 
         if(allowed.remove(op)) {
-            if(sleeping.remove(op))
+            if(waiting.remove(op))
                 log.info("Op " + op + " was sleeping");
             executing.add(op);
             log.info("Op " + op + " allowed to exec");
             return true;
         } else {
-            sleeping.add(op);
+            waiting.add(op);
             log.info("Op " + op + " go sleep");
             return false;
         }
 
     }
 
+    /**
+     * 
+     */
     private void fetchNextAllowed() {
         assert (allowed.size() == 0);
         // all the gets or one write
@@ -114,10 +116,14 @@ public class RedoIterator {
             }
             allowed.add(fullList.get(nextPosition++));
         }
+        // remove the ignored operations
+        removeIgnored();
     }
 
+    /**
+     * Removes the operations of previous snapshots or over
+     */
     private void removeIgnored() {
-        // remove the operations of previous snapshots or over
         Iterator<Op> it = allowed.listIterator();
         while(it.hasNext()) {
             Long rid = new Long(it.next().rid);
@@ -125,7 +131,6 @@ public class RedoIterator {
                 it.remove();
                 continue;
             }
-
         }
     }
 
@@ -139,7 +144,7 @@ public class RedoIterator {
         if(!executing.remove(op)) {
             log.error("Removing an end operation that is not at executing list");
         }
-        return !sleeping.isEmpty();
+        return !waiting.isEmpty();
     }
 
     public short getBranch() {
@@ -160,7 +165,7 @@ public class RedoIterator {
         }
         ignoring.add(rid);
 
-        return !sleeping.isEmpty();
+        return !waiting.isEmpty();
     }
 
     @Override
@@ -174,7 +179,7 @@ public class RedoIterator {
         sb.append("\n executing=");
         sb.append(Arrays.toString(executing.toArray()));
         sb.append("\n sleeping=");
-        sb.append(Arrays.toString(sleeping.toArray()));
+        sb.append(Arrays.toString(waiting.toArray()));
         sb.append("\n ignoring=");
         sb.append(Arrays.toString(ignoring.toArray()));
 

@@ -1,6 +1,6 @@
 package voldemort.undoTracker;
 
-import voldemort.undoTracker.RUD.OpType;
+import voldemort.undoTracker.SRD.OpType;
 import voldemort.utils.ByteArray;
 
 public class KeyAccess implements Comparable<KeyAccess> {

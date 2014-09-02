@@ -12,7 +12,7 @@ import voldemort.server.VoldemortConfig;
 import voldemort.store.ErrorCodeMapper;
 import voldemort.store.StorageEngine;
 import voldemort.store.StoreUtils;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.NetworkClassLoader;
 import voldemort.versioning.Versioned;
@@ -64,7 +64,7 @@ class BufferedUpdatePartitionEntriesStreamRequestHandler extends
     private void writeBufferedValsToStorage() {
         List<Versioned<byte[]>> obsoleteVals = storageEngine.multiVersionPut(currBufferedKey,
                                                                              currBufferedVals,
-                                                                             new RUD());
+                                                                             new SRD());
         // log Obsolete versions in debug mode
         if(logger.isDebugEnabled() && obsoleteVals.size() > 0) {
             logger.debug("updateEntries (Streaming multi-version-put) rejected these versions as obsolete : "
@@ -102,7 +102,7 @@ class BufferedUpdatePartitionEntriesStreamRequestHandler extends
     }
 
     @Override
-    protected void processEntry(ByteArray key, Versioned<byte[]> value, RUD rud) throws IOException {
+    protected void processEntry(ByteArray key, Versioned<byte[]> value, SRD srd) throws IOException {
         // Check if the current key is same as the one before.
         if(currBufferedKey != null && !key.equals(currBufferedKey)) {
             // if not, write buffered values for the previous key to storage

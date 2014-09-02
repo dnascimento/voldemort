@@ -33,7 +33,7 @@ import voldemort.serialization.Serializer;
 import voldemort.serialization.SerializerDefinition;
 import voldemort.serialization.SerializerFactory;
 import voldemort.store.metadata.MetadataStore;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ClosableIterator;
 import voldemort.utils.Pair;
@@ -69,11 +69,11 @@ public class StoreUtils {
     public static <K, V, T> List<Versioned<V>> get(Store<K, V, T> storageEngine,
                                                    K key,
                                                    T transform,
-                                                   RUD rud) {
+                                                   SRD srd) {
         Map<K, List<Versioned<V>>> result = storageEngine.getAll(Collections.singleton(key),
                                                                  Collections.singletonMap(key,
                                                                                           transform),
-                                                                 rud);
+                                                                 srd);
         if(result.size() > 0)
             return result.get(key);
         else
@@ -86,13 +86,13 @@ public class StoreUtils {
     public static <K, V, T> Map<K, List<Versioned<V>>> getAll(Store<K, V, T> storageEngine,
                                                               Iterable<K> keys,
                                                               Map<K, T> transforms,
-                                                              RUD rud) {
+                                                              SRD srd) {
         Map<K, List<Versioned<V>>> result = newEmptyHashMap(keys);
         for(K key: keys) {
             List<Versioned<V>> value = storageEngine.get(key,
                                                          transforms != null ? transforms.get(key)
                                                                            : null,
-                                                         rud);
+                                                         srd);
             if(!value.isEmpty())
                 result.put(key, value);
         }

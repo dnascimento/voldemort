@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import voldemort.store.Store;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.versioning.Versioned;
 
 public class RangeFilterView implements View<Integer, List<Integer>, List<Integer>, List<Integer>> {
@@ -46,7 +46,7 @@ public class RangeFilterView implements View<Integer, List<Integer>, List<Intege
         } else {
             filteredValues = v;
         }
-        List<Versioned<List<Integer>>> prevValues = targetStore.get(k, null, new RUD());
+        List<Versioned<List<Integer>>> prevValues = targetStore.get(k, null, new SRD());
         if(prevValues.size() == 0)
             return filteredValues;
         List<Integer> newValues = prevValues.get(0).getValue();

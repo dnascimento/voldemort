@@ -16,7 +16,7 @@ import voldemort.store.StorageEngine;
 import voldemort.store.Store;
 import voldemort.store.bdb.BdbStorageConfiguration;
 import voldemort.store.serialized.SerializingStore;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.CmdUtils;
 import voldemort.utils.Props;
@@ -122,7 +122,7 @@ public class StorageEnginePerformanceTest {
 
             // initialize test data
             for(int i = 0; i < numValues; i++)
-                store.put(Integer.toString(i), Versioned.value(value), null, new RUD());
+                store.put(Integer.toString(i), Versioned.value(value), null, new SRD());
 
             // initialize cache lookback data
             int[] recents = new int[cacheWidth];
@@ -134,14 +134,14 @@ public class StorageEnginePerformanceTest {
                 public void doOperation(int index) {
                     try {
                         String key = Integer.toString(index);
-                        List<Versioned<byte[]>> vs = store.get(key, null, new RUD());
+                        List<Versioned<byte[]>> vs = store.get(key, null, new SRD());
                         VectorClock version;
                         if(vs.size() == 0)
                             version = new VectorClock();
                         else
                             version = (VectorClock) vs.get(0).getVersion();
                         version.incrementVersion(0, 847584375);
-                        store.put(key, Versioned.value(value, version), null, new RUD());
+                        store.put(key, Versioned.value(value, version), null, new SRD());
                     } catch(ObsoleteVersionException e) {
                         // do nothing
                     } catch(RuntimeException e) {
@@ -159,7 +159,7 @@ public class StorageEnginePerformanceTest {
 
                 @Override
                 public void doOperation(int index) {
-                    store.get(Integer.toString(index), null, new RUD());
+                    store.get(Integer.toString(index), null, new SRD());
                 }
             }, recents, numValues, cacheHitRatio);
             readTest.run(numRequests, numThreads);

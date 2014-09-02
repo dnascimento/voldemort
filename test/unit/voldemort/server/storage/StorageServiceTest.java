@@ -29,7 +29,7 @@ import voldemort.store.Store;
 import voldemort.store.StoreDefinition;
 import voldemort.store.metadata.MetadataStore;
 import voldemort.store.system.SystemStoreConstants;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.Versioned;
 
@@ -132,7 +132,7 @@ public class StorageServiceTest extends TestCase {
 
         try {
             ByteArray metadataVersionsKey = new ByteArray(StorageService.VERSIONS_METADATA_STORE.getBytes());
-            List<Versioned<byte[]>> versionList = versionStore.get(metadataVersionsKey, null, new RUD());
+            List<Versioned<byte[]>> versionList = versionStore.get(metadataVersionsKey, null, new SRD());
 
             if(versionList != null && versionList.size() > 0) {
                 byte[] versionsByteArray = versionList.get(0).getValue();

@@ -10,7 +10,7 @@ import org.junit.Test;
 import voldemort.cluster.Cluster;
 import voldemort.store.InsufficientOperationalNodesException;
 import voldemort.store.StoreDefinition;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 
 public class ZoneAffinityGetVersionsTest extends AbstractZoneAffinityTest {
 
@@ -28,7 +28,7 @@ public class ZoneAffinityGetVersionsTest extends AbstractZoneAffinityTest {
     @Test
     public void testAllUp() {
         try {
-            client.getVersions("K1", new RUD());
+            client.getVersions("K1", new SRD());
         } catch(InsufficientOperationalNodesException e) {
             fail("Failed with exception: " + e);
         }
@@ -40,7 +40,7 @@ public class ZoneAffinityGetVersionsTest extends AbstractZoneAffinityTest {
             this.vservers.get(nodeId).stop();
         }
         try {
-            client.getVersions("K1", new RUD());
+            client.getVersions("K1", new SRD());
             fail("Did not fail fast");
         } catch(InsufficientOperationalNodesException e) {
 
@@ -53,7 +53,7 @@ public class ZoneAffinityGetVersionsTest extends AbstractZoneAffinityTest {
         // complete
         this.vservers.get(cluster.getNodeIdsInZone(clientZoneId).iterator().next()).stop();
         try {
-            client.getVersions("K1", new RUD());
+            client.getVersions("K1", new SRD());
         } catch(InsufficientOperationalNodesException e) {
             fail("Failed with exception: " + e);
         }
@@ -69,7 +69,7 @@ public class ZoneAffinityGetVersionsTest extends AbstractZoneAffinityTest {
             this.vservers.get(nodeId).stop();
         }
         try {
-            client.getVersions("K1", new RUD());
+            client.getVersions("K1", new SRD());
             fail("Did not fail fast");
         } catch(InsufficientOperationalNodesException e) {
 

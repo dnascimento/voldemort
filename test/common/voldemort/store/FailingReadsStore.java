@@ -5,7 +5,7 @@ import java.util.Map;
 
 import voldemort.VoldemortException;
 import voldemort.store.memory.InMemoryStorageEngine;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
@@ -20,33 +20,33 @@ public class FailingReadsStore<K, V, T> extends AbstractStore<K, V, T> {
     }
 
     @Override
-    public boolean delete(K key, Version version, RUD rud) throws VoldemortException {
-        return engine.delete(key, version, rud);
+    public boolean delete(K key, Version version, SRD srd) throws VoldemortException {
+        return engine.delete(key, version, srd);
     }
 
     @Override
-    public List<Versioned<V>> get(K key, T transforms, RUD rud) throws VoldemortException {
+    public List<Versioned<V>> get(K key, T transforms, SRD srd) throws VoldemortException {
         throw new VoldemortException("Operation failed");
     }
 
     @Override
-    public java.util.List<Version> getVersions(K key, RUD rud) {
+    public java.util.List<Version> getVersions(K key, SRD srd) {
         throw new VoldemortException("Operation failed");
     }
 
     @Override
-    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, RUD rud)
+    public Map<K, List<Versioned<V>>> getAll(Iterable<K> keys, Map<K, T> transforms, SRD srd)
             throws VoldemortException {
         throw new VoldemortException("Operation failed");
     }
 
     @Override
-    public void put(K key, Versioned<V> value, T transforms, RUD rud) throws VoldemortException {
-        engine.put(key, value, transforms, rud);
+    public void put(K key, Versioned<V> value, T transforms, SRD srd) throws VoldemortException {
+        engine.put(key, value, transforms, srd);
     }
 
     @Override
-    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, RUD rud) {
+    public Map<ByteArray, Boolean> unlockKeys(Iterable<ByteArray> keys, SRD srd) {
         throw new VoldemortException("Operation failed");
     }
 }

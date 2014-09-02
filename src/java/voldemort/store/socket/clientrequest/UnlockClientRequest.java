@@ -8,7 +8,7 @@ import java.util.Map;
 
 import voldemort.client.protocol.RequestFormat;
 import voldemort.server.RequestRoutingType;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 
 public class UnlockClientRequest extends AbstractStoreClientRequest<Map<ByteArray, Boolean>> {
@@ -19,8 +19,8 @@ public class UnlockClientRequest extends AbstractStoreClientRequest<Map<ByteArra
                                RequestFormat requestFormat,
                                RequestRoutingType requestRoutingType,
                                Iterable<ByteArray> keys,
-                               RUD rud) {
-        super(storeName, requestFormat, requestRoutingType, rud);
+                               SRD srd) {
+        super(storeName, requestFormat, requestRoutingType, srd);
         this.keys = keys;
     }
 
@@ -31,7 +31,7 @@ public class UnlockClientRequest extends AbstractStoreClientRequest<Map<ByteArra
 
     @Override
     protected void formatRequestInternal(DataOutputStream outputStream) throws IOException {
-        requestFormat.writeUnlockRequest(outputStream, storeName, keys, requestRoutingType, rud);
+        requestFormat.writeUnlockRequest(outputStream, storeName, keys, requestRoutingType, srd);
     }
 
     @Override

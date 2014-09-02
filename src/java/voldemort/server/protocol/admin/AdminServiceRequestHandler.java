@@ -67,7 +67,7 @@ import voldemort.store.readonly.ReadOnlyUtils;
 import voldemort.store.slop.SlopStorageEngine;
 import voldemort.store.stats.StreamingStats;
 import voldemort.store.stats.StreamingStats.Operation;
-import voldemort.undoTracker.RUD;
+import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
 import voldemort.utils.ClosableIterator;
@@ -1062,7 +1062,7 @@ public class AdminServiceRequestHandler implements RequestHandler {
                                          * TODO This also needs to be fixed to
                                          * use the atomic multi version puts
                                          */
-                                        storageEngine.put(key, value, null, new RUD());
+                                        storageEngine.put(key, value, null, new SRD());
                                     } catch(ObsoleteVersionException e) {
                                         // log and ignore
                                         logger.debug("Fetch and update threw Obsolete version exception. Ignoring");
@@ -1183,7 +1183,7 @@ public class AdminServiceRequestHandler implements RequestHandler {
                                                                                      : metadataStore.getCluster(),
                                                           metadataStore.getStoreDef(storeName))
                    && filter.accept(key, value)) {
-                    if(storageEngine.delete(key, value.getVersion(), new RUD())) {
+                    if(storageEngine.delete(key, value.getVersion(), new SRD())) {
                         deleteSuccess++;
                         if((deleteSuccess % 10000) == 0) {
                             logger.info(deleteSuccess + " entries deleted from node "
@@ -1221,7 +1221,7 @@ public class AdminServiceRequestHandler implements RequestHandler {
                 metadataStore.put(new ByteArray(ByteUtils.getBytes(keyString, "UTF-8")),
                                   versionedValue,
                                   null,
-                                  new RUD());
+                                  new SRD());
                 logger.info("Successfully updated metadata for key '" + keyString + "'");
             }
         } catch(VoldemortException e) {
@@ -1250,8 +1250,8 @@ public class AdminServiceRequestHandler implements RequestHandler {
                 try {
                     logger.info("Updating metadata for keys '" + clusterKeyString + "'" + " and '"
                                 + storesKeyString + "'");
-                    metadataStore.put(clusterKey, clusterVersionedValue, null, new RUD());
-                    metadataStore.put(storesKey, storesVersionedValue, null, new RUD());
+                    metadataStore.put(clusterKey, clusterVersionedValue, null, new SRD());
+                    metadataStore.put(storesKey, storesVersionedValue, null, new SRD());
                     logger.info("Successfully updated metadata for keys '" + clusterKeyString + "'"
                                 + " and '" + storesKeyString + "'");
                 } finally {
@@ -1273,7 +1273,7 @@ public class AdminServiceRequestHandler implements RequestHandler {
             ByteArray key = ProtoUtils.decodeBytes(request.getKey());
             String keyString = ByteUtils.getString(key.get(), "UTF-8");
             if(MetadataStore.METADATA_KEYS.contains(keyString)) {
-                List<Versioned<byte[]>> versionedList = metadataStore.get(key, null, new RUD());
+                List<Versioned<byte[]>> versionedList = metadataStore.get(key, null, new SRD());
                 int size = (versionedList.size() > 0) ? 1 : 0;
 
                 if(size > 0) {
@@ -1367,7 +1367,7 @@ public class AdminServiceRequestHandler implements RequestHandler {
                         }
 
                         try {
-                            metadataStore.put(MetadataStore.STORES_KEY, newStoreDefList, new RUD());
+                            metadataStore.put(MetadataStore.STORES_KEY, newStoreDefList, new SRD());
                         } catch(Exception e) {
                             throw new VoldemortException(e);
                         }
@@ -1428,7 +1428,7 @@ public class AdminServiceRequestHandler implements RequestHandler {
                     List<StoreDefinition> currentStoreDefs;
                     List<Versioned<byte[]>> v = metadataStore.get(MetadataStore.STORES_KEY,
                                                                   null,
-                                                                  new RUD());
+                                                                  new SRD());
 
                     if(((v.size() > 0) ? 1 : 0) > 0) {
                         Versioned<byte[]> currentValue = v.get(0);
@@ -1439,7 +1439,7 @@ public class AdminServiceRequestHandler implements RequestHandler {
                     }
                     currentStoreDefs.add(def);
                     try {
-                        metadataStore.put(MetadataStore.STORES_KEY, currentStoreDefs, new RUD());
+                        metadataStore.put(MetadataStore.STORES_KEY, currentStoreDefs, new SRD());
                     } catch(Exception e) {
                         throw new VoldemortException(e);
                     }
@@ -1661,7 +1661,7 @@ public class AdminServiceRequestHandler implements RequestHandler {
 
                     // save the changes
                     try {
-                        metadataStore.put(MetadataStore.STORES_KEY, storeDefList, new RUD());
+                        metadataStore.put(MetadataStore.STORES_KEY, storeDefList, new SRD());
                     } catch(Exception e) {
                         throw new VoldemortException(e);
                     }
