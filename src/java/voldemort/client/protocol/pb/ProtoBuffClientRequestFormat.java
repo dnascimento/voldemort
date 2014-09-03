@@ -66,7 +66,7 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                    VectorClock version,
                                    RequestRoutingType routingType,
                                    SRD srd) throws IOException {
-        ToManagerProto.SRD rudProto = srd.toProto();
+        ToManagerProto.SRD srdProto = srd.toProto();
         StoreUtils.assertValidKey(key);
 
         // Track the key access by client
@@ -79,7 +79,7 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                                        .setShouldRoute(routingType.equals(RequestRoutingType.ROUTED))
                                                        .setRequestRouteType(routingType.getRoutingTypeCode())
                                                        .setDelete(VProto.DeleteRequest.newBuilder()
-                                                                                      .setRud(rudProto)
+                                                                                      .setSrd(srdProto)
                                                                                       .setKey(ByteString.copyFrom(key.get()))
                                                                                       .setVersion(ProtoUtils.encodeClock(version)))
                                                        .build());
@@ -107,11 +107,11 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                 RequestRoutingType routingType,
                                 SRD srd) throws IOException {
         StoreUtils.assertValidKey(key);
-        ToManagerProto.SRD rudProto = srd.toProto();
+        ToManagerProto.SRD srdProto = srd.toProto();
 
         VProto.GetRequest.Builder get = VProto.GetRequest.newBuilder();
         get.setKey(ByteString.copyFrom(key.get()));
-        get.setRud(rudProto);
+        get.setSrd(srdProto);
         // Track the key access by client
         srd.addAccessedKey(key, storeName, SRD.OpType.Get);
 
@@ -150,10 +150,10 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                    RequestRoutingType routingType,
                                    SRD srd) throws IOException {
         StoreUtils.assertValidKeys(keys);
-        ToManagerProto.SRD rudProto = srd.toProto();
+        ToManagerProto.SRD srdProto = srd.toProto();
 
         VProto.GetAllRequest.Builder req = VProto.GetAllRequest.newBuilder();
-        req.setRud(rudProto);
+        req.setSrd(srdProto);
         for(ByteArray key: keys)
             req.addKeys(ByteString.copyFrom(key.get()));
 
@@ -204,12 +204,12 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                 RequestRoutingType routingType,
                                 SRD srd) throws IOException {
         StoreUtils.assertValidKey(key);
-        ToManagerProto.SRD rudProto = srd.toProto();
+        ToManagerProto.SRD srdProto = srd.toProto();
         // Track the key access by client
         srd.addAccessedKey(key, storeName, SRD.OpType.Put);
 
         VProto.PutRequest.Builder req = VProto.PutRequest.newBuilder()
-                                                         .setRud(rudProto)
+                                                         .setSrd(srdProto)
                                                          .setKey(ByteString.copyFrom(key.get()))
                                                          .setVersioned(VProto.Versioned.newBuilder()
                                                                                        .setValue(ByteString.copyFrom(value))
@@ -268,7 +268,7 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                        RequestRoutingType routingType,
                                        SRD srd) throws IOException {
         StoreUtils.assertValidKey(key);
-        ToManagerProto.SRD rudProto = srd.toProto();
+        ToManagerProto.SRD srdProto = srd.toProto();
 
         ProtoUtils.writeMessage(output,
                                 VProto.VoldemortRequest.newBuilder()
@@ -277,7 +277,7 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                                        .setShouldRoute(routingType.equals(RequestRoutingType.ROUTED))
                                                        .setRequestRouteType(routingType.getRoutingTypeCode())
                                                        .setGet(VProto.GetRequest.newBuilder()
-                                                                                .setRud(rudProto)
+                                                                                .setSrd(srdProto)
                                                                                 .setKey(ByteString.copyFrom(key.get())))
                                                        .build());
     }
@@ -294,7 +294,7 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                    RequestRoutingType routingType,
                                    SRD srd) throws IOException {
         System.out.println("writeUnlock" + srd);
-        ToManagerProto.SRD rudProto = srd.toProto();
+        ToManagerProto.SRD srdProto = srd.toProto();
         VProto.UnlockRequest.Builder unlock = VProto.UnlockRequest.newBuilder();
 
         for(ByteArray key: keys) {
@@ -302,7 +302,7 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
             unlock.addKey(ByteString.copyFrom(key.get()));
         }
 
-        unlock.setRud(rudProto);
+        unlock.setSrd(srdProto);
         ProtoUtils.writeMessage(output,
                                 VProto.VoldemortRequest.newBuilder()
                                                        .setType(RequestType.UNLOCK)

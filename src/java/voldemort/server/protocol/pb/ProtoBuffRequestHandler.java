@@ -99,7 +99,7 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
             keys.add(key);
         }
 
-        SRD srd = new SRD(request.getRud());
+        SRD srd = new SRD(request.getSrd());
 
         try {
             // TODO deveria ter em conta a store
@@ -120,7 +120,7 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
     private Message handleGetVersion(GetRequest request, Store<ByteArray, byte[], byte[]> store) {
         VProto.GetVersionResponse.Builder response = VProto.GetVersionResponse.newBuilder();
         ByteArray key = ProtoUtils.decodeBytes(request.getKey());
-        SRD srd = new SRD(request.getRud());
+        SRD srd = new SRD(request.getSrd());
         undoStub.getVersion(key, srd);
         try {
             List<Version> versions = store.getVersions(key, srd);
@@ -145,7 +145,7 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
                                          Store<ByteArray, byte[], byte[]> store) {
         VProto.GetResponse.Builder response = VProto.GetResponse.newBuilder();
         ByteArray key = ProtoUtils.decodeBytes(request.getKey());
-        SRD srd = new SRD(request.getRud());
+        SRD srd = new SRD(request.getSrd());
         undoStub.getStart(key, srd);
 
         try {
@@ -182,7 +182,7 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
                                    ProtoUtils.decodeBytes(transform.getTransform()).get());
                 }
             }
-            SRD srd = new SRD(request.getRud());
+            SRD srd = new SRD(request.getSrd());
 
             Map<ByteArray, List<Versioned<byte[]>>> values = store.getAll(keys, transforms, srd);
             for(Map.Entry<ByteArray, List<Versioned<byte[]>>> entry: values.entrySet()) {
@@ -203,7 +203,7 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
                                          Store<ByteArray, byte[], byte[]> store) {
         VProto.PutResponse.Builder response = VProto.PutResponse.newBuilder();
         ByteArray key = ProtoUtils.decodeBytes(request.getKey());
-        SRD srd = new SRD(request.getRud());
+        SRD srd = new SRD(request.getSrd());
         undoStub.putStart(key, srd);
 
         try {
@@ -226,7 +226,7 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
                                                Store<ByteArray, byte[], byte[]> store) {
         VProto.DeleteResponse.Builder response = VProto.DeleteResponse.newBuilder();
         ByteArray key = ProtoUtils.decodeBytes(request.getKey());
-        SRD srd = new SRD(request.getRud());
+        SRD srd = new SRD(request.getSrd());
         undoStub.deleteStart(key, srd);
 
         try {

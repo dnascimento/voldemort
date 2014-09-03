@@ -1683,15 +1683,20 @@ public final class FromManagerProto {
      */
     boolean getStart();
 
-    // required bool selective = 4;
+    // required string replayMode = 4;
     /**
-     * <code>required bool selective = 4;</code>
+     * <code>required string replayMode = 4;</code>
      */
-    boolean hasSelective();
+    boolean hasReplayMode();
     /**
-     * <code>required bool selective = 4;</code>
+     * <code>required string replayMode = 4;</code>
      */
-    boolean getSelective();
+    java.lang.String getReplayMode();
+    /**
+     * <code>required string replayMode = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getReplayModeBytes();
   }
   /**
    * Protobuf type {@code voldemort.ExecList}
@@ -1779,9 +1784,9 @@ public final class FromManagerProto {
               start_ = input.readBool();
               break;
             }
-            case 32: {
+            case 34: {
               bitField0_ |= 0x00000004;
-              selective_ = input.readBool();
+              replayMode_ = input.readBytes();
               break;
             }
           }
@@ -1882,27 +1887,54 @@ public final class FromManagerProto {
       return start_;
     }
 
-    // required bool selective = 4;
-    public static final int SELECTIVE_FIELD_NUMBER = 4;
-    private boolean selective_;
+    // required string replayMode = 4;
+    public static final int REPLAYMODE_FIELD_NUMBER = 4;
+    private java.lang.Object replayMode_;
     /**
-     * <code>required bool selective = 4;</code>
+     * <code>required string replayMode = 4;</code>
      */
-    public boolean hasSelective() {
+    public boolean hasReplayMode() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>required bool selective = 4;</code>
+     * <code>required string replayMode = 4;</code>
      */
-    public boolean getSelective() {
-      return selective_;
+    public java.lang.String getReplayMode() {
+      java.lang.Object ref = replayMode_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          replayMode_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string replayMode = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getReplayModeBytes() {
+      java.lang.Object ref = replayMode_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        replayMode_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     private void initFields() {
       rid_ = java.util.Collections.emptyList();
       branch_ = 0;
       start_ = false;
-      selective_ = false;
+      replayMode_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -1917,7 +1949,7 @@ public final class FromManagerProto {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!hasSelective()) {
+      if (!hasReplayMode()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -1938,7 +1970,7 @@ public final class FromManagerProto {
         output.writeBool(3, start_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeBool(4, selective_);
+        output.writeBytes(4, getReplayModeBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -1968,7 +2000,7 @@ public final class FromManagerProto {
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(4, selective_);
+          .computeBytesSize(4, getReplayModeBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -2096,7 +2128,7 @@ public final class FromManagerProto {
         bitField0_ = (bitField0_ & ~0x00000002);
         start_ = false;
         bitField0_ = (bitField0_ & ~0x00000004);
-        selective_ = false;
+        replayMode_ = "";
         bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
@@ -2142,7 +2174,7 @@ public final class FromManagerProto {
         if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
           to_bitField0_ |= 0x00000004;
         }
-        result.selective_ = selective_;
+        result.replayMode_ = replayMode_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -2175,8 +2207,10 @@ public final class FromManagerProto {
         if (other.hasStart()) {
           setStart(other.getStart());
         }
-        if (other.hasSelective()) {
-          setSelective(other.getSelective());
+        if (other.hasReplayMode()) {
+          bitField0_ |= 0x00000008;
+          replayMode_ = other.replayMode_;
+          onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -2191,7 +2225,7 @@ public final class FromManagerProto {
           
           return false;
         }
-        if (!hasSelective()) {
+        if (!hasReplayMode()) {
           
           return false;
         }
@@ -2349,35 +2383,76 @@ public final class FromManagerProto {
         return this;
       }
 
-      // required bool selective = 4;
-      private boolean selective_ ;
+      // required string replayMode = 4;
+      private java.lang.Object replayMode_ = "";
       /**
-       * <code>required bool selective = 4;</code>
+       * <code>required string replayMode = 4;</code>
        */
-      public boolean hasSelective() {
+      public boolean hasReplayMode() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
-       * <code>required bool selective = 4;</code>
+       * <code>required string replayMode = 4;</code>
        */
-      public boolean getSelective() {
-        return selective_;
+      public java.lang.String getReplayMode() {
+        java.lang.Object ref = replayMode_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          replayMode_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
-       * <code>required bool selective = 4;</code>
+       * <code>required string replayMode = 4;</code>
        */
-      public Builder setSelective(boolean value) {
-        bitField0_ |= 0x00000008;
-        selective_ = value;
+      public com.google.protobuf.ByteString
+          getReplayModeBytes() {
+        java.lang.Object ref = replayMode_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          replayMode_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string replayMode = 4;</code>
+       */
+      public Builder setReplayMode(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        replayMode_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required bool selective = 4;</code>
+       * <code>required string replayMode = 4;</code>
        */
-      public Builder clearSelective() {
+      public Builder clearReplayMode() {
         bitField0_ = (bitField0_ & ~0x00000008);
-        selective_ = false;
+        replayMode_ = getDefaultInstance().getReplayMode();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string replayMode = 4;</code>
+       */
+      public Builder setReplayModeBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        replayMode_ = value;
         onChanged();
         return this;
       }
@@ -3075,12 +3150,12 @@ public final class FromManagerProto {
       "anch\030\004 \003(\005\022\022\n\npathCommit\030\005 \003(\003\022@\n\020entryA" +
       "ccessesMsg\030\006 \001(\0132&.voldemort.ToDataNode." +
       "EntryAccessesMsg\0321\n\020EntryAccessesMsg\022\014\n\004" +
-      "keys\030\001 \003(\014\022\017\n\007baseRid\030\002 \002(\003\"I\n\010ExecList\022" +
+      "keys\030\001 \003(\014\022\017\n\007baseRid\030\002 \002(\003\"J\n\010ExecList\022" +
       "\013\n\003rid\030\001 \003(\003\022\016\n\006branch\030\002 \002(\005\022\r\n\005start\030\003 " +
-      "\002(\010\022\021\n\tselective\030\004 \002(\010\"P\n\010ProxyMsg\022\016\n\006br" +
-      "anch\030\001 \001(\005\022\020\n\010restrain\030\002 \001(\010\022\022\n\ntimeTrav",
-      "el\030\003 \001(\003\022\016\n\006commit\030\004 \001(\003B \n\nundo.protoB\020" +
-      "FromManagerProtoH\001"
+      "\002(\010\022\022\n\nreplayMode\030\004 \002(\t\"P\n\010ProxyMsg\022\016\n\006b" +
+      "ranch\030\001 \001(\005\022\020\n\010restrain\030\002 \001(\010\022\022\n\ntimeTra",
+      "vel\030\003 \001(\003\022\016\n\006commit\030\004 \001(\003B \n\nundo.protoB" +
+      "\020FromManagerProtoH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -3104,7 +3179,7 @@ public final class FromManagerProto {
           internal_static_voldemort_ExecList_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_ExecList_descriptor,
-              new java.lang.String[] { "Rid", "Branch", "Start", "Selective", });
+              new java.lang.String[] { "Rid", "Branch", "Start", "ReplayMode", });
           internal_static_voldemort_ProxyMsg_descriptor =
             getDescriptor().getMessageTypes().get(2);
           internal_static_voldemort_ProxyMsg_fieldAccessorTable = new

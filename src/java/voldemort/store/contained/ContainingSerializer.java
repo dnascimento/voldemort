@@ -18,7 +18,7 @@ public class ContainingSerializer {
         } else {
             return VProto.Container.newBuilder()
                                    .setData(ByteString.copyFrom(object))
-                                   .setRud(srd.toProto())
+                                   .setSrd(srd.toProto())
                                    .build()
                                    .toByteArray();
         }
@@ -31,7 +31,7 @@ public class ContainingSerializer {
         // This is were get dependencies can be founded
         try {
             VProto.Container c = VProto.Container.parseFrom(bytes);
-            SRD srd = new SRD(c.getRud());
+            SRD srd = new SRD(c.getSrd());
             return new Pair<SRD, byte[]>(srd, c.getData().toByteArray());
         } catch(InvalidProtocolBufferException e) {
             return new Pair<SRD, byte[]>(new SRD(), bytes);
