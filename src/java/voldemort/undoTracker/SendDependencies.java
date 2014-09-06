@@ -8,8 +8,8 @@
 package voldemort.undoTracker;
 
 import java.io.IOException;
-import java.net.ConnectException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -24,6 +24,8 @@ import com.google.common.collect.LinkedListMultimap;
 
 public class SendDependencies extends Thread {
 
+    private static final int CONNECT_RETRIES = 2;
+
     private final Logger log = Logger.getLogger(SendDependencies.class.getName());
 
     private OpMultimap trackLocalAccess;
@@ -35,8 +37,13 @@ public class SendDependencies extends Thread {
         if(testing) {
             socket = null;
         } else {
-            socket.connect(DBProxy.MANAGER_ADDRESS);
+            connect();
         }
+    }
+
+    private void connect() throws IOException {
+        socket = new Socket();
+        socket.connect(DBProxy.MANAGER_ADDRESS);
     }
 
     @Override
@@ -49,7 +56,7 @@ public class SendDependencies extends Thread {
                 sleep(REFRESH_PERIOD);
                 extractOperations();
             } catch(IOException e) {
-                e.printStackTrace();
+                log.error("Extracting dependencies error", e);
             } catch(InterruptedException e) {
                 e.printStackTrace();
             }
@@ -88,13 +95,19 @@ public class SendDependencies extends Thread {
             return;
         }
 
-        try {
-            msg.writeDelimitedTo(socket.getOutputStream());
-        } catch(ConnectException e) {
-            log.error("Manager is off, the package is:");
-            log.info(list.toString());
-        } finally {
-            socket.close();
+        boolean sent = false;
+        for(int i = 0; i < CONNECT_RETRIES; i++) {
+            try {
+                msg.writeDelimitedTo(socket.getOutputStream());
+                sent = true;
+                break;
+            } catch(SocketException e) {
+                log.error(e);
+                connect();
+            }
+        }
+        if(!sent) {
+            log.error("Manager is off");
         }
     }
 

@@ -92,6 +92,9 @@ public class UpdateDependenciesMap {
     public TrackMsg convertToList() {
         HashMap<Long, WrapperLong> map = createDependencyMap();
         // convert to protobuff
+        if(map.size() == 0) {
+            return null;
+        }
         return convertToList(map);
     }
 
@@ -122,10 +125,9 @@ public class UpdateDependenciesMap {
             }
         }
 
-        if(map.size() == 0) {
-            return null;
+        if(map.size() != 0) {
+            AVG_NUMBER_KEYS = AVG_NUMBER_KEYS + ((map.size() - AVG_NUMBER_KEYS) / 2);
         }
-        AVG_NUMBER_KEYS = AVG_NUMBER_KEYS + ((map.size() - AVG_NUMBER_KEYS) / 2);
         return map;
     }
 
@@ -136,6 +138,9 @@ public class UpdateDependenciesMap {
      */
     private ToManagerProto.TrackMsg convertToList(HashMap<Long, WrapperLong> map) {
         TrackMsg.Builder listBuilder = TrackMsg.newBuilder();
+        if(map == null) {
+            System.err.println("Null map");
+        }
         for(Long key: map.keySet()) {
             TrackEntry.Builder entry = TrackEntry.newBuilder();
             entry.setRid(key);
