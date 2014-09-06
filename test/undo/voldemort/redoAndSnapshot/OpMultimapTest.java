@@ -35,162 +35,160 @@ public class OpMultimapTest extends Thread {
         ignoreRud = null;
     }
 
-    // @Test
-    // public void simulation() {
-    // map.trackWriteAccess(key, OpType.Put, new SRD(1000L, 0, false), path);
-    // expected.add(new Op(1000L, OpType.Put));
-    // map.endWriteAccess(key);
-    //
-    // map.trackWriteAccess(key, OpType.Put, new SRD(1001L, 0, false), path);
-    // expected.add(new Op(1001L, OpType.Put));
-    // map.endWriteAccess(key);
-    //
-    // map.trackWriteAccess(key, OpType.Put, new SRD(1002L, 0, false), path);
-    // expected.add(new Op(1002L, OpType.Put));
-    // map.endWriteAccess(key);
-    //
-    // // ///////////// redo ///////////////////////
-    // map.get(key).redoWrite(OpType.Put, new SRD(1000L, 1, false), path);
-    // execution.add(new Op(1000L, OpType.Put));
-    // map.get(key).endRedoOp(OpType.Put, new SRD(1000L, 1, false), path);
-    //
-    // delayedOp = new Op(1001, OpType.Put);
-    // this.start();
-    //
-    // map.get(key).redoWrite(OpType.Put, new SRD(1002L, 1, false), path);
-    // execution.add(new Op(1002L, OpType.Put));
-    // map.get(key).endRedoOp(OpType.Put, new SRD(1002L, 1, false), path);
-    //
-    // check();
-    // }
-    //
+    @Test
+    public void simulation() {
+        map.trackWriteAccess(key, OpType.Put, new SRD(1000L, 0, false), path);
+        expected.add(new Op(1000L, OpType.Put));
+        map.endWriteAccess(key);
 
-    //
-    // @Test
-    // public void ignore() {
-    // map.trackReadAccess(key, new SRD(1000L, 0, false), path);
-    // expected.add(new Op(1000L, OpType.Get));
-    // map.endReadAccess(key);
-    //
-    // map.trackReadAccess(key, new SRD(1001L, 0, false), path);
-    // map.endReadAccess(key);
-    //
-    // map.trackReadAccess(key, new SRD(1002L, 0, false), path);
-    // expected.add(new Op(1002L, OpType.Get));
-    // map.endReadAccess(key);
-    //
-    // map.trackWriteAccess(key, OpType.Put, new SRD(1003L, 0, false), path);
-    // expected.add(new Op(1003L, OpType.Put));
-    // map.endWriteAccess(key);
-    //
-    // // ///////////// redo ///////////////////////
-    // map.get(key).ignore(new SRD(1001L, 1, false), path);
-    //
-    // map.get(key).redoRead(new SRD(1000L, 1, false), path);
-    // execution.add(new Op(1000L, OpType.Get));
-    // map.get(key).endRedoOp(OpType.Get, new SRD(1000L, 1, false), path);
-    //
-    // map.get(key).redoRead(new SRD(1002L, 1, false), path);
-    // execution.add(new Op(1002L, OpType.Get));
-    // map.get(key).endRedoOp(OpType.Get, new SRD(1002L, 1, false), path);
-    //
-    // // should not wait for 1001
-    // map.get(key).redoWrite(OpType.Put, new SRD(1003L, 1, false), path);
-    // execution.add(new Op(1003L, OpType.Put));
-    // map.get(key).endRedoOp(OpType.Put, new SRD(1003L, 1, false), path);
-    //
-    // check();
-    //
-    // }
-    //
-    // @Test
-    // public void ignoreWithWake() {
-    // map.trackReadAccess(key, new SRD(1000L, 0, false), path);
-    // expected.add(new Op(1000L, OpType.Get));
-    // map.endReadAccess(key);
-    //
-    // map.trackReadAccess(key, new SRD(1001L, 0, false), path);
-    // map.endReadAccess(key);
-    //
-    // map.trackReadAccess(key, new SRD(1002L, 0, false), path);
-    // expected.add(new Op(1002L, OpType.Get));
-    // map.endReadAccess(key);
-    //
-    // map.trackWriteAccess(key, OpType.Put, new SRD(1003L, 0, false), path);
-    // expected.add(new Op(1003L, OpType.Put));
-    // map.endWriteAccess(key);
-    //
-    // // ///////////// redo ///////////////////////
-    // ignoreRud = new SRD(1001L, 1, false);
-    // this.start();
-    //
-    // map.get(key).redoRead(new SRD(1000L, 1, false), path);
-    // execution.add(new Op(1000L, OpType.Get));
-    // map.get(key).endRedoOp(OpType.Get, new SRD(1000L, 1, false), path);
-    //
-    // map.get(key).redoRead(new SRD(1002L, 1, false), path);
-    // execution.add(new Op(1002L, OpType.Get));
-    // map.get(key).endRedoOp(OpType.Get, new SRD(1002L, 1, false), path);
-    //
-    // // should not wait for 1001
-    // map.get(key).redoWrite(OpType.Put, new SRD(1003L, 1, false), path);
-    // execution.add(new Op(1003L, OpType.Put));
-    // map.get(key).endRedoOp(OpType.Put, new SRD(1003L, 1, false), path);
-    //
-    // check();
-    //
-    // }
-    //
-    // @Test
-    // public void simulationRead() {
-    // map.trackReadAccess(key, new SRD(1000L, 0, false), path);
-    // expected.add(new Op(1000L, OpType.Get));
-    // map.endReadAccess(key);
-    //
-    // map.trackReadAccess(key, new SRD(1001L, 0, false), path);
-    // expected.add(new Op(1001L, OpType.Get));
-    // map.endReadAccess(key);
-    //
-    // map.trackReadAccess(key, new SRD(1002L, 0, false), path);
-    // expected.add(new Op(1002L, OpType.Get));
-    // map.endReadAccess(key);
-    //
-    // map.trackWriteAccess(key, OpType.Put, new SRD(1003L, 0, false), path);
-    // expected.add(new Op(1003L, OpType.Put));
-    // map.endWriteAccess(key);
-    //
-    // // ///////////// redo ///////////////////////
-    //
-    // delayedOp = new Op(1003, OpType.Put);
-    // this.start();
-    //
-    // map.get(key).redoRead(new SRD(1000L, 1, false), path);
-    // execution.add(new Op(1000L, OpType.Get));
-    // map.get(key).endRedoOp(OpType.Get, new SRD(1000L, 1, false), path);
-    //
-    // map.get(key).redoRead(new SRD(1002L, 1, false), path);
-    // execution.add(new Op(1002L, OpType.Get));
-    // map.get(key).endRedoOp(OpType.Get, new SRD(1002L, 1, false), path);
-    //
-    // try {
-    // sleep(500);
-    // } catch(InterruptedException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // }
-    // map.get(key).redoRead(new SRD(1001L, 1, false), path);
-    // execution.add(new Op(1001L, OpType.Get));
-    // map.get(key).endRedoOp(OpType.Get, new SRD(1001L, 1, false), path);
-    //
-    // // wait 1003 to exec
-    // try {
-    // sleep(500);
-    // } catch(InterruptedException e) {
-    // // TODO Auto-generated catch block
-    // e.printStackTrace();
-    // }
-    // check();
-    // }
+        map.trackWriteAccess(key, OpType.Put, new SRD(1001L, 0, false), path);
+        expected.add(new Op(1001L, OpType.Put));
+        map.endWriteAccess(key);
+
+        map.trackWriteAccess(key, OpType.Put, new SRD(1002L, 0, false), path);
+        expected.add(new Op(1002L, OpType.Put));
+        map.endWriteAccess(key);
+
+        // ///////////// redo ///////////////////////
+        map.get(key).redoWrite(OpType.Put, new SRD(1000L, 1, false), path);
+        execution.add(new Op(1000L, OpType.Put));
+        map.get(key).endRedoOp(OpType.Put, new SRD(1000L, 1, false), path);
+
+        delayedOp = new Op(1001, OpType.Put);
+        this.start();
+
+        map.get(key).redoWrite(OpType.Put, new SRD(1002L, 1, false), path);
+        execution.add(new Op(1002L, OpType.Put));
+        map.get(key).endRedoOp(OpType.Put, new SRD(1002L, 1, false), path);
+
+        check();
+    }
+
+    @Test
+    public void ignore() {
+        map.trackReadAccess(key, new SRD(1000L, 0, false), path);
+        expected.add(new Op(1000L, OpType.Get));
+        map.endReadAccess(key);
+
+        map.trackReadAccess(key, new SRD(1001L, 0, false), path);
+        map.endReadAccess(key);
+
+        map.trackReadAccess(key, new SRD(1002L, 0, false), path);
+        expected.add(new Op(1002L, OpType.Get));
+        map.endReadAccess(key);
+
+        map.trackWriteAccess(key, OpType.Put, new SRD(1003L, 0, false), path);
+        expected.add(new Op(1003L, OpType.Put));
+        map.endWriteAccess(key);
+
+        // ///////////// redo ///////////////////////
+        map.get(key).ignore(new SRD(1001L, 1, false), path);
+
+        map.get(key).redoRead(new SRD(1000L, 1, false), path);
+        execution.add(new Op(1000L, OpType.Get));
+        map.get(key).endRedoOp(OpType.Get, new SRD(1000L, 1, false), path);
+
+        map.get(key).redoRead(new SRD(1002L, 1, false), path);
+        execution.add(new Op(1002L, OpType.Get));
+        map.get(key).endRedoOp(OpType.Get, new SRD(1002L, 1, false), path);
+
+        // should not wait for 1001
+        map.get(key).redoWrite(OpType.Put, new SRD(1003L, 1, false), path);
+        execution.add(new Op(1003L, OpType.Put));
+        map.get(key).endRedoOp(OpType.Put, new SRD(1003L, 1, false), path);
+
+        check();
+
+    }
+
+    @Test
+    public void ignoreWithWake() {
+        map.trackReadAccess(key, new SRD(1000L, 0, false), path);
+        expected.add(new Op(1000L, OpType.Get));
+        map.endReadAccess(key);
+
+        map.trackReadAccess(key, new SRD(1001L, 0, false), path);
+        map.endReadAccess(key);
+
+        map.trackReadAccess(key, new SRD(1002L, 0, false), path);
+        expected.add(new Op(1002L, OpType.Get));
+        map.endReadAccess(key);
+
+        map.trackWriteAccess(key, OpType.Put, new SRD(1003L, 0, false), path);
+        expected.add(new Op(1003L, OpType.Put));
+        map.endWriteAccess(key);
+
+        // ///////////// redo ///////////////////////
+        ignoreRud = new SRD(1001L, 1, false);
+        this.start();
+
+        map.get(key).redoRead(new SRD(1000L, 1, false), path);
+        execution.add(new Op(1000L, OpType.Get));
+        map.get(key).endRedoOp(OpType.Get, new SRD(1000L, 1, false), path);
+
+        map.get(key).redoRead(new SRD(1002L, 1, false), path);
+        execution.add(new Op(1002L, OpType.Get));
+        map.get(key).endRedoOp(OpType.Get, new SRD(1002L, 1, false), path);
+
+        // should not wait for 1001
+        map.get(key).redoWrite(OpType.Put, new SRD(1003L, 1, false), path);
+        execution.add(new Op(1003L, OpType.Put));
+        map.get(key).endRedoOp(OpType.Put, new SRD(1003L, 1, false), path);
+
+        check();
+
+    }
+
+    @Test
+    public void simulationRead() {
+        map.trackReadAccess(key, new SRD(1000L, 0, false), path);
+        expected.add(new Op(1000L, OpType.Get));
+        map.endReadAccess(key);
+
+        map.trackReadAccess(key, new SRD(1001L, 0, false), path);
+        expected.add(new Op(1001L, OpType.Get));
+        map.endReadAccess(key);
+
+        map.trackReadAccess(key, new SRD(1002L, 0, false), path);
+        expected.add(new Op(1002L, OpType.Get));
+        map.endReadAccess(key);
+
+        map.trackWriteAccess(key, OpType.Put, new SRD(1003L, 0, false), path);
+        expected.add(new Op(1003L, OpType.Put));
+        map.endWriteAccess(key);
+
+        // ///////////// redo ///////////////////////
+
+        delayedOp = new Op(1003, OpType.Put);
+        this.start();
+
+        map.get(key).redoRead(new SRD(1000L, 1, false), path);
+        execution.add(new Op(1000L, OpType.Get));
+        map.get(key).endRedoOp(OpType.Get, new SRD(1000L, 1, false), path);
+
+        map.get(key).redoRead(new SRD(1002L, 1, false), path);
+        execution.add(new Op(1002L, OpType.Get));
+        map.get(key).endRedoOp(OpType.Get, new SRD(1002L, 1, false), path);
+
+        try {
+            sleep(500);
+        } catch(InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        map.get(key).redoRead(new SRD(1001L, 1, false), path);
+        execution.add(new Op(1001L, OpType.Get));
+        map.get(key).endRedoOp(OpType.Get, new SRD(1001L, 1, false), path);
+
+        // wait 1003 to exec
+        try {
+            sleep(500);
+        } catch(InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        check();
+    }
 
     @Test
     public void problemSimulation() {

@@ -48,11 +48,12 @@ public class CommitTesting {
      */
     @Test
     public void testSnap() {
-
+        int COMMIT_ID = 200;
         DBProxy stub = new DBProxy(true);
-        stub.scheduleNewCommit(200);// schedule a commit
+        stub.scheduleNewCommit(COMMIT_ID);// schedule a commit
 
         // write before commit
+        k1 = new ByteArray("key1".getBytes());
         stub.putStart(k1, new SRD(100, branch, contained));
         assertEquals(init_commit, stub.getKeyCommit(k1));
         stub.putEnd(k1, new SRD(100, branch, contained));
@@ -60,8 +61,8 @@ public class CommitTesting {
         // Write after commit (Access new version)
         k1 = new ByteArray("key1".getBytes());
         stub.putStart(k1, new SRD(300, branch, contained));
-        assertEquals(200, stub.getKeyCommit(k1));
-        stub.putEnd(k1, new SRD(200, branch, contained));
+        assertEquals(COMMIT_ID, stub.getKeyCommit(k1));
+        stub.putEnd(k1, new SRD(300, branch, contained));
 
         // read old version
         k1 = new ByteArray("key1".getBytes());
@@ -72,7 +73,7 @@ public class CommitTesting {
         // read new version
         k1 = new ByteArray("key1".getBytes());
         stub.getStart(k1, new SRD(301, branch, contained));
-        assertEquals(200, stub.getKeyCommit(k1));
+        assertEquals(COMMIT_ID, stub.getKeyCommit(k1));
         stub.getEnd(k1, new SRD(301, branch, contained));
 
         // Test overwrites
@@ -84,7 +85,7 @@ public class CommitTesting {
         // Write after commit (Access new version)
         k1 = new ByteArray("key1".getBytes());
         stub.putStart(k1, new SRD(302, branch, contained));
-        assertEquals(200, stub.getKeyCommit(k1));
+        assertEquals(COMMIT_ID, stub.getKeyCommit(k1));
         stub.putEnd(k1, new SRD(302, branch, contained));
 
         // read old version
@@ -96,7 +97,7 @@ public class CommitTesting {
         // read new version
         k1 = new ByteArray("key1".getBytes());
         stub.getStart(k1, new SRD(303, branch, contained));
-        assertEquals(200, stub.getKeyCommit(k1));
+        assertEquals(COMMIT_ID, stub.getKeyCommit(k1));
         stub.getEnd(k1, new SRD(303, branch, contained));
     }
 

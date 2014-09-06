@@ -22,7 +22,6 @@ import voldemort.undoTracker.branching.BranchPath;
 import voldemort.undoTracker.map.Op.OpType;
 import voldemort.utils.ByteArray;
 
-import com.google.common.collect.HashMultimap;
 import com.google.protobuf.ByteString;
 
 /**
@@ -41,7 +40,9 @@ public class OpMultimap implements Serializable {
      * Each entry of this map represents the metadata of a data entry of
      * voldemort
      */
-    private ConcurrentHashMap<ByteArray, OpMultimapEntry> map = new ConcurrentHashMap<ByteArray, OpMultimapEntry>();
+    private ConcurrentHashMap<ByteArray, OpMultimapEntry> map = new ConcurrentHashMap<ByteArray, OpMultimapEntry>(2000,
+                                                                                                                  (float) 0.75,
+                                                                                                                  25);
 
     // //////////// Access Control ////////
     /**
@@ -135,7 +136,7 @@ public class OpMultimap implements Serializable {
         OpMultimapEntry entry = map.get(key);
         if(entry == null) {
             entry = map.putIfAbsent(key, new OpMultimapEntry(key));
-            System.out.println("Creating new entry");
+            log.debug("Creating new entry");
             if(entry == null) {
                 entry = map.get(key);
             }
@@ -170,20 +171,18 @@ public class OpMultimap implements Serializable {
     /**
      * Extracts the dependencies of each entry
      * 
-     * @param dependencyPerRid
+     * @param dependenciesPerRid
      * @return
      */
-    public boolean updateDependencies(HashMultimap<Long, Long> dependencyPerRid) {
+    public boolean updateDependencies(UpdateDependenciesMap dependenciesPerRid) {
         int newDeps = 0;
         int verified = 0;
         Enumeration<ByteArray> keySet = getKeySet();
         while(keySet.hasMoreElements()) {
             ByteArray key = keySet.nextElement();
             OpMultimapEntry entry = map.get(key);
-
-            assert (entry != null);
             try {
-                newDeps += entry.updateDependencies(dependencyPerRid);
+                newDeps += entry.updateDependencies(dependenciesPerRid);
             } catch(Exception e) {
                 log.error(DBProxy.hexStringToAscii(key), e);
             }

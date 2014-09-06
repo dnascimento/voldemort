@@ -125,6 +125,7 @@ public class ServiceDBNode extends Thread {
 
         if(cmd.getPathBranchCount() != 0 && cmd.getPathCommitCount() != 0) {
             // Retrieve 2 sorted list from most recent to oldest
+            // Message sent before start the replay
             Iterator<Long> itCommits = cmd.getPathCommitList().iterator();
             Iterator<Integer> itBranches = cmd.getPathBranchList().iterator();
             HashSet<StsBranchPair> path = new HashSet<StsBranchPair>();

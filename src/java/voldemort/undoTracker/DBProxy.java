@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
@@ -63,6 +65,9 @@ public class DBProxy {
     OpMultimap keyAccessLists;
     RestrainScheduler restrainScheduler;
 
+    private ByteBuffer keyModifier = ByteBuffer.allocateDirect(40);
+    private boolean debugging;
+
     public DBProxy() {
         this(loadKeyAccessList(LOAD_FROM_FILE), false);
     }
@@ -78,6 +83,9 @@ public class DBProxy {
      */
     private DBProxy(OpMultimap keyAccessLists, boolean testing) {
         DOMConfigurator.configure("log4j.xml");
+        LogManager.getRootLogger().setLevel(Level.ERROR);
+        debugging = log.isInfoEnabled();
+
         Runtime.getRuntime().addShutdownHook(new SaveKeyAccess(keyAccessLists));
 
         log.info("New DBUndo stub");
@@ -86,46 +94,58 @@ public class DBProxy {
         redoScheduler = new RedoScheduler(keyAccessLists);
         newRequestsScheduler = new CommitScheduler(keyAccessLists);
         restrainScheduler = new RestrainScheduler(keyAccessLists, restrainLocker);
-        if(!testing) {
-            new InvertDependencies(keyAccessLists).start();
-            try {
-                new ServiceDBNode(this).start();
-            } catch(IOException e) {
-                log.error("DBUndoStub", e);
-            }
+        try {
+            new SendDependencies(keyAccessLists, testing).start();
+        } catch(IOException e1) {
+            log.warn("Manager is off");
+        }
+        try {
+            new ServiceDBNode(this).start();
+        } catch(IOException e) {
+            log.error("DBUndoStub", e);
         }
     }
 
     private void opStart(OpType op, ByteArray key, SRD srd) {
         if(srd.rid == 0) {
-            log.info(op + " " + hexStringToAscii(key) + " with srd: " + srd);
+            if(debugging) {
+                log.info(op + " " + hexStringToAscii(key) + " with srd: " + srd);
+            }
             return;
         }
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = null;
+        if(debugging) {
+            sb = new StringBuilder();
+        }
         Path p = brancher.getPath(srd.branch);
         BranchPath path = p.path;
         StsBranchPair access;
         if(p.isRedo) {
             // use redo branch
-            sb.append(" -> REDO: ");
-            log.info("Redo Start: " + op + " " + hexStringToAscii(key) + " " + srd);
+            if(debugging) {
+                sb.append(" -> REDO: ");
+                log.info("Redo Start: " + op + " " + hexStringToAscii(key) + " " + srd);
+            }
             access = redoScheduler.opStart(op, key.clone(), srd, path);
         } else {
             if(srd.restrain) {
-                sb.append(" -> RESTRAIN: ");
                 // new request but may need to wait to avoid dirty reads
                 restrainScheduler.opStart(op, key.clone(), srd, path);
                 path = brancher.getCurrent();
                 srd.branch = path.current.branch; // update the branch
-                sb.append(" -> AFTER RESTRAIN: ");
+                if(debugging) {
+                    sb.append(" -> AFTER RESTRAIN: ");
+                }
             }
-            sb.append(" -> DO: ");
+            if(log.isInfoEnabled()) {
+                sb.append(" -> DO: ");
+            }
             // Read old/common branch, may create a new commit - for new
             // requests
             access = newRequestsScheduler.opStart(op, key.clone(), srd, path);
         }
         modifyKey(key, access.branch, access.sts);
-        if(log.isInfoEnabled()) {
+        if(debugging) {
             sb.append(srd.rid);
             sb.append(" : ");
             sb.append(op);
@@ -144,8 +164,8 @@ public class DBProxy {
             Path p = brancher.getPath(srd.branch);
             BranchPath path = p.path;
             removeKeyVersion(key);
-            Boolean isRedo = brancher.isRedo(srd.branch);
-            if(isRedo) {
+            // TODO: need to clone the key?!
+            if(p.isRedo) {
                 if(srd.restrain) {
                     restrainScheduler.opEnd(op, key.clone(), srd, path);
                     newRequestsScheduler.opEnd(op, key.clone(), srd, path);
@@ -171,8 +191,7 @@ public class DBProxy {
         HashMap<ByteArray, Boolean> result = new HashMap<ByteArray, Boolean>();
         Path p = brancher.getPath(srd.branch);
 
-        Boolean isRedo = brancher.isRedo(srd.branch);
-        if(isRedo) {
+        if(p.isRedo) {
             for(ByteArray key: keys) {
                 boolean status = redoScheduler.ignore(key.clone(), srd, p.path);
                 result.put(key, status);
@@ -184,16 +203,17 @@ public class DBProxy {
             }
             throw new VoldemortException("Unlocking in the wrong branch");
         }
-        StringBuilder sb = new StringBuilder();
-        sb.append("Unlocked: ");
-        for(ByteArray key: keys) {
-            sb.append(hexStringToAscii(key));
-            sb.append(" : ");
+        if(debugging) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Unlocked: ");
+            for(ByteArray key: keys) {
+                sb.append(hexStringToAscii(key));
+                sb.append(" : ");
+            }
+            sb.append("by request: ");
+            sb.append(srd.rid);
+            log.info(sb.toString());
         }
-        sb.append("by request: ");
-        sb.append(srd.rid);
-        log.info(sb.toString());
-
         return result;
     }
 
@@ -208,6 +228,11 @@ public class DBProxy {
         brancher.newCommit(newRid);
     }
 
+    /**
+     * Invoked by the manager before starting the replay
+     * 
+     * @param redoPath
+     */
     public void newRedo(BranchPath redoPath) {
         log.info("New redo with path: " + redoPath);
         brancher.newRedo(redoPath);
@@ -247,13 +272,26 @@ public class DBProxy {
      * @param sts
      * @param branch
      */
-    public ByteArray modifyKey(ByteArray key, short branch, long commit) {
-        byte[] version = ByteBuffer.allocate(key.length() + 10)
-                                   .put(key.get(), 0, key.length())
-                                   .putShort(branch)
-                                   .putLong(commit)
-                                   .array();
-        key.set(version);
+    public static ByteArray modifyKey(ByteArray key, short branch, long commit) {
+        byte[] oldKey = key.get();
+        byte[] newKey = new byte[oldKey.length + 10];
+        int i = 0;
+        for(i = 0; i < oldKey.length; i++) {
+            newKey[i] = oldKey[i];
+        }
+
+        newKey[i++] = (byte) (branch >> 8);
+        newKey[i++] = (byte) (branch);
+
+        newKey[i++] = (byte) (commit >> 56);
+        newKey[i++] = (byte) (commit >> 48);
+        newKey[i++] = (byte) (commit >> 40);
+        newKey[i++] = (byte) (commit >> 32);
+        newKey[i++] = (byte) (commit >> 24);
+        newKey[i++] = (byte) (commit >> 16);
+        newKey[i++] = (byte) (commit >> 8);
+        newKey[i++] = (byte) (commit);
+        key.set(newKey);
         return key;
     }
 
@@ -269,7 +307,6 @@ public class DBProxy {
 
     public void removeKeyVersion(ByteArray key) {
         byte[] kb = key.get();
-        assert (kb.length > 10);
 
         byte[] longBytes = Arrays.copyOfRange(kb, 0, kb.length - 10);
         key.set(longBytes);

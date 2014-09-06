@@ -21,8 +21,6 @@ import voldemort.undoTracker.map.Op.OpType;
 import voldemort.undoTracker.map.commits.CommitList;
 import voldemort.utils.ByteArray;
 
-import com.google.common.collect.HashMultimap;
-
 /**
  * 
  * @author darionascimento
@@ -31,13 +29,14 @@ import com.google.common.collect.HashMultimap;
 public class OpMultimapEntry implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    public static final int INIT_ARRAY_SIZE = 16;
 
     private transient static final Logger log = Logger.getLogger(OpMultimap.class.getName());
+    boolean debugging = log.isInfoEnabled();
 
     /**
      * Avoid re-size version array, average number of version per key
      */
-    public final int INIT_ARRAY_SIZE = 16;
 
     /**
      * Entry RWLock: not related with list access. It is the value/database
@@ -126,33 +125,33 @@ public class OpMultimapEntry implements Serializable {
     /**
      * Extract the set of new operations performed in this entry
      * 
-     * @param dependencyMap dependency between request ids
+     * @param dependenciesCollector dependency between request ids
      * @return the number of new operations
      * @throws Exception
      */
-    public synchronized int updateDependencies(HashMultimap<Long, Long> dependencyMap) {
+    public synchronized int updateDependencies(UpdateDependenciesMap dependenciesCollector) {
         int lastSentDependency = sentDependency;
 
         // if empty list or updated, return
         if(sentDependency == (list.size() - 1) || list.size() == 0) {
             return 0;
         }
-        long lastWrite = -1;
+        Op lastWrite = null;
 
         // get last write
         for(int i = sentDependency; i >= 0; i--) {
             if(list.get(i).type != OpType.Get) {
-                lastWrite = list.get(i).rid;
+                lastWrite = list.get(i);
                 break;
             }
         }
 
-        if(lastWrite == -1) {
+        if(lastWrite == null) {
             // the first elements of list are get ops, which tried to get the
             // entry before it exists
             while(sentDependency < list.size()) {
                 if(list.get(sentDependency).type != OpType.Get) {
-                    lastWrite = list.get(sentDependency).rid;
+                    lastWrite = list.get(sentDependency);
                     break;
                 } else {
                     sentDependency++;
@@ -160,21 +159,21 @@ public class OpMultimapEntry implements Serializable {
             }
         }
 
-        if(lastWrite == -1) {
+        if(lastWrite == null) {
             // no write operations yet
             sentDependency = Math.max(sentDependency - 1, 0);
             return 0;
         }
 
         // update new dependencies
+        int remaining = list.size() - (sentDependency + 1);
+        dependenciesCollector.prepareNewBatch(remaining, lastWrite);
+
         for(int i = sentDependency + 1; i < list.size(); i++) {
             Op op = list.get(i);
-            if(op.type == Op.OpType.Get) {
-                dependencyMap.put(op.rid, lastWrite);
-            } else {
-                lastWrite = op.rid;
-            }
+            dependenciesCollector.putNew(op);
         }
+
         sentDependency = list.size() - 1;
         return lastSentDependency - sentDependency;
     }
@@ -294,16 +293,21 @@ public class OpMultimapEntry implements Serializable {
         log.info("isNextOp " + srd.rid);
         RedoIterator it = getOrNewRedoIterator(srd.branch, baseCommit);
         while(!it.operationIsAllowed(op)) {
-            log.info("Operation locked " + srd.rid + " on key: " + DBProxy.hexStringToAscii(key));
-            log.info(it.toString());
+            if(debugging) {
+                log.info("Operation locked " + srd.rid + " on key: "
+                         + DBProxy.hexStringToAscii(key));
+                log.info(it.toString());
+            }
             try {
                 this.wait();
             } catch(InterruptedException e) {
                 log.error(e);
             }
-            log.info("Trying to be unlocked " + srd.rid);
+
+            // Trying to be unlocked: srd.rid
+
         }
-        log.info("free to go: " + srd.rid);
+        // free to go srd.rid
 
     }
 
@@ -314,10 +318,12 @@ public class OpMultimapEntry implements Serializable {
      */
     public synchronized void endRedoOp(OpType type, SRD srd, BranchPath path) {
         RedoIterator it = getOrNewRedoIterator(srd.branch, path.current.sts);
-        log.info("Op end: " + type + " " + srd.rid);
         Op op = new Op(srd.rid, type);
+        // log.info("Op end: " + type + " " + srd.rid);
+
         if(it.endOp(op)) {
-            log.info("Waking the threads of key: " + DBProxy.hexStringToAscii(key));
+            // log.info("Waking the threads of key: " +
+            // DBProxy.hexStringToAscii(key));
             this.notifyAll();
         }
     }
@@ -331,7 +337,8 @@ public class OpMultimapEntry implements Serializable {
     public synchronized boolean ignore(SRD srd, BranchPath path) {
         RedoIterator it = getOrNewRedoIterator(srd.branch, path.current.sts);
         if(it.ignore(srd.rid)) {
-            log.info("Waking the threads on key: " + DBProxy.hexStringToAscii(key));
+            // log.info("Waking the threads on key: " +
+            // DBProxy.hexStringToAscii(key));
             this.notifyAll();
         }
         return true;
@@ -398,7 +405,6 @@ public class OpMultimapEntry implements Serializable {
     public synchronized int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + INIT_ARRAY_SIZE;
         result = prime * result + ((commitList == null) ? 0 : commitList.hashCode());
         result = prime * result + ((list == null) ? 0 : list.hashCode());
         result = prime * result + sentDependency;
@@ -414,8 +420,6 @@ public class OpMultimapEntry implements Serializable {
         if(getClass() != obj.getClass())
             return false;
         OpMultimapEntry other = (OpMultimapEntry) obj;
-        if(INIT_ARRAY_SIZE != other.INIT_ARRAY_SIZE)
-            return false;
         if(commitList == null) {
             if(other.commitList != null)
                 return false;

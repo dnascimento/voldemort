@@ -54,30 +54,35 @@ public class BranchController {
                  + " based on commit: " + current.current.sts);
     }
 
+    /**
+     * Invoked by the manager before starting the recovery process
+     * 
+     * @param redoPath
+     */
     public synchronized void newRedo(BranchPath redoPath) {
         redo = redoPath;
     }
 
+    /**
+     * Get the path for this branch
+     * 
+     * @param the branch used by the request
+     * @return the path of this branch and if is replay or not
+     */
     public synchronized Path getPath(short branch) {
         if(current.current.branch == branch) {
             return new Path(current, false);
-        } else {
+        }
+
+        if(redo != null && redo.current.branch == branch) {
             return new Path(redo, true);
         }
-    }
-
-    public Boolean isRedo(short branch) {
-        if(current.current.branch == branch) {
-            return false;
-        }
-        if(redo != null && redo.current.branch == branch)
-            return true;
 
         log.error("isRedo: branch not present: " + branch);
         throw new VoldemortException("isRedo: branch not present: " + branch);
     }
 
-    public void reset() {
+    public synchronized void reset() {
         StsBranchPair baseBranch = new StsBranchPair(INIT_COMMIT, INIT_BRANCH);
         current = new BranchPath(baseBranch, baseBranch);
         redo = null;

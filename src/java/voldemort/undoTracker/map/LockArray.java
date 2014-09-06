@@ -9,7 +9,6 @@ package voldemort.undoTracker.map;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.Logger;
 
 public class LockArray<K> {
 

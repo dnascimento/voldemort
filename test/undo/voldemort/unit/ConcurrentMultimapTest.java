@@ -10,9 +10,8 @@ import voldemort.undoTracker.DBProxy;
 import voldemort.undoTracker.map.Op;
 import voldemort.undoTracker.map.Op.OpType;
 import voldemort.undoTracker.map.OpMultimap;
+import voldemort.undoTracker.map.UpdateDependenciesMap;
 import voldemort.utils.ByteArray;
-
-import com.google.common.collect.HashMultimap;
 
 /**
  * Test concurrent multimap test
@@ -22,7 +21,7 @@ import com.google.common.collect.HashMultimap;
  */
 public class ConcurrentMultimapTest {
 
-    private static HashMultimap<Long, Long> dependencyPerRid = HashMultimap.create();
+    private static UpdateDependenciesMap dependencyPerRid = new UpdateDependenciesMap();
 
     class TestThread extends Thread {
 
@@ -57,9 +56,9 @@ public class ConcurrentMultimapTest {
 
     @Test
     public void testMap() throws InterruptedException {
-        int N_THREADS = 100;
+        int N_THREADS = 10;
         long MILLION = 1000000L;
-        long N_OPS = 400;
+        long N_OPS = 40;
         long N_EXTRACT = 1;
         int KEY_SPACE = 200;
         OpMultimap map = new OpMultimap();
@@ -81,17 +80,9 @@ public class ConcurrentMultimapTest {
         for(int i = 0; i < N_THREADS; i++) {
             threads[i].join();
         }
-        long c = count();
+        long c = dependencyPerRid.count();
         System.out.println(c);
         assertEquals(N_OPS * N_THREADS, c);
-    }
-
-    private long count() {
-        long counter = 0L;
-        for(Long key: dependencyPerRid.keySet()) {
-            counter += dependencyPerRid.get(key).size();
-        }
-        return counter;
     }
 
     @Test

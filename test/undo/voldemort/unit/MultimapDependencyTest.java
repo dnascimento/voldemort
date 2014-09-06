@@ -2,14 +2,16 @@ package voldemort.unit;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
+
 import org.junit.Test;
 
 import voldemort.undoTracker.map.Op;
 import voldemort.undoTracker.map.Op.OpType;
 import voldemort.undoTracker.map.OpMultimap;
+import voldemort.undoTracker.map.UpdateDependenciesMap;
+import voldemort.undoTracker.map.UpdateDependenciesMap.WrapperLong;
 import voldemort.utils.ByteArray;
-
-import com.google.common.collect.HashMultimap;
 
 public class MultimapDependencyTest {
 
@@ -30,14 +32,15 @@ public class MultimapDependencyTest {
         map.put(k1, new Op(6, OpType.Put));
         map.put(k1, new Op(7, OpType.Get));
 
-        HashMultimap<Long, Long> d = HashMultimap.create();
+        UpdateDependenciesMap d = new UpdateDependenciesMap();
         map.updateDependencies(d);
-        System.out.println(d);
+        HashMap<Long, WrapperLong> table = d.createDependencyMap();
+        System.out.println(table);
 
-        assertTrue(d.get(7L).contains(6L) && d.get(7L).size() == 1);
-        assertTrue(d.get(5L).contains(4L) && d.get(5L).size() == 1);
-        assertTrue(d.get(3L).contains(1L) && d.get(3L).size() == 1);
-        assertTrue(d.get(2L).contains(1L) && d.get(2L).size() == 1);
+        assertTrue(contains(table.get(7L), 6L) && checkLength(table.get(7L), 1));
+        assertTrue(contains(table.get(5L), 4L) && checkLength(table.get(5L), 1));
+        assertTrue(contains(table.get(3L), 1L) && checkLength(table.get(3L), 1));
+        assertTrue(contains(table.get(2L), 1L) && checkLength(table.get(2L), 1));
 
         // Add more and test again
         map.put(k1, new Op(8, OpType.Put));
@@ -48,18 +51,33 @@ public class MultimapDependencyTest {
         map.put(k1, new Op(13, OpType.Put));
         map.put(k1, new Op(14, OpType.Get));
 
+        d = new UpdateDependenciesMap();
         map.updateDependencies(d);
-        System.out.println(d);
+        table = d.createDependencyMap();
+        System.out.println(table);
 
-        assertTrue(d.get(7L).contains(6L) && d.get(7L).size() == 1);
-        assertTrue(d.get(5L).contains(4L) && d.get(5L).size() == 1);
-        assertTrue(d.get(3L).contains(1L) && d.get(3L).size() == 1);
-        assertTrue(d.get(2L).contains(1L) && d.get(2L).size() == 1);
+        assertTrue(contains(table.get(14L), 13L) && checkLength(table.get(14L), 1));
+        assertTrue(contains(table.get(12L), 11L) && checkLength(table.get(12L), 1));
+        assertTrue(contains(table.get(10L), 8L) && checkLength(table.get(10L), 1));
+        assertTrue(contains(table.get(9L), 8L) && checkLength(table.get(9L), 1));
+    }
 
-        assertTrue(d.get(14L).contains(13L) && d.get(7L).size() == 1);
-        assertTrue(d.get(12L).contains(11L) && d.get(5L).size() == 1);
-        assertTrue(d.get(10L).contains(8L) && d.get(3L).size() == 1);
-        assertTrue(d.get(9L).contains(8L) && d.get(2L).size() == 1);
+    private boolean contains(WrapperLong wrapper, long goal) {
+        long[] array = wrapper.array;
+        for(int i = 0; i < array.length; i++) {
+            if(array[i] == goal)
+                return true;
+        }
+        return false;
+    }
+
+    private boolean checkLength(WrapperLong wrapper, int length) {
+        int count = 0;
+        while(wrapper.hasNext()) {
+            wrapper.next();
+            count++;
+        }
+        return count == length;
 
     }
 }

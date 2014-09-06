@@ -41,6 +41,13 @@ public class CommitList implements Serializable {
      * @return season timestamp of latest version which value is lower than sts
      */
     public StsBranchPair getBiggestSmallerCommit(BranchPath c, long commit) {
+        // try to access the latest first
+        StsBranchPair last = list.getLast();
+        if(c.path.contains(last) && last.sts < commit) {
+            return last;
+        }
+
+        // cache miss
         Iterator<StsBranchPair> i = list.descendingIterator();
         while(i.hasNext()) {
             StsBranchPair e = i.next();
@@ -62,6 +69,13 @@ public class CommitList implements Serializable {
      * @return
      */
     public StsBranchPair getLatest(BranchPath path) {
+        // try to access the latest first
+        StsBranchPair last = list.getLast();
+        if(path.path.contains(last)) {
+            return last;
+        }
+
+        // cache miss: search
         Iterator<StsBranchPair> i = list.descendingIterator();
         while(i.hasNext()) {
             StsBranchPair e = i.next();
