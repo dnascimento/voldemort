@@ -21,7 +21,7 @@ public class CommitTesting {
      */
     @Test
     public void testCommitRead() {
-        DBProxy stub = new DBProxy(true);
+        DBProxy stub = new DBProxy();
         stub.putStart(k1, new SRD(1, branch, contained));
         assertEquals(init_commit, stub.getKeyCommit(k1));
         stub.putEnd(k1, new SRD(1, branch, contained));
@@ -49,7 +49,7 @@ public class CommitTesting {
     @Test
     public void testSnap() {
         int COMMIT_ID = 200;
-        DBProxy stub = new DBProxy(true);
+        DBProxy stub = new DBProxy();
         stub.scheduleNewCommit(COMMIT_ID);// schedule a commit
 
         // write before commit

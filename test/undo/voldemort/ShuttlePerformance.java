@@ -9,7 +9,7 @@ import voldemort.utils.ByteArray;
 
 public class ShuttlePerformance {
 
-    static DBProxy proxy = new DBProxy(true);
+    static DBProxy proxy = new DBProxy();
     static int KEY_RANGE = 2000;
     static int TOTAL_REQUESTS = 20000000;
     static short BRANCH = BranchController.INIT_BRANCH;

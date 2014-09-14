@@ -78,7 +78,7 @@ public class BranchController {
             return new Path(redo, true);
         }
 
-        log.error("isRedo: branch not present: " + branch);
+        log.error("getPath: branch not present: " + branch);
         throw new VoldemortException("isRedo: branch not present: " + branch);
     }
 

@@ -9,9 +9,9 @@ package voldemort.undoTracker;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.List;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import undo.proto.ToManagerProto;
@@ -24,26 +24,15 @@ import com.google.common.collect.LinkedListMultimap;
 
 public class SendDependencies extends Thread {
 
-    private static final int CONNECT_RETRIES = 2;
-
     private final Logger log = Logger.getLogger(SendDependencies.class.getName());
 
     private OpMultimap trackLocalAccess;
-    private long REFRESH_PERIOD = 2000;
+    private long REFRESH_PERIOD = 10000;
     Socket socket = new Socket();
 
-    public SendDependencies(OpMultimap trackLocalAccess, boolean testing) throws IOException {
+    public SendDependencies(OpMultimap trackLocalAccess) {
+        log.setLevel(Level.ALL);
         this.trackLocalAccess = trackLocalAccess;
-        if(testing) {
-            socket = null;
-        } else {
-            connect();
-        }
-    }
-
-    private void connect() throws IOException {
-        socket = new Socket();
-        socket.connect(DBProxy.MANAGER_ADDRESS);
     }
 
     @Override
@@ -85,7 +74,7 @@ public class SendDependencies extends Thread {
      * 
      * @throws IOException
      */
-    private void send(TrackMsg list) throws IOException {
+    private void send(TrackMsg list) {
         if(list.getEntryCount() == 0) {
             return;
         }
@@ -95,19 +84,13 @@ public class SendDependencies extends Thread {
             return;
         }
 
-        boolean sent = false;
-        for(int i = 0; i < CONNECT_RETRIES; i++) {
-            try {
-                msg.writeDelimitedTo(socket.getOutputStream());
-                sent = true;
-                break;
-            } catch(SocketException e) {
-                log.error(e);
-                connect();
-            }
-        }
-        if(!sent) {
-            log.error("Manager is off");
+        socket = new Socket();
+        try {
+            socket.connect(DBProxy.MANAGER_ADDRESS);
+            msg.writeDelimitedTo(socket.getOutputStream());
+            socket.close();
+        } catch(IOException e) {
+            log.error(e);
         }
     }
 

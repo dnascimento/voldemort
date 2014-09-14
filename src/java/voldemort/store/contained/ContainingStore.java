@@ -15,7 +15,6 @@ import voldemort.store.Store;
 import voldemort.store.StoreCapabilityType;
 import voldemort.store.StoreUtils;
 import voldemort.undoTracker.SRD;
-import voldemort.undoTracker.clientSide.ClientSideTracker;
 import voldemort.utils.ByteArray;
 import voldemort.utils.Pair;
 import voldemort.utils.Utils;
@@ -38,8 +37,6 @@ import com.google.common.collect.Maps;
  * @param <T> The type of transform
  */
 public class ContainingStore extends AbstractStore<ByteArray, byte[], byte[]> {
-
-    private ClientSideTracker tracker = new ClientSideTracker();
 
     private final Store<ByteArray, byte[], byte[]> store;
     private final Serializer<byte[]> keySerializer;
@@ -76,10 +73,6 @@ public class ContainingStore extends AbstractStore<ByteArray, byte[], byte[]> {
         List<Versioned<byte[]>> results = new ArrayList<Versioned<byte[]>>(found.size());
         for(Versioned<byte[]> versioned: found) {
             Pair<SRD, byte[]> pair = valueSerializer.unpack(versioned.getValue());
-            // Here I track the request
-            if(pair.getFirst() != null) {
-                tracker.trackGet(srd, pair.getFirst());
-            }
             results.add(new Versioned<byte[]>(pair.getSecond(), versioned.getVersion()));
         }
         return results;

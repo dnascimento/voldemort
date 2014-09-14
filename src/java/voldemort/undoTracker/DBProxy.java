@@ -65,15 +65,10 @@ public class DBProxy {
     OpMultimap keyAccessLists;
     RestrainScheduler restrainScheduler;
 
-    private ByteBuffer keyModifier = ByteBuffer.allocateDirect(40);
     private boolean debugging;
 
     public DBProxy() {
-        this(loadKeyAccessList(LOAD_FROM_FILE), false);
-    }
-
-    public DBProxy(boolean testing) {
-        this(new OpMultimap(), testing);
+        this(loadKeyAccessList(LOAD_FROM_FILE));
     }
 
     /**
@@ -81,9 +76,9 @@ public class DBProxy {
      * 
      * @throws IOException
      */
-    private DBProxy(OpMultimap keyAccessLists, boolean testing) {
+    private DBProxy(OpMultimap keyAccessLists) {
         DOMConfigurator.configure("log4j.xml");
-        LogManager.getRootLogger().setLevel(Level.ERROR);
+        LogManager.getRootLogger().setLevel(Level.ALL);
         debugging = log.isInfoEnabled();
 
         Runtime.getRuntime().addShutdownHook(new SaveKeyAccess(keyAccessLists));
@@ -94,11 +89,8 @@ public class DBProxy {
         redoScheduler = new RedoScheduler(keyAccessLists);
         newRequestsScheduler = new CommitScheduler(keyAccessLists);
         restrainScheduler = new RestrainScheduler(keyAccessLists, restrainLocker);
-        try {
-            new SendDependencies(keyAccessLists, testing).start();
-        } catch(IOException e1) {
-            log.warn("Manager is off");
-        }
+
+        new SendDependencies(keyAccessLists).start();
         try {
             new ServiceDBNode(this).start();
         } catch(IOException e) {

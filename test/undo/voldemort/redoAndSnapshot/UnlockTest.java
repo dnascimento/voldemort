@@ -40,7 +40,7 @@ public class UnlockTest {
         currentCommit = BranchController.INIT_COMMIT;
         branch = BranchController.INIT_BRANCH;
         contained = false;
-        stub = new DBProxy(true);
+        stub = new DBProxy();
 
         tList = new ArrayList<Thread>();
         tList.add(new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(1, branch, contained)));

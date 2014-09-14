@@ -75,7 +75,7 @@ public class RedoTest {
     public void redoIsolated() throws InterruptedException {
         System.out.println("----- Start test: Redo Isolated -------");
 
-        stub = new DBProxy(true);
+        stub = new DBProxy();
 
         execOperations(false);
         // the database is populated and stub has the operation ordering
@@ -110,7 +110,7 @@ public class RedoTest {
     public void restrain() throws InterruptedException {
         System.out.println("----- Start test: Restrain -------");
 
-        stub = new DBProxy(true);
+        stub = new DBProxy();
         BranchPath redoPath = new BranchPath(new StsBranchPair(0L, 1),
                                              new StsBranchPair(0L, 0),
                                              new StsBranchPair(0L, 1));
