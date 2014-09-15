@@ -6,7 +6,7 @@
                 <http-port>8081</http-port>
                 <socket-port>6666</socket-port>
                 <admin-port>6667</admin-port>
-                <partitions>0</partitions>
+                <partitions>0, 1</partitions>
         </server>
 </cluster>
 

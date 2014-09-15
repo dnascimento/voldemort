@@ -78,7 +78,7 @@ public class DBProxy {
      */
     private DBProxy(OpMultimap keyAccessLists) {
         DOMConfigurator.configure("log4j.xml");
-        LogManager.getRootLogger().setLevel(Level.ALL);
+        LogManager.getRootLogger().setLevel(Level.ERROR);
         debugging = log.isInfoEnabled();
 
         Runtime.getRuntime().addShutdownHook(new SaveKeyAccess(keyAccessLists));
