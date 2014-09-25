@@ -111,7 +111,7 @@ public class UpdateDependenciesMap {
                 if(op.rid == 69L) {
                     continue;
                 }
-                if(op.type == Op.OpType.Get) {
+                if(op.isGet()) {
                     WrapperLong list = map.get(op.rid);
                     if(list == null) {
                         long[] dependencies = new long[AVG_NUMBER_DEPENDENCIES];

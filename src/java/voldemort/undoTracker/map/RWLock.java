@@ -13,7 +13,6 @@ import java.util.LinkedList;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.Logger;
 
 /**
  * Read/Write lock ordered by arrival time.
@@ -27,8 +26,6 @@ public class RWLock {
         READ,
         WRITE;
     }
-
-    // TODO lock access politic may cause issues
 
     private Object readsWaiter = new Object();
     private Object writesWaiter = new Object();
@@ -206,8 +203,7 @@ public class RWLock {
         return count != 0;
     }
 
-    @SuppressWarnings("unused")
-    private void printQueue() {
+    public void printQueue() {
         for(LockOp o: opsQueue) {
             System.out.print(o);
             System.out.print(" : ");

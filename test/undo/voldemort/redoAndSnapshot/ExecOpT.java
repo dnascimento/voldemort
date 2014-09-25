@@ -53,11 +53,10 @@ public class ExecOpT extends Thread {
             SRD srd = ruds[i];
             Op op = it.next();
             try {
-                switch(op.type) {
+                switch(op.toType()) {
                     case Delete:
                         System.out.println("Try Delete: " + op.rid);
                         scheduler.deleteStart(key, new SRD(op.rid, srd.branch, srd.restrain));
-                        db.put(key.clone(), op);
                         System.out.println("Deleting...: " + op.rid);
                         sleep(1000);
                         scheduler.deleteEnd(key, new SRD(op.rid, srd.branch, srd.restrain));
@@ -66,7 +65,6 @@ public class ExecOpT extends Thread {
                     case Put:
                         System.out.println("Try put: " + op.rid);
                         scheduler.putStart(key, new SRD(op.rid, srd.branch, srd.restrain));
-                        db.put(key.clone(), op);
                         System.out.println("Putting...: " + op.rid);
                         sleep(1000);
                         scheduler.putEnd(key, new SRD(op.rid, srd.branch, srd.restrain));
@@ -75,7 +73,6 @@ public class ExecOpT extends Thread {
                     case Get:
                         System.out.println("Try get: " + op.rid);
                         scheduler.getStart(key, new SRD(op.rid, srd.branch, srd.restrain));
-                        db.put(key.clone(), op);
                         System.out.println("getting...: " + op.rid);
                         sleep(1000);
                         scheduler.getEnd(key, new SRD(op.rid, srd.branch, srd.restrain));
@@ -84,7 +81,6 @@ public class ExecOpT extends Thread {
                     case GetVersion:
                         System.out.println("Try get version: " + op.rid);
                         scheduler.getVersion(key, new SRD(op.rid, srd.branch, srd.restrain));
-                        db.put(key.clone(), op);
                         System.out.println("got...: " + op.rid);
                         sleep(1000);
                         scheduler.getEnd(key, new SRD(op.rid, srd.branch, srd.restrain));

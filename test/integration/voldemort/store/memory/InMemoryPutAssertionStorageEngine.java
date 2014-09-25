@@ -38,8 +38,14 @@ public class InMemoryPutAssertionStorageEngine<K, V, T> extends InMemoryStorageE
         StoreUtils.assertValidKey(key);
 
         // delete if exist
-        List<Versioned<V>> result = map.remove(key);
-        if(result == null || result.size() == 0) {
+        VersionedWithLock<V> result = map.remove(key);
+        int size = -1;
+        if(result != null) {
+            size = result.access().size();
+            result.release();
+        }
+
+        if(result == null || size == 0) {
             // if non-exist, record as assertion
             assertionMap.put(key, true); // use synchronized to avoid race
                                          // condition here
@@ -66,7 +72,7 @@ public class InMemoryPutAssertionStorageEngine<K, V, T> extends InMemoryStorageE
 
             logger.info("PUT key: " + key + " (never asserted) assertionMap size: "
                         + assertionMap.size());
-            super.put(key, value, transforms,srd);
+            super.put(key, value, transforms, srd);
             if(logger.isTraceEnabled()) {
                 logger.trace("PUT key: " + key + " (never asserted) assertionMap size: "
                              + assertionMap.size());
@@ -100,7 +106,7 @@ public class InMemoryPutAssertionStorageEngine<K, V, T> extends InMemoryStorageE
                              + assertionMap.size());
             }
         }
-        List<Versioned<V>> obsoleteVals = super.multiVersionPut(key, values,srd);
+        List<Versioned<V>> obsoleteVals = super.multiVersionPut(key, values, srd);
         return obsoleteVals;
     }
 

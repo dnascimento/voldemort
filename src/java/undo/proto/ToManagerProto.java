@@ -438,12 +438,6 @@ public final class ToManagerProto {
           return false;
         }
       }
-      if (hasStartEndMsg()) {
-        if (!getStartEndMsg().isInitialized()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-      }
       if (hasTrackMsgFromClient()) {
         if (!getTrackMsgFromClient().isInitialized()) {
           memoizedIsInitialized = 0;
@@ -819,12 +813,6 @@ public final class ToManagerProto {
       public final boolean isInitialized() {
         if (hasTrackMsg()) {
           if (!getTrackMsg().isInitialized()) {
-            
-            return false;
-          }
-        }
-        if (hasStartEndMsg()) {
-          if (!getStartEndMsg().isInitialized()) {
             
             return false;
           }
@@ -3686,30 +3674,19 @@ public final class ToManagerProto {
   public interface StartEndMsgOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
-    // repeated .voldemort.StartEndEntry msg = 1;
+    // repeated int64 data = 1;
     /**
-     * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
+     * <code>repeated int64 data = 1;</code>
      */
-    java.util.List<undo.proto.ToManagerProto.StartEndEntry> 
-        getMsgList();
+    java.util.List<java.lang.Long> getDataList();
     /**
-     * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
+     * <code>repeated int64 data = 1;</code>
      */
-    undo.proto.ToManagerProto.StartEndEntry getMsg(int index);
+    int getDataCount();
     /**
-     * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
+     * <code>repeated int64 data = 1;</code>
      */
-    int getMsgCount();
-    /**
-     * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
-     */
-    java.util.List<? extends undo.proto.ToManagerProto.StartEndEntryOrBuilder> 
-        getMsgOrBuilderList();
-    /**
-     * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
-     */
-    undo.proto.ToManagerProto.StartEndEntryOrBuilder getMsgOrBuilder(
-        int index);
+    long getData(int index);
   }
   /**
    * Protobuf type {@code voldemort.StartEndMsg}
@@ -3766,12 +3743,25 @@ public final class ToManagerProto {
               }
               break;
             }
-            case 10: {
+            case 8: {
               if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-                msg_ = new java.util.ArrayList<undo.proto.ToManagerProto.StartEndEntry>();
+                data_ = new java.util.ArrayList<java.lang.Long>();
                 mutable_bitField0_ |= 0x00000001;
               }
-              msg_.add(input.readMessage(undo.proto.ToManagerProto.StartEndEntry.PARSER, extensionRegistry));
+              data_.add(input.readInt64());
+              break;
+            }
+            case 10: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000001) == 0x00000001) && input.getBytesUntilLimit() > 0) {
+                data_ = new java.util.ArrayList<java.lang.Long>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                data_.add(input.readInt64());
+              }
+              input.popLimit(limit);
               break;
             }
           }
@@ -3783,7 +3773,7 @@ public final class ToManagerProto {
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
-          msg_ = java.util.Collections.unmodifiableList(msg_);
+          data_ = java.util.Collections.unmodifiableList(data_);
         }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -3816,56 +3806,37 @@ public final class ToManagerProto {
       return PARSER;
     }
 
-    // repeated .voldemort.StartEndEntry msg = 1;
-    public static final int MSG_FIELD_NUMBER = 1;
-    private java.util.List<undo.proto.ToManagerProto.StartEndEntry> msg_;
+    // repeated int64 data = 1;
+    public static final int DATA_FIELD_NUMBER = 1;
+    private java.util.List<java.lang.Long> data_;
     /**
-     * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
+     * <code>repeated int64 data = 1;</code>
      */
-    public java.util.List<undo.proto.ToManagerProto.StartEndEntry> getMsgList() {
-      return msg_;
+    public java.util.List<java.lang.Long>
+        getDataList() {
+      return data_;
     }
     /**
-     * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
+     * <code>repeated int64 data = 1;</code>
      */
-    public java.util.List<? extends undo.proto.ToManagerProto.StartEndEntryOrBuilder> 
-        getMsgOrBuilderList() {
-      return msg_;
+    public int getDataCount() {
+      return data_.size();
     }
     /**
-     * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
+     * <code>repeated int64 data = 1;</code>
      */
-    public int getMsgCount() {
-      return msg_.size();
-    }
-    /**
-     * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
-     */
-    public undo.proto.ToManagerProto.StartEndEntry getMsg(int index) {
-      return msg_.get(index);
-    }
-    /**
-     * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
-     */
-    public undo.proto.ToManagerProto.StartEndEntryOrBuilder getMsgOrBuilder(
-        int index) {
-      return msg_.get(index);
+    public long getData(int index) {
+      return data_.get(index);
     }
 
     private void initFields() {
-      msg_ = java.util.Collections.emptyList();
+      data_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
 
-      for (int i = 0; i < getMsgCount(); i++) {
-        if (!getMsg(i).isInitialized()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -3873,8 +3844,8 @@ public final class ToManagerProto {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
-      for (int i = 0; i < msg_.size(); i++) {
-        output.writeMessage(1, msg_.get(i));
+      for (int i = 0; i < data_.size(); i++) {
+        output.writeInt64(1, data_.get(i));
       }
       getUnknownFields().writeTo(output);
     }
@@ -3885,9 +3856,14 @@ public final class ToManagerProto {
       if (size != -1) return size;
 
       size = 0;
-      for (int i = 0; i < msg_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, msg_.get(i));
+      {
+        int dataSize = 0;
+        for (int i = 0; i < data_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt64SizeNoTag(data_.get(i));
+        }
+        size += dataSize;
+        size += 1 * getDataList().size();
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -4001,7 +3977,6 @@ public final class ToManagerProto {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getMsgFieldBuilder();
         }
       }
       private static Builder create() {
@@ -4010,12 +3985,8 @@ public final class ToManagerProto {
 
       public Builder clear() {
         super.clear();
-        if (msgBuilder_ == null) {
-          msg_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
-        } else {
-          msgBuilder_.clear();
-        }
+        data_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
 
@@ -4043,15 +4014,11 @@ public final class ToManagerProto {
       public undo.proto.ToManagerProto.StartEndMsg buildPartial() {
         undo.proto.ToManagerProto.StartEndMsg result = new undo.proto.ToManagerProto.StartEndMsg(this);
         int from_bitField0_ = bitField0_;
-        if (msgBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) == 0x00000001)) {
-            msg_ = java.util.Collections.unmodifiableList(msg_);
-            bitField0_ = (bitField0_ & ~0x00000001);
-          }
-          result.msg_ = msg_;
-        } else {
-          result.msg_ = msgBuilder_.build();
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          data_ = java.util.Collections.unmodifiableList(data_);
+          bitField0_ = (bitField0_ & ~0x00000001);
         }
+        result.data_ = data_;
         onBuilt();
         return result;
       }
@@ -4067,43 +4034,21 @@ public final class ToManagerProto {
 
       public Builder mergeFrom(undo.proto.ToManagerProto.StartEndMsg other) {
         if (other == undo.proto.ToManagerProto.StartEndMsg.getDefaultInstance()) return this;
-        if (msgBuilder_ == null) {
-          if (!other.msg_.isEmpty()) {
-            if (msg_.isEmpty()) {
-              msg_ = other.msg_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-            } else {
-              ensureMsgIsMutable();
-              msg_.addAll(other.msg_);
-            }
-            onChanged();
+        if (!other.data_.isEmpty()) {
+          if (data_.isEmpty()) {
+            data_ = other.data_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureDataIsMutable();
+            data_.addAll(other.data_);
           }
-        } else {
-          if (!other.msg_.isEmpty()) {
-            if (msgBuilder_.isEmpty()) {
-              msgBuilder_.dispose();
-              msgBuilder_ = null;
-              msg_ = other.msg_;
-              bitField0_ = (bitField0_ & ~0x00000001);
-              msgBuilder_ = 
-                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
-                   getMsgFieldBuilder() : null;
-            } else {
-              msgBuilder_.addAllMessages(other.msg_);
-            }
-          }
+          onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
-        for (int i = 0; i < getMsgCount(); i++) {
-          if (!getMsg(i).isInitialized()) {
-            
-            return false;
-          }
-        }
         return true;
       }
 
@@ -4126,244 +4071,70 @@ public final class ToManagerProto {
       }
       private int bitField0_;
 
-      // repeated .voldemort.StartEndEntry msg = 1;
-      private java.util.List<undo.proto.ToManagerProto.StartEndEntry> msg_ =
-        java.util.Collections.emptyList();
-      private void ensureMsgIsMutable() {
+      // repeated int64 data = 1;
+      private java.util.List<java.lang.Long> data_ = java.util.Collections.emptyList();
+      private void ensureDataIsMutable() {
         if (!((bitField0_ & 0x00000001) == 0x00000001)) {
-          msg_ = new java.util.ArrayList<undo.proto.ToManagerProto.StartEndEntry>(msg_);
+          data_ = new java.util.ArrayList<java.lang.Long>(data_);
           bitField0_ |= 0x00000001;
          }
       }
-
-      private com.google.protobuf.RepeatedFieldBuilder<
-          undo.proto.ToManagerProto.StartEndEntry, undo.proto.ToManagerProto.StartEndEntry.Builder, undo.proto.ToManagerProto.StartEndEntryOrBuilder> msgBuilder_;
-
       /**
-       * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
+       * <code>repeated int64 data = 1;</code>
        */
-      public java.util.List<undo.proto.ToManagerProto.StartEndEntry> getMsgList() {
-        if (msgBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(msg_);
-        } else {
-          return msgBuilder_.getMessageList();
-        }
+      public java.util.List<java.lang.Long>
+          getDataList() {
+        return java.util.Collections.unmodifiableList(data_);
       }
       /**
-       * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
+       * <code>repeated int64 data = 1;</code>
        */
-      public int getMsgCount() {
-        if (msgBuilder_ == null) {
-          return msg_.size();
-        } else {
-          return msgBuilder_.getCount();
-        }
+      public int getDataCount() {
+        return data_.size();
       }
       /**
-       * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
+       * <code>repeated int64 data = 1;</code>
        */
-      public undo.proto.ToManagerProto.StartEndEntry getMsg(int index) {
-        if (msgBuilder_ == null) {
-          return msg_.get(index);
-        } else {
-          return msgBuilder_.getMessage(index);
-        }
+      public long getData(int index) {
+        return data_.get(index);
       }
       /**
-       * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
+       * <code>repeated int64 data = 1;</code>
        */
-      public Builder setMsg(
-          int index, undo.proto.ToManagerProto.StartEndEntry value) {
-        if (msgBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureMsgIsMutable();
-          msg_.set(index, value);
-          onChanged();
-        } else {
-          msgBuilder_.setMessage(index, value);
-        }
+      public Builder setData(
+          int index, long value) {
+        ensureDataIsMutable();
+        data_.set(index, value);
+        onChanged();
         return this;
       }
       /**
-       * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
+       * <code>repeated int64 data = 1;</code>
        */
-      public Builder setMsg(
-          int index, undo.proto.ToManagerProto.StartEndEntry.Builder builderForValue) {
-        if (msgBuilder_ == null) {
-          ensureMsgIsMutable();
-          msg_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          msgBuilder_.setMessage(index, builderForValue.build());
-        }
+      public Builder addData(long value) {
+        ensureDataIsMutable();
+        data_.add(value);
+        onChanged();
         return this;
       }
       /**
-       * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
+       * <code>repeated int64 data = 1;</code>
        */
-      public Builder addMsg(undo.proto.ToManagerProto.StartEndEntry value) {
-        if (msgBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureMsgIsMutable();
-          msg_.add(value);
-          onChanged();
-        } else {
-          msgBuilder_.addMessage(value);
-        }
+      public Builder addAllData(
+          java.lang.Iterable<? extends java.lang.Long> values) {
+        ensureDataIsMutable();
+        super.addAll(values, data_);
+        onChanged();
         return this;
       }
       /**
-       * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
+       * <code>repeated int64 data = 1;</code>
        */
-      public Builder addMsg(
-          int index, undo.proto.ToManagerProto.StartEndEntry value) {
-        if (msgBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureMsgIsMutable();
-          msg_.add(index, value);
-          onChanged();
-        } else {
-          msgBuilder_.addMessage(index, value);
-        }
+      public Builder clearData() {
+        data_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
         return this;
-      }
-      /**
-       * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
-       */
-      public Builder addMsg(
-          undo.proto.ToManagerProto.StartEndEntry.Builder builderForValue) {
-        if (msgBuilder_ == null) {
-          ensureMsgIsMutable();
-          msg_.add(builderForValue.build());
-          onChanged();
-        } else {
-          msgBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
-       */
-      public Builder addMsg(
-          int index, undo.proto.ToManagerProto.StartEndEntry.Builder builderForValue) {
-        if (msgBuilder_ == null) {
-          ensureMsgIsMutable();
-          msg_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          msgBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
-       */
-      public Builder addAllMsg(
-          java.lang.Iterable<? extends undo.proto.ToManagerProto.StartEndEntry> values) {
-        if (msgBuilder_ == null) {
-          ensureMsgIsMutable();
-          super.addAll(values, msg_);
-          onChanged();
-        } else {
-          msgBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
-       */
-      public Builder clearMsg() {
-        if (msgBuilder_ == null) {
-          msg_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00000001);
-          onChanged();
-        } else {
-          msgBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
-       */
-      public Builder removeMsg(int index) {
-        if (msgBuilder_ == null) {
-          ensureMsgIsMutable();
-          msg_.remove(index);
-          onChanged();
-        } else {
-          msgBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
-       */
-      public undo.proto.ToManagerProto.StartEndEntry.Builder getMsgBuilder(
-          int index) {
-        return getMsgFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
-       */
-      public undo.proto.ToManagerProto.StartEndEntryOrBuilder getMsgOrBuilder(
-          int index) {
-        if (msgBuilder_ == null) {
-          return msg_.get(index);  } else {
-          return msgBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
-       */
-      public java.util.List<? extends undo.proto.ToManagerProto.StartEndEntryOrBuilder> 
-           getMsgOrBuilderList() {
-        if (msgBuilder_ != null) {
-          return msgBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(msg_);
-        }
-      }
-      /**
-       * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
-       */
-      public undo.proto.ToManagerProto.StartEndEntry.Builder addMsgBuilder() {
-        return getMsgFieldBuilder().addBuilder(
-            undo.proto.ToManagerProto.StartEndEntry.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
-       */
-      public undo.proto.ToManagerProto.StartEndEntry.Builder addMsgBuilder(
-          int index) {
-        return getMsgFieldBuilder().addBuilder(
-            index, undo.proto.ToManagerProto.StartEndEntry.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .voldemort.StartEndEntry msg = 1;</code>
-       */
-      public java.util.List<undo.proto.ToManagerProto.StartEndEntry.Builder> 
-           getMsgBuilderList() {
-        return getMsgFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilder<
-          undo.proto.ToManagerProto.StartEndEntry, undo.proto.ToManagerProto.StartEndEntry.Builder, undo.proto.ToManagerProto.StartEndEntryOrBuilder> 
-          getMsgFieldBuilder() {
-        if (msgBuilder_ == null) {
-          msgBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-              undo.proto.ToManagerProto.StartEndEntry, undo.proto.ToManagerProto.StartEndEntry.Builder, undo.proto.ToManagerProto.StartEndEntryOrBuilder>(
-                  msg_,
-                  ((bitField0_ & 0x00000001) == 0x00000001),
-                  getParentForChildren(),
-                  isClean());
-          msg_ = null;
-        }
-        return msgBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:voldemort.StartEndMsg)
@@ -4375,499 +4146,6 @@ public final class ToManagerProto {
     }
 
     // @@protoc_insertion_point(class_scope:voldemort.StartEndMsg)
-  }
-
-  public interface StartEndEntryOrBuilder
-      extends com.google.protobuf.MessageOrBuilder {
-
-    // required int64 start = 1;
-    /**
-     * <code>required int64 start = 1;</code>
-     */
-    boolean hasStart();
-    /**
-     * <code>required int64 start = 1;</code>
-     */
-    long getStart();
-
-    // required int64 end = 2;
-    /**
-     * <code>required int64 end = 2;</code>
-     */
-    boolean hasEnd();
-    /**
-     * <code>required int64 end = 2;</code>
-     */
-    long getEnd();
-  }
-  /**
-   * Protobuf type {@code voldemort.StartEndEntry}
-   */
-  public static final class StartEndEntry extends
-      com.google.protobuf.GeneratedMessage
-      implements StartEndEntryOrBuilder {
-    // Use StartEndEntry.newBuilder() to construct.
-    private StartEndEntry(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-      super(builder);
-      this.unknownFields = builder.getUnknownFields();
-    }
-    private StartEndEntry(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
-
-    private static final StartEndEntry defaultInstance;
-    public static StartEndEntry getDefaultInstance() {
-      return defaultInstance;
-    }
-
-    public StartEndEntry getDefaultInstanceForType() {
-      return defaultInstance;
-    }
-
-    private final com.google.protobuf.UnknownFieldSet unknownFields;
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-        getUnknownFields() {
-      return this.unknownFields;
-    }
-    private StartEndEntry(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      initFields();
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 8: {
-              bitField0_ |= 0x00000001;
-              start_ = input.readInt64();
-              break;
-            }
-            case 16: {
-              bitField0_ |= 0x00000002;
-              end_ = input.readInt64();
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e.getMessage()).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return undo.proto.ToManagerProto.internal_static_voldemort_StartEndEntry_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return undo.proto.ToManagerProto.internal_static_voldemort_StartEndEntry_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              undo.proto.ToManagerProto.StartEndEntry.class, undo.proto.ToManagerProto.StartEndEntry.Builder.class);
-    }
-
-    public static com.google.protobuf.Parser<StartEndEntry> PARSER =
-        new com.google.protobuf.AbstractParser<StartEndEntry>() {
-      public StartEndEntry parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return new StartEndEntry(input, extensionRegistry);
-      }
-    };
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<StartEndEntry> getParserForType() {
-      return PARSER;
-    }
-
-    private int bitField0_;
-    // required int64 start = 1;
-    public static final int START_FIELD_NUMBER = 1;
-    private long start_;
-    /**
-     * <code>required int64 start = 1;</code>
-     */
-    public boolean hasStart() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>required int64 start = 1;</code>
-     */
-    public long getStart() {
-      return start_;
-    }
-
-    // required int64 end = 2;
-    public static final int END_FIELD_NUMBER = 2;
-    private long end_;
-    /**
-     * <code>required int64 end = 2;</code>
-     */
-    public boolean hasEnd() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>required int64 end = 2;</code>
-     */
-    public long getEnd() {
-      return end_;
-    }
-
-    private void initFields() {
-      start_ = 0L;
-      end_ = 0L;
-    }
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-
-      if (!hasStart()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasEnd()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeInt64(1, start_);
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeInt64(2, end_);
-      }
-      getUnknownFields().writeTo(output);
-    }
-
-    private int memoizedSerializedSize = -1;
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, start_);
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(2, end_);
-      }
-      size += getUnknownFields().getSerializedSize();
-      memoizedSerializedSize = size;
-      return size;
-    }
-
-    private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
-        throws java.io.ObjectStreamException {
-      return super.writeReplace();
-    }
-
-    public static undo.proto.ToManagerProto.StartEndEntry parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static undo.proto.ToManagerProto.StartEndEntry parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static undo.proto.ToManagerProto.StartEndEntry parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static undo.proto.ToManagerProto.StartEndEntry parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static undo.proto.ToManagerProto.StartEndEntry parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static undo.proto.ToManagerProto.StartEndEntry parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-    public static undo.proto.ToManagerProto.StartEndEntry parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
-    }
-    public static undo.proto.ToManagerProto.StartEndEntry parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
-    }
-    public static undo.proto.ToManagerProto.StartEndEntry parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static undo.proto.ToManagerProto.StartEndEntry parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-
-    public static Builder newBuilder() { return Builder.create(); }
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(undo.proto.ToManagerProto.StartEndEntry prototype) {
-      return newBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() { return newBuilder(this); }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code voldemort.StartEndEntry}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements undo.proto.ToManagerProto.StartEndEntryOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return undo.proto.ToManagerProto.internal_static_voldemort_StartEndEntry_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return undo.proto.ToManagerProto.internal_static_voldemort_StartEndEntry_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                undo.proto.ToManagerProto.StartEndEntry.class, undo.proto.ToManagerProto.StartEndEntry.Builder.class);
-      }
-
-      // Construct using undo.proto.ToManagerProto.StartEndEntry.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-        }
-      }
-      private static Builder create() {
-        return new Builder();
-      }
-
-      public Builder clear() {
-        super.clear();
-        start_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        end_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000002);
-        return this;
-      }
-
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return undo.proto.ToManagerProto.internal_static_voldemort_StartEndEntry_descriptor;
-      }
-
-      public undo.proto.ToManagerProto.StartEndEntry getDefaultInstanceForType() {
-        return undo.proto.ToManagerProto.StartEndEntry.getDefaultInstance();
-      }
-
-      public undo.proto.ToManagerProto.StartEndEntry build() {
-        undo.proto.ToManagerProto.StartEndEntry result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public undo.proto.ToManagerProto.StartEndEntry buildPartial() {
-        undo.proto.ToManagerProto.StartEndEntry result = new undo.proto.ToManagerProto.StartEndEntry(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
-        result.start_ = start_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
-        result.end_ = end_;
-        result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
-      }
-
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof undo.proto.ToManagerProto.StartEndEntry) {
-          return mergeFrom((undo.proto.ToManagerProto.StartEndEntry)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(undo.proto.ToManagerProto.StartEndEntry other) {
-        if (other == undo.proto.ToManagerProto.StartEndEntry.getDefaultInstance()) return this;
-        if (other.hasStart()) {
-          setStart(other.getStart());
-        }
-        if (other.hasEnd()) {
-          setEnd(other.getEnd());
-        }
-        this.mergeUnknownFields(other.getUnknownFields());
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        if (!hasStart()) {
-          
-          return false;
-        }
-        if (!hasEnd()) {
-          
-          return false;
-        }
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        undo.proto.ToManagerProto.StartEndEntry parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (undo.proto.ToManagerProto.StartEndEntry) e.getUnfinishedMessage();
-          throw e;
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      private int bitField0_;
-
-      // required int64 start = 1;
-      private long start_ ;
-      /**
-       * <code>required int64 start = 1;</code>
-       */
-      public boolean hasStart() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>required int64 start = 1;</code>
-       */
-      public long getStart() {
-        return start_;
-      }
-      /**
-       * <code>required int64 start = 1;</code>
-       */
-      public Builder setStart(long value) {
-        bitField0_ |= 0x00000001;
-        start_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required int64 start = 1;</code>
-       */
-      public Builder clearStart() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        start_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      // required int64 end = 2;
-      private long end_ ;
-      /**
-       * <code>required int64 end = 2;</code>
-       */
-      public boolean hasEnd() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>required int64 end = 2;</code>
-       */
-      public long getEnd() {
-        return end_;
-      }
-      /**
-       * <code>required int64 end = 2;</code>
-       */
-      public Builder setEnd(long value) {
-        bitField0_ |= 0x00000002;
-        end_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required int64 end = 2;</code>
-       */
-      public Builder clearEnd() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        end_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      // @@protoc_insertion_point(builder_scope:voldemort.StartEndEntry)
-    }
-
-    static {
-      defaultInstance = new StartEndEntry(true);
-      defaultInstance.initFields();
-    }
-
-    // @@protoc_insertion_point(class_scope:voldemort.StartEndEntry)
   }
 
   public interface SRDOrBuilder
@@ -7045,11 +6323,6 @@ public final class ToManagerProto {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_voldemort_StartEndMsg_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_voldemort_StartEndEntry_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_voldemort_StartEndEntry_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_voldemort_SRD_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -7084,18 +6357,16 @@ public final class ToManagerProto {
       "tryAccessList\022\013\n\003key\030\001 \002(\014\022\013\n\003rid\030\002 \003(\003\"" +
       "@\n\010TrackMsg\022$\n\005entry\030\001 \003(\0132\025.voldemort.T",
       "rackEntry\022\016\n\006nodeId\030\002 \001(\t\"-\n\nTrackEntry\022" +
-      "\013\n\003rid\030\001 \002(\003\022\022\n\ndependency\030\002 \003(\003\"4\n\013Star" +
-      "tEndMsg\022%\n\003msg\030\001 \003(\0132\030.voldemort.StartEn" +
-      "dEntry\"+\n\rStartEndEntry\022\r\n\005start\030\001 \002(\003\022\013" +
-      "\n\003end\030\002 \002(\003\"B\n\003SRD\022\013\n\003rid\030\001 \001(\003\022\016\n\006branc" +
-      "h\030\002 \001(\005\022\020\n\010restrain\030\003 \001(\010\022\014\n\004redo\030\004 \001(\010\"" +
-      ";\n\006AckMsg\022\014\n\004port\030\001 \001(\005\022\020\n\010hostname\030\002 \001(" +
-      "\t\022\021\n\texception\030\003 \003(\t\"\232\001\n\017NodeRegistryMsg" +
-      "\0223\n\005group\030\001 \002(\0162$.voldemort.NodeRegistry" +
-      "Msg.NodeGroup\022\014\n\004port\030\002 \002(\005\022\020\n\010hostname\030",
-      "\003 \002(\t\"2\n\tNodeGroup\022\t\n\005PROXY\020\001\022\013\n\007DB_NODE" +
-      "\020\002\022\r\n\tREDO_NODE\020\003B\036\n\nundo.protoB\016ToManag" +
-      "erProtoH\001"
+      "\013\n\003rid\030\001 \002(\003\022\022\n\ndependency\030\002 \003(\003\"\033\n\013Star" +
+      "tEndMsg\022\014\n\004data\030\001 \003(\003\"B\n\003SRD\022\013\n\003rid\030\001 \001(" +
+      "\003\022\016\n\006branch\030\002 \001(\005\022\020\n\010restrain\030\003 \001(\010\022\014\n\004r" +
+      "edo\030\004 \001(\010\";\n\006AckMsg\022\014\n\004port\030\001 \001(\005\022\020\n\010hos" +
+      "tname\030\002 \001(\t\022\021\n\texception\030\003 \003(\t\"\232\001\n\017NodeR" +
+      "egistryMsg\0223\n\005group\030\001 \002(\0162$.voldemort.No" +
+      "deRegistryMsg.NodeGroup\022\014\n\004port\030\002 \002(\005\022\020\n" +
+      "\010hostname\030\003 \002(\t\"2\n\tNodeGroup\022\t\n\005PROXY\020\001\022" +
+      "\013\n\007DB_NODE\020\002\022\r\n\tREDO_NODE\020\003B\036\n\nundo.prot",
+      "oB\016ToManagerProtoH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -7131,27 +6402,21 @@ public final class ToManagerProto {
           internal_static_voldemort_StartEndMsg_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_StartEndMsg_descriptor,
-              new java.lang.String[] { "Msg", });
-          internal_static_voldemort_StartEndEntry_descriptor =
-            getDescriptor().getMessageTypes().get(5);
-          internal_static_voldemort_StartEndEntry_fieldAccessorTable = new
-            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_voldemort_StartEndEntry_descriptor,
-              new java.lang.String[] { "Start", "End", });
+              new java.lang.String[] { "Data", });
           internal_static_voldemort_SRD_descriptor =
-            getDescriptor().getMessageTypes().get(6);
+            getDescriptor().getMessageTypes().get(5);
           internal_static_voldemort_SRD_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_SRD_descriptor,
               new java.lang.String[] { "Rid", "Branch", "Restrain", "Redo", });
           internal_static_voldemort_AckMsg_descriptor =
-            getDescriptor().getMessageTypes().get(7);
+            getDescriptor().getMessageTypes().get(6);
           internal_static_voldemort_AckMsg_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_AckMsg_descriptor,
               new java.lang.String[] { "Port", "Hostname", "Exception", });
           internal_static_voldemort_NodeRegistryMsg_descriptor =
-            getDescriptor().getMessageTypes().get(8);
+            getDescriptor().getMessageTypes().get(7);
           internal_static_voldemort_NodeRegistryMsg_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_NodeRegistryMsg_descriptor,

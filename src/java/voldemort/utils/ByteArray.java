@@ -62,9 +62,25 @@ public final class ByteArray implements Serializable {
         return underlying.length;
     }
 
-    @Override
+    /**
+     * Returns a new container object but sharing the byte array
+     * 
+     * @return
+     */
+    public ByteArray shadow() {
+        return new ByteArray(underlying);
+    }
+
+    /**
+     * Clone the array copying its content. For performance concerns, check if
+     * shadow fits your requirements
+     */
     public ByteArray clone() {
-        return new ByteArray(Arrays.copyOf(underlying, underlying.length));
+        byte[] newArray = new byte[underlying.length];
+        for(int i = 0; i < newArray.length; i++) {
+            newArray[i] = underlying[i];
+        }
+        return new ByteArray(newArray);
     }
 
     public void set(byte[] data) {

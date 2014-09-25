@@ -8,7 +8,6 @@ import java.util.Iterator;
 import org.apache.log4j.Logger;
 
 import voldemort.VoldemortException;
-import voldemort.undoTracker.map.Op.OpType;
 
 public class RedoIterator {
 
@@ -105,13 +104,13 @@ public class RedoIterator {
 
         log.info("Fetch more operations");
         // is next a write?
-        if(fullList.get(nextPosition).type != OpType.Get) {
+        if(!fullList.get(nextPosition).isGet()) {
             allowed.add(fullList.get(nextPosition++));
             return;
         }
         // add all the reads
         while(nextPosition < fullList.size()) {
-            if(fullList.get(nextPosition).type != OpType.Get) {
+            if(!fullList.get(nextPosition).isGet()) {
                 break;
             }
             allowed.add(fullList.get(nextPosition++));

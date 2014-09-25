@@ -15,7 +15,7 @@ public class Op implements Serializable {
      */
     private static final long serialVersionUID = 1L;
 
-    public enum OpType implements Serializable {
+    public static enum OpType implements Serializable {
         Put,
         Delete,
         Get,
@@ -24,12 +24,12 @@ public class Op implements Serializable {
     }
 
     public long rid;
-    public OpType type;
+    public int type;
 
     public Op(long rid, OpType type) {
         super();
         this.rid = rid;
-        this.type = type;
+        this.type = type.ordinal();
     }
 
     @Override
@@ -37,7 +37,7 @@ public class Op implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + (int) (rid ^ (rid >>> 32));
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        result = prime * result + type;
         return result;
     }
 
@@ -57,8 +57,11 @@ public class Op implements Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "[" + type + " " + "rid=" + rid + "]";
+    public boolean isGet() {
+        return type == OpType.Get.ordinal();
+    }
+
+    public OpType toType() {
+        return OpType.values()[type];
     }
 }

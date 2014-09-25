@@ -50,8 +50,7 @@ import com.google.protobuf.ByteString;
 public class DBProxy {
 
     public static final int MY_PORT = 11200;
-    public static final InetSocketAddress MANAGER_ADDRESS = new InetSocketAddress("localhost",
-                                                                                  11000);
+    public static final InetSocketAddress MANAGER_ADDRESS = new InetSocketAddress("manager", 11000);
     static final String KEY_ACCESS_LIST_FILE = "keyaccessList.obj";
 
     private static final boolean LOAD_FROM_FILE = false;
@@ -81,7 +80,9 @@ public class DBProxy {
         LogManager.getRootLogger().setLevel(Level.ERROR);
         debugging = log.isInfoEnabled();
 
-        Runtime.getRuntime().addShutdownHook(new SaveKeyAccess(keyAccessLists));
+        // TODO uncomment if you want to save the Map at end
+        // Runtime.getRuntime().addShutdownHook(new
+        // SaveKeyAccess(keyAccessLists));
 
         log.info("New DBUndo stub");
         this.keyAccessLists = keyAccessLists;
@@ -118,11 +119,11 @@ public class DBProxy {
                 sb.append(" -> REDO: ");
                 log.info("Redo Start: " + op + " " + hexStringToAscii(key) + " " + srd);
             }
-            access = redoScheduler.opStart(op, key.clone(), srd, path);
+            access = redoScheduler.opStart(op, key.shadow(), srd, path);
         } else {
             if(srd.restrain) {
                 // new request but may need to wait to avoid dirty reads
-                restrainScheduler.opStart(op, key.clone(), srd, path);
+                restrainScheduler.opStart(op, key.shadow(), srd, path);
                 path = brancher.getCurrent();
                 srd.branch = path.current.branch; // update the branch
                 if(debugging) {
@@ -134,7 +135,7 @@ public class DBProxy {
             }
             // Read old/common branch, may create a new commit - for new
             // requests
-            access = newRequestsScheduler.opStart(op, key.clone(), srd, path);
+            access = newRequestsScheduler.opStart(op, key.shadow(), srd, path);
         }
         modifyKey(key, access.branch, access.sts);
         if(debugging) {
@@ -156,16 +157,15 @@ public class DBProxy {
             Path p = brancher.getPath(srd.branch);
             BranchPath path = p.path;
             removeKeyVersion(key);
-            // TODO: need to clone the key?!
             if(p.isRedo) {
                 if(srd.restrain) {
-                    restrainScheduler.opEnd(op, key.clone(), srd, path);
-                    newRequestsScheduler.opEnd(op, key.clone(), srd, path);
+                    restrainScheduler.opEnd(op, key.shadow(), srd, path);
+                    newRequestsScheduler.opEnd(op, key.shadow(), srd, path);
                 } else {
-                    redoScheduler.opEnd(op, key.clone(), srd, path);
+                    redoScheduler.opEnd(op, key.shadow(), srd, path);
                 }
             } else {
-                newRequestsScheduler.opEnd(op, key.clone(), srd, path);
+                newRequestsScheduler.opEnd(op, key.shadow(), srd, path);
             }
         }
     }
@@ -185,7 +185,7 @@ public class DBProxy {
 
         if(p.isRedo) {
             for(ByteArray key: keys) {
-                boolean status = redoScheduler.ignore(key.clone(), srd, p.path);
+                boolean status = redoScheduler.ignore(key.shadow(), srd, p.path);
                 result.put(key, status);
             }
         } else {
@@ -228,7 +228,6 @@ public class DBProxy {
     public void newRedo(BranchPath redoPath) {
         log.info("New redo with path: " + redoPath);
         brancher.newRedo(redoPath);
-        keyAccessLists.debugExecutionList();
     }
 
     /**

@@ -71,5 +71,6 @@
 	<classpathentry kind="lib" path="contrib/ec2-testing/lib/httpclient-4.0.1.jar"/>
 	<classpathentry kind="lib" path="contrib/ec2-testing/lib/httpcore-4.0.1.jar"/>
 	<classpathentry kind="lib" path="contrib/ec2-testing/lib/typica.jar"/>
+	<classpathentry kind="lib" path="lib/voldemort-cachestore-1.5.0.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

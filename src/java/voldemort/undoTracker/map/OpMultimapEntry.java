@@ -9,17 +9,15 @@ package voldemort.undoTracker.map;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.log4j.Logger;
 
 import voldemort.VoldemortException;
-import voldemort.undoTracker.DBProxy;
 import voldemort.undoTracker.SRD;
 import voldemort.undoTracker.branching.BranchPath;
 import voldemort.undoTracker.map.Op.OpType;
 import voldemort.undoTracker.map.commits.CommitList;
-import voldemort.utils.ByteArray;
 
 /**
  * 
@@ -32,18 +30,13 @@ public class OpMultimapEntry implements Serializable {
     public static final int INIT_ARRAY_SIZE = 16;
 
     private transient static final Logger log = Logger.getLogger(OpMultimap.class.getName());
-    boolean debugging = log.isInfoEnabled();
-
-    /**
-     * Avoid re-size version array, average number of version per key
-     */
+    public static final boolean debugging = log.isInfoEnabled();
 
     /**
      * Entry RWLock: not related with list access. It is the value/database
-     * access locker.
+     * access locker. true if Fair mode is enable. Check java doc
      */
-    private transient RWLock valueLocker = new RWLock();
-
+    private transient ReentrantReadWriteLock valueLocker = new ReentrantReadWriteLock(true);
     private transient RedoIterator iterator = null;
 
     /**
@@ -61,65 +54,40 @@ public class OpMultimapEntry implements Serializable {
      */
     private CommitList commitList = new CommitList();
 
-    private ByteArray key;
-
-    public OpMultimapEntry(ByteArray key) {
+    public OpMultimapEntry() {
         super();
-        this.key = key;
-    }
-
-    public synchronized void addAll(List<Op> values) {
-        list.addAll(values);
     }
 
     public synchronized Op getLastWrite() {
         for(int i = list.size() - 1; i > 0; i--) {
             Op op = list.get(i);
-            if(op.type != OpType.Get) {
+            if(!op.isGet()) {
                 return op;
             }
         }
         return null;
     }
 
-    public synchronized boolean isEmpty() {
-        return list.isEmpty();
-    }
-
-    public synchronized ArrayList<Op> getAll() {
+    public ArrayList<Op> getAll() {
         return list;
-    }
-
-    public synchronized ArrayList<Op> extractAll() {
-        ArrayList<Op> data = list;
-        list = new ArrayList<Op>();
-        return data;
     }
 
     /* /////////// Value Access Lock ////////////////////// */
 
     public void lockWrite() {
-        valueLocker.lockWrite();
+        valueLocker.writeLock().lock();
     }
 
     public void lockRead() {
-        valueLocker.lockRead();
+        valueLocker.readLock().lock();
     }
 
     public void unlockWrite() {
-        valueLocker.releaseWrite();
+        valueLocker.writeLock().unlock();
     }
 
     public void unlockRead() {
-        valueLocker.releaseRead();
-    }
-
-    /**
-     * Count if there are some operation running
-     * 
-     */
-    public boolean isLocked() {
-        return valueLocker.hasPendent();
+        valueLocker.readLock().unlock();
     }
 
     /**
@@ -130,6 +98,7 @@ public class OpMultimapEntry implements Serializable {
      * @throws Exception
      */
     public synchronized int updateDependencies(UpdateDependenciesMap dependenciesCollector) {
+        // TODO no need for synchronized, it just accesses the list
         int lastSentDependency = sentDependency;
 
         // if empty list or updated, return
@@ -140,7 +109,7 @@ public class OpMultimapEntry implements Serializable {
 
         // get last write
         for(int i = sentDependency; i >= 0; i--) {
-            if(list.get(i).type != OpType.Get) {
+            if(!list.get(i).isGet()) {
                 lastWrite = list.get(i);
                 break;
             }
@@ -150,7 +119,7 @@ public class OpMultimapEntry implements Serializable {
             // the first elements of list are get ops, which tried to get the
             // entry before it exists
             while(sentDependency < list.size()) {
-                if(list.get(sentDependency).type != OpType.Get) {
+                if(!list.get(sentDependency).isGet()) {
                     lastWrite = list.get(sentDependency);
                     break;
                 } else {
@@ -251,6 +220,7 @@ public class OpMultimapEntry implements Serializable {
      * @return
      */
     public synchronized StsBranchPair trackWriteAccess(OpType type, SRD srd, BranchPath path) {
+        // only a single thread accesses this method
         Op op = new Op(srd.rid, type);
         list.add(op);
 
@@ -294,8 +264,7 @@ public class OpMultimapEntry implements Serializable {
         RedoIterator it = getOrNewRedoIterator(srd.branch, baseCommit);
         while(!it.operationIsAllowed(op)) {
             if(debugging) {
-                log.info("Operation locked " + srd.rid + " on key: "
-                         + DBProxy.hexStringToAscii(key));
+                log.info("Operation locked " + srd.rid);
                 log.info(it.toString());
             }
             try {
@@ -305,10 +274,8 @@ public class OpMultimapEntry implements Serializable {
             }
 
             // Trying to be unlocked: srd.rid
-
         }
         // free to go srd.rid
-
     }
 
     /**
@@ -437,10 +404,6 @@ public class OpMultimapEntry implements Serializable {
 
     public synchronized int size() {
         return list.size();
-    }
-
-    public synchronized void addLast(Op op) {
-        list.add(op);
     }
 
     public String debugExecutionList() {

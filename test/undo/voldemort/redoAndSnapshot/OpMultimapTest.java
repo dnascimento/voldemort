@@ -244,14 +244,14 @@ public class OpMultimapTest extends Thread {
 
         }
 
-        if(delayedOp.type == OpType.Get) {
+        if(delayedOp.isGet()) {
             map.get(key).redoRead(new SRD(delayedOp.rid, 1, false), path);
-            execution.add(new Op(delayedOp.rid, delayedOp.type));
-            map.get(key).endRedoOp(delayedOp.type, new SRD(delayedOp.rid, 1, false), path);
+            execution.add(new Op(delayedOp.rid, delayedOp.toType()));
+            map.get(key).endRedoOp(delayedOp.toType(), new SRD(delayedOp.rid, 1, false), path);
         } else {
-            map.get(key).redoWrite(delayedOp.type, new SRD(delayedOp.rid, 1, false), path);
-            execution.add(new Op(delayedOp.rid, delayedOp.type));
-            map.get(key).endRedoOp(delayedOp.type, new SRD(delayedOp.rid, 1, false), path);
+            map.get(key).redoWrite(delayedOp.toType(), new SRD(delayedOp.rid, 1, false), path);
+            execution.add(new Op(delayedOp.rid, delayedOp.toType()));
+            map.get(key).endRedoOp(delayedOp.toType(), new SRD(delayedOp.rid, 1, false), path);
         }
     }
 

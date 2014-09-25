@@ -27,7 +27,7 @@ public class SendDependencies extends Thread {
     private final Logger log = Logger.getLogger(SendDependencies.class.getName());
 
     private OpMultimap trackLocalAccess;
-    private long REFRESH_PERIOD = 10000;
+    private long REFRESH_PERIOD = 1000000000;
     Socket socket = new Socket();
 
     public SendDependencies(OpMultimap trackLocalAccess) {

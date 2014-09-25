@@ -32,23 +32,25 @@ public class BranchController {
      * 
      * @param newRid
      */
-    public synchronized void newCommit(long newCommit) {
+    public void newCommit(long newCommit) {
         StsBranchPair newPair = new StsBranchPair(newCommit, current.current.branch);
+        // TODO may cause problem if some thread is checking the path
         current.path.add(newPair);
         current.current = newPair;
     }
 
     /**
-     * Invoked by every method to know the current
+     * Invoked by restrain request to get the most recent
      * 
      * @return
      */
-    public synchronized BranchPath getCurrent() {
+    public BranchPath getCurrent() {
         return current;
     }
 
-    public synchronized void redoOver() {
+    public void redoOver() {
         current = redo;
+        // TODO may cause problem if some thread is checking the path
         redo = null;
         log.info("restrain phase is over, new branch is:" + current.current.branch
                  + " based on commit: " + current.current.sts);
@@ -69,7 +71,7 @@ public class BranchController {
      * @param the branch used by the request
      * @return the path of this branch and if is replay or not
      */
-    public synchronized Path getPath(short branch) {
+    public Path getPath(short branch) {
         if(current.current.branch == branch) {
             return new Path(current, false);
         }
@@ -82,7 +84,7 @@ public class BranchController {
         throw new VoldemortException("isRedo: branch not present: " + branch);
     }
 
-    public synchronized void reset() {
+    public void reset() {
         StsBranchPair baseBranch = new StsBranchPair(INIT_COMMIT, INIT_BRANCH);
         current = new BranchPath(baseBranch, baseBranch);
         redo = null;

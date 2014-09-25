@@ -86,18 +86,6 @@ public class OpMultimap implements Serializable {
     // // Map Management ////
 
     /**
-     * Add a set of operations to historic
-     * 
-     * @param key
-     * @param values
-     */
-    public void putAll(ByteArray key, List<Op> values) {
-        log.info("PutAll");
-        OpMultimapEntry entry = get(key);
-        entry.addAll(values);
-    }
-
-    /**
      * Get last write action in a specific key
      * 
      * @param key
@@ -113,20 +101,6 @@ public class OpMultimap implements Serializable {
     }
 
     /**
-     * Add new entry to map
-     * 
-     * @param key
-     * @param op
-     * @return
-     */
-    public OpMultimapEntry put(ByteArray key, Op op) {
-        OpMultimapEntry l = get(key);
-        assert (l != null);
-        l.addLast(op);
-        return l;
-    }
-
-    /**
      * Get the entry and create if it do not exists
      * 
      * @param key
@@ -135,7 +109,7 @@ public class OpMultimap implements Serializable {
     public OpMultimapEntry get(ByteArray key) {
         OpMultimapEntry entry = map.get(key);
         if(entry == null) {
-            entry = map.putIfAbsent(key, new OpMultimapEntry(key));
+            entry = map.putIfAbsent(key, new OpMultimapEntry());
             log.debug("Creating new entry");
             if(entry == null) {
                 entry = map.get(key);

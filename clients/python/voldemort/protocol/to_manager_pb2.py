@@ -13,7 +13,7 @@ from google.protobuf import descriptor_pb2
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='to-manager.proto',
   package='voldemort',
-  serialized_pb='\n\x10to-manager.proto\x12\tvoldemort\"\x9a\x02\n\x0cMsgToManager\x12%\n\x08trackMsg\x18\x01 \x01(\x0b\x32\x13.voldemort.TrackMsg\x12+\n\x0bstartEndMsg\x18\x02 \x01(\x0b\x32\x16.voldemort.StartEndMsg\x12/\n\x12trackMsgFromClient\x18\x03 \x01(\x0b\x32\x13.voldemort.TrackMsg\x12\x30\n\x0cnodeRegistry\x18\x04 \x01(\x0b\x32\x1a.voldemort.NodeRegistryMsg\x12\x1e\n\x03\x61\x63k\x18\x05 \x01(\x0b\x32\x11.voldemort.AckMsg\x12\x33\n\x0f\x65ntryAccessList\x18\x06 \x03(\x0b\x32\x1a.voldemort.EntryAccessList\"+\n\x0f\x45ntryAccessList\x12\x0b\n\x03key\x18\x01 \x02(\x0c\x12\x0b\n\x03rid\x18\x02 \x03(\x03\"@\n\x08TrackMsg\x12$\n\x05\x65ntry\x18\x01 \x03(\x0b\x32\x15.voldemort.TrackEntry\x12\x0e\n\x06nodeId\x18\x02 \x01(\t\"-\n\nTrackEntry\x12\x0b\n\x03rid\x18\x01 \x02(\x03\x12\x12\n\ndependency\x18\x02 \x03(\x03\"4\n\x0bStartEndMsg\x12%\n\x03msg\x18\x01 \x03(\x0b\x32\x18.voldemort.StartEndEntry\"+\n\rStartEndEntry\x12\r\n\x05start\x18\x01 \x02(\x03\x12\x0b\n\x03\x65nd\x18\x02 \x02(\x03\"B\n\x03SRD\x12\x0b\n\x03rid\x18\x01 \x01(\x03\x12\x0e\n\x06\x62ranch\x18\x02 \x01(\x05\x12\x10\n\x08restrain\x18\x03 \x01(\x08\x12\x0c\n\x04redo\x18\x04 \x01(\x08\";\n\x06\x41\x63kMsg\x12\x0c\n\x04port\x18\x01 \x01(\x05\x12\x10\n\x08hostname\x18\x02 \x01(\t\x12\x11\n\texception\x18\x03 \x03(\t\"\x9a\x01\n\x0fNodeRegistryMsg\x12\x33\n\x05group\x18\x01 \x02(\x0e\x32$.voldemort.NodeRegistryMsg.NodeGroup\x12\x0c\n\x04port\x18\x02 \x02(\x05\x12\x10\n\x08hostname\x18\x03 \x02(\t\"2\n\tNodeGroup\x12\t\n\x05PROXY\x10\x01\x12\x0b\n\x07\x44\x42_NODE\x10\x02\x12\r\n\tREDO_NODE\x10\x03\x42\x1e\n\nundo.protoB\x0eToManagerProtoH\x01')
+  serialized_pb='\n\x10to-manager.proto\x12\tvoldemort\"\x9a\x02\n\x0cMsgToManager\x12%\n\x08trackMsg\x18\x01 \x01(\x0b\x32\x13.voldemort.TrackMsg\x12+\n\x0bstartEndMsg\x18\x02 \x01(\x0b\x32\x16.voldemort.StartEndMsg\x12/\n\x12trackMsgFromClient\x18\x03 \x01(\x0b\x32\x13.voldemort.TrackMsg\x12\x30\n\x0cnodeRegistry\x18\x04 \x01(\x0b\x32\x1a.voldemort.NodeRegistryMsg\x12\x1e\n\x03\x61\x63k\x18\x05 \x01(\x0b\x32\x11.voldemort.AckMsg\x12\x33\n\x0f\x65ntryAccessList\x18\x06 \x03(\x0b\x32\x1a.voldemort.EntryAccessList\"+\n\x0f\x45ntryAccessList\x12\x0b\n\x03key\x18\x01 \x02(\x0c\x12\x0b\n\x03rid\x18\x02 \x03(\x03\"@\n\x08TrackMsg\x12$\n\x05\x65ntry\x18\x01 \x03(\x0b\x32\x15.voldemort.TrackEntry\x12\x0e\n\x06nodeId\x18\x02 \x01(\t\"-\n\nTrackEntry\x12\x0b\n\x03rid\x18\x01 \x02(\x03\x12\x12\n\ndependency\x18\x02 \x03(\x03\"\x1b\n\x0bStartEndMsg\x12\x0c\n\x04\x64\x61ta\x18\x01 \x03(\x03\"B\n\x03SRD\x12\x0b\n\x03rid\x18\x01 \x01(\x03\x12\x0e\n\x06\x62ranch\x18\x02 \x01(\x05\x12\x10\n\x08restrain\x18\x03 \x01(\x08\x12\x0c\n\x04redo\x18\x04 \x01(\x08\";\n\x06\x41\x63kMsg\x12\x0c\n\x04port\x18\x01 \x01(\x05\x12\x10\n\x08hostname\x18\x02 \x01(\t\x12\x11\n\texception\x18\x03 \x03(\t\"\x9a\x01\n\x0fNodeRegistryMsg\x12\x33\n\x05group\x18\x01 \x02(\x0e\x32$.voldemort.NodeRegistryMsg.NodeGroup\x12\x0c\n\x04port\x18\x02 \x02(\x05\x12\x10\n\x08hostname\x18\x03 \x02(\t\"2\n\tNodeGroup\x12\t\n\x05PROXY\x10\x01\x12\x0b\n\x07\x44\x42_NODE\x10\x02\x12\r\n\tREDO_NODE\x10\x03\x42\x1e\n\nundo.protoB\x0eToManagerProtoH\x01')
 
 
 
@@ -38,8 +38,8 @@ _NODEREGISTRYMSG_NODEGROUP = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=807,
-  serialized_end=857,
+  serialized_start=737,
+  serialized_end=787,
 )
 
 
@@ -219,8 +219,8 @@ _STARTENDMSG = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='msg', full_name='voldemort.StartEndMsg.msg', index=0,
-      number=1, type=11, cpp_type=10, label=3,
+      name='data', full_name='voldemort.StartEndMsg.data', index=0,
+      number=1, type=3, cpp_type=2, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -235,42 +235,7 @@ _STARTENDMSG = _descriptor.Descriptor(
   is_extendable=False,
   extension_ranges=[],
   serialized_start=474,
-  serialized_end=526,
-)
-
-
-_STARTENDENTRY = _descriptor.Descriptor(
-  name='StartEndEntry',
-  full_name='voldemort.StartEndEntry',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='start', full_name='voldemort.StartEndEntry.start', index=0,
-      number=1, type=3, cpp_type=2, label=2,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    _descriptor.FieldDescriptor(
-      name='end', full_name='voldemort.StartEndEntry.end', index=1,
-      number=2, type=3, cpp_type=2, label=2,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  options=None,
-  is_extendable=False,
-  extension_ranges=[],
-  serialized_start=528,
-  serialized_end=571,
+  serialized_end=501,
 )
 
 
@@ -318,8 +283,8 @@ _SRD = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=573,
-  serialized_end=639,
+  serialized_start=503,
+  serialized_end=569,
 )
 
 
@@ -360,8 +325,8 @@ _ACKMSG = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=641,
-  serialized_end=700,
+  serialized_start=571,
+  serialized_end=630,
 )
 
 
@@ -403,8 +368,8 @@ _NODEREGISTRYMSG = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=703,
-  serialized_end=857,
+  serialized_start=633,
+  serialized_end=787,
 )
 
 _MSGTOMANAGER.fields_by_name['trackMsg'].message_type = _TRACKMSG
@@ -414,7 +379,6 @@ _MSGTOMANAGER.fields_by_name['nodeRegistry'].message_type = _NODEREGISTRYMSG
 _MSGTOMANAGER.fields_by_name['ack'].message_type = _ACKMSG
 _MSGTOMANAGER.fields_by_name['entryAccessList'].message_type = _ENTRYACCESSLIST
 _TRACKMSG.fields_by_name['entry'].message_type = _TRACKENTRY
-_STARTENDMSG.fields_by_name['msg'].message_type = _STARTENDENTRY
 _NODEREGISTRYMSG.fields_by_name['group'].enum_type = _NODEREGISTRYMSG_NODEGROUP
 _NODEREGISTRYMSG_NODEGROUP.containing_type = _NODEREGISTRYMSG;
 DESCRIPTOR.message_types_by_name['MsgToManager'] = _MSGTOMANAGER
@@ -422,7 +386,6 @@ DESCRIPTOR.message_types_by_name['EntryAccessList'] = _ENTRYACCESSLIST
 DESCRIPTOR.message_types_by_name['TrackMsg'] = _TRACKMSG
 DESCRIPTOR.message_types_by_name['TrackEntry'] = _TRACKENTRY
 DESCRIPTOR.message_types_by_name['StartEndMsg'] = _STARTENDMSG
-DESCRIPTOR.message_types_by_name['StartEndEntry'] = _STARTENDENTRY
 DESCRIPTOR.message_types_by_name['SRD'] = _SRD
 DESCRIPTOR.message_types_by_name['AckMsg'] = _ACKMSG
 DESCRIPTOR.message_types_by_name['NodeRegistryMsg'] = _NODEREGISTRYMSG
@@ -456,12 +419,6 @@ class StartEndMsg(_message.Message):
   DESCRIPTOR = _STARTENDMSG
 
   # @@protoc_insertion_point(class_scope:voldemort.StartEndMsg)
-
-class StartEndEntry(_message.Message):
-  __metaclass__ = _reflection.GeneratedProtocolMessageType
-  DESCRIPTOR = _STARTENDENTRY
-
-  # @@protoc_insertion_point(class_scope:voldemort.StartEndEntry)
 
 class SRD(_message.Message):
   __metaclass__ = _reflection.GeneratedProtocolMessageType
