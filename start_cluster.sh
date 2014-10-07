@@ -7,7 +7,7 @@ fi
 
 echo $1
 
-rm config/cluster/node_$1/config/voldsys*
-rm -r config/cluster/node_$1/data/
+#rm config/cluster/node_$1/config/voldsys*
+#rm -r config/cluster/node_$1/data/
 
 ./bin/voldemort-prod-server.sh config/cluster/node_$1

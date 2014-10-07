@@ -86,7 +86,7 @@ public class Pipeline {
 
     private final Map<Event, Action> eventActions;
 
-    private final Logger logger = Logger.getLogger(getClass());
+    private static final Logger logger = Logger.getLogger(Pipeline.class);
 
     private volatile boolean enableHintedHandoff = false;
 

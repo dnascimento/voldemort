@@ -40,6 +40,7 @@ import voldemort.store.StoreBinaryFormat;
 import voldemort.store.StoreUtils;
 import voldemort.store.backup.NativeBackupable;
 import voldemort.store.bdb.stats.BdbEnvironmentStats;
+import voldemort.undoTracker.DBProxy;
 import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 import voldemort.utils.ByteUtils;
@@ -277,7 +278,7 @@ public class BdbStorageEngine extends AbstractStorageEngine<ByteArray, byte[], b
         if(logger.isTraceEnabled())
             startTimeNs = System.nanoTime();
         try {
-            results = StoreUtils.getAll(this, keys, transforms,srd);
+            results = StoreUtils.getAll(this, keys, transforms, srd);
         } catch(PersistenceFailureException pfe) {
             throw pfe;
         } finally {
@@ -330,6 +331,7 @@ public class BdbStorageEngine extends AbstractStorageEngine<ByteArray, byte[], b
                     Occurred occurred = value.getVersion().compare(curr.getVersion());
                     if(occurred == Occurred.BEFORE)
                         throw new ObsoleteVersionException("Key "
+                                                           + DBProxy.hexStringToAscii(key)
                                                            + new String(hexCodec.encode(key.get()))
                                                            + " "
                                                            + value.getVersion().toString()

@@ -38,11 +38,10 @@ public class InMemoryPutAssertionStorageEngine<K, V, T> extends InMemoryStorageE
         StoreUtils.assertValidKey(key);
 
         // delete if exist
-        VersionedWithLock<V> result = map.remove(key);
+        List<Versioned<V>> result = map.remove(key);
         int size = -1;
         if(result != null) {
-            size = result.access().size();
-            result.release();
+            size = result.size();
         }
 
         if(result == null || size == 0) {

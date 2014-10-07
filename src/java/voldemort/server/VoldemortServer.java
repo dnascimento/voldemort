@@ -71,6 +71,38 @@ import com.google.common.collect.ImmutableList;
  */
 public class VoldemortServer extends AbstractService {
 
+    public static void main(String[] args) throws Exception {
+        VoldemortConfig config = null;
+        try {
+            if(args.length == 0)
+                config = VoldemortConfig.loadFromEnvironmentVariable();
+            else if(args.length == 1)
+                config = VoldemortConfig.loadFromVoldemortHome(args[0]);
+            else if(args.length == 2)
+                config = VoldemortConfig.loadFromVoldemortHome(args[0], args[1]);
+            else
+                croak("USAGE: java " + VoldemortServer.class.getName()
+                      + " [voldemort_home_dir] [voldemort_config_dir]");
+        } catch(Exception e) {
+            logger.error(e);
+            Utils.croak("Error while loading configuration: " + e.getMessage());
+        }
+
+        final VoldemortServer server = new VoldemortServer(config);
+        if(!server.isStarted())
+            server.start();
+
+        // add a shutdown hook to stop the server
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+
+            @Override
+            public void run() {
+                if(server.isStarted())
+                    server.stop();
+            }
+        });
+    }
+
     private static final Logger logger = Logger.getLogger(VoldemortServer.class.getName());
     public static final long DEFAULT_PUSHER_POLL_MS = 60 * 1000;
 
@@ -362,38 +394,6 @@ public class VoldemortServer extends AbstractService {
             throw exceptions.get(0);
         // release lock of jvm heap
         JNAUtils.tryMunlockall();
-    }
-
-    public static void main(String[] args) throws Exception {
-        VoldemortConfig config = null;
-        try {
-            if(args.length == 0)
-                config = VoldemortConfig.loadFromEnvironmentVariable();
-            else if(args.length == 1)
-                config = VoldemortConfig.loadFromVoldemortHome(args[0]);
-            else if(args.length == 2)
-                config = VoldemortConfig.loadFromVoldemortHome(args[0], args[1]);
-            else
-                croak("USAGE: java " + VoldemortServer.class.getName()
-                      + " [voldemort_home_dir] [voldemort_config_dir]");
-        } catch(Exception e) {
-            logger.error(e);
-            Utils.croak("Error while loading configuration: " + e.getMessage());
-        }
-
-        final VoldemortServer server = new VoldemortServer(config);
-        if(!server.isStarted())
-            server.start();
-
-        // add a shutdown hook to stop the server
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-
-            @Override
-            public void run() {
-                if(server.isStarted())
-                    server.stop();
-            }
-        });
     }
 
     public Node getIdentityNode() {
