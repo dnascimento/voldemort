@@ -115,7 +115,16 @@ public class Utils {
         if(files != null) {
             for(File f: files) {
                 if(f.isDirectory()) {
-                    rm(Arrays.asList(f.listFiles()));
+                    File[] contents = null;
+                    // Sometimes f.listFiles returns null and fails the test
+                    // Making it retry couple of times and ignoring the failure
+                    for(int i = 0; contents == null && i < 2; i++) {
+                        contents = f.listFiles();
+                    }
+
+                    if(contents != null) {
+                        rm(Arrays.asList(contents));
+                    }
                     f.delete();
                 } else {
                     f.delete();
@@ -300,6 +309,15 @@ public class Utils {
      */
     public static double safeGetPercentage(long rawNum, long total) {
         return total == 0 ? 0.0d : rawNum / (float) total;
+    }
+
+    /**
+     * Computes the percentage, taking care of division by 0.
+     * 
+     * @return number between 0-100+
+     */
+    public static int safeGetPercentage(float rawNum, float total) {
+        return total == 0f ? 0 : Math.round(rawNum * 100f / total);
     }
 
     /**

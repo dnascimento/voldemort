@@ -36,6 +36,7 @@ import java.io.PrintStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -78,9 +79,9 @@ import voldemort.serialization.Serializer;
 import voldemort.serialization.SerializerDefinition;
 import voldemort.serialization.SerializerFactory;
 import voldemort.serialization.StringSerializer;
-import voldemort.serialization.avro.versioned.SchemaEvolutionValidator;
 import voldemort.serialization.json.JsonReader;
 import voldemort.server.rebalance.RebalancerState;
+import voldemort.store.InvalidMetadataException;
 import voldemort.store.StoreDefinition;
 import voldemort.store.compress.CompressionStrategy;
 import voldemort.store.compress.CompressionStrategyFactory;
@@ -102,17 +103,20 @@ import voldemort.xml.ClusterMapper;
 import voldemort.xml.StoreDefinitionsMapper;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.sleepycat.persist.StoreNotFoundException;
 
 /**
  * Provides a command line interface to the
- * {@link voldemort.client.protocol.admin.AdminClient}
+ * {@link voldemort.client.protocol.admin.AdminClient}. This is the old
+ * Voldemort Admin Tool. Please use the new one:
+ * voldemort.tools.admin.VAdminTool
  */
+@Deprecated
 public class VoldemortAdminTool {
 
     private static final String ALL_METADATA = "all";
@@ -227,6 +231,15 @@ public class VoldemortAdminTool {
                                + MetadataStore.VoldemortState.REBALANCING_MASTER_SERVER)
               .withRequiredArg()
               .describedAs("metadata-value")
+              .ofType(String.class);
+        parser.accepts("update-store-defs",
+                       "Update the ["
+                               + MetadataStore.STORES_KEY
+                               + "] with the new value for only the specified stores in update-value.");
+        parser.accepts("update-store-value",
+                       "The value for update-store-defs ] - xml file location")
+              .withRequiredArg()
+              .describedAs("stores-xml-value")
               .ofType(String.class);
         parser.accepts("set-metadata-pair",
                        "Atomic setting of metadata pair [ " + MetadataStore.CLUSTER_KEY + " & "
@@ -349,7 +362,8 @@ public class VoldemortAdminTool {
             if(!(missing.equals(ImmutableSet.of("node"))
                  && (options.has("add-stores") || options.has("delete-store")
                      || options.has("ro-metadata") || options.has("set-metadata")
-                     || options.has("set-metadata-pair") || options.has("get-metadata") || options.has("check-metadata"))
+                     || options.has("update-store-defs") || options.has("set-metadata-pair")
+                     || options.has("get-metadata") || options.has("check-metadata"))
                  || options.has("truncate") || options.has("clear-rebalancing-metadata")
                  || options.has("async") || options.has("native-backup") || options.has("rollback")
                  || options.has("verify-metadata-version") || options.has("reserve-memory")
@@ -501,7 +515,7 @@ public class VoldemortAdminTool {
                         if(!Utils.isReadableFile(storesXMLPath))
                             throw new VoldemortException("Stores definition xml file path incorrect");
                         List<StoreDefinition> newStoreDefs = storeDefsMapper.readStoreList(new File(storesXMLPath));
-                        checkSchemaCompatibility(newStoreDefs);
+                        StoreDefinitionUtils.validateSchemasAsNeeded(newStoreDefs);
 
                         executeSetMetadataPair(nodeId,
                                                adminClient,
@@ -557,7 +571,7 @@ public class VoldemortAdminTool {
                             throw new VoldemortException("Stores definition xml file path incorrect");
                         StoreDefinitionsMapper mapper = new StoreDefinitionsMapper();
                         List<StoreDefinition> newStoreDefs = mapper.readStoreList(new File(metadataValue));
-                        checkSchemaCompatibility(newStoreDefs);
+                        StoreDefinitionUtils.validateSchemasAsNeeded(newStoreDefs);
 
                         // original metadata
                         Integer nodeIdToGetStoreXMLFrom = nodeId;
@@ -613,6 +627,35 @@ public class VoldemortAdminTool {
                     } else {
                         throw new VoldemortException("Incorrect metadata key");
                     }
+                }
+            } else if(options.has("update-store-defs")) {
+                if(!options.has("update-store-value")) {
+                    throw new VoldemortException("Missing update-store-value for update-store-defs");
+                } else {
+                    String storesXmlValue = (String) options.valueOf("update-store-value");
+
+                    if(!Utils.isReadableFile(storesXmlValue))
+                        throw new VoldemortException("Stores definition xml file path incorrect");
+
+                    StoreDefinitionsMapper mapper = new StoreDefinitionsMapper();
+                    List<StoreDefinition> newStoreDefs = mapper.readStoreList(new File(storesXmlValue));
+                    StoreDefinitionUtils.validateSchemasAsNeeded(newStoreDefs);
+
+                    if(options.has("auto")) {
+                        executeUpdateStoreDefinitions(nodeId, adminClient, newStoreDefs);
+                    } else {
+                        if(confirmMetadataUpdate(nodeId, adminClient, newStoreDefs)) {
+                            executeUpdateStoreDefinitions(nodeId, adminClient, newStoreDefs);
+                            if(nodeId >= 0) {
+                                System.err.println("WARNING: Metadata version update of stores goes to all servers, "
+                                                   + "although this set-metadata oprations only goes to node "
+                                                   + nodeId);
+                            }
+                        } else {
+                            System.out.println("New metadata has not been set");
+                        }
+                    }
+                    System.out.println("The store definitions have been successfully updated.");
                 }
             } else if(options.has("native-backup")) {
                 if(!options.has("backup-dir")) {
@@ -752,18 +795,25 @@ public class VoldemortAdminTool {
         }
     }
 
-    private static void checkSchemaCompatibility(List<StoreDefinition> storeDefs) {
-        String AVRO_GENERIC_VERSIONED_TYPE_NAME = "avro-generic-versioned";
-        for(StoreDefinition storeDef: storeDefs) {
-            SerializerDefinition keySerDef = storeDef.getKeySerializer();
-            SerializerDefinition valueSerDef = storeDef.getValueSerializer();
-            if(keySerDef.getName().equals(AVRO_GENERIC_VERSIONED_TYPE_NAME)) {
-                SchemaEvolutionValidator.checkSchemaCompatibility(keySerDef);
-            }
-            if(valueSerDef.getName().equals(AVRO_GENERIC_VERSIONED_TYPE_NAME)) {
-                SchemaEvolutionValidator.checkSchemaCompatibility(valueSerDef);
-            }
+    private static List<StoreDefinition> getStoreDefinitions(AdminClient adminClient, int nodeId) {
+        Versioned<List<StoreDefinition>> storeDefs = null;
+        if(nodeId >= 0) {
+            storeDefs = adminClient.metadataMgmtOps.getRemoteStoreDefList(nodeId);
+        } else {
+            storeDefs = adminClient.metadataMgmtOps.getRemoteStoreDefList();
         }
+        return storeDefs.getValue();
+    }
+
+    private static void executeUpdateStoreDefinitions(Integer nodeId,
+                                                      AdminClient adminClient,
+                                                      List<StoreDefinition> storesList) {
+        if(nodeId < 0) {
+            adminClient.metadataMgmtOps.updateRemoteStoreDefList(storesList);
+        } else {
+            adminClient.metadataMgmtOps.updateRemoteStoreDefList(nodeId, storesList);
+        }
+
     }
 
     private static String getMetadataVersionsForNode(AdminClient adminClient, int nodeId) {
@@ -957,19 +1007,21 @@ public class VoldemortAdminTool {
                        + MetadataStore.REBALANCING_SOURCE_CLUSTER_XML + ", "
                        + MetadataStore.REBALANCING_STEAL_INFO
                        + "] --set-metadata-value [metadata-value] --url [url] --node [node-id]");
-        stream.println("\t7) Check if metadata is same on all nodes");
+        stream.println("\t7) Update store definitions on all nodes");
+        stream.println("\t\t./bin/voldemort-admin-tool.sh --update-store-defs --update-store-value [Updated store definitions XML] --url [url]");
+        stream.println("\t8) Check if metadata is same on all nodes");
         stream.println("\t\t./bin/voldemort-admin-tool.sh --check-metadata ["
                        + MetadataStore.CLUSTER_KEY + ", " + MetadataStore.SERVER_STATE_KEY + ", "
                        + MetadataStore.STORES_KEY + "] --url [url]");
-        stream.println("\t8) Clear rebalancing metadata [" + MetadataStore.SERVER_STATE_KEY + ", "
+        stream.println("\t9) Clear rebalancing metadata [" + MetadataStore.SERVER_STATE_KEY + ", "
                        + ", " + MetadataStore.REBALANCING_SOURCE_CLUSTER_XML + ", "
                        + MetadataStore.REBALANCING_STEAL_INFO + "] on all node ");
         stream.println("\t\t./bin/voldemort-admin-tool.sh --clear-rebalancing-metadata --url [url]");
-        stream.println("\t9) Clear rebalancing metadata [" + MetadataStore.SERVER_STATE_KEY + ", "
+        stream.println("\t10) Clear rebalancing metadata [" + MetadataStore.SERVER_STATE_KEY + ", "
                        + ", " + MetadataStore.REBALANCING_SOURCE_CLUSTER_XML + ", "
                        + MetadataStore.REBALANCING_STEAL_INFO + "] on a particular node ");
         stream.println("\t\t./bin/voldemort-admin-tool.sh --clear-rebalancing-metadata --url [url] --node [node-id]");
-        stream.println("\t10) View detailed routing information for a given set of keys.");
+        stream.println("\t11) View detailed routing information for a given set of keys.");
         stream.println("bin/voldemort-admin-tool.sh --url <url> --show-routing-plan key1,key2,.. --store <store-name>");
         stream.println();
         stream.println("ADD / DELETE STORES");
@@ -1135,25 +1187,95 @@ public class VoldemortAdminTool {
         executeSetMetadata(nodeId, adminClient, MetadataStore.REBALANCING_SOURCE_CLUSTER_XML, "");
     }
 
+    private static void addMetadataValue(Map<Object, List<String>> allValues,
+                                         Object metadataValue,
+                                         String node) {
+        if(allValues.containsKey(metadataValue) == false) {
+            allValues.put(metadataValue, new ArrayList<String>());
+        }
+        allValues.get(metadataValue).add(node);
+    }
+
+    private static Boolean checkDiagnostics(String keyName,
+                                            Map<Object, List<String>> metadataValues,
+                                            Collection<String> allNodeNames) {
+
+        Collection<String> nodesInResult = new ArrayList<String>();
+        Boolean checkResult = true;
+
+        if(metadataValues.size() == 1) {
+            Map.Entry<Object, List<String>> entry = metadataValues.entrySet().iterator().next();
+            nodesInResult.addAll(entry.getValue());
+        } else {
+            // Some nodes have different set of data than the others.
+            checkResult = false;
+            int groupCount = 0;
+            for(Map.Entry<Object, List<String>> entry: metadataValues.entrySet()) {
+                groupCount++;
+                System.err.println("Nodes with same value for " + keyName + ". Id :" + groupCount);
+                nodesInResult.addAll(entry.getValue());
+                for(String nodeName: entry.getValue()) {
+                    System.err.println("Node " + nodeName);
+                }
+                System.out.println();
+            }
+        }
+
+        // Some times when a store could be missing from one of the nodes
+        // In that case the map will have only one value, but total number
+        // of nodes will be lesser. The following code handles that.
+
+        // removeAll modifies the list that is being called on. so create a copy
+        Collection<String> nodesDiff = new ArrayList<String>(allNodeNames.size());
+        nodesDiff.addAll(allNodeNames);
+        nodesDiff.removeAll(nodesInResult);
+
+        if(nodesDiff.size() > 0) {
+            checkResult = false;
+            for(String nodeName: nodesDiff) {
+                System.err.println("key " + keyName + " is missing in the Node " + nodeName);
+            }
+        }
+        return checkResult;
+    }
+
     private static void executeCheckMetadata(AdminClient adminClient, String metadataKey) {
 
-        Set<Object> metadataValues = Sets.newHashSet();
-        for(Node node: adminClient.getAdminClientCluster().getNodes()) {
-            System.out.println(node.getHost() + ":" + node.getId());
+        Map<String, Map<Object, List<String>>> storeNodeValueMap = new HashMap<String, Map<Object, List<String>>>();
+        Map<Object, List<String>> metadataNodeValueMap = new HashMap<Object, List<String>>();
+        Collection<Node> allNodes = adminClient.getAdminClientCluster().getNodes();
+        Collection<String> allNodeNames = new ArrayList<String>();
+
+        Boolean checkResult = true;
+        for(Node node: allNodes) {
+            String nodeName = "Host '" + node.getHost() + "' : ID " + node.getId();
+            allNodeNames.add(nodeName);
+
+            System.out.println("processing " + nodeName);
+
             Versioned<String> versioned = adminClient.metadataMgmtOps.getRemoteMetadata(node.getId(),
                                                                                         metadataKey);
             if(versioned == null || versioned.getValue() == null) {
                 throw new VoldemortException("Value returned from node " + node.getId()
                                              + " was null");
+            } else if(metadataKey.compareTo(MetadataStore.STORES_KEY) == 0) {
+                List<StoreDefinition> storeDefinitions = new StoreDefinitionsMapper().readStoreList(new StringReader(versioned.getValue()));
+                for(StoreDefinition storeDef: storeDefinitions) {
+                    String storeName = storeDef.getName();
+                    if(storeNodeValueMap.containsKey(storeName) == false) {
+                        storeNodeValueMap.put(storeName, new HashMap<Object, List<String>>());
+                    }
+                    Map<Object, List<String>> storeDefMap = storeNodeValueMap.get(storeName);
+                    addMetadataValue(storeDefMap, storeDef, nodeName);
+                }
             } else {
-
                 if(metadataKey.compareTo(MetadataStore.CLUSTER_KEY) == 0
                    || metadataKey.compareTo(MetadataStore.REBALANCING_SOURCE_CLUSTER_XML) == 0) {
-                    metadataValues.add(new ClusterMapper().readCluster(new StringReader(versioned.getValue())));
-                } else if(metadataKey.compareTo(MetadataStore.STORES_KEY) == 0) {
-                    metadataValues.add(new StoreDefinitionsMapper().readStoreList(new StringReader(versioned.getValue())));
+                    Cluster cluster = new ClusterMapper().readCluster(new StringReader(versioned.getValue()));
+                    addMetadataValue(metadataNodeValueMap, cluster, nodeName);
                 } else if(metadataKey.compareTo(MetadataStore.SERVER_STATE_KEY) == 0) {
-                    metadataValues.add(VoldemortState.valueOf(versioned.getValue()));
+                    VoldemortState voldemortStateValue = VoldemortState.valueOf(versioned.getValue());
+                    addMetadataValue(metadataNodeValueMap, voldemortStateValue, nodeName);
                 } else {
                     throw new VoldemortException("Incorrect metadata key");
                 }
@@ -1161,11 +1283,19 @@ public class VoldemortAdminTool {
             }
         }
 
-        if(metadataValues.size() == 1) {
-            System.out.println("true");
-        } else {
-            System.out.println("false");
+        if(metadataNodeValueMap.size() > 0) {
+            checkResult &= checkDiagnostics(metadataKey, metadataNodeValueMap, allNodeNames);
         }
+
+        if(storeNodeValueMap.size() > 0) {
+            for(Map.Entry<String, Map<Object, List<String>>> storeNodeValueEntry: storeNodeValueMap.entrySet()) {
+                String storeName = storeNodeValueEntry.getKey();
+                Map<Object, List<String>> storeDefMap = storeNodeValueEntry.getValue();
+                checkResult &= checkDiagnostics(storeName, storeDefMap, allNodeNames);
+            }
+        }
+
+        System.out.println("metadata check : " + (checkResult ? "PASSED" : "FAILED"));
     }
 
     /*
@@ -1309,9 +1439,8 @@ public class VoldemortAdminTool {
         if(storeNames == null) {
             // Retrieve list of read-only stores
             storeNames = Lists.newArrayList();
-            for(StoreDefinition storeDef: adminClient.metadataMgmtOps.getRemoteStoreDefList(nodeId > 0 ? nodeId
-                                                                                                      : 0)
-                                                                     .getValue()) {
+
+            for(StoreDefinition storeDef: getStoreDefinitions(adminClient, nodeId)) {
                 if(storeDef.getType().compareTo(ReadOnlyStorageConfiguration.TYPE_NAME) == 0) {
                     storeNames.add(storeDef.getName());
                 }
@@ -1475,8 +1604,7 @@ public class VoldemortAdminTool {
                                             boolean useAscii,
                                             boolean fetchOrphaned) throws IOException {
 
-        List<StoreDefinition> storeDefinitionList = adminClient.metadataMgmtOps.getRemoteStoreDefList(nodeId)
-                                                                               .getValue();
+        List<StoreDefinition> storeDefinitionList = getStoreDefinitions(adminClient, nodeId);
         HashMap<String, StoreDefinition> storeDefinitionMap = Maps.newHashMap();
         for(StoreDefinition storeDefinition: storeDefinitionList) {
             storeDefinitionMap.put(storeDefinition.getName(), storeDefinition);
@@ -1634,8 +1762,7 @@ public class VoldemortAdminTool {
                                              AdminClient adminClient,
                                              List<String> storeNames,
                                              String inputDirPath) throws IOException {
-        List<StoreDefinition> storeDefinitionList = adminClient.metadataMgmtOps.getRemoteStoreDefList(nodeId)
-                                                                               .getValue();
+        List<StoreDefinition> storeDefinitionList = getStoreDefinitions(adminClient, nodeId);
         Map<String, StoreDefinition> storeDefinitionMap = Maps.newHashMap();
         for(StoreDefinition storeDefinition: storeDefinitionList) {
             storeDefinitionMap.put(storeDefinition.getName(), storeDefinition);
@@ -1721,8 +1848,7 @@ public class VoldemortAdminTool {
                                          List<String> storeNames,
                                          boolean useAscii,
                                          boolean fetchOrphaned) throws IOException {
-        List<StoreDefinition> storeDefinitionList = adminClient.metadataMgmtOps.getRemoteStoreDefList(nodeId)
-                                                                               .getValue();
+        List<StoreDefinition> storeDefinitionList = getStoreDefinitions(adminClient, nodeId);
         Map<String, StoreDefinition> storeDefinitionMap = Maps.newHashMap();
         for(StoreDefinition storeDefinition: storeDefinitionList) {
             storeDefinitionMap.put(storeDefinition.getName(), storeDefinition);
@@ -1892,8 +2018,7 @@ public class VoldemortAdminTool {
         List<String> stores = storeNames;
         if(stores == null) {
             stores = Lists.newArrayList();
-            List<StoreDefinition> storeDefinitionList = adminClient.metadataMgmtOps.getRemoteStoreDefList(nodeId)
-                                                                                   .getValue();
+            List<StoreDefinition> storeDefinitionList = getStoreDefinitions(adminClient, nodeId);
             for(StoreDefinition storeDefinition: storeDefinitionList) {
                 stores.add(storeDefinition.getName());
             }
@@ -1911,17 +2036,6 @@ public class VoldemortAdminTool {
                                         List<String> storeNames,
                                         String keyString,
                                         String keyFormat) throws IOException {
-        // decide queryNode for storeDef
-        int storeDefNodeId;
-        if(nodeId < 0) {
-            Iterator<Node> nodeIterator = adminClient.getAdminClientCluster().getNodes().iterator();
-            if(!nodeIterator.hasNext()) {
-                throw new VoldemortException("No nodes in this cluster");
-            }
-            storeDefNodeId = nodeIterator.next().getId();
-        } else {
-            storeDefNodeId = nodeId;
-        }
 
         // decide queryingNode(s) for Key
         List<Integer> queryingNodes = new ArrayList<Integer>();
@@ -1934,8 +2048,7 @@ public class VoldemortAdminTool {
         }
 
         // get basic info
-        List<StoreDefinition> storeDefinitionList = adminClient.metadataMgmtOps.getRemoteStoreDefList(storeDefNodeId)
-                                                                               .getValue();
+        List<StoreDefinition> storeDefinitionList = getStoreDefinitions(adminClient, nodeId);
         Map<String, StoreDefinition> storeDefinitions = new HashMap<String, StoreDefinition>();
         for(StoreDefinition storeDef: storeDefinitionList) {
             storeDefinitions.put(storeDef.getName(), storeDef);
@@ -2007,8 +2120,7 @@ public class VoldemortAdminTool {
             out.write("\n");
 
             // although the streamingOps support multiple keys, we only query
-            // one
-            // key here
+            // one key here
             ByteArray key;
             try {
                 if(keyFormat.equals("readable")) {
@@ -2046,6 +2158,10 @@ public class VoldemortAdminTool {
             }
 
             boolean printedKey = false;
+            // A Map<> could have been used instead of List<Entry<>> if
+            // Versioned supported correct hash codes. Read the comment in
+            // Versioned about the issue
+            List<Entry<List<Versioned<byte[]>>, List<Integer>>> nodeValues = new ArrayList<Entry<List<Versioned<byte[]>>, List<Integer>>>();
             for(final Integer queryNodeId: queryingNodes) {
                 Iterator<QueryKeyResult> iterator;
                 iterator = adminClient.streamingOps.queryKeys(queryNodeId,
@@ -2054,32 +2170,50 @@ public class VoldemortAdminTool {
                 final StringWriter stringWriter = new StringWriter();
 
                 QueryKeyResult queryKeyResult = iterator.next();
-                // de-serialize and write key
-                byte[] keyBytes = queryKeyResult.getKey().get();
-                Object keyObject = keySerializer.toObject((null == keyCompressionStrategy) ? keyBytes
-                                                                                          : keyCompressionStrategy.inflate(keyBytes));
 
                 if(!printedKey) {
-                    out.write("KEY_BYTES\n====================================\n");
-                    out.write(queryKeyResult.getKey().toString());
-                    out.write("\n====================================\n");
-                    out.write("KEY_TEXT\n====================================\n");
-                    if(keyObject instanceof GenericRecord) {
-                        out.write(keyObject.toString());
-                    } else {
-                        new JsonFactory(new ObjectMapper()).createJsonGenerator(out)
-                                                           .writeObject(keyObject);
-                    }
-                    out.write("\n====================================\n\n");
+                    // de-serialize and write key
+                    byte[] keyBytes = queryKeyResult.getKey().get();
+                    Object keyObject = keySerializer.toObject((null == keyCompressionStrategy) ? keyBytes
+                                                                                              : keyCompressionStrategy.inflate(keyBytes));
+
+                    writeVoldKeyOrValueInternal(keyBytes,
+                                                keySerializer,
+                                                keyCompressionStrategy,
+                                                "KEY",
+                                                out);
                     printedKey = true;
                 }
-                out.write(String.format("\nQueried node %d on store %s\n", queryNodeId, storeName));
 
                 // iterate through, de-serialize and write values
                 if(queryKeyResult.hasValues() && queryKeyResult.getValues().size() > 0) {
+
+                    int elementId = -1;
+                    for(int i = 0; i < nodeValues.size(); i++) {
+                        if(Objects.equal(nodeValues.get(i).getKey(), queryKeyResult.getValues())) {
+                            elementId = i;
+                            break;
+                        }
+                    }
+
+                    if(elementId == -1) {
+                        ArrayList<Integer> nodes = new ArrayList<Integer>();
+                        nodes.add(queryNodeId);
+                        nodeValues.add(new AbstractMap.SimpleEntry<List<Versioned<byte[]>>, List<Integer>>(queryKeyResult.getValues(),
+                                                                                                           nodes));
+                    } else {
+                        nodeValues.get(elementId).getValue().add(queryNodeId);
+                    }
+
+                    out.write(String.format("\nQueried node %d on store %s\n",
+                                            queryNodeId,
+                                            storeName));
+
                     int versionCount = 0;
 
-                    out.write("VALUE " + versionCount + "\n");
+                    if(queryKeyResult.getValues().size() > 1) {
+                        out.write("VALUE " + versionCount + "\n");
+                    }
 
                     for(Versioned<byte[]> versioned: queryKeyResult.getValues()) {
 
@@ -2092,34 +2226,74 @@ public class VoldemortAdminTool {
 
                         // write value
                         byte[] valueBytes = versioned.getValue();
-                        out.write("VALUE_BYTE\n====================================\n");
-                        out.write(ByteUtils.toHexString(valueBytes));
-                        out.write("\n====================================\n");
-                        out.write("VALUE_TEXT\n====================================\n");
-                        Object valueObject = valueSerializer.toObject((null == valueCompressionStrategy) ? valueBytes
-                                                                                                        : valueCompressionStrategy.inflate(valueBytes));
-                        if(valueObject instanceof GenericRecord) {
-                            out.write(valueObject.toString());
-                        } else {
-                            new JsonFactory(new ObjectMapper()).createJsonGenerator(out)
-                                                               .writeObject(valueObject);
-                        }
-                        out.write("\n====================================\n");
+                        writeVoldKeyOrValueInternal(valueBytes,
+                                                    valueSerializer,
+                                                    valueCompressionStrategy,
+                                                    "VALUE",
+                                                    out);
                         versionCount++;
                     }
-                } else {
-                    out.write("VALUE_RESPONSE\n====================================\n");
-                    // write null or exception
-                    if(queryKeyResult.hasException()) {
+                } // If a node does not host a key, it returns invalidmetdata
+                  // exception.
+                else if(queryKeyResult.hasException()) {
+                    boolean isInvalidMetadataException = queryKeyResult.getException() instanceof InvalidMetadataException;
+
+                    // Print the exception if not InvalidMetadataException or
+                    // you are querying only a single node.
+                    if(!isInvalidMetadataException || queryingNodes.size() == 1) {
+                        out.write(String.format("\nNode %d on store %s returned exception\n",
+                                                queryNodeId,
+                                                storeName));
                         out.write(queryKeyResult.getException().toString());
-                    } else {
-                        out.write("null");
+                        out.write("\n====================================\n");
                     }
-                    out.write("\n====================================\n");
+                } else {
+                    if(queryingNodes.size() == 1) {
+                        out.write(String.format("\nNode %d on store %s returned NULL\n",
+                                                queryNodeId,
+                                                storeName));
+                        out.write("\n====================================\n");
+                    }
                 }
                 out.flush();
             }
+
+            out.write("\n====================================\n");
+            for(Map.Entry<List<Versioned<byte[]>>, List<Integer>> nodeValue: nodeValues) {
+                out.write("Nodes with same Value "
+                          + Arrays.toString(nodeValue.getValue().toArray()));
+                out.write("\n====================================\n");
+            }
+            if(nodeValues.size() > 1) {
+                out.write("\n*** Multiple (" + nodeValues.size()
+                          + ") versions of key/value exist for the key ***\n");
+            }
+            out.flush();
         }
+    }
+
+    private static void writeVoldKeyOrValueInternal(byte[] input,
+                                                    Serializer<Object> serializer,
+                                                    CompressionStrategy compressionStrategy,
+                                                    String prefix,
+                                                    BufferedWriter out) throws IOException {
+        out.write(prefix + "_BYTES\n====================================\n");
+        out.write(ByteUtils.toHexString(input));
+        out.write("\n====================================\n");
+        try {
+            Object inputObject = serializer.toObject((null == compressionStrategy) ? input
+                                                                                  : compressionStrategy.inflate(input));
+
+            out.write(prefix + "_TEXT\n====================================\n");
+            if(inputObject instanceof GenericRecord) {
+                out.write(inputObject.toString());
+            } else {
+                new JsonFactory(new ObjectMapper()).createJsonGenerator(out)
+                                                   .writeObject(inputObject);
+            }
+            out.write("\n====================================\n\n");
+        } catch(SerializationException e) {}
+
     }
 
     private static void executeShowRoutingPlan(AdminClient adminClient,
@@ -2127,7 +2301,7 @@ public class VoldemortAdminTool {
                                                List<String> keyList) throws DecoderException {
 
         Cluster cluster = adminClient.getAdminClientCluster();
-        List<StoreDefinition> storeDefs = adminClient.metadataMgmtOps.getRemoteStoreDefList(0)
+        List<StoreDefinition> storeDefs = adminClient.metadataMgmtOps.getRemoteStoreDefList()
                                                                      .getValue();
         StoreDefinition storeDef = StoreDefinitionUtils.getStoreDefinitionWithName(storeDefs,
                                                                                    storeName);
@@ -2165,14 +2339,15 @@ public class VoldemortAdminTool {
                     numReplicas = zoneRepMap.get(zone.getId());
                 }
 
-                System.out.format("%s%s%s\n",
+                String FormatString = "%s %s %s\n";
+                System.out.format(FormatString,
                                   Utils.paddedString("REPLICA#", COLUMN_WIDTH),
                                   Utils.paddedString("PARTITION", COLUMN_WIDTH),
                                   Utils.paddedString("NODE", COLUMN_WIDTH));
                 for(int i = 0; i < numReplicas; i++) {
                     Integer nodeId = bRoutingPlan.getNodeIdForZoneNary(zone.getId(), i, key);
                     Integer partitionId = routingPlan.getNodesPartitionIdForKey(nodeId, key);
-                    System.out.format("%s%s%s\n",
+                    System.out.format(FormatString,
                                       Utils.paddedString(i + "", COLUMN_WIDTH),
                                       Utils.paddedString(partitionId.toString(), COLUMN_WIDTH),
                                       Utils.paddedString(nodeId + "("

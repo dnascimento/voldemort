@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
+import voldemort.client.LazyStoreClient;
 import voldemort.client.StoreClient;
 import voldemort.client.StoreClientFactory;
 import voldemort.cluster.failuredetector.FailureDetector;
@@ -46,14 +48,16 @@ import com.linkedin.r2.transport.http.client.HttpClientFactory;
  */
 public class RESTClientFactory implements StoreClientFactory {
 
+    public static final int SHUTDOWN_TIMEOUT = 10;
     private RESTClientConfig config = null;
     private final StoreStats stats;
     private Logger logger = Logger.getLogger(RESTClientFactory.class);
     private SerializerFactory serializerFactory = new DefaultSerializerFactory();
     private HttpClientFactory _clientFactory;
-    private final TransportClient transportClient;
+    private TransportClient transportClient = null;
     private final StoreClientFactoryStats RESTClientFactoryStats;
     private Client d2Client;
+    private RESTClientFactoryConfig restClientFactoryConfig;
 
     /**
      * This list holds a reference to all the raw stores created by this
@@ -65,20 +69,14 @@ public class RESTClientFactory implements StoreClientFactory {
     private HashMap<String, SerializerDefinition> keySerializerMap;
     private HashMap<String, SerializerDefinition> valueSerializerMap;
 
-    public RESTClientFactory(Config config) {
-        this.config = new RESTClientConfig(config.getClientConfig());
-        this.d2Client = config.getD2Client();
-
-        this.stats = new StoreStats();
+    public RESTClientFactory(RESTClientFactoryConfig config) {
+        this.restClientFactoryConfig = config;
+        this.config = new RESTClientConfig(restClientFactoryConfig.getClientConfig());
+        this.stats = new StoreStats("aggregate.rest-client-factory");
         this.rawStoreList = new ArrayList<R2Store>();
-
         // Create the R2 (Netty) Factory object
         // TODO: Add monitoring for R2 factory
         this._clientFactory = new HttpClientFactory();
-        Map<String, String> properties = new HashMap<String, String>();
-        properties.put(HttpClientFactory.POOL_SIZE_KEY,
-                       Integer.toString(this.config.getMaxR2ConnectionPoolSize()));
-        transportClient = _clientFactory.getClient(properties);
         this.RESTClientFactoryStats = new StoreClientFactoryStats();
         keySerializerMap = new HashMap<String, SerializerDefinition>();
         valueSerializerMap = new HashMap<String, SerializerDefinition>();
@@ -105,11 +103,18 @@ public class RESTClientFactory implements StoreClientFactory {
      * @return
      */
     @Override
-    public <K, V> StoreClient<K, V> getStoreClient(String storeName,
-                                                   InconsistencyResolver<Versioned<V>> resolver) {
-        Store<K, V, Object> clientStore = getRawStore(storeName, resolver);
-        return new RESTClient<K, V>(storeName, clientStore);
+    public <K, V> StoreClient<K, V> getStoreClient(final String storeName,
+                                                   final InconsistencyResolver<Versioned<V>> resolver) {
+        // wrap it in LazyStoreClient here so any direct calls to this method
+        // returns a lazy client
+        return new LazyStoreClient<K, V>(new Callable<StoreClient<K, V>>() {
 
+            @Override
+            public StoreClient<K, V> call() throws Exception {
+                Store<K, V, Object> clientStore = getRawStore(storeName, resolver);
+                return new RESTClient<K, V>(storeName, clientStore);
+            }
+        }, true);
     }
 
     @Override
@@ -120,12 +125,19 @@ public class RESTClientFactory implements StoreClientFactory {
 
         // The lowest layer : Transporting request to coordinator
         R2Store r2store = null;
+        this.d2Client = restClientFactoryConfig.getD2Client();
         if(this.d2Client == null) {
+            logger.info("Using transportclient since d2client is not available");
+            Map<String, String> properties = new HashMap<String, String>();
+            properties.put(HttpClientFactory.HTTP_POOL_SIZE,
+                           Integer.toString(this.config.getMaxR2ConnectionPoolSize()));
+            transportClient = _clientFactory.getClient(properties);
             r2store = new R2Store(storeName,
                                   this.config.getHttpBootstrapURL(),
                                   this.transportClient,
                                   this.config);
         } else {
+            logger.info("Using d2client");
             r2store = new R2Store(storeName,
                                   this.config.getHttpBootstrapURL(),
                                   this.d2Client,
@@ -156,7 +168,7 @@ public class RESTClientFactory implements StoreClientFactory {
         // First, the transport layer
         Store<ByteArray, byte[], byte[]> store = r2store;
 
-        // TODO: Add jmxId / some unique identifier to the Mbean name
+        // TODO: Add identifierString to the Mbean name
         if(this.config.isEnableJmx()) {
             StatTrackingStore statStore = new StatTrackingStore(store, this.stats);
             store = statStore;
@@ -191,9 +203,25 @@ public class RESTClientFactory implements StoreClientFactory {
         for(R2Store store: this.rawStoreList) {
             store.close();
         }
+        // shutdown the transportclient in the case when no r2store is created
+        if(this.transportClient != null) {
+            final FutureCallback<None> clientShutdownCallback = new FutureCallback<None>();
+            this.transportClient.shutdown(clientShutdownCallback);
+            try {
+                clientShutdownCallback.get();
+            } catch(InterruptedException e) {
+                logger.error("Interrupted while shutting down the TransportClient: "
+                                     + e.getMessage(),
+                             e);
+            } catch(ExecutionException e) {
+                logger.error("Execution exception occurred while shutting down the TransportClient: "
+                                     + e.getMessage(),
+                             e);
+            }
+        }
 
         final FutureCallback<None> factoryShutdownCallback = new FutureCallback<None>();
-        this._clientFactory.shutdown(factoryShutdownCallback);
+        this._clientFactory.shutdown(factoryShutdownCallback, SHUTDOWN_TIMEOUT, TimeUnit.SECONDS);
         try {
             factoryShutdownCallback.get();
         } catch(InterruptedException e) {
@@ -222,39 +250,6 @@ public class RESTClientFactory implements StoreClientFactory {
             return valueSerializerMap.get(storeName);
         }
         return null;
-    }
-
-    /**
-     * Inner configuration class.
-     */
-    public static class Config {
-
-        private Properties clientConfig;
-        private Client d2Client;
-
-        public Config() {}
-
-        public Config(Properties clientConfig, Client d2Client) {
-            setClientConfig(clientConfig);
-            setD2Client(d2Client);
-        }
-
-        public Properties getClientConfig() {
-            return clientConfig;
-        }
-
-        public void setClientConfig(Properties clientConfig) {
-            this.clientConfig = clientConfig;
-        }
-
-        public Client getD2Client() {
-            return d2Client;
-        }
-
-        public void setD2Client(Client d2Client) {
-            this.d2Client = d2Client;
-        }
-
     }
 
 }

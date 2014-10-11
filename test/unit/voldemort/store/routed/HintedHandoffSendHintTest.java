@@ -133,7 +133,7 @@ public class HintedHandoffSendHintTest {
                                                          config.getSocketBufferSize(),
                                                          config.getSocketKeepAlive(),
                                                          false,
-                                                         0);
+                                                         new String());
         }
 
         protected SocketStore getSocketTestStoreByNode(Node node) {

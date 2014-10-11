@@ -33,7 +33,7 @@ import com.google.protobuf.ByteString;
  */
 public class OpMultimap implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private transient static final long serialVersionUID = 1L;
     private transient static final Logger log = Logger.getLogger(OpMultimap.class.getName());
 
     /**

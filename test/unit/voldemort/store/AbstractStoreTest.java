@@ -95,6 +95,7 @@ public abstract class AbstractStoreTest<K, V, T> extends TestCase {
     protected void assertEquals(Versioned<V> v1, Versioned<V> v2) {
         assertEquals(null, v1, v2);
     }
+    
 
     public void assertContains(Collection<Versioned<V>> collection, Versioned<V> value) {
         boolean found = false;
@@ -262,9 +263,8 @@ public abstract class AbstractStoreTest<K, V, T> extends TestCase {
 
         // check that there is a single remaining version, namely the
         // non-deleted
-        assertEquals(1, found.size());
+        assertValueEquals(v2.getValue(), found);
         assertEquals(v2.getVersion(), found.get(0).getVersion());
-        assertTrue(valuesEqual(v2.getValue(), found.get(0).getValue()));
 
         // now delete that version too
         assertTrue("Delete failed!", store.delete(key, c2, new SRD()));
@@ -302,13 +302,7 @@ public abstract class AbstractStoreTest<K, V, T> extends TestCase {
         List<K> keysForGet = keys.subList(0, countForGet);
         List<V> valuesForGet = values.subList(0, countForGet);
         Map<K, List<Versioned<V>>> result = store.getAll(keysForGet, null, new SRD());
-        assertEquals(countForGet, result.size());
-        for(int i = 0; i < keysForGet.size(); ++i) {
-            K key = keysForGet.get(i);
-            V expectedValue = valuesForGet.get(i);
-            List<Versioned<V>> versioneds = result.get(key);
-            assertGetAllValues(expectedValue, versioneds);
-        }
+        assertGetAllValues(keysForGet, valuesForGet, result);
     }
 
     @Test
@@ -326,12 +320,27 @@ public abstract class AbstractStoreTest<K, V, T> extends TestCase {
         store.close();
     }
 
-    protected void assertGetAllValues(V expectedValue, List<Versioned<V>> versioneds) {
-        assertEquals(1, versioneds.size());
-        valuesEqual(expectedValue, versioneds.get(0).getValue());
+    protected void assertValueEquals(V expectedValue, List<Versioned<V>> versioneds) {
+        assertEquals("Value expected to have a single version",1, versioneds.size());
+        assertTrue("GetAll Get value differs from put value",
+                   valuesEqual(expectedValue, versioneds.get(0).getValue()));
     }
 
     protected boolean allowConcurrentOperations() {
         return true;
     }
+    
+    protected void assertGetAllValues(List<K> keys,
+                                      List<V> values,
+                                      Map<K, List<Versioned<V>>> result) {
+        assertEquals(keys.size(), values.size());
+        assertEquals(keys.size(), result.size());
+        for(int i = 0; i < keys.size(); ++i) {
+            K key = keys.get(i);
+            V expectedValue = values.get(i);
+            List<Versioned<V>> versioneds = result.get(key);
+            assertValueEquals(expectedValue, versioneds);
+        }
+    }
+
 }

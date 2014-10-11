@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -90,9 +89,9 @@ import com.google.common.collect.Lists;
  */
 public class AdminServiceRequestHandler implements RequestHandler {
 
-    private static final Logger logger = Logger.getLogger(AdminServiceRequestHandler.class);
+    private final static Logger logger = Logger.getLogger(AdminServiceRequestHandler.class);
 
-    private static final Object lock = new Object();
+    private final static Object lock = new Object();
 
     private final ErrorCodeMapper errorCodeMapper;
     private final MetadataStore metadataStore;
@@ -173,7 +172,11 @@ public class AdminServiceRequestHandler implements RequestHandler {
                 break;
             case UPDATE_METADATA:
                 ProtoUtils.writeMessage(outputStream,
-                                        handleUpdateMetadata(request.getUpdateMetadata()));
+                                        handleSetMetadata(request.getUpdateMetadata()));
+                break;
+            case UPDATE_STORE_DEFINITIONS:
+                ProtoUtils.writeMessage(outputStream,
+                                        handleUpdateStoreDefinitions(request.getUpdateMetadata()));
                 break;
             case UPDATE_METADATA_PAIR:
                 ProtoUtils.writeMessage(outputStream,
@@ -1209,7 +1212,7 @@ public class AdminServiceRequestHandler implements RequestHandler {
         return response.build();
     }
 
-    public VAdminProto.UpdateMetadataResponse handleUpdateMetadata(VAdminProto.UpdateMetadataRequest request) {
+    public VAdminProto.UpdateMetadataResponse handleSetMetadata(VAdminProto.UpdateMetadataRequest request) {
         VAdminProto.UpdateMetadataResponse.Builder response = VAdminProto.UpdateMetadataResponse.newBuilder();
 
         try {
@@ -1217,11 +1220,36 @@ public class AdminServiceRequestHandler implements RequestHandler {
             String keyString = ByteUtils.getString(key.get(), "UTF-8");
             if(MetadataStore.METADATA_KEYS.contains(keyString)) {
                 Versioned<byte[]> versionedValue = ProtoUtils.decodeVersioned(request.getVersioned());
+
                 logger.info("Updating metadata for key '" + keyString + "'");
                 metadataStore.put(new ByteArray(ByteUtils.getBytes(keyString, "UTF-8")),
                                   versionedValue,
                                   null,
                                   new SRD());
+                logger.info("Successfully updated metadata for key '" + keyString + "'");
+            }
+        } catch(VoldemortException e) {
+            response.setError(ProtoUtils.encodeError(errorCodeMapper, e));
+            logger.error("handleUpdateMetadata failed for request(" + request.toString() + ")", e);
+        }
+
+        return response.build();
+    }
+
+    public VAdminProto.UpdateMetadataResponse handleUpdateStoreDefinitions(VAdminProto.UpdateMetadataRequest request) {
+        VAdminProto.UpdateMetadataResponse.Builder response = VAdminProto.UpdateMetadataResponse.newBuilder();
+
+        try {
+            ByteArray key = ProtoUtils.decodeBytes(request.getKey());
+            String keyString = ByteUtils.getString(key.get(), "UTF-8");
+            if(MetadataStore.METADATA_KEYS.contains(keyString)) {
+                Versioned<byte[]> versionedValue = ProtoUtils.decodeVersioned(request.getVersioned());
+
+                // If updating stores.xml, go through each store entry and do a
+                // corresponding put
+                if(keyString.equals(MetadataStore.STORES_KEY)) {
+                    metadataStore.updateStoreDefinitions(versionedValue);
+                }
                 logger.info("Successfully updated metadata for key '" + keyString + "'");
             }
         } catch(VoldemortException e) {
@@ -1251,7 +1279,10 @@ public class AdminServiceRequestHandler implements RequestHandler {
                     logger.info("Updating metadata for keys '" + clusterKeyString + "'" + " and '"
                                 + storesKeyString + "'");
                     metadataStore.put(clusterKey, clusterVersionedValue, null, new SRD());
+
+                    // replace this with put
                     metadataStore.put(storesKey, storesVersionedValue, null, new SRD());
+                    // metadataStore.updateStoreDefinitions(storesVersionedValue);
                     logger.info("Successfully updated metadata for keys '" + clusterKeyString + "'"
                                 + " and '" + storesKeyString + "'");
                 } finally {
@@ -1272,7 +1303,14 @@ public class AdminServiceRequestHandler implements RequestHandler {
         try {
             ByteArray key = ProtoUtils.decodeBytes(request.getKey());
             String keyString = ByteUtils.getString(key.get(), "UTF-8");
-            if(MetadataStore.METADATA_KEYS.contains(keyString)) {
+
+            /**
+             * GET can be done on any of the standard metadata keys
+             * ('cluster.xml', 'server.state', 'node.id', ...) or any of the
+             * store names.
+             */
+            if(MetadataStore.METADATA_KEYS.contains(keyString)
+               || metadataStore.isValidStore(keyString)) {
                 List<Versioned<byte[]>> versionedList = metadataStore.get(key, null, new SRD());
                 int size = (versionedList.size() > 0) ? 1 : 0;
 
@@ -1334,15 +1372,12 @@ public class AdminServiceRequestHandler implements RequestHandler {
                     } else {
                         // update stores list in metadata store
                         List<StoreDefinition> oldStoreDefList = metadataStore.getStoreDefList();
-                        List<StoreDefinition> newStoreDefList = new ArrayList<StoreDefinition>();
 
                         for(StoreDefinition storeDef: oldStoreDefList) {
                             boolean isReadOnly = storeDef.getType()
                                                          .compareTo(ReadOnlyStorageConfiguration.TYPE_NAME) == 0;
                             if(storeDef.isView()) {
-                                if(storeDef.getViewTargetStoreName().compareTo(storeName) != 0) {
-                                    newStoreDefList.add(storeDef);
-                                } else {
+                                if(storeDef.getViewTargetStoreName().compareTo(storeName) == 0) {
                                     logger.info("Deleting view '" + storeDef.getName() + "'");
                                     storageService.removeEngine(storeRepository.getStorageEngine(storeDef.getName()),
                                                                 isReadOnly,
@@ -1352,9 +1387,7 @@ public class AdminServiceRequestHandler implements RequestHandler {
                                                 + "'");
                                 }
                             } else {
-                                if(storeDef.getName().compareTo(storeName) != 0) {
-                                    newStoreDefList.add(storeDef);
-                                } else {
+                                if(storeDef.getName().compareTo(storeName) == 0) {
                                     logger.info("Deleting store '" + storeDef.getName() + "'");
                                     storageService.removeEngine(storeRepository.getStorageEngine(storeDef.getName()),
                                                                 isReadOnly,
@@ -1367,7 +1400,8 @@ public class AdminServiceRequestHandler implements RequestHandler {
                         }
 
                         try {
-                            metadataStore.put(MetadataStore.STORES_KEY, newStoreDefList, new SRD());
+                            // Update the metadata
+                            metadataStore.deleteStoreDefinition(storeName);
                         } catch(Exception e) {
                             throw new VoldemortException(e);
                         }
@@ -1421,28 +1455,19 @@ public class AdminServiceRequestHandler implements RequestHandler {
 
                     logger.info("Adding new store '" + def.getName() + "'");
                     // open the store
-                    storageService.openStore(def);
+                    StorageEngine<ByteArray, byte[], byte[]> engine = storageService.openStore(def);
 
                     // update stores list in metadata store (this also has the
                     // effect of updating the stores.xml file)
-                    List<StoreDefinition> currentStoreDefs;
-                    List<Versioned<byte[]>> v = metadataStore.get(MetadataStore.STORES_KEY,
-                                                                  null,
-                                                                  new SRD());
-
-                    if(((v.size() > 0) ? 1 : 0) > 0) {
-                        Versioned<byte[]> currentValue = v.get(0);
-                        currentStoreDefs = mapper.readStoreList(new StringReader(ByteUtils.getString(currentValue.getValue(),
-                                                                                                     "UTF-8")));
-                    } else {
-                        currentStoreDefs = Lists.newArrayList();
-                    }
-                    currentStoreDefs.add(def);
                     try {
-                        metadataStore.put(MetadataStore.STORES_KEY, currentStoreDefs, new SRD());
+                        metadataStore.addStoreDefinition(def);
                     } catch(Exception e) {
+                        // rollback open store operation
+                        boolean isReadOnly = ReadOnlyStorageConfiguration.TYPE_NAME.equals(def.getType());
+                        storageService.removeEngine(engine, isReadOnly, def.getType(), true);
                         throw new VoldemortException(e);
                     }
+
                     logger.info("Successfully added new store '" + def.getName() + "'");
                 } else {
                     logger.error("Failure to add a store with the same name '" + def.getName()

@@ -100,9 +100,9 @@ public class CoordinatorWorkerThread implements Runnable {
                                                                     REQUEST_TIMEOUT,
                                                                     "GET METADATA request timed out: "
                                                                             + e.getMessage());
+                            } else {
+                                getErrorHandler.handleExceptions(messageEvent, e);
                             }
-
-                            getErrorHandler.handleExceptions(messageEvent, e);
                         }
                         break;
 
@@ -157,9 +157,9 @@ public class CoordinatorWorkerThread implements Runnable {
                                                                     REQUEST_TIMEOUT,
                                                                     "GET request timed out: "
                                                                             + e.getMessage());
+                            } else {
+                                getErrorHandler.handleExceptions(messageEvent, e);
                             }
-
-                            getErrorHandler.handleExceptions(messageEvent, e);
                         }
                         break;
 
@@ -203,9 +203,9 @@ public class CoordinatorWorkerThread implements Runnable {
                                                                     REQUEST_TIMEOUT,
                                                                     "GET ALL request timed out: "
                                                                             + e.getMessage());
+                            } else {
+                                getErrorHandler.handleExceptions(messageEvent, e);
                             }
-
-                            getErrorHandler.handleExceptions(messageEvent, e);
                         }
                         break;
 
@@ -234,9 +234,9 @@ public class CoordinatorWorkerThread implements Runnable {
                                                                     REQUEST_TIMEOUT,
                                                                     "GET VERSION request timed out: "
                                                                             + e.getMessage());
+                            } else {
+                                getVersionErrorHandler.handleExceptions(messageEvent, e);
                             }
-
-                            getVersionErrorHandler.handleExceptions(messageEvent, e);
                         }
                         break;
 
@@ -255,7 +255,9 @@ public class CoordinatorWorkerThread implements Runnable {
                             }
 
                             PutResponseSender responseConstructor = new PutResponseSender(messageEvent,
-                                                                                          successfulPutVC);
+                                                                                          successfulPutVC,
+                                                                                          this.storeClient.getStoreName(),
+                                                                                          this.requestObject.getKey());
                             responseConstructor.sendResponse(this.coordinatorPerfStats,
                                                              true,
                                                              this.requestObject.getRequestOriginTimeInMs());
@@ -276,9 +278,9 @@ public class CoordinatorWorkerThread implements Runnable {
                                                                     REQUEST_TIMEOUT,
                                                                     "PUT request timed out: "
                                                                             + e.getMessage());
+                            } else {
+                                putErrorHandler.handleExceptions(messageEvent, e);
                             }
-
-                            putErrorHandler.handleExceptions(messageEvent, e);
                         }
 
                         break;
@@ -291,7 +293,9 @@ public class CoordinatorWorkerThread implements Runnable {
                         try {
                             boolean isDeleted = this.storeClient.deleteWithCustomTimeout(this.requestObject);
                             if(isDeleted) {
-                                DeleteResponseSender responseConstructor = new DeleteResponseSender(messageEvent);
+                                DeleteResponseSender responseConstructor = new DeleteResponseSender(messageEvent,
+                                                                                                    this.storeClient.getStoreName(),
+                                                                                                    this.requestObject.getKey());
                                 responseConstructor.sendResponse(this.coordinatorPerfStats,
                                                                  true,
                                                                  this.requestObject.getRequestOriginTimeInMs());
@@ -320,21 +324,18 @@ public class CoordinatorWorkerThread implements Runnable {
                                                                     REQUEST_TIMEOUT,
                                                                     "DELETE request timed out: "
                                                                             + e.getMessage());
+                            } else {
+                                deleteErrorHandler.handleExceptions(messageEvent, e);
                             }
-
-                            deleteErrorHandler.handleExceptions(messageEvent, e);
                         }
                         break;
 
                     default:
                         System.err.println("Illegal operation.");
                         return;
-
                 }
 
             }
-
         }
-
     }
 }

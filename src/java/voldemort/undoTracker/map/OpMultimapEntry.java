@@ -26,11 +26,11 @@ import voldemort.undoTracker.map.commits.CommitList;
  */
 public class OpMultimapEntry implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    public static final int INIT_ARRAY_SIZE = 16;
+    private transient static final long serialVersionUID = 1L;
+    public transient static final int INIT_ARRAY_SIZE = 16;
 
     private transient static final Logger log = Logger.getLogger(OpMultimap.class.getName());
-    public static final boolean debugging = log.isInfoEnabled();
+    public transient static final boolean debugging = log.isInfoEnabled();
 
     /**
      * Entry RWLock: not related with list access. It is the value/database
@@ -413,5 +413,13 @@ public class OpMultimapEntry implements Serializable {
             sb.append(" ");
         }
         return sb.toString();
+    }
+
+    public ArrayList<Op> getOperationList() {
+        return list;
+    }
+
+    public CommitList getCommitList() {
+        return commitList;
     }
 }

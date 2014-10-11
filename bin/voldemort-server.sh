@@ -45,7 +45,7 @@ if [ -z "$VOLD_OPTS" ]; then
   VOLD_OPTS="-Xmx1G -server -Dcom.sun.management.jmxremote"
 fi
 
-DEBUG_OPTS="-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=y,suspend=n"
+DEBUG_OPTS="-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=y,suspend=n -javaagent:public-lib/object-explorer.jar"
 
 export CLASSPATH
 java -Dlog4j.configuration=file://$base_dir/src/java/log4j.properties $VOLD_OPTS $DEBUG_OPTS voldemort.server.VoldemortServer $@

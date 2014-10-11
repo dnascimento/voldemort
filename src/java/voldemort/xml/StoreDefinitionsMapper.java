@@ -33,6 +33,7 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -63,42 +64,43 @@ import com.google.common.collect.Lists;
  */
 public class StoreDefinitionsMapper {
 
-    public static final String STORES_ELMT = "stores";
-    public static final String STORE_ELMT = "store";
-    public static final String STORE_DESCRIPTION_ELMT = "description";
-    public static final String STORE_OWNERS_ELMT = "owners";
-    public static final String STORE_NAME_ELMT = "name";
-    public static final String STORE_PERSISTENCE_ELMT = "persistence";
-    public static final String STORE_KEY_SERIALIZER_ELMT = "key-serializer";
-    public static final String STORE_VALUE_SERIALIZER_ELMT = "value-serializer";
-    public static final String STORE_TRANSFORM_SERIALIZER_ELMT = "transforms-serializer";
-    public static final String STORE_SERIALIZATION_TYPE_ELMT = "type";
-    public static final String STORE_SERIALIZATION_META_ELMT = "schema-info";
-    public static final String STORE_COMPRESSION_ELMT = "compression";
-    public static final String STORE_COMPRESSION_TYPE_ELMT = "type";
-    public static final String STORE_COMPRESSION_OPTIONS_ELMT = "options";
-    public static final String STORE_ROUTING_TIER_ELMT = "routing";
-    public static final String STORE_REPLICATION_FACTOR_ELMT = "replication-factor";
-    public static final String STORE_REQUIRED_WRITES_ELMT = "required-writes";
-    public static final String STORE_PREFERRED_WRITES_ELMT = "preferred-writes";
-    public static final String STORE_REQUIRED_READS_ELMT = "required-reads";
-    public static final String STORE_PREFERRED_READS_ELMT = "preferred-reads";
-    public static final String STORE_RETENTION_POLICY_ELMT = "retention-days";
-    public static final String STORE_RETENTION_FREQ_ELMT = "retention-frequency";
-    public static final String STORE_RETENTION_SCAN_THROTTLE_RATE_ELMT = "retention-scan-throttle-rate";
-    public static final String STORE_ROUTING_STRATEGY = "routing-strategy";
-    public static final String STORE_ZONE_ID_ELMT = "zone-id";
-    public static final String STORE_ZONE_REPLICATION_FACTOR_ELMT = "zone-replication-factor";
-    public static final String STORE_ZONE_COUNT_READS = "zone-count-reads";
-    public static final String STORE_ZONE_COUNT_WRITES = "zone-count-writes";
-    public static final String HINTED_HANDOFF_STRATEGY = "hinted-handoff-strategy";
-    public static final String HINT_PREFLIST_SIZE = "hint-preflist-size";
-    public static final String VIEW_ELMT = "view";
-    public static final String VIEW_TARGET_ELMT = "view-of";
-    public static final String VIEW_TRANS_ELMT = "view-class";
-    public static final String VIEW_SERIALIZER_FACTORY_ELMT = "view-serializer-factory";
-    private static final String STORE_VERSION_ATTR = "version";
-    private static final String STORE_MEMORY_FOOTPRINT = "memory-footprint";
+    public final static String STORES_ELMT = "stores";
+    public final static String STORE_ELMT = "store";
+    public final static String STORE_DESCRIPTION_ELMT = "description";
+    public final static String STORE_OWNERS_ELMT = "owners";
+    public final static String STORE_NAME_ELMT = "name";
+    public final static String STORE_PERSISTENCE_ELMT = "persistence";
+    public final static String STORE_KEY_SERIALIZER_ELMT = "key-serializer";
+    public final static String STORE_VALUE_SERIALIZER_ELMT = "value-serializer";
+    public final static String STORE_TRANSFORM_SERIALIZER_ELMT = "transforms-serializer";
+    public final static String STORE_SERIALIZATION_TYPE_ELMT = "type";
+    public final static String STORE_SERIALIZATION_META_ELMT = "schema-info";
+    public final static String STORE_COMPRESSION_ELMT = "compression";
+    public final static String STORE_COMPRESSION_TYPE_ELMT = "type";
+    public final static String STORE_COMPRESSION_OPTIONS_ELMT = "options";
+    public final static String STORE_ROUTING_TIER_ELMT = "routing";
+    public final static String STORE_REPLICATION_FACTOR_ELMT = "replication-factor";
+    public final static String STORE_REQUIRED_WRITES_ELMT = "required-writes";
+    public final static String STORE_PREFERRED_WRITES_ELMT = "preferred-writes";
+    public final static String STORE_REQUIRED_READS_ELMT = "required-reads";
+    public final static String STORE_PREFERRED_READS_ELMT = "preferred-reads";
+    public final static String STORE_RETENTION_POLICY_ELMT = "retention-days";
+    public final static String STORE_RETENTION_FREQ_ELMT = "retention-frequency";
+    public final static String STORE_RETENTION_SCAN_THROTTLE_RATE_ELMT = "retention-scan-throttle-rate";
+    public final static String STORE_ROUTING_STRATEGY = "routing-strategy";
+    public final static String STORE_ZONE_ID_ELMT = "zone-id";
+    public final static String STORE_ZONE_REPLICATION_FACTOR_ELMT = "zone-replication-factor";
+    public final static String STORE_ZONE_COUNT_READS = "zone-count-reads";
+    public final static String STORE_ZONE_COUNT_WRITES = "zone-count-writes";
+    public final static String HINTED_HANDOFF_STRATEGY = "hinted-handoff-strategy";
+    public final static String HINT_PREFLIST_SIZE = "hint-preflist-size";
+    public final static String VIEW_ELMT = "view";
+    public final static String VIEW_TARGET_ELMT = "view-of";
+    public final static String VIEW_TRANS_ELMT = "view-class";
+    public final static String VIEW_SERIALIZER_FACTORY_ELMT = "view-serializer-factory";
+    private final static String STORE_VERSION_ATTR = "version";
+    private final static String STORE_MEMORY_FOOTPRINT = "memory-footprint";
+    private static final Logger logger = Logger.getLogger(StoreDefinitionsMapper.class.getName());
 
     private final Schema schema;
 
@@ -225,13 +227,19 @@ public class StoreDefinitionsMapper {
         Integer retentionThrottleRate = null;
         Integer retentionFreqDays = null;
         if(retention != null) {
-            retentionPolicyDays = Integer.parseInt(retention.getText());
-            Element throttleRate = store.getChild(STORE_RETENTION_SCAN_THROTTLE_RATE_ELMT);
-            if(throttleRate != null)
-                retentionThrottleRate = Integer.parseInt(throttleRate.getText());
-            Element retentionFreqDaysElement = store.getChild(STORE_RETENTION_FREQ_ELMT);
-            if(retentionFreqDaysElement != null)
-                retentionFreqDays = Integer.parseInt(retentionFreqDaysElement.getText());
+            int retentionDays = Integer.parseInt(retention.getText());
+            if(retentionDays > 0) {
+                retentionPolicyDays = retentionDays;
+                Element throttleRate = store.getChild(STORE_RETENTION_SCAN_THROTTLE_RATE_ELMT);
+                if(throttleRate != null)
+                    retentionThrottleRate = Integer.parseInt(throttleRate.getText());
+                Element retentionFreqDaysElement = store.getChild(STORE_RETENTION_FREQ_ELMT);
+                if(retentionFreqDaysElement != null)
+                    retentionFreqDays = Integer.parseInt(retentionFreqDaysElement.getText());
+            } else {
+                logger.error("Invalid retention policy days set. Should be greater than zero. ignoring value "
+                             + retentionDays);
+            }
         }
 
         if(routingStrategyType.compareTo(RoutingStrategyType.ZONE_STRATEGY) == 0

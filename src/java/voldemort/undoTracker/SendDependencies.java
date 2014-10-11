@@ -27,7 +27,7 @@ public class SendDependencies extends Thread {
     private final Logger log = Logger.getLogger(SendDependencies.class.getName());
 
     private OpMultimap trackLocalAccess;
-    private long REFRESH_PERIOD = 1000000000;
+    private long REFRESH_PERIOD = 100;
     Socket socket = new Socket();
 
     public SendDependencies(OpMultimap trackLocalAccess) {
@@ -78,7 +78,6 @@ public class SendDependencies extends Thread {
         if(list.getEntryCount() == 0) {
             return;
         }
-        log.info("Sending dependencies to manager");
         MsgToManager msg = ToManagerProto.MsgToManager.newBuilder().setTrackMsg(list).build();
         if(socket == null) {
             return;

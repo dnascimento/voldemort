@@ -17,13 +17,16 @@
 package voldemort.store.routed.action;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import voldemort.cluster.Node;
 import voldemort.store.routed.BasicPipelineData;
 import voldemort.store.routed.Pipeline;
 import voldemort.store.routed.Pipeline.Event;
 import voldemort.store.slop.HintedHandoff;
+import voldemort.store.slop.Slop;
 import voldemort.undoTracker.SRD;
 import voldemort.utils.ByteArray;
 
@@ -31,6 +34,7 @@ public abstract class AbstractHintedHandoffAction<V, PD extends BasicPipelineDat
         AbstractKeyBasedAction<ByteArray, V, PD> {
 
     protected final List<Node> failedNodes;
+    protected final Map<Node, Slop> slopsToBeSent;
 
     protected final HintedHandoff hintedHandoff;
 
@@ -42,6 +46,7 @@ public abstract class AbstractHintedHandoffAction<V, PD extends BasicPipelineDat
         super(pipelineData, completeEvent, key, srd);
         this.hintedHandoff = hintedHandoff;
         this.failedNodes = pipelineData.getFailedNodes();
+        slopsToBeSent = new ConcurrentHashMap<Node, Slop>();
     }
 
     public AbstractHintedHandoffAction(PD pipelineData,
@@ -50,10 +55,14 @@ public abstract class AbstractHintedHandoffAction<V, PD extends BasicPipelineDat
                                        HintedHandoff hintedHandoff,
                                        SRD srd) {
         super(pipelineData, completeEvent, keys, srd);
+        slopsToBeSent = new ConcurrentHashMap<Node, Slop>();
         this.hintedHandoff = hintedHandoff;
         this.failedNodes = pipelineData.getFailedNodes();
     }
 
-    @Override
     public abstract void execute(Pipeline pipeline);
+
+    protected void rememberSlopForLaterEvent(Node node, Slop slop) {
+        slopsToBeSent.put(node, slop);
+    }
 }

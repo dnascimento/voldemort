@@ -1,12 +1,12 @@
 /*
  * Copyright 2008-2013 LinkedIn, Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -254,7 +254,7 @@ public class ZonedRebalanceNonContiguousZonesTest extends AbstractRebalanceTest 
      * Scripts the execution of a specific type of zoned rebalance test: sets up
      * cluster based on cCluster plus any new nodes/zones in fCluster,
      * rebalances to fCluster, verifies rebalance was correct.
-     * 
+     *
      * @param testTag For pretty printing
      * @param cCluster current cluster
      * @param fCluster final cluster
@@ -273,11 +273,9 @@ public class ZonedRebalanceNonContiguousZonesTest extends AbstractRebalanceTest 
                                    List<StoreDefinition> cStoreDefs,
                                    List<StoreDefinition> fStoreDefs) throws Exception {
         logger.info("Starting " + testTag);
-        // Hacky work around of TOCTOU bind Exception issues. Each test that
-        // invokes this method brings
-        // servers up & down on the same ports. The OS seems to need a rest
-        // between subsequent tests...
-        Thread.sleep(TimeUnit.SECONDS.toMillis(2));
+        // Hacky work around of TOCTOU bind Exception issues. Each test that invokes this method brings
+        // servers up & down on the same ports. The OS seems to need a rest between subsequent tests...
+        Thread.sleep(TimeUnit.SECONDS.toMillis(5));
         try {
             Cluster interimCluster = RebalanceUtils.getInterimCluster(cCluster, fCluster);
             List<Integer> serverList = new ArrayList<Integer>(interimCluster.getNodeIds());
@@ -285,8 +283,7 @@ public class ZonedRebalanceNonContiguousZonesTest extends AbstractRebalanceTest 
             configProps.put("admin.max.threads", "5");
             interimCluster = startServers(interimCluster, cStoresXml, serverList, configProps);
             String bootstrapUrl = getBootstrapUrl(interimCluster, 3);
-            ClusterTestUtils.RebalanceKit rebalanceKit = ClusterTestUtils.getRebalanceKit(bootstrapUrl,
-                                                                                          fCluster,
+            ClusterTestUtils.RebalanceKit rebalanceKit = ClusterTestUtils.getRebalanceKit(bootstrapUrl, fCluster,
                                                                                           fStoreDefs);
             try {
                 for(StoreDefinition storeDef: cStoreDefs) {
@@ -325,11 +322,9 @@ public class ZonedRebalanceNonContiguousZonesTest extends AbstractRebalanceTest 
     public void testShuffleZ1Z3AndShuffleAgain() throws Exception {
 
         logger.info("Starting testShuffleZZAndShuffleAgain");
-        // Hacky work around of TOCTOU bind Exception issues. Each test that
-        // invokes this method brings servers
-        // up & down on the same ports. The OS seems to need a rest between
-        // subsequent tests...
-        Thread.sleep(TimeUnit.SECONDS.toMillis(2));
+        // Hacky work around of TOCTOU bind Exception issues. Each test that invokes this method brings servers
+        // up & down on the same ports. The OS seems to need a rest between subsequent tests...
+        Thread.sleep(TimeUnit.SECONDS.toMillis(5));
 
         Cluster interimCluster = RebalanceUtils.getInterimCluster(z1z3Current, z1z3Shuffle);
 
@@ -345,14 +340,11 @@ public class ZonedRebalanceNonContiguousZonesTest extends AbstractRebalanceTest 
         }
         String bootstrapUrl = getBootstrapUrl(interimCluster, 3);
         // Shuffle cluster
-        ClusterTestUtils.RebalanceKit rebalanceKit = ClusterTestUtils.getRebalanceKit(bootstrapUrl,
-                                                                                      z1z3Shuffle,
-                                                                                      z1z3Stores);
+        ClusterTestUtils.RebalanceKit rebalanceKit = ClusterTestUtils.getRebalanceKit(bootstrapUrl, z1z3Shuffle, z1z3Stores);
         rebalanceAndCheck(rebalanceKit.plan, rebalanceKit.controller, serverList);
         checkConsistentMetadata(z1z3Shuffle, serverList);
 
-        // Now, go from shuffled state, back to the original to confirm
-        // subsequent rebalances can be invoked.
+        // Now, go from shuffled state, back to the original to confirm subsequent rebalances can be invoked.
         rebalanceKit = ClusterTestUtils.getRebalanceKit(bootstrapUrl, z1z3Current, z1z3Stores);
         rebalanceAndCheck(rebalanceKit.plan, rebalanceKit.controller, serverList);
         checkConsistentMetadata(z1z3Current, serverList);
@@ -362,38 +354,22 @@ public class ZonedRebalanceNonContiguousZonesTest extends AbstractRebalanceTest 
 
     @Test(timeout = 600000)
     public void testClusterExpansion() throws Exception {
-        testZonedRebalance("TestClusterExpansionZ1Z3",
-                           z1z3Current,
-                           z1z3ClusterExpansionPP,
-                           z1z3StoresXml,
-                           z1z3Stores);
+        testZonedRebalance("TestClusterExpansionZ1Z3", z1z3Current, z1z3ClusterExpansionPP, z1z3StoresXml, z1z3Stores);
     }
 
     @Test(timeout = 600000)
     public void testNoopZ1Z3Z5() throws Exception {
-        testZonedRebalance("TestNoopZ1Z3Z5",
-                           z1z3z5Current,
-                           z1z3z5Current,
-                           z1z3z5StoresXml,
-                           z1z3z5Stores);
+        testZonedRebalance("TestNoopZ1Z3Z5", z1z3z5Current, z1z3z5Current, z1z3z5StoresXml, z1z3z5Stores);
     }
 
     @Test(timeout = 600000)
     public void testShuffleZ1Z3Z5() throws Exception {
-        testZonedRebalance("TestShuffleZ1Z3Z5",
-                           z1z3z5Current,
-                           z1z3z5Shuffle,
-                           z1z3z5StoresXml,
-                           z1z3z5Stores);
+        testZonedRebalance("TestShuffleZ1Z3Z5", z1z3z5Current, z1z3z5Shuffle, z1z3z5StoresXml, z1z3z5Stores);
     }
 
     @Test(timeout = 600000)
     public void testClusterExpansionZ1Z3Z5() throws Exception {
-        testZonedRebalance("TestClusterExpansionZZZ",
-                           z1z3z5Current,
-                           z1z3z5ClusterExpansionPPP,
-                           z1z3z5StoresXml,
-                           z1z3z5Stores);
+        testZonedRebalance("TestClusterExpansionZZZ", z1z3z5Current, z1z3z5ClusterExpansionPPP, z1z3z5StoresXml, z1z3z5Stores);
     }
 
     @Test(timeout = 600000)
@@ -408,23 +384,15 @@ public class ZonedRebalanceNonContiguousZonesTest extends AbstractRebalanceTest 
                                                                                        partitionMap,
                                                                                        ClusterTestUtils.getClusterPorts());
 
-            Cluster finalCluster = UpdateClusterUtils.createUpdatedCluster(currentCluster,
-                                                                           10,
-                                                                           Lists.newArrayList(2, 6));
-            finalCluster = UpdateClusterUtils.createUpdatedCluster(finalCluster,
-                                                                   4,
-                                                                   Lists.newArrayList(3, 7));
+            Cluster finalCluster = UpdateClusterUtils.createUpdatedCluster(currentCluster, 10, Lists.newArrayList(2, 6));
+            finalCluster = UpdateClusterUtils.createUpdatedCluster(finalCluster, 4, Lists.newArrayList(3, 7));
             // start all the servers
             List<Integer> serverList = Arrays.asList(3, 4, 9, 10);
             Map<String, String> configProps = new HashMap<String, String>();
             configProps.put("admin.max.threads", "5");
-            currentCluster = startServers(currentCluster,
-                                          storeDefFileWithoutReplication,
-                                          serverList,
-                                          configProps);
+            currentCluster = startServers(currentCluster, storeDefFileWithoutReplication, serverList, configProps);
             String bootstrapUrl = getBootstrapUrl(currentCluster, 3);
-            ClusterTestUtils.RebalanceKit rebalanceKit = ClusterTestUtils.getRebalanceKit(bootstrapUrl,
-                                                                                          finalCluster);
+            ClusterTestUtils.RebalanceKit rebalanceKit = ClusterTestUtils.getRebalanceKit(bootstrapUrl, finalCluster);
             try {
                 populateData(currentCluster, rwStoreDefWithoutReplication);
                 rebalanceAndCheck(rebalanceKit.plan, rebalanceKit.controller, Arrays.asList(4, 9));
@@ -447,12 +415,8 @@ public class ZonedRebalanceNonContiguousZonesTest extends AbstractRebalanceTest 
                                                                                    nodesPerZone,
                                                                                    partitionMap,
                                                                                    ClusterTestUtils.getClusterPorts());
-        Cluster finalCluster = UpdateClusterUtils.createUpdatedCluster(currentCluster,
-                                                                       10,
-                                                                       Lists.newArrayList(2));
-        finalCluster = UpdateClusterUtils.createUpdatedCluster(finalCluster,
-                                                               4,
-                                                               Lists.newArrayList(3));
+        Cluster finalCluster = UpdateClusterUtils.createUpdatedCluster(currentCluster, 10, Lists.newArrayList(2));
+        finalCluster = UpdateClusterUtils.createUpdatedCluster(finalCluster, 4, Lists.newArrayList(3));
         // start servers
         List<Integer> serverList = Arrays.asList(3, 4, 9, 10);
         Map<String, String> configProps = new HashMap<String, String>();
@@ -460,20 +424,13 @@ public class ZonedRebalanceNonContiguousZonesTest extends AbstractRebalanceTest 
         if(serial) {
             configProps.put("max.parallel.stores.rebalancing", String.valueOf(1));
         }
-        currentCluster = startServers(currentCluster,
-                                      storeDefFileWithReplication,
-                                      serverList,
-                                      configProps);
+        currentCluster = startServers(currentCluster, storeDefFileWithReplication, serverList, configProps);
         String bootstrapUrl = getBootstrapUrl(currentCluster, 3);
         int maxParallel = 5;
-        ClusterTestUtils.RebalanceKit rebalanceKit = ClusterTestUtils.getRebalanceKit(bootstrapUrl,
-                                                                                      maxParallel,
-                                                                                      finalCluster);
+        ClusterTestUtils.RebalanceKit rebalanceKit = ClusterTestUtils.getRebalanceKit(bootstrapUrl, maxParallel, finalCluster);
         try {
             populateData(currentCluster, rwStoreDefWithReplication);
-            rebalanceAndCheck(rebalanceKit.plan,
-                              rebalanceKit.controller,
-                              Arrays.asList(3, 4, 9, 10));
+            rebalanceAndCheck(rebalanceKit.plan, rebalanceKit.controller, Arrays.asList(3, 4, 9, 10));
             checkConsistentMetadata(finalCluster, serverList);
         } finally {
             stopServer(serverList);
@@ -514,23 +471,17 @@ public class ZonedRebalanceNonContiguousZonesTest extends AbstractRebalanceTest 
                                                                                        partitionMap,
                                                                                        ClusterTestUtils.getClusterPorts());
 
-            Cluster finalCluster = UpdateClusterUtils.createUpdatedCluster(currentCluster,
-                                                                           5,
-                                                                           Lists.newArrayList(7));
-            finalCluster = UpdateClusterUtils.createUpdatedCluster(finalCluster,
-                                                                   11,
-                                                                   Lists.newArrayList(6));
+            Cluster finalCluster = UpdateClusterUtils.createUpdatedCluster(currentCluster, 5, Lists.newArrayList(7));
+            finalCluster = UpdateClusterUtils.createUpdatedCluster(finalCluster, 11, Lists.newArrayList(6));
 
             /**
              * original server partition ownership
-             * 
-             * [s3 : p0,p3,p4,p5,p6,p7] [s4 : p1-p7] [s5 : p1,p2] [s9 :
-             * p0,p1,p2,p3,p6,p7] [s10 : p1-p7] [s11 : p4,p5]
-             * 
+             *
+             * [s3 : p0,p3,p4,p5,p6,p7] [s4 : p1-p7] [s5 : p1,p2] [s9 : p0,p1,p2,p3,p6,p7] [s10 : p1-p7] [s11 : p4,p5]
+             *
              * final server partition ownership
-             * 
-             * [s3 : p0,p2,p3,p4,p5,p6,p7] [s4 : p0,p1] [s5 : p1-p7] [s9 :
-             * p0.p1,p2,p3,p5,p6,p7]
+             *
+             * [s3 : p0,p2,p3,p4,p5,p6,p7] [s4 : p0,p1] [s5 : p1-p7] [s9 : p0.p1,p2,p3,p5,p6,p7]
              * [s10 : p0,p1,p2,p3,p4,p7] [s11 : p4,p5,p6]
              */
 
@@ -551,35 +502,18 @@ public class ZonedRebalanceNonContiguousZonesTest extends AbstractRebalanceTest 
                 populateData(currentCluster, rwStoreDefWithReplication);
                 AdminClient admin = rebalanceKit.controller.getAdminClient();
 
-                List<ByteArray> p6KeySamples = sampleKeysFromPartition(admin,
-                                                                       4,
-                                                                       rwStoreDefWithReplication.getName(),
-                                                                       Arrays.asList(6),
-                                                                       20);
-                List<ByteArray> p1KeySamples = sampleKeysFromPartition(admin,
-                                                                       4,
-                                                                       rwStoreDefWithReplication.getName(),
-                                                                       Arrays.asList(1),
-                                                                       20);
-                List<ByteArray> p3KeySamples = sampleKeysFromPartition(admin,
-                                                                       3,
-                                                                       rwStoreDefWithReplication.getName(),
-                                                                       Arrays.asList(3),
-                                                                       20);
-                List<ByteArray> p2KeySamples = sampleKeysFromPartition(admin,
-                                                                       4,
-                                                                       rwStoreDefWithReplication.getName(),
-                                                                       Arrays.asList(2),
-                                                                       20);
-                List<ByteArray> p7KeySamples = sampleKeysFromPartition(admin,
-                                                                       10,
-                                                                       rwStoreDefWithReplication.getName(),
-                                                                       Arrays.asList(7),
-                                                                       20);
+                List<ByteArray> p6KeySamples = sampleKeysFromPartition(admin, 4, rwStoreDefWithReplication.getName(),
+                                                                       Arrays.asList(6), 20);
+                List<ByteArray> p1KeySamples = sampleKeysFromPartition(admin, 4, rwStoreDefWithReplication.getName(),
+                                                                       Arrays.asList(1), 20);
+                List<ByteArray> p3KeySamples = sampleKeysFromPartition(admin, 3, rwStoreDefWithReplication.getName(),
+                                                                       Arrays.asList(3), 20);
+                List<ByteArray> p2KeySamples = sampleKeysFromPartition(admin, 4, rwStoreDefWithReplication.getName(),
+                                                                       Arrays.asList(2), 20);
+                List<ByteArray> p7KeySamples = sampleKeysFromPartition(admin, 10, rwStoreDefWithReplication.getName(),
+                                                                       Arrays.asList(7), 20);
 
-                rebalanceAndCheck(rebalanceKit.plan,
-                                  rebalanceKit.controller,
-                                  Arrays.asList(3, 4, 5, 9));
+                rebalanceAndCheck(rebalanceKit.plan, rebalanceKit.controller, Arrays.asList(3, 4, 5, 9));
                 checkConsistentMetadata(finalCluster, serverList);
                 // Do the cleanup operation
                 for(int i = 0; i < 6; i++) {
@@ -587,13 +521,10 @@ public class ZonedRebalanceNonContiguousZonesTest extends AbstractRebalanceTest 
                 }
                 // wait for the repairs to complete
                 for(int i = 0; i < 6; i++) {
-                    ServerTestUtils.waitForAsyncOperationOnServer(serverMap.get(serverList.get(i)),
-                                                                  "Repair",
-                                                                  5000);
+                    ServerTestUtils.waitForAsyncOperationOnServer(serverMap.get(serverList.get(i)), "Repair", 5000);
                 }
 
-                // confirm a primary movement in zone 1 : P6 : s4 -> S5. The
-                // zone 1 primary changes when
+                // confirm a primary movement in zone 1 : P6 : s4 -> S5. The zone 1 primary changes when
                 // p6 moves cross zone check for existence of p6 in server 5,
                 checkForKeyExistence(admin, 5, rwStoreDefWithReplication.getName(), p6KeySamples);
 
@@ -787,29 +718,29 @@ public class ZonedRebalanceNonContiguousZonesTest extends AbstractRebalanceTest 
 
             /**
              * Original partition map
-             * 
+             *
              * [s3 : p0] [s4 : p1, p6] [s5 : p2]
-             * 
+             *
              * [s9 : p3] [s10 : p4, p7] [s11 : p5]
-             * 
+             *
              * final server partition ownership
-             * 
+             *
              * [s3 : p0] [s4 : p1] [s5 : p2, p7]
-             * 
+             *
              * [s9 : p3] [s10 : p4] [s11 : p5, p6]
-             * 
+             *
              * Note that rwStoreDefFileWithReplication is a "2/1/1" store def.
-             * 
+             *
              * Original server n-ary partition ownership
-             * 
+             *
              * [s3 : p0, p3-7] [s4 : p0-p7] [s5 : p1-2]
-             * 
+             *
              * [s9 : p0-3, p6-7] [s10 : p0-p7] [s11 : p4-5]
-             * 
+             *
              * final server n-ary partition ownership
-             * 
+             *
              * [s3 : p0, p2-7] [s4 : p0-1] [s5 : p1-p7]
-             * 
+             *
              * [s9 : p0-3, p5-7] [s10 : p0-4, p7] [s11 : p4-6]
              */
             List<Integer> serverList = Arrays.asList(3, 4, 5, 9, 10, 11);
@@ -823,12 +754,9 @@ public class ZonedRebalanceNonContiguousZonesTest extends AbstractRebalanceTest 
             final AtomicBoolean rebalancingComplete = new AtomicBoolean(false);
             final List<Exception> exceptions = Collections.synchronizedList(new ArrayList<Exception>());
 
-            // Its is imperative that we test in a single shot since multiple
-            // batches would mean the proxy bridges
-            // being torn down and established multiple times and we cannot test
-            // against the source
-            // cluster topology then. getRebalanceKit uses batch size of
-            // infinite, so this should be fine.
+            // Its is imperative that we test in a single shot since multiple batches would mean the proxy bridges
+            // being torn down and established multiple times and we cannot test against the source
+            // cluster topology then. getRebalanceKit uses batch size of infinite, so this should be fine.
             String bootstrapUrl = getBootstrapUrl(updatedCurrentCluster, 3);
             int maxParallel = 2;
             final ClusterTestUtils.RebalanceKit rebalanceKit = ClusterTestUtils.getRebalanceKit(bootstrapUrl,
@@ -863,16 +791,13 @@ public class ZonedRebalanceNonContiguousZonesTest extends AbstractRebalanceTest 
             final CountDownLatch latch = new CountDownLatch(2);
             // start get operation.
             executors.execute(new Runnable() {
-
                 @Override
                 public void run() {
                     SocketStoreClientFactory factory = null;
                     try {
                         // wait for the rebalancing to begin
-                        List<VoldemortServer> serverList = Lists.newArrayList(serverMap.get(3),
-                                                                              serverMap.get(5),
-                                                                              serverMap.get(9),
-                                                                              serverMap.get(11));
+                        List<VoldemortServer> serverList = Lists.newArrayList(serverMap.get(3), serverMap.get(5),
+                                                                              serverMap.get(9), serverMap.get(11));
                         while(!rebalancingComplete.get()) {
                             Iterator<VoldemortServer> serverIterator = serverList.iterator();
                             while(serverIterator.hasNext()) {
@@ -896,19 +821,18 @@ public class ZonedRebalanceNonContiguousZonesTest extends AbstractRebalanceTest 
                             }
                         }
                         if(rebalancingStarted.get()) {
-                            factory = new SocketStoreClientFactory(new ClientConfig().setBootstrapUrls(getBootstrapUrl(updatedCurrentCluster,
-                                                                                                                       3))
+                            factory = new SocketStoreClientFactory(new ClientConfig().setBootstrapUrls
+                                                                                      (getBootstrapUrl(updatedCurrentCluster, 3))
                                                                                      .setEnableLazy(false)
-                                                                                     .setSocketTimeout(120,
-                                                                                                       TimeUnit.SECONDS)
+                                                                                     .setSocketTimeout(120, TimeUnit.SECONDS)
                                                                                      .setClientZoneId(3));
 
-                            final StoreClient<String, String> storeClientRW = new DefaultStoreClient<String, String>(testStoreNameRW,
-                                                                                                                     null,
-                                                                                                                     factory,
-                                                                                                                     3);
-                            // Now perform some writes and determine the end
-                            // state of the changed keys.
+                            final StoreClient<String, String> storeClientRW = new DefaultStoreClient
+                                                                                 <String, String>(testStoreNameRW,
+                                                                                                  null,
+                                                                                                  factory,
+                                                                                                  3);
+                            // Now perform some writes and determine the end state of the changed keys.
                             // Initially, all data now with zero vector clock
                             for(ByteArray movingKey: movingKeysList) {
                                 try {
@@ -917,8 +841,7 @@ public class ZonedRebalanceNonContiguousZonesTest extends AbstractRebalanceTest 
                                     storeClientRW.put(keyStr, valStr, new SRD());
                                     baselineTuples.put(keyStr, valStr);
                                     baselineVersions.get(keyStr)
-                                                    .incrementVersion(11,
-                                                                      System.currentTimeMillis());
+                                                    .incrementVersion(11, System.currentTimeMillis());
                                     proxyWritesDone.set(true);
                                     if(rebalancingComplete.get()) {
                                         break;
@@ -958,9 +881,8 @@ public class ZonedRebalanceNonContiguousZonesTest extends AbstractRebalanceTest 
             executors.shutdown();
             executors.awaitTermination(300, TimeUnit.SECONDS);
 
-            assertEquals("Client did not see all server transition into rebalancing state",
-                         rebalancingStarted.get(),
-                         true);
+            assertEquals("Client did not see all server transition into rebalancing state", 
+                         rebalancingStarted.get(), true);
             assertEquals("Not enough time to begin proxy writing", proxyWritesDone.get(), true);
             checkEntriesPostRebalance(updatedCurrentCluster,
                                       finalCluster,
@@ -987,12 +909,7 @@ public class ZonedRebalanceNonContiguousZonesTest extends AbstractRebalanceTest 
                                                                 currentCluster,
                                                                 clusterXmlClock);
             adminClient.setAdminClientCluster(currentCluster);
-            checkForTupleEquivalence(adminClient,
-                                     4,
-                                     testStoreNameRW,
-                                     movingKeysList,
-                                     baselineTuples,
-                                     baselineVersions);
+            checkForTupleEquivalence(adminClient, 4, testStoreNameRW, movingKeysList, baselineTuples, baselineVersions);
             // stop servers
             try {
                 stopServer(serverList);
@@ -1004,6 +921,7 @@ public class ZonedRebalanceNonContiguousZonesTest extends AbstractRebalanceTest 
             throw ae;
         }
     }
+    
 
     private void populateData(Cluster cluster, StoreDefinition storeDef) throws Exception {
         // Create SocketStores for each Node first

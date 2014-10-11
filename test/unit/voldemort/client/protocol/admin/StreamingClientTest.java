@@ -57,7 +57,7 @@ import com.google.common.collect.Lists;
  * (i) Non zoned cluster with contiguous node ids
  * (ii) Non zoned cluster with non contiguous node ids
  * (iii) Zoned cluster with contiguous zone/node ids
- * 
+ *
  */
 @RunWith(Parameterized.class)
 public class StreamingClientTest {
@@ -147,7 +147,7 @@ public class StreamingClientTest {
     }
 
     @Before
-    public void testSetup() {
+    public void testSetup() throws IOException {
 
         if(null == servers) {
             servers = new VoldemortServer[numServers];
@@ -160,6 +160,7 @@ public class StreamingClientTest {
             } catch(IOException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
+                throw e1;
             }
 
             int count = 0;
@@ -175,8 +176,8 @@ public class StreamingClientTest {
                                                                                                              new Properties()),
                                                                           cluster);
                 } catch(IOException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
+                    throw e;
                 }
                 serverPorts[count] = servers[count].getIdentityNode().getSocketPort();
                 count++;

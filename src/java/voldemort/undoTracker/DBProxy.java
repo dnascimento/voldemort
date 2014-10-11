@@ -80,9 +80,7 @@ public class DBProxy {
         LogManager.getRootLogger().setLevel(Level.ERROR);
         debugging = log.isInfoEnabled();
 
-        // TODO uncomment if you want to save the Map at end
-        // Runtime.getRuntime().addShutdownHook(new
-        // SaveKeyAccess(keyAccessLists));
+        Runtime.getRuntime().addShutdownHook(new SaveKeyAccess(keyAccessLists));
 
         log.info("New DBUndo stub");
         this.keyAccessLists = keyAccessLists;
@@ -371,4 +369,5 @@ public class DBProxy {
     public HashMap<ByteString, ArrayList<Op>> getAccessList(List<ByteString> keysList, long baseRid) {
         return keyAccessLists.getAccessList(keysList, baseRid);
     }
+
 }

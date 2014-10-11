@@ -37,18 +37,24 @@ public class ClientSocketStatsTest {
     private SocketDestination dest2;
     private QueuedKeyedResourcePool<SocketDestination, ClientRequestExecutor> pool;
 
+    private double errorBound = 0.03;
+
+    private void assertEqualsWithErrorBound(double expected, double actual) {
+        assertEquals(expected, actual, expected * errorBound);
+    }
+
     @Before
     public void setUp() throws Exception {
         this.port = ServerTestUtils.findFreePort();
         this.dest1 = new SocketDestination("localhost", port, RequestFormatType.VOLDEMORT_V1);
         this.dest2 = new SocketDestination("localhost", port + 1, RequestFormatType.VOLDEMORT_V1);
-        this.masterStats = new ClientSocketStats(0);
+        this.masterStats = new ClientSocketStats("");
         pool = null;
     }
 
     @Test
     public void testNewNodeStatsObject() {
-        ClientSocketStats stats = new ClientSocketStats(masterStats, dest1, pool, 0);
+        ClientSocketStats stats = new ClientSocketStats(masterStats, dest1, pool, "");
         assertNotNull(stats);
     }
 
@@ -70,8 +76,14 @@ public class ClientSocketStatsTest {
         stats.incrementCount(dest2, ClientSocketStats.Tracked.CONNECTION_CREATED_EVENT);
         stats.incrementCount(dest1, ClientSocketStats.Tracked.CONNECTION_CREATED_EVENT);
         assertEquals(3, stats.getCount(ClientSocketStats.Tracked.CONNECTION_CREATED_EVENT));
-        assertEquals(2, stats.getStatsMap().get(dest1).getCount(ClientSocketStats.Tracked.CONNECTION_CREATED_EVENT));
-        assertEquals(1, stats.getStatsMap().get(dest2).getCount(ClientSocketStats.Tracked.CONNECTION_CREATED_EVENT));
+        assertEquals(2,
+                     stats.getStatsMap()
+                          .get(dest1)
+                          .getCount(ClientSocketStats.Tracked.CONNECTION_CREATED_EVENT));
+        assertEquals(1,
+                     stats.getStatsMap()
+                          .get(dest2)
+                          .getCount(ClientSocketStats.Tracked.CONNECTION_CREATED_EVENT));
     }
 
     @Test
@@ -81,8 +93,14 @@ public class ClientSocketStatsTest {
         stats.incrementCount(dest2, ClientSocketStats.Tracked.CONNECTION_DESTROYED_EVENT);
         stats.incrementCount(dest1, ClientSocketStats.Tracked.CONNECTION_DESTROYED_EVENT);
         assertEquals(3, stats.getCount(ClientSocketStats.Tracked.CONNECTION_DESTROYED_EVENT));
-        assertEquals(2, stats.getStatsMap().get(dest1).getCount(ClientSocketStats.Tracked.CONNECTION_DESTROYED_EVENT));
-        assertEquals(1, stats.getStatsMap().get(dest2).getCount(ClientSocketStats.Tracked.CONNECTION_DESTROYED_EVENT));
+        assertEquals(2,
+                     stats.getStatsMap()
+                          .get(dest1)
+                          .getCount(ClientSocketStats.Tracked.CONNECTION_DESTROYED_EVENT));
+        assertEquals(1,
+                     stats.getStatsMap()
+                          .get(dest2)
+                          .getCount(ClientSocketStats.Tracked.CONNECTION_DESTROYED_EVENT));
     }
 
     @Test
@@ -93,13 +111,13 @@ public class ClientSocketStatsTest {
         stats.recordCheckoutTimeUs(dest1, 100);
         // check parent
         assertEquals(1, stats.getCheckoutCount());
-        assertEquals(100, (int) (stats.getCheckoutTimeMsQ99th() * Time.US_PER_MS));
+        assertEqualsWithErrorBound(100, (int) (stats.getCheckoutTimeMsQ99th() * Time.US_PER_MS));
 
         // check child
         ClientSocketStats child = stats.getStatsMap().get(dest1);
         assertNotNull(child);
         assertEquals(1, child.getCheckoutCount());
-        assertEquals(100, (int) (child.getCheckoutTimeMsQ99th() * Time.US_PER_MS));
+        assertEqualsWithErrorBound(100, (int) (child.getCheckoutTimeMsQ99th() * Time.US_PER_MS));
     }
 
     @Test
@@ -107,6 +125,7 @@ public class ClientSocketStatsTest {
         ClientSocketStats stats = masterStats;
         assertEquals(0, stats.getCheckoutCount());
 
+        // FIXME: 10 values is not enough to have a statistically-significant sample size to measure percentiles off of.
         stats.recordCheckoutTimeUs(dest1, 100);
         stats.recordCheckoutTimeUs(dest1, 200);
         stats.recordCheckoutTimeUs(dest1, 300);
@@ -116,26 +135,27 @@ public class ClientSocketStatsTest {
         stats.recordCheckoutTimeUs(dest1, 700);
         stats.recordCheckoutTimeUs(dest1, 800);
         stats.recordCheckoutTimeUs(dest2, 900);
+        stats.recordCheckoutTimeUs(dest1, 1000);
 
         // check parent
-        assertEquals(9, stats.getCheckoutCount());
-        assertEquals(900, (int) (stats.getCheckoutTimeMsQ99th() * Time.US_PER_MS));
+        assertEquals(10, stats.getCheckoutCount());
+        assertEqualsWithErrorBound(1000, (int) (stats.getCheckoutTimeMsQ99th() * Time.US_PER_MS));
 
         // check child1
         ClientSocketStats child1 = stats.getStatsMap().get(dest1);
         assertNotNull(child1);
-        assertEquals(6, child1.getCheckoutCount());
-        assertEquals(100, (int) (child1.getCheckoutTimeMsQ10th() * Time.US_PER_MS));
-        assertEquals(300, (int) (child1.getCheckoutTimeMsQ50th() * Time.US_PER_MS));
-        assertEquals(800, (int) (child1.getCheckoutTimeMsQ99th() * Time.US_PER_MS));
+        assertEquals(7, child1.getCheckoutCount());
+        assertEqualsWithErrorBound(100, (int) (child1.getCheckoutTimeMsQ10th() * Time.US_PER_MS));
+        assertEqualsWithErrorBound(400, (int) (child1.getCheckoutTimeMsQ50th() * Time.US_PER_MS));
+        assertEqualsWithErrorBound(1000, (int) (child1.getCheckoutTimeMsQ99th() * Time.US_PER_MS));
 
         // check child2
         ClientSocketStats child2 = stats.getStatsMap().get(dest2);
         assertNotNull(child2);
         assertEquals(3, child2.getCheckoutCount());
-        assertEquals(500, (int) (child2.getCheckoutTimeMsQ10th() * Time.US_PER_MS));
-        assertEquals(600, (int) (child2.getCheckoutTimeMsQ50th() * Time.US_PER_MS));
-        assertEquals(900, (int) (child2.getCheckoutTimeMsQ99th() * Time.US_PER_MS));
+        assertEqualsWithErrorBound(500, (int) (child2.getCheckoutTimeMsQ10th() * Time.US_PER_MS));
+        assertEqualsWithErrorBound(600, (int) (child2.getCheckoutTimeMsQ50th() * Time.US_PER_MS));
+        assertEqualsWithErrorBound(900, (int) (child2.getCheckoutTimeMsQ99th() * Time.US_PER_MS));
     }
 
     @Test
@@ -146,13 +166,13 @@ public class ClientSocketStatsTest {
         stats.recordResourceRequestTimeUs(dest1, 100);
         // check parent
         assertEquals(1, stats.resourceRequestCount());
-        assertEquals(100, (int) (stats.getResourceRequestTimeMsQ99th() * Time.US_PER_MS));
+        assertEqualsWithErrorBound(100, (int) (stats.getResourceRequestTimeMsQ99th() * Time.US_PER_MS));
 
         // check child
         ClientSocketStats child = stats.getStatsMap().get(dest1);
         assertNotNull(child);
         assertEquals(1, child.resourceRequestCount());
-        assertEquals(100, (int) (child.getResourceRequestTimeMsQ99th() * Time.US_PER_MS));
+        assertEqualsWithErrorBound(100, (int) (child.getResourceRequestTimeMsQ99th() * Time.US_PER_MS));
     }
 
     @Test
@@ -160,35 +180,37 @@ public class ClientSocketStatsTest {
         ClientSocketStats stats = masterStats;
         assertEquals(0, stats.resourceRequestCount());
 
-        stats.recordResourceRequestTimeUs(dest1, 100);
-        stats.recordResourceRequestTimeUs(dest1, 200);
-        stats.recordResourceRequestTimeUs(dest1, 300);
-        stats.recordResourceRequestTimeUs(dest1, 400);
-        stats.recordResourceRequestTimeUs(dest2, 500);
-        stats.recordResourceRequestTimeUs(dest2, 600);
-        stats.recordResourceRequestTimeUs(dest1, 700);
-        stats.recordResourceRequestTimeUs(dest1, 800);
-        stats.recordResourceRequestTimeUs(dest2, 900);
+        // FIXME: 10 values is not enough to have a statistically-significant sample size to measure percentiles off of.
+        stats.recordCheckoutTimeUs(dest1, 100);
+        stats.recordCheckoutTimeUs(dest1, 200);
+        stats.recordCheckoutTimeUs(dest1, 300);
+        stats.recordCheckoutTimeUs(dest1, 400);
+        stats.recordCheckoutTimeUs(dest2, 500);
+        stats.recordCheckoutTimeUs(dest2, 600);
+        stats.recordCheckoutTimeUs(dest1, 700);
+        stats.recordCheckoutTimeUs(dest1, 800);
+        stats.recordCheckoutTimeUs(dest2, 900);
+        stats.recordCheckoutTimeUs(dest1, 1000);
 
         // check parent
-        assertEquals(9, stats.resourceRequestCount());
-        assertEquals(900, (int) (stats.getResourceRequestTimeMsQ99th() * Time.US_PER_MS));
+        assertEquals(10, stats.getCheckoutCount());
+        assertEqualsWithErrorBound(1000, (int) (stats.getCheckoutTimeMsQ99th() * Time.US_PER_MS));
 
         // check child1
         ClientSocketStats child1 = stats.getStatsMap().get(dest1);
         assertNotNull(child1);
-        assertEquals(6, child1.resourceRequestCount());
-        assertEquals(100, (int) (child1.getResourceRequestTimeMsQ10th() * Time.US_PER_MS));
-        assertEquals(300, (int) (child1.getResourceRequestTimeMsQ50th() * Time.US_PER_MS));
-        assertEquals(800, (int) (child1.getResourceRequestTimeMsQ99th() * Time.US_PER_MS));
+        assertEquals(7, child1.getCheckoutCount());
+        assertEqualsWithErrorBound(100, (int) (child1.getCheckoutTimeMsQ10th() * Time.US_PER_MS));
+        assertEqualsWithErrorBound(400, (int) (child1.getCheckoutTimeMsQ50th() * Time.US_PER_MS));
+        assertEqualsWithErrorBound(1000, (int) (child1.getCheckoutTimeMsQ99th() * Time.US_PER_MS));
 
         // check child2
         ClientSocketStats child2 = stats.getStatsMap().get(dest2);
         assertNotNull(child2);
-        assertEquals(3, child2.resourceRequestCount());
-        assertEquals(500, (int) (child2.getResourceRequestTimeMsQ10th() * Time.US_PER_MS));
-        assertEquals(600, (int) (child2.getResourceRequestTimeMsQ50th() * Time.US_PER_MS));
-        assertEquals(900, (int) (child2.getResourceRequestTimeMsQ99th() * Time.US_PER_MS));
+        assertEquals(3, child2.getCheckoutCount());
+        assertEqualsWithErrorBound(500, (int) (child2.getCheckoutTimeMsQ10th() * Time.US_PER_MS));
+        assertEqualsWithErrorBound(600, (int) (child2.getCheckoutTimeMsQ50th() * Time.US_PER_MS));
+        assertEqualsWithErrorBound(900, (int) (child2.getCheckoutTimeMsQ99th() * Time.US_PER_MS));
     }
 
     @Test
@@ -308,17 +330,17 @@ public class ClientSocketStatsTest {
         ClientSocketStats child2 = stats.getStatsMap().get(dest2);
         assertEquals(3.5, child1.getCheckoutQueueLengthHistogram().getAverage(), 0);
         assertEquals(7.5, child2.getCheckoutQueueLengthHistogram().getAverage(), 0);
-   
+
         // Make it sleep for a second
         try {
             Thread.sleep(1000);
         } catch(InterruptedException e) {
             e.printStackTrace();
         }
-        
+
         // The histogram should be reset by now
         assertEquals(0, (stats.getCheckoutQueueLengthHistogram().getAverage()), 0);
-        
+
         stats.recordCheckoutQueueLength(dest1, 1);
         stats.recordCheckoutQueueLength(dest1, 1);
         stats.recordCheckoutQueueLength(dest2, 4);
@@ -374,20 +396,18 @@ public class ClientSocketStatsTest {
             t1_2.join();
             t1_3.join();
         } catch(Exception e) {}
-        assertEquals((int) (masterStats.getCheckoutTimeMsQ10th() * Time.US_PER_MS), 1000);
-        assertEquals((int) (masterStats.getCheckoutTimeMsQ50th() * Time.US_PER_MS), 5000);
+        assertEqualsWithErrorBound(1000,
+                (int) (masterStats.getCheckoutTimeMsQ10th() * Time.US_PER_MS));
+        assertEqualsWithErrorBound(5000,
+                (int) (masterStats.getCheckoutTimeMsQ50th() * Time.US_PER_MS));
 
-        assertEquals((int) (masterStats.getStatsMap()
-                                .get(dest1).getCheckoutTimeMsQ10th() * Time.US_PER_MS),
-                                1000);
-        assertEquals((int) (masterStats.getStatsMap()
-                                .get(dest1).getCheckoutTimeMsQ50th() * Time.US_PER_MS),
-                                 5000);
-        assertEquals((int) (masterStats.getStatsMap()
-                                .get(dest2).getCheckoutTimeMsQ10th() * Time.US_PER_MS),
-                                 1000);
-        assertEquals((int) (masterStats.getStatsMap()
-                                .get(dest2).getCheckoutTimeMsQ50th() * Time.US_PER_MS),
-                                 5000);
+        assertEqualsWithErrorBound(1000,
+                (int) (masterStats.getStatsMap().get(dest1).getCheckoutTimeMsQ10th() * Time.US_PER_MS));
+        assertEqualsWithErrorBound(5000,
+                (int) (masterStats.getStatsMap().get(dest1).getCheckoutTimeMsQ50th() * Time.US_PER_MS));
+        assertEqualsWithErrorBound(1000,
+                (int) (masterStats.getStatsMap().get(dest2).getCheckoutTimeMsQ10th() * Time.US_PER_MS));
+        assertEqualsWithErrorBound(5000,
+                (int) (masterStats.getStatsMap().get(dest2).getCheckoutTimeMsQ50th() * Time.US_PER_MS));
     }
 }

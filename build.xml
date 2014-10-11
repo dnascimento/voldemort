@@ -1,19 +1,42 @@
 <?xml version="1.0"?>
 
 <project name="voldemort" basedir="." default="all">
-  <property file="build.properties" />
-
+  <property file="gradle.properties" />
+  
+  <property name="public.lib.dir" value="public-lib"/>
+  <property name="private.lib.dir" value="private-lib"/>
+  
   <property name="name" value="voldemort" />
   <property name="display.name" value="Voldemort" />
   <property name="author" value="Dario Nascimento, Jay Kreps, Roshan Sumbaly, Alex Feinberg, Bhupesh Bansal, Lei Gao, Chinmay Soman, Vinoth Chandar, Zhongjie Wu" />
   <property environment="env" />
+  <!-- Files needed for building scala files with ant -->
+  <property name="scala-compiler.jar" value="${public.lib.dir}/scala-compiler-${scalac.version}.jar"/>
+  <property name="scala-library.jar" value="${public.lib.dir}/scala-library-${scalac.version}.jar"/>
+  <property name="scala-reflect.jar" value="${public.lib.dir}/scala-reflect-${scalac.version}.jar"/>
 
   <path id="main-classpath">
-    <fileset dir="${lib.dir}">
+    <fileset dir="${public.lib.dir}">
+      <include name="*.jar" />
+    </fileset>
+    <fileset dir="${private.lib.dir}">
       <include name="*.jar" />
     </fileset>
     <pathelement path="${classes.dir}" />
   </path>
+
+  <!-- set the scala classpath -->
+  <path id="scala.classpath">
+    <pathelement location="${scala-compiler.jar}"/>
+    <pathelement location="${scala-library.jar}"/>
+    <pathelement location="${scala-reflect.jar}"/>
+  	<path refid="main-classpath" />
+  	<pathelement path="${classes.dir}" />
+  </path>
+
+  <taskdef resource="scala/tools/ant/antlib.xml">
+  <classpath refid="scala.classpath"/>
+  </taskdef>
 
   <!-- set the build number based on environment variable, otherwise blank -->
   <property environment="env" description="System environment variables (including those set by Hudson)"/>
@@ -31,8 +54,8 @@
     <fileset dir="${dist.dir}">
       <include name="${name}-${curr.release}.jar" />
     </fileset>
-    <fileset dir="${contrib.root.dir}">
-      <include name="**/*.jar" />
+    <fileset dir="${public.lib.dir}">
+      <include name="*.jar" />
     </fileset>
     <path refid="test-classpath" />
   </path>
@@ -65,6 +88,7 @@
 
   <target name="clean" description="Delete generated files.">
     <delete dir="${dist.dir}" />
+    <delete dir="lib" />
     <replace-dir dir="${javadoc.dir}" />
   </target>
 
@@ -75,12 +99,13 @@
       <fileset dir="${java.dir}">
         <exclude name="**/*.java" />
         <exclude name="**/*.html" />
+        <exclude name="**/*.scala" />
         <exclude name="**/log4j.properties" />
       </fileset>
     </copy>
     <replace-dir dir="META-INF" />
   	<echo message="creating manifest"/>
-    <manifest file="META-INF/MANIFEST.MF">   
+    <manifest file="META-INF/MANIFEST.MF">
       <attribute name="Voldemort-Implementation-Version" value="${curr.release}" />
       <attribute name="Implementation-Title" value="Voldemort" />
       <attribute name="Implementation-Version" value="${curr.release}" />
@@ -89,10 +114,19 @@
     <!-- place to put log4j.properties -->
     <replace-dir dir="${resources.dir}"/>
     <copy file="${java.dir}/log4j.properties" todir="${resources.dir}"/>
+    <!-- regular java files compiled with javac task -->
     <javac destdir="${classes.dir}" target="${javac.version}" source="${javac.version}" debug="true" deprecation="false" failonerror="true" includeantruntime="false">
       <src path="${java.dir}" />
       <classpath refid="main-classpath" />
     </javac>
+    <!-- compile scala files with the scalac task -->
+    <scalac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="scala.classpath">
+    <include name="**/*.scala"/>
+    </scalac>
+    <copy todir="lib">
+      <fileset dir="${private.lib.dir}" />
+      <fileset dir="${public.lib.dir}" />
+    </copy>
   </target>
 
   <target name="buildtest" description="Compile test classes">
@@ -152,11 +186,18 @@
       <fileset dir="${classes.dir}">
         <include name="**/*.*" />
       </fileset>
+     <fileset dir="${public.lib.dir}">
+      <exclude name="${public.lib.dir}/servlet-api*.jar"/>
+      <exclude name="${public.lib.dir}/src/**"/>
+    </fileset>
+    <fileset dir="${private.lib.dir}">
+      <exclude name="${private.lib.dir}/servlet-api*.jar"/>
+      <exclude name="${private.lib.dir}/src/**"/>
+    </fileset>
       <!-- include xsds -->
       <fileset dir="${java.dir}">
         <include name="**/*.xsd" />
       </fileset>
-    	
     	<fileset dir=".">
     	 		<include name="META-INF/MANIFEST.MF" />
       </fileset>
@@ -187,12 +228,23 @@
     </jar>
   </target>
 
+
+
+
+
+  
+
+
   <target name="war" depends="build" description="Build server war file">
     <war destfile="${dist.dir}/${name}.war" webxml="web.xml" basedir="${classes.dir}">
       <classes dir="${classes.dir}"/>
-      <lib dir="${lib.dir}">
-        <exclude name="${lib.dir}/servlet-api*.jar"/>
-        <exclude name="${lib.dir}/src/**"/>
+      <lib dir="${public.lib.dir}">
+        <exclude name="${public.lib.dir}/servlet-api*.jar"/>
+        <exclude name="${public.lib.dir}/src/**"/>
+      </lib>
+      <lib dir="${private.lib.dir}">
+        <exclude name="${private.lib.dir}/servlet-api*.jar"/>
+        <exclude name="${private.lib.dir}/src/**"/>
       </lib>
     </war>
   </target>
@@ -200,7 +252,6 @@
   <target name="contrib-build" depends="build, buildtest" description="Compile contrib packages (java and test) ">
     <replace-dir dir="${contrib.classes.dir}" />
     <javac destdir="${contrib.classes.dir}" target="${javac.version}" source="${javac.version}" debug="true" deprecation="false" failonerror="true" includeantruntime="false">
-      <src path="${contrib.root.dir}" />
       <src path="${contrib.root.dir}" />
       <classpath refid="main-classpath" />
       <classpath refid="contrib-classpath" />
@@ -343,7 +394,9 @@
       <zipfileset dir="." prefix="voldemort-@{version}" includes="**">
         <exclude name="${dist.dir}/*classes/"/>
         <exclude name="bin/*"/>
+        <exclude name="build/*"/>
         <exclude name=".git*/**"/>
+        <exclude name=".gradle*/**"/>
       </zipfileset>
     </zip>
     <tar destfile="${dist.dir}/${name}-@{version}.tar.gz" compression="gzip" longfile="gnu">
@@ -352,7 +405,9 @@
         <exclude name="${dist.dir}/*classes/"/>
         <exclude name="${dist.dir}/*.zip"/>
         <exclude name="bin/*"/>
+        <exclude name="build/*"/>
         <exclude name=".git*/**"/>
+        <exclude name=".gradle*/**"/>
       </tarfileset>
     </tar>
     </sequential>
@@ -407,7 +462,7 @@
       <report todir="${testhtml.dir}" format="frames" />
     </junitreport>
   </target>
- 
+
   <target name="junit-long" depends="build, buildtest, junit" description="Run long junit tests that uses larger data sets than normal junit tests.">
     <replace-dir dir="${longtestreport.dir}" />
     <replace-dir dir="${longtesthtml.dir}" />
@@ -448,7 +503,7 @@
       <report todir="${testhtml.dir}" format="frames" />
     </junitreport>
   </target>
- 
+
   <target name="junit-long-rebalance" depends="build, buildtest, junit-rebalance" description="Run long junit rebalance tests that uses larger data sets than normal junit tests.">
     <replace-dir dir="${longtestreport.dir}" />
     <replace-dir dir="${longtesthtml.dir}" />
@@ -514,7 +569,7 @@
 
   <taskdef file="tomcat-tasks.properties">
     <classpath>
-      <path location="${lib.dir}/catalina-ant.jar" />
+      <path location="${private.lib.dir}/catalina-ant.jar" />
     </classpath>
   </taskdef>
 
@@ -526,12 +581,13 @@
     <deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}" path="${tomcat.context}" update="true" war="file:${dist.dir}/${name}.war" />
   </target>
 	
- <target name="copyToRepo" description="Copy to Repo" depends="war">
+ <target name="copyToRepo" description="Copy to Repo" depends="jar">
 	<delete dir="/Users/darionascimento/.m2/repository/com/voldemort"/>
-	<copy file="${dist.dir}/${name}.war" tofile="../askJava/ask-war/repo/com/voldemort/voldemort/3.0.0/voldemort-3.0.0.jar"/> 	 
-	<copy file="${dist.dir}/${name}.war" tofile="../undo/repo/com/voldemort/voldemort/3.0.0/voldemort-3.0.0.jar"/> 		 
-
+	<copy file="${dist.dir}/${name}-${curr.release}.jar" tofile="../askJava/ask-war/repo/com/voldemort/voldemort/3.0.0/voldemort-3.0.0.jar"/> 	 
+	<copy file="${dist.dir}/${name}-${curr.release}.jar" tofile="../undo/repo/com/voldemort/voldemort/3.0.0/voldemort-3.0.0.jar"/> 		 
   </target>
+  
+  
 	
 
   <target name="undeploy" description="Undeploy application">

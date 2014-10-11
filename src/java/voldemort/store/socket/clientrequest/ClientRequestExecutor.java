@@ -51,6 +51,7 @@ public class ClientRequestExecutor extends SelectorManagerWorker {
     private ClientRequest<?> clientRequest;
 
     private long expiration;
+    private long startTime;
     private boolean isExpired;
 
     public ClientRequestExecutor(Selector selector,
@@ -77,24 +78,21 @@ public class ClientRequestExecutor extends SelectorManagerWorker {
         if(expiration <= 0)
             return true;
 
-        if(System.nanoTime() <= expiration)
+        long nowNs = System.nanoTime();
+        if(nowNs <= expiration)
             return true;
 
-        if(logger.isEnabledFor(Level.WARN))
-            logger.warn("Client request associated with " + socketChannel.socket() + " timed out");
-
+        if(logger.isEnabledFor(Level.WARN)) {
+            long allowedTime = expiration - startTime;
+            long elapsedTime = nowNs - startTime;
+            logger.warn("Client request associated with " + socketChannel.socket()
+                        + " timed out. Start time(ns) " + startTime + " allowed time(ns) "
+                        + allowedTime + " elapsed time(ns) " + elapsedTime);
+        }
         isExpired = true;
         close();
 
         return false;
-    }
-
-    public synchronized void addClientRequest(ClientRequest<?> clientRequest) {
-        addClientRequest(clientRequest, -1);
-    }
-
-    public synchronized void addClientRequest(ClientRequest<?> clientRequest, long timeoutMs) {
-        addClientRequest(clientRequest, timeoutMs, 0);
     }
 
     public synchronized void addClientRequest(ClientRequest<?> clientRequest,
@@ -105,18 +103,21 @@ public class ClientRequestExecutor extends SelectorManagerWorker {
 
         this.clientRequest = clientRequest;
 
-        if(timeoutMs == -1) {
-            this.expiration = -1;
-        } else {
-            long nowNs = System.nanoTime();
-            if(elapsedNs > (Time.NS_PER_MS * timeoutMs)) {
-                this.expiration = nowNs;
-            } else {
-                this.expiration = nowNs + (Time.NS_PER_MS * timeoutMs) - elapsedNs;
-            }
+        startTime = System.nanoTime();
 
-            if(this.expiration < nowNs)
-                throw new IllegalArgumentException("timeout " + timeoutMs + " not valid");
+        if(elapsedNs > (Time.NS_PER_MS * timeoutMs)) {
+            this.expiration = startTime;
+        } else {
+            this.expiration = startTime + (Time.NS_PER_MS * timeoutMs) - elapsedNs;
+        }
+
+        if(this.expiration < startTime) {
+            String errorMessage = String.format("Invalid timeout specified. startTime (%d) ns expiration (%d) ns timeout (%d) ms elapsed (%d) ns",
+                                                startTime,
+                                                expiration,
+                                                timeoutMs,
+                                                elapsedNs);
+            throw new IllegalArgumentException(errorMessage);
         }
 
         outputStream.getBuffer().clear();
@@ -220,13 +221,17 @@ public class ClientRequestExecutor extends SelectorManagerWorker {
             request.parseResponse(new DataInputStream(inputStream));
 
             // At this point we've completed a full stand-alone request. So
-            // clear our input buffer and prepare for outputting back to the client.
+            // clear our input buffer and prepare for outputting back to the
+            // client.
             if(logger.isTraceEnabled())
                 logger.trace("Finished read for " + socketChannel.socket());
 
             selectionKey.interestOps(0);
         }
-        completeClientRequest();
+        ClientRequest<?> originalRequest = completeClientRequest();
+
+        if(originalRequest == null && logger.isEnabledFor(Level.WARN))
+            logger.warn("No client associated with " + socketChannel.socket());
     }
 
     @Override
@@ -287,13 +292,10 @@ public class ClientRequestExecutor extends SelectorManagerWorker {
      * check in the client request executor. Such a check in can trigger
      * additional synchronized methods deeper in the stack.
      */
-    private void completeClientRequest() {
+    private ClientRequest<?> completeClientRequest() {
         ClientRequest<?> local = atomicNullOutClientRequest();
         if(local == null) {
-            if(logger.isEnabledFor(Level.WARN))
-                logger.warn("No client associated with " + socketChannel.socket());
-
-            return;
+            return null;
         }
 
         if(isExpired)
@@ -303,6 +305,8 @@ public class ClientRequestExecutor extends SelectorManagerWorker {
 
         if(logger.isTraceEnabled())
             logger.trace("Marked client associated with " + socketChannel.socket() + " as complete");
+
+        return local;
     }
 
 }

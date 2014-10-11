@@ -25,7 +25,7 @@ public abstract class RestRequestValidator {
     protected String storeName = null;
     protected List<ByteArray> parsedKeys;
     protected byte[] parsedValue = null;
-    protected VectorClock parsedVectorClock;
+    protected VectorClock parsedVectorClock = null;
     protected long parsedTimeoutInMs;
     protected byte parsedOperationType;
     protected long parsedRequestOriginTimeInMs;
@@ -145,7 +145,17 @@ public abstract class RestRequestValidator {
         boolean result = false;
         if(originTime != null) {
             try {
-                this.parsedRequestOriginTimeInMs = Long.parseLong(originTime);
+                // TODO: remove the originTime field from request header,
+                // because coordinator should not accept the request origin time
+                // from the client.. In this commit, we only changed
+                // "this.parsedRequestOriginTimeInMs" from
+                // "Long.parseLong(originTime)" to current system time,
+                // The reason that we did not remove the field from request
+                // header right now, is because this commit is a quick fix for
+                // internal performance test to be available as soon as
+                // possible.
+
+                this.parsedRequestOriginTimeInMs = System.currentTimeMillis();
                 if(this.parsedRequestOriginTimeInMs < 0) {
                     RestErrorHandler.writeErrorResponse(messageEvent,
                                                         HttpResponseStatus.BAD_REQUEST,
@@ -299,6 +309,32 @@ public abstract class RestRequestValidator {
 
     public RequestRoutingType getParsedRoutingType() {
         return parsedRoutingType;
+    }
+
+    /**
+     * Prints a debug log message that details the time taken for the Http
+     * request to be parsed by the coordinator
+     * 
+     * @param operationType
+     * @param receivedTimeInMs
+     */
+    protected void debugLog(String operationType, Long receivedTimeInMs) {
+        long durationInMs = receivedTimeInMs - (this.parsedRequestOriginTimeInMs);
+        int numVectorClockEntries = (this.parsedVectorClock == null ? 0
+                                                                   : this.parsedVectorClock.getVersionMap()
+                                                                                           .size());
+        logger.debug("Received a new request. Operation type: " + operationType + " , Key(s): "
+                     + keysHexString(this.parsedKeys) + " , Store: " + this.storeName
+                     + " , Origin time (in ms): " + (this.parsedRequestOriginTimeInMs)
+                     + " , Request received at time(in ms): " + receivedTimeInMs
+                     + " , Num vector clock entries: " + numVectorClockEntries
+                     + " , Duration from RESTClient to CoordinatorRestRequestValidator(in ms): "
+                     + durationInMs);
+
+    }
+
+    protected String keysHexString(List<ByteArray> keys) {
+        return RestUtils.getKeysHexString(keys.iterator());
     }
 
 }

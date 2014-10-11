@@ -3,6 +3,7 @@ package voldemort.rest;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -18,12 +19,16 @@ import org.jdom.output.XMLOutputter;
 
 import voldemort.serialization.SerializerDefinition;
 import voldemort.store.StoreDefinition;
+import voldemort.utils.ByteArray;
+import voldemort.utils.ByteUtils;
 import voldemort.versioning.VectorClock;
 import voldemort.versioning.Version;
 import voldemort.xml.MappingException;
 import voldemort.xml.StoreDefinitionsMapper;
 
 public class RestUtils {
+
+    protected final static ObjectMapper mapper = new ObjectMapper();
 
     /**
      * Function to serialize the given Vector clock into a string. If something
@@ -34,7 +39,6 @@ public class RestUtils {
      */
     public static String getSerializedVectorClock(VectorClock vc) {
         VectorClockWrapper vcWrapper = new VectorClockWrapper(vc);
-        ObjectMapper mapper = new ObjectMapper();
         String serializedVC = "";
         try {
             serializedVC = mapper.writeValueAsString(vcWrapper);
@@ -50,9 +54,6 @@ public class RestUtils {
         if(serializedVC == null) {
             return null;
         }
-
-        ObjectMapper mapper = new ObjectMapper();
-
         try {
             VectorClockWrapper vcWrapper = mapper.readValue(serializedVC, VectorClockWrapper.class);
             vc = new VectorClock(vcWrapper.getVersions(), vcWrapper.getTimestamp());
@@ -75,7 +76,6 @@ public class RestUtils {
         for(VectorClock vc: vectorClocks) {
             vectorClockWrappers.add(new VectorClockWrapper(vc));
         }
-        ObjectMapper mapper = new ObjectMapper();
         String serializedVC = "";
         try {
             serializedVC = mapper.writeValueAsString(vectorClockWrappers);
@@ -92,9 +92,6 @@ public class RestUtils {
         if(serializedVC == null) {
             return null;
         }
-
-        ObjectMapper mapper = new ObjectMapper();
-
         try {
             vectorClockWrappers = mapper.readValue(serializedVC,
                                                    new TypeReference<Set<VectorClockWrapper>>() {});
@@ -117,7 +114,7 @@ public class RestUtils {
      * response to a "schemata" fetch request
      * 
      * @param storeDefinition
-     * @return serialized store definition 
+     * @return serialized store definition
      */
     public static String constructSerializerInfoXml(StoreDefinition storeDefinition) {
         Element store = new Element(StoreDefinitionsMapper.STORE_ELMT);
@@ -181,6 +178,25 @@ public class RestUtils {
     public static byte[] decodeVoldemortKey(String base64Key) {
         byte[] keyBytes = Base64.decodeBase64(base64Key);
         return keyBytes;
+    }
+
+    public static String getKeyHexString(ByteArray key) {
+        String keyStr = "< " + ByteUtils.toHexString(key.get()) + " >";
+        return keyStr;
+    }
+
+    public static String getKeysHexString(Iterator<ByteArray> keys) {
+        StringBuilder keysStr = new StringBuilder();
+        keysStr.append("< ");
+        if(keys != null) {
+            ByteArray key = null;
+            while(keys.hasNext()) {
+                key = keys.next();
+                keysStr.append(ByteUtils.toHexString(key.get()) + "  ");
+            }
+        }
+        keysStr.append(" >");
+        return keysStr.toString();
     }
 
 }

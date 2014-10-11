@@ -9,7 +9,6 @@ package voldemort.store.routed.action;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -107,7 +106,7 @@ public class UnlockConfigureNodes extends
                 }
 
                 nodes = new ArrayList<Node>();
-                LinkedList<Integer> proximityList = this.clientZone.getProximityList();
+                List<Integer> proximityList = this.clientZone.getProximityList();
                 // Add a node from every zone
                 for(int index = 0; index < pipelineData.getZonesRequired(); index++) {
                     List<Node> zoneNodes = zoneIdToNode.get(proximityList.get(index));

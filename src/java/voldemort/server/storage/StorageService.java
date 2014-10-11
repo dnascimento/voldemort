@@ -56,8 +56,6 @@ import voldemort.common.service.ServiceType;
 import voldemort.routing.RoutingStrategy;
 import voldemort.routing.RoutingStrategyFactory;
 import voldemort.routing.RoutingStrategyType;
-import voldemort.serialization.SerializerDefinition;
-import voldemort.serialization.avro.versioned.SchemaEvolutionValidator;
 import voldemort.server.RequestRoutingType;
 import voldemort.server.StoreRepository;
 import voldemort.server.VoldemortConfig;
@@ -111,6 +109,7 @@ import voldemort.utils.EventThrottler;
 import voldemort.utils.JmxUtils;
 import voldemort.utils.Pair;
 import voldemort.utils.ReflectUtils;
+import voldemort.utils.StoreDefinitionUtils;
 import voldemort.utils.SystemTime;
 import voldemort.utils.Time;
 import voldemort.utils.Utils;
@@ -178,7 +177,7 @@ public class StorageService extends AbstractService {
                                                                                                                                           metadata,
                                                                                                                                           config));
         this.failureDetector = create(failureDetectorConfig, config.isJmxEnabled());
-        this.storeStats = new StoreStats();
+        this.storeStats = new StoreStats("aggregate.storage-service");
         this.routedStoreFactory = new RoutedStoreFactory();
         this.routedStoreFactory.setThreadPool(this.clientThreadPool);
         this.routedStoreConfig = new RoutedStoreConfig(this.voldemortConfig,
@@ -396,24 +395,7 @@ public class StorageService extends AbstractService {
         logger.info("Initializing stores:");
 
         logger.info("Validating schemas:");
-        String AVRO_GENERIC_VERSIONED_TYPE_NAME = "avro-generic-versioned";
-
-        for(StoreDefinition storeDef: storeDefs) {
-            SerializerDefinition keySerDef = storeDef.getKeySerializer();
-            SerializerDefinition valueSerDef = storeDef.getValueSerializer();
-
-            if(keySerDef.getName().equals(AVRO_GENERIC_VERSIONED_TYPE_NAME)) {
-
-                SchemaEvolutionValidator.checkSchemaCompatibility(keySerDef);
-
-            }
-
-            if(valueSerDef.getName().equals(AVRO_GENERIC_VERSIONED_TYPE_NAME)) {
-
-                SchemaEvolutionValidator.checkSchemaCompatibility(valueSerDef);
-
-            }
-        }
+        StoreDefinitionUtils.validateSchemasAsNeeded(storeDefs);
         // first initialize non-view stores
         for(StoreDefinition def: storeDefs)
             if(!def.isView())
@@ -640,7 +622,7 @@ public class StorageService extends AbstractService {
         config.update(storeDef);
     }
 
-    public void openStore(StoreDefinition storeDef) {
+    public StorageEngine<ByteArray, byte[], byte[]> openStore(StoreDefinition storeDef) {
 
         logger.info("Opening store '" + storeDef.getName() + "' (" + storeDef.getType() + ").");
 
@@ -685,6 +667,7 @@ public class StorageService extends AbstractService {
             removeEngine(engine, isReadOnly, storeDef.getType(), false);
             throw new VoldemortException(e);
         }
+        return engine;
     }
 
     /**
@@ -758,9 +741,22 @@ public class StorageService extends AbstractService {
         }
 
         storeRepository.removeStorageEngine(storeName);
-        if(truncate)
+
+        // Then truncate (if needed) and close
+        if(truncate) {
             engine.truncate();
+        }
         engine.close();
+
+        // Also remove any state in the StorageConfiguration (if required)
+        StorageConfiguration config = storageConfigs.get(storeType);
+        if(config == null) {
+            throw new ConfigurationException("Attempt to close storage engine " + engine.getName()
+                                             + " but " + storeType
+                                             + " storage engine has not been enabled.");
+        }
+        config.removeStorageEngine(engine);
+
     }
 
     /**
@@ -889,14 +885,15 @@ public class StorageService extends AbstractService {
             // Wrap everything under the rate limiting store (barring the
             // metadata store)
             if(voldemortConfig.isEnableQuotaLimiting() && !isMetadata) {
+                StoreStats currentStoreStats = statStore.getStats();
                 FileBackedCachingStorageEngine quotaStore = (FileBackedCachingStorageEngine) storeRepository.getStorageEngine(SystemStoreConstants.SystemStoreName.voldsys$_store_quotas.toString());
                 QuotaLimitStats quotaStats = new QuotaLimitStats(this.aggregatedQuotaStats);
                 QuotaLimitingStore rateLimitingStore = new QuotaLimitingStore(store,
-                                                                              this.storeStats,
+                                                                              currentStoreStats,
                                                                               quotaStats,
                                                                               quotaStore);
                 if(voldemortConfig.isJmxEnabled()) {
-                    JmxUtils.registerMbean(this.aggregatedQuotaStats,
+                    JmxUtils.registerMbean(quotaStats,
                                            JmxUtils.createObjectName("voldemort.store.quota",
                                                                      store.getName()
                                                                              + "-quota-limit-stats"));

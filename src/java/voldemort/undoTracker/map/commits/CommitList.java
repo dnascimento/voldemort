@@ -13,7 +13,7 @@ import voldemort.undoTracker.map.StsBranchPair;
 
 public class CommitList implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private transient static final long serialVersionUID = 1L;
 
     private transient static final Logger log = Logger.getLogger(CommitList.class);
 
@@ -159,5 +159,9 @@ public class CommitList implements Serializable {
             list.add(latest);
         }
         return latest;
+    }
+
+    public int size() {
+        return list.size();
     }
 }

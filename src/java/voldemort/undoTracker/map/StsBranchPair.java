@@ -11,7 +11,7 @@ import java.io.Serializable;
 
 public class StsBranchPair implements Serializable, Comparable<StsBranchPair> {
 
-    private static final long serialVersionUID = 1L;
+    private transient static final long serialVersionUID = 1L;
 
     public long sts;
     public short branch;

@@ -1,12 +1,12 @@
 /*
  * Copyright 2013 LinkedIn, Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -16,14 +16,24 @@
 
 package voldemort.utils;
 
+import static voldemort.serialization.DefaultSerializerFactory.AVRO_GENERIC_TYPE_NAME;
+import static voldemort.serialization.DefaultSerializerFactory.AVRO_GENERIC_VERSIONED_TYPE_NAME;
+import static voldemort.serialization.DefaultSerializerFactory.AVRO_REFLECTIVE_TYPE_NAME;
+import static voldemort.serialization.DefaultSerializerFactory.AVRO_SPECIFIC_TYPE_NAME;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import voldemort.VoldemortException;
 import voldemort.routing.RoutingStrategyType;
+import voldemort.serialization.SerializerDefinition;
+import voldemort.serialization.avro.versioned.SchemaEvolutionValidator;
 import voldemort.store.StoreDefinition;
 import voldemort.store.StoreDefinitionBuilder;
 import voldemort.store.readonly.ReadOnlyStorageConfiguration;
@@ -33,10 +43,12 @@ import com.google.common.collect.Maps;
 
 public class StoreDefinitionUtils {
 
+    private static Logger logger = Logger.getLogger(StoreDefinitionUtils.class);
+
     /**
      * Given a list of store definitions, filters the list depending on the
      * boolean
-     * 
+     *
      * @param storeDefs Complete list of store definitions
      * @param isReadOnly Boolean indicating whether filter on read-only or not?
      * @return List of filtered store definition
@@ -54,7 +66,7 @@ public class StoreDefinitionUtils {
 
     /**
      * Given a list of store definitions return a list of store names
-     * 
+     *
      * @param storeDefList The list of store definitions
      * @return Returns a list of store names
      */
@@ -68,7 +80,7 @@ public class StoreDefinitionUtils {
 
     /**
      * Given a list of store definitions return a set of store names
-     * 
+     *
      * @param storeDefList The list of store definitions
      * @return Returns a set of store names
      */
@@ -83,7 +95,7 @@ public class StoreDefinitionUtils {
     /**
      * Given a store name and a list of store definitions, returns the
      * appropriate store definition ( if it exists )
-     * 
+     *
      * @param storeDefs List of store definitions
      * @param storeName The store name whose store definition is required
      * @return The store definition
@@ -107,7 +119,7 @@ public class StoreDefinitionUtils {
     /**
      * Given a list of store definitions, find out and return a map of similar
      * store definitions + count of them
-     * 
+     *
      * @param storeDefs All store definitions
      * @return Map of a unique store definition + counts
      */
@@ -162,6 +174,84 @@ public class StoreDefinitionUtils {
         }
 
         return uniqueStoreDefs;
+    }
+
+    /**
+     * Determine whether or not a given serializedr is "AVRO" based
+     *
+     * @param serializerName
+     * @return
+     */
+    public static boolean isAvroSchema(String serializerName) {
+        if(serializerName.equals(AVRO_GENERIC_VERSIONED_TYPE_NAME)
+           || serializerName.equals(AVRO_GENERIC_TYPE_NAME)
+           || serializerName.equals(AVRO_REFLECTIVE_TYPE_NAME)
+           || serializerName.equals(AVRO_SPECIFIC_TYPE_NAME)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * If provided with an AVRO schema, validates it and checks if there are
+     * backwards compatible.
+     *
+     * TODO should probably place some similar checks for other serializer types
+     * as well?
+     *
+     * @param serializerDef
+     */
+    private static void validateIfAvroSchema(SerializerDefinition serializerDef) {
+        if(serializerDef.getName().equals(AVRO_GENERIC_VERSIONED_TYPE_NAME)
+           || serializerDef.getName().equals(AVRO_GENERIC_TYPE_NAME)) {
+            SchemaEvolutionValidator.validateAllAvroSchemas(serializerDef);
+            // check backwards compatibility if needed
+            if(serializerDef.getName().equals(AVRO_GENERIC_VERSIONED_TYPE_NAME)) {
+                SchemaEvolutionValidator.checkSchemaCompatibility(serializerDef);
+            }
+        }
+    }
+
+    /**
+     * Validate store schema -- backward compatibility if it is AVRO generic
+     * versioned -- sanity checks for avro in general
+     *
+     * @param storeDefinition the store definition to check on
+     */
+    public static void validateSchemaAsNeeded(StoreDefinition storeDefinition) {
+        logger.info("Validating schema for store:  " + storeDefinition.getName());
+        SerializerDefinition keySerDef = storeDefinition.getKeySerializer();
+        // validate the key schemas
+        try {
+            validateIfAvroSchema(keySerDef);
+        } catch(Exception e) {
+            logger.error("Validating key schema failed for store:  " + storeDefinition.getName());
+            throw new VoldemortException("Error validating key schema for store:  "
+                                         + storeDefinition.getName() + " " + e.getMessage(), e);
+        }
+
+        // validate the value schemas
+        SerializerDefinition valueSerDef = storeDefinition.getValueSerializer();
+        try {
+            validateIfAvroSchema(valueSerDef);
+        } catch(Exception e) {
+            logger.error("Validating value schema failed for store:  " + storeDefinition.getName());
+            throw new VoldemortException("Error validating value schema for store:  "
+                                         + storeDefinition.getName() + " " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Validate store schema for things like backwards compatibility,
+     * parseability
+     *
+     * @param storeDefinitions the list of store definition to check on
+     */
+    public static void validateSchemasAsNeeded(Collection<StoreDefinition> storeDefinitions) {
+        for(StoreDefinition storeDefinition: storeDefinitions) {
+            validateSchemaAsNeeded(storeDefinition);
+        }
     }
 
     public static StoreDefinitionBuilder getBuilderForStoreDef(StoreDefinition storeDef) {

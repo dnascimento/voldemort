@@ -235,12 +235,12 @@ public class ZoneShrinkageEndToEndTest {
                                 break;
                             }
                             Versioned<String> value = client.get(k, new SRD()); // does
-                            // not
-                            // check
-                            // versions,
-                            // just
-                            // prevent
-                            // exceptions
+                                                                                // not
+                                                                                // check
+                                                                                // versions,
+                                                                                // just
+                                                                                // prevent
+                                                                                // exceptions
                             if(value == null) {
                                 throw new RuntimeException("Versioned is empty for key [" + k + "]") {};
                             } else {

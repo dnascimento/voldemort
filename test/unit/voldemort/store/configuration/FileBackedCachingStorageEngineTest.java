@@ -138,13 +138,7 @@ public class FileBackedCachingStorageEngineTest extends
         List<ByteArray> keysForGet = keys.subList(0, countForGet);
         List<byte[]> valuesForGet = values.subList(0, countForGet);
         Map<ByteArray, List<Versioned<byte[]>>> result = store.getAll(keysForGet, null, new SRD());
-        assertEquals(countForGet, result.size());
-        for(int i = 0; i < keysForGet.size(); ++i) {
-            ByteArray key = keysForGet.get(i);
-            byte[] expectedValue = valuesForGet.get(i);
-            List<Versioned<byte[]>> versioneds = result.get(key);
-            assertGetAllValues(expectedValue, versioneds);
-        }
+        assertGetAllValues(keysForGet, valuesForGet, result);
     }
 
     @Test

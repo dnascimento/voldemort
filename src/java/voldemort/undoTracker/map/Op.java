@@ -13,7 +13,7 @@ public class Op implements Serializable {
     /**
      * 
      */
-    private static final long serialVersionUID = 1L;
+    private transient static final long serialVersionUID = 1L;
 
     public static enum OpType implements Serializable {
         Put,

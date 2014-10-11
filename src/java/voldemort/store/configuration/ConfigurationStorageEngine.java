@@ -19,6 +19,7 @@ package voldemort.store.configuration;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +49,9 @@ import voldemort.versioning.Versioned;
  */
 public class ConfigurationStorageEngine extends AbstractStorageEngine<String, String, String> {
 
-    private static final Logger logger = Logger.getLogger(ConfigurationStorageEngine.class);
+    private final static Logger logger = Logger.getLogger(ConfigurationStorageEngine.class);
+    private static final String VERSION_DIRECTORY = ".version";
+    private static final String TEMP_DIRECTORY = ".temp";
     private final File directory;
 
     public ConfigurationStorageEngine(String name, String directory) {
@@ -61,7 +64,14 @@ public class ConfigurationStorageEngine extends AbstractStorageEngine<String, St
 
     @Override
     public ClosableIterator<Pair<String, Versioned<String>>> entries() {
-        throw new VoldemortException("Iteration  not supported in ConfigurationStorageEngine");
+        List<String> fileNameList = new ArrayList<String>();
+        for(String fileName: this.directory.list()) {
+            if(fileName.equals(VERSION_DIRECTORY) || fileName.equals(TEMP_DIRECTORY)) {
+                continue;
+            }
+            fileNameList.add(fileName);
+        }
+        return new FilesIterator(fileNameList, this);
     }
 
     @Override
@@ -102,7 +112,7 @@ public class ConfigurationStorageEngine extends AbstractStorageEngine<String, St
 
     @Override
     public List<Version> getVersions(String key, SRD srd) {
-        List<Versioned<String>> values = get(key, (String) null,srd);
+        List<Versioned<String>> values = get(key, (String) null, srd);
         List<Version> versions = new ArrayList<Version>(values.size());
         for(Versioned<?> value: values) {
             versions.add(value.getVersion());
@@ -219,7 +229,7 @@ public class ConfigurationStorageEngine extends AbstractStorageEngine<String, St
     }
 
     private File getVersionDirectory() {
-        File versionDir = new File(this.directory, ".version");
+        File versionDir = new File(this.directory, VERSION_DIRECTORY);
         if(!versionDir.exists() || !versionDir.isDirectory()) {
             versionDir.delete();
             versionDir.mkdirs();
@@ -229,7 +239,7 @@ public class ConfigurationStorageEngine extends AbstractStorageEngine<String, St
     }
 
     private File getTempDirectory() {
-        File tempDir = new File(this.directory, ".temp");
+        File tempDir = new File(this.directory, TEMP_DIRECTORY);
         if(!tempDir.exists() || !tempDir.isDirectory()) {
             tempDir.delete();
             tempDir.mkdirs();
@@ -252,4 +262,47 @@ public class ConfigurationStorageEngine extends AbstractStorageEngine<String, St
     public void truncate() {
         throw new VoldemortException("Truncate not supported in ConfigurationStorageEngine");
     }
+
+    private static class FilesIterator implements ClosableIterator<Pair<String, Versioned<String>>> {
+
+        private final Iterator<String> iterator;
+        private final ConfigurationStorageEngine storageEngineRef;
+
+        public FilesIterator(List<String> fileNames, ConfigurationStorageEngine storageEngine) {
+            iterator = fileNames.iterator();
+            storageEngineRef = storageEngine;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return iterator.hasNext();
+        }
+
+        @Override
+        public Pair<String, Versioned<String>> next() {
+            String fileName = iterator.next();
+            Pair<String, Versioned<String>> nextValue = null;
+            if(fileName != null) {
+                String key = fileName;
+                List<Versioned<String>> resultStringList = this.storageEngineRef.get(key,
+                                                                                     "",
+                                                                                     new SRD());
+                if(resultStringList != null && resultStringList.size() > 0) {
+                    nextValue = Pair.create(key, resultStringList.get(0));
+                }
+            }
+
+            return nextValue;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("No removal y'all.");
+        }
+
+        @Override
+        public void close() {}
+
+    }
+
 }

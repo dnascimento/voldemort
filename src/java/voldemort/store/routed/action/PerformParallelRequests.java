@@ -1,12 +1,12 @@
 /*
  * Copyright 2010 LinkedIn, Inc
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.log4j.Level;
 
@@ -91,11 +92,12 @@ public class PerformParallelRequests<V, PD extends BasicPipelineData<V>> extends
         final Map<Integer, Response<ByteArray, Object>> responses = new ConcurrentHashMap<Integer, Response<ByteArray, Object>>();
         final CountDownLatch latch = new CountDownLatch(attempts);
 
-        if(logger.isTraceEnabled())
+        if (logger.isTraceEnabled())
             logger.trace("Attempting " + attempts + " " + pipeline.getOperation().getSimpleName()
                          + " operations in parallel for key " + key);
 
-        for(int i = 0; i < attempts; i++) {
+        final AtomicBoolean isResponseProcessed = new AtomicBoolean(false);
+        for (int i = 0; i < attempts; i++) {
             final Node node = nodes.get(i);
             pipelineData.incrementNodeIndex();
 
@@ -105,7 +107,7 @@ public class PerformParallelRequests<V, PD extends BasicPipelineData<V>> extends
 
                 @Override
                 public void requestComplete(Object result, long requestTime) {
-                    if(logger.isTraceEnabled())
+                    if (logger.isTraceEnabled())
                         logger.trace(pipeline.getOperation().getSimpleName()
                                      + " response received (" + requestTime + " ms.) from node "
                                      + node.getId() + "for key " + key);
@@ -114,7 +116,7 @@ public class PerformParallelRequests<V, PD extends BasicPipelineData<V>> extends
                                                                                            key,
                                                                                            result,
                                                                                            requestTime);
-                    if(logger.isDebugEnabled())
+                    if (logger.isDebugEnabled())
                         logger.debug("Finished " + pipeline.getOperation().getSimpleName()
                                      + " for key " + ByteUtils.toHexString(key.get())
                                      + " (keyRef: " + System.identityHashCode(key)
@@ -124,11 +126,20 @@ public class PerformParallelRequests<V, PD extends BasicPipelineData<V>> extends
                     responses.put(node.getId(), response);
                     latch.countDown();
 
-                    // Note errors that come in after the pipeline has finished.
-                    // These will *not* get a chance to be called in the loop of
-                    // responses below.
-                    if(pipeline.isFinished() && response.getValue() instanceof Exception) {
-                        if(response.getValue() instanceof InvalidMetadataException) {
+                    // TODO: There is inconsistency between the exceptions are treated here in the
+                    // completion callback and in the application thread.
+                    // They need a cleanup to make them consistent. Thought about handling
+                    // them here, but it is the selector thread that is calling this completion method,
+                    // handleResponseError has some synchronization, not sure about the effect, so reserving
+                    // it for later.
+
+                    // isResponseProcessed just reduces the time window during
+                    // which a exception can go uncounted. When the parallel
+                    // requests timeout and it is trying Serial timeout
+                    // exceptions are lost and the node is never marked down.
+                    // This reduces the window where an exception is lost
+                    if (isResponseProcessed.get() && response.getValue() instanceof Exception) {
+                        if (response.getValue() instanceof InvalidMetadataException) {
                             pipelineData.reportException((InvalidMetadataException) response.getValue());
                             logger.warn("Received invalid metadata problem after a successful "
                                         + pipeline.getOperation().getSimpleName()
@@ -142,7 +153,7 @@ public class PerformParallelRequests<V, PD extends BasicPipelineData<V>> extends
 
             };
 
-            if(logger.isTraceEnabled())
+            if (logger.isTraceEnabled())
                 logger.trace("Submitting " + pipeline.getOperation().getSimpleName()
                              + " request on node " + node.getId() + " for key " + key);
 
@@ -160,14 +171,14 @@ public class PerformParallelRequests<V, PD extends BasicPipelineData<V>> extends
 
         try {
             latch.await(timeoutMs, TimeUnit.MILLISECONDS);
-        } catch(InterruptedException e) {
-            if(logger.isEnabledFor(Level.WARN))
+        } catch (InterruptedException e) {
+            if (logger.isEnabledFor(Level.WARN))
                 logger.warn(e, e);
         }
 
-        for(Response<ByteArray, Object> response: responses.values()) {
-            if(response.getValue() instanceof Exception) {
-                if(handleResponseError(response, pipeline, failureDetector))
+        for (Response<ByteArray, Object> response: responses.values()) {
+            if (response.getValue() instanceof Exception) {
+                if (handleResponseError(response, pipeline, failureDetector))
                     return;
             } else {
                 pipelineData.incrementSuccesses();
@@ -178,15 +189,16 @@ public class PerformParallelRequests<V, PD extends BasicPipelineData<V>> extends
                 pipelineData.getZoneResponses().add(response.getNode().getZoneId());
             }
         }
+        isResponseProcessed.set(true);
 
-        if(logger.isDebugEnabled())
+        if (logger.isDebugEnabled())
             logger.debug("GET for key " + ByteUtils.toHexString(key.get()) + " (keyRef: "
                          + System.identityHashCode(key) + "); successes: "
                          + pipelineData.getSuccesses() + " preferred: " + preferred + " required: "
                          + required);
 
-        if(pipelineData.getSuccesses() < required) {
-            if(insufficientSuccessesEvent != null) {
+        if (pipelineData.getSuccesses() < required) {
+            if (insufficientSuccessesEvent != null) {
                 pipeline.addEvent(insufficientSuccessesEvent);
             } else {
                 pipelineData.setFatalError(new InsufficientOperationalNodesException(required
@@ -206,20 +218,20 @@ public class PerformParallelRequests<V, PD extends BasicPipelineData<V>> extends
 
         } else {
 
-            if(pipelineData.getZonesRequired() != null) {
+            if (pipelineData.getZonesRequired() != null) {
 
                 int zonesSatisfied = pipelineData.getZoneResponses().size();
-                if(zonesSatisfied >= (pipelineData.getZonesRequired() + 1)) {
+                if (zonesSatisfied >= (pipelineData.getZonesRequired() + 1)) {
                     pipeline.addEvent(completeEvent);
                 } else {
-                    if(logger.isDebugEnabled()) {
+                    if (logger.isDebugEnabled()) {
                         logger.debug("Operation " + pipeline.getOperation().getSimpleName()
                                      + "failed due to insufficent zone responses, required "
                                      + pipelineData.getZonesRequired() + " obtained "
                                      + zonesSatisfied + " " + pipelineData.getZoneResponses()
                                      + " for key " + key);
                     }
-                    if(this.insufficientZonesEvent != null) {
+                    if (this.insufficientZonesEvent != null) {
                         pipeline.addEvent(this.insufficientZonesEvent);
                     } else {
                         pipelineData.setFatalError(new InsufficientZoneResponsesException((pipelineData.getZonesRequired() + 1)

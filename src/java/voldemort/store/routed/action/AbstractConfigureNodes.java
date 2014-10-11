@@ -17,11 +17,13 @@
 package voldemort.store.routed.action;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
+import voldemort.VoldemortException;
 import voldemort.cluster.Node;
+import voldemort.cluster.Zone;
 import voldemort.cluster.failuredetector.FailureDetector;
 import voldemort.routing.RoutingStrategy;
 import voldemort.store.InsufficientOperationalNodesException;
@@ -52,7 +54,7 @@ public abstract class AbstractConfigureNodes<K, V, PD extends PipelineData<K, V>
     }
 
     protected List<Node> getNodes(ByteArray key) {
-        Set<Node> nodes = new HashSet<Node>();
+        List<Node> nodes = new ArrayList<Node>();
 
         pipelineData.setReplicationSet(routingStrategy.routeRequest(key.get()));
         // raise an error if no server has any partitions defined
@@ -92,6 +94,41 @@ public abstract class AbstractConfigureNodes<K, V, PD extends PipelineData<K, V>
             }
             throw new InsufficientOperationalNodesException(errorMessage);
         }
-        return new ArrayList<Node>(nodes);
+        return nodes;
+    }
+
+    public static Map<Integer, List<Node>> convertToZoneNodeMap(List<Node> nodes) {
+        // Create zone id to node mapping
+        Map<Integer, List<Node>> zoneIdToNode = new HashMap<Integer, List<Node>>();
+        for(Node node: nodes) {
+            List<Node> nodesList = null;
+            if(zoneIdToNode.containsKey(node.getZoneId())) {
+                nodesList = zoneIdToNode.get(node.getZoneId());
+            } else {
+                nodesList = new ArrayList<Node>();
+                zoneIdToNode.put(node.getZoneId(), nodesList);
+            }
+            nodesList.add(node);
+        }
+        return zoneIdToNode;
+    }
+
+    public void validateZonesRequired(Zone clientZone, int zonesRequired) {
+        if(zonesRequired > clientZone.getProximityList().size()) {
+            throw new VoldemortException("Number of zones required (" + zonesRequired
+                                         + ") for zone id (" + clientZone.getId()
+                                         + ") should be less than the total number of zones "
+                                         + +clientZone.getProximityList().size());
+        }
+
+        if(zonesRequired > required) {
+            throw new VoldemortException("Number of zones required ("
+                                         + zonesRequired
+                                         + ") for zone id ("
+                                         + clientZone.getId()
+                                         + ") should be less than the required number of zones for operation "
+                                         + required);
+        }
+
     }
 }

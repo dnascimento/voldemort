@@ -101,12 +101,11 @@ public class DefaultStoreClient<K, V> implements StoreClient<K, V> {
         this.store = storeFactory.getRawStore(storeName, resolver);
     }
 
-    @Override
     public boolean delete(K key, SRD srd) {
-        Versioned<V> versioned = get(key, srd);
-        if(versioned == null)
+        Version version = getVersionWithResolution(key, srd);
+        if(version == null)
             return false;
-        return delete(key, versioned.getVersion(), srd);
+        return delete(key, version, srd);
     }
 
     @Override
@@ -227,21 +226,9 @@ public class DefaultStoreClient<K, V> implements StoreClient<K, V> {
         return result;
     }
 
-    @Override
     public Version put(K key, V value, SRD srd) {
-        List<Version> versions = getVersions(key, srd);
-        Versioned<V> versioned;
-        if(versions.isEmpty())
-            versioned = Versioned.value(value, new VectorClock());
-        else if(versions.size() == 1)
-            versioned = Versioned.value(value, versions.get(0));
-        else {
-            versioned = get(key, null, srd);
-            if(versioned == null)
-                versioned = Versioned.value(value, new VectorClock());
-            else
-                versioned.setObject(value);
-        }
+        Version version = getVersionForPut(key, srd);
+        Versioned<V> versioned = Versioned.value(value, version);
         return put(key, versioned, srd);
     }
 
@@ -365,21 +352,32 @@ public class DefaultStoreClient<K, V> implements StoreClient<K, V> {
         return result;
     }
 
-    @Override
-    public Version put(K key, V value, Object transforms, SRD srd) {
+    private Version getVersionWithResolution(K key, SRD srd) {
         List<Version> versions = getVersions(key, srd);
-        Versioned<V> versioned;
         if(versions.isEmpty())
-            versioned = Versioned.value(value, new VectorClock());
+            return null;
         else if(versions.size() == 1)
-            versioned = Versioned.value(value, versions.get(0));
+            return versions.get(0);
         else {
-            versioned = get(key, null, srd);
+            Versioned<V> versioned = get(key, null);
             if(versioned == null)
-                versioned = Versioned.value(value, new VectorClock());
+                return null;
             else
-                versioned.setObject(value);
+                return versioned.getVersion();
         }
+    }
+
+    private Version getVersionForPut(K key, SRD srd) {
+        Version version = getVersionWithResolution(key, srd);
+        if(version == null) {
+            version = new VectorClock();
+        }
+        return version;
+    }
+
+    public Version put(K key, V value, Object transforms, SRD srd) {
+        Version version = getVersionForPut(key, srd);
+        Versioned<V> versioned = Versioned.value(value, version);
         return put(key, versioned, transforms, srd);
 
     }

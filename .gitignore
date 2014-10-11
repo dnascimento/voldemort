@@ -1,6 +1,5 @@
 classes
 dist
-*~
 *.iml
 *.ipr
 *.iws
@@ -24,3 +23,9 @@ voldsys$_*
 expand/
 keyaccessList.obj
 config/
+.gradle
+build
+lib
+.project
+.classpath
+*.class
