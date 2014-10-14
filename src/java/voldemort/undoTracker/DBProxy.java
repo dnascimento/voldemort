@@ -77,7 +77,7 @@ public class DBProxy {
      */
     private DBProxy(OpMultimap keyAccessLists) {
         DOMConfigurator.configure("log4j.xml");
-        LogManager.getRootLogger().setLevel(Level.ERROR);
+        LogManager.getRootLogger().setLevel(Level.DEBUG);
         debugging = log.isInfoEnabled();
 
         Runtime.getRuntime().addShutdownHook(new SaveKeyAccess(keyAccessLists));
@@ -120,13 +120,13 @@ public class DBProxy {
             access = redoScheduler.opStart(op, key.shadow(), srd, path);
         } else {
             if(srd.restrain) {
+                if(debugging) {
+                    System.out.println(" -> RESTRAIN: ");
+                }
                 // new request but may need to wait to avoid dirty reads
                 restrainScheduler.opStart(op, key.shadow(), srd, path);
                 path = brancher.getCurrent();
                 srd.branch = path.current.branch; // update the branch
-                if(debugging) {
-                    sb.append(" -> AFTER RESTRAIN: ");
-                }
             }
             if(log.isInfoEnabled()) {
                 sb.append(" -> DO: ");

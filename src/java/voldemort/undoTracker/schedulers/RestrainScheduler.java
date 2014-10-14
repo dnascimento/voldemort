@@ -46,60 +46,60 @@ public class RestrainScheduler extends AccessSchedule {
     @Override
     public StsBranchPair getStart(ByteArray key, SRD srd, BranchPath path) {
         OpMultimapEntry l = archive.get(key);
-        if(l.isReplayingInBranch(path.current.branch)) {
-            synchronized(flag) {
-                try {
-                    flag.wait();
-                } catch(InterruptedException e) {
-                    log.error("Restrain Wait in flag", e);
-                }
+        // if(l.isReplayingInBranch(path.current.branch)) {
+        synchronized(flag) {
+            try {
+                flag.wait();
+            } catch(InterruptedException e) {
+                log.error("Restrain Wait in flag", e);
             }
+            // }
         }
         return null;
     }
 
     @Override
     public StsBranchPair putStart(ByteArray key, SRD srd, BranchPath path) {
-        OpMultimapEntry l = archive.get(key);
-        if(l.isReplayingInBranch(path.current.branch)) {
-            synchronized(flag) {
-                try {
-                    flag.wait();
-                } catch(InterruptedException e) {
-                    log.error("Restrain Wait in flag", e);
-                }
+        // OpMultimapEntry l = archive.get(key);
+        // if(l.isReplayingInBranch(path.current.branch)) {
+        synchronized(flag) {
+            try {
+                flag.wait();
+            } catch(InterruptedException e) {
+                log.error("Restrain Wait in flag", e);
             }
         }
+        // }
         return null;
     }
 
     @Override
     public StsBranchPair deleteStart(ByteArray key, SRD srd, BranchPath path) {
-        OpMultimapEntry l = archive.get(key);
-        if(l.isReplayingInBranch(path.current.branch)) {
-            synchronized(flag) {
-                try {
-                    flag.wait();
-                } catch(InterruptedException e) {
-                    log.error("Restrain Wait in flag", e);
-                }
+        // OpMultimapEntry l = archive.get(key);
+        // if(l.isReplayingInBranch(path.current.branch)) {
+        synchronized(flag) {
+            try {
+                flag.wait();
+            } catch(InterruptedException e) {
+                log.error("Restrain Wait in flag", e);
             }
         }
+        // }
         return null;
     }
 
     @Override
     public StsBranchPair getVersionStart(ByteArray key, SRD srd, BranchPath path) {
-        OpMultimapEntry l = archive.get(key);
-        if(l.isReplayingInBranch(path.current.branch)) {
-            synchronized(flag) {
-                try {
-                    flag.wait();
-                } catch(InterruptedException e) {
-                    log.error("Restrain Wait in flag", e);
-                }
+        // OpMultimapEntry l = archive.get(key);
+        // if(l.isReplayingInBranch(path.current.branch)) {
+        synchronized(flag) {
+            try {
+                flag.wait();
+            } catch(InterruptedException e) {
+                log.error("Restrain Wait in flag", e);
             }
         }
+        // }
         return null;
     }
 }

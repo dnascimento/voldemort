@@ -231,7 +231,7 @@ public class OpMultimapEntry implements Serializable {
         } else {
             StsBranchPair latest = commitList.getLatest(path);
             // write in the current commit and branch
-            if(path.current.sts > latest.sts) {
+            if(path.current.sts > latest.sts || path.current.branch > latest.branch) {
                 // new commit
                 return commitList.addNewCommit(path.current.sts, srd.branch);
             }

@@ -39,7 +39,6 @@ public class SendDependencies extends Thread {
     public void run() {
         String threadName = Thread.currentThread().getName();
         Thread.currentThread().setName("SendDependencies: " + threadName);
-
         while(true) {
             try {
                 sleep(REFRESH_PERIOD);

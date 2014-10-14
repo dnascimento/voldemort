@@ -11,6 +11,7 @@ message MsgToManager{
 	optional NodeRegistryMsg nodeRegistry = 4;
 	optional AckMsg ack = 5;
 	repeated EntryAccessList entryAccessList = 6;
+	optional AckProxy ackProxy = 7;
 }
 
 
@@ -51,6 +52,11 @@ message AckMsg{
 	optional int32 port = 1;
 	optional string hostname = 2;
 	repeated string exception = 3;
+}
+
+
+message AckProxy{
+	required int64 currentId = 1;
 }
 
 
