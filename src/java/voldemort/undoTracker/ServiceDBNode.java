@@ -19,13 +19,13 @@ import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 
-import undo.proto.FromManagerProto;
-import undo.proto.FromManagerProto.ToDataNode;
-import undo.proto.ToManagerProto;
-import undo.proto.ToManagerProto.EntryAccessList;
-import undo.proto.ToManagerProto.MsgToManager;
-import undo.proto.ToManagerProto.NodeRegistryMsg;
-import undo.proto.ToManagerProto.NodeRegistryMsg.NodeGroup;
+import pt.inesc.undo.proto.FromManagerProto;
+import pt.inesc.undo.proto.FromManagerProto.ToDataNode;
+import pt.inesc.undo.proto.ToManagerProto;
+import pt.inesc.undo.proto.ToManagerProto.EntryAccessList;
+import pt.inesc.undo.proto.ToManagerProto.MsgToManager;
+import pt.inesc.undo.proto.ToManagerProto.NodeRegistryMsg;
+import pt.inesc.undo.proto.ToManagerProto.NodeRegistryMsg.NodeGroup;
 import voldemort.undoTracker.branching.BranchPath;
 import voldemort.undoTracker.map.Op;
 import voldemort.undoTracker.map.StsBranchPair;
@@ -41,7 +41,7 @@ public class ServiceDBNode extends Thread {
 
     public ServiceDBNode(DBProxy stub) throws IOException {
         try {
-            serverSocket = new ServerSocket(DBProxy.MY_PORT);
+            serverSocket = new ServerSocket(DBProxy.MY_ADDRESS.getPort());
             this.stub = stub;
             running = true;
             log.info("DBNode service listening....");
@@ -56,8 +56,8 @@ public class ServiceDBNode extends Thread {
         try {
             s.connect(DBProxy.MANAGER_ADDRESS);
             NodeRegistryMsg c = ToManagerProto.NodeRegistryMsg.newBuilder()
-                                                              .setHostname("localhost")
-                                                              .setPort(DBProxy.MY_PORT)
+                                                              .setHostname(DBProxy.MY_ADDRESS.getHostName())
+                                                              .setPort(DBProxy.MY_ADDRESS.getPort())
                                                               .setGroup(NodeGroup.DB_NODE)
                                                               .build();
             ToManagerProto.MsgToManager.newBuilder()
@@ -104,6 +104,11 @@ public class ServiceDBNode extends Thread {
         if(cmd.hasRedoOver()) {
             stub.redoOver();
         }
+
+        if(cmd.hasShowStats()) {
+            stub.measureMemoryFootPrint();
+        }
+
         // Get the access list of a specific key for selective replay
         if(cmd.hasEntryAccessesMsg()) {
             HashMap<ByteString, ArrayList<Op>> result = stub.getAccessList(cmd.getEntryAccessesMsg()

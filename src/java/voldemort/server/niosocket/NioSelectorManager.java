@@ -167,6 +167,7 @@ public class NioSelectorManager extends SelectorManager {
                                                                              stats);
 
                     if(!isClosed.get()) {
+                        // register an handler to be called on read action
                         socketChannel.register(selector, SelectionKey.OP_READ, attachment);
                         stats.addConnection();
                     }

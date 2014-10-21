@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import undo.proto.ToManagerProto;
-import undo.proto.ToManagerProto.TrackEntry;
-import undo.proto.ToManagerProto.TrackMsg;
+import pt.inesc.undo.proto.ToManagerProto;
+import pt.inesc.undo.proto.ToManagerProto.TrackEntry;
+import pt.inesc.undo.proto.ToManagerProto.TrackMsg;
 
 public class UpdateDependenciesMap {
 

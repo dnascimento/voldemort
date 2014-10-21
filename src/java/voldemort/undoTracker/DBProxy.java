@@ -7,19 +7,29 @@
 
 package voldemort.undoTracker;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import objectexplorer.MemoryMeasurer;
+import objectexplorer.ObjectGraphMeasurer;
+import objectexplorer.ObjectGraphMeasurer.Footprint;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
@@ -33,7 +43,9 @@ import voldemort.undoTracker.branching.Path;
 import voldemort.undoTracker.map.Op;
 import voldemort.undoTracker.map.Op.OpType;
 import voldemort.undoTracker.map.OpMultimap;
+import voldemort.undoTracker.map.OpMultimapEntry;
 import voldemort.undoTracker.map.StsBranchPair;
+import voldemort.undoTracker.map.commits.CommitList;
 import voldemort.undoTracker.schedulers.CommitScheduler;
 import voldemort.undoTracker.schedulers.RedoScheduler;
 import voldemort.undoTracker.schedulers.RestrainScheduler;
@@ -47,16 +59,16 @@ import com.google.protobuf.ByteString;
  * @author darionascimento
  * 
  */
-public class DBProxy {
+public class DBProxy implements Serializable {
 
-    public static final int MY_PORT = 11200;
+    private static final long serialVersionUID = 1L;
+
+    public static final InetSocketAddress MY_ADDRESS = getLocalAddress();
     public static final InetSocketAddress MANAGER_ADDRESS = new InetSocketAddress("manager", 11000);
-    static final String KEY_ACCESS_LIST_FILE = "keyaccessList.obj";
 
-    private static final boolean LOAD_FROM_FILE = false;
+    transient private static final Logger log = Logger.getLogger(DBProxy.class.getName());
 
-    private static final Logger log = Logger.getLogger(DBProxy.class.getName());
-    Object restrainLocker = new Object();
+    ReentrantLock restrainLocker = new ReentrantLock();
     BranchController brancher = new BranchController();
 
     RedoScheduler redoScheduler;
@@ -66,24 +78,23 @@ public class DBProxy {
 
     private boolean debugging;
 
-    public DBProxy() {
-        this(loadKeyAccessList(LOAD_FROM_FILE));
-    }
-
     /**
      * One instance for multiple handlers
      * 
+     * @param manager_address
+     *        my_address
+     *        s
+     * 
      * @throws IOException
      */
-    private DBProxy(OpMultimap keyAccessLists) {
+    public DBProxy() {
         DOMConfigurator.configure("log4j.xml");
         LogManager.getRootLogger().setLevel(Level.DEBUG);
-        debugging = log.isInfoEnabled();
-
-        Runtime.getRuntime().addShutdownHook(new SaveKeyAccess(keyAccessLists));
+        log.setLevel(Level.DEBUG);
+        debugging = false;
 
         log.info("New DBUndo stub");
-        this.keyAccessLists = keyAccessLists;
+        this.keyAccessLists = new OpMultimap();
 
         redoScheduler = new RedoScheduler(keyAccessLists);
         newRequestsScheduler = new CommitScheduler(keyAccessLists);
@@ -104,15 +115,23 @@ public class DBProxy {
             }
             return;
         }
-        StringBuilder sb = null;
-        if(debugging) {
-            sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
+
+        synchronized(this) {
+            System.out.println("LOCK");
+            try {
+                this.wait();
+            } catch(InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+
         Path p = brancher.getPath(srd.branch);
         BranchPath path = p.path;
         StsBranchPair access;
         if(p.isRedo) {
             // use redo branch
+            debugging = true;
             if(debugging) {
                 sb.append(" -> REDO: ");
                 log.info("Redo Start: " + op + " " + hexStringToAscii(key) + " " + srd);
@@ -120,6 +139,7 @@ public class DBProxy {
             access = redoScheduler.opStart(op, key.shadow(), srd, path);
         } else {
             if(srd.restrain) {
+                debugging = true;
                 if(debugging) {
                     System.out.println(" -> RESTRAIN: ");
                 }
@@ -128,7 +148,7 @@ public class DBProxy {
                 path = brancher.getCurrent();
                 srd.branch = path.current.branch; // update the branch
             }
-            if(log.isInfoEnabled()) {
+            if(debugging) {
                 sb.append(" -> DO: ");
             }
             // Read old/common branch, may create a new commit - for new
@@ -307,30 +327,6 @@ public class DBProxy {
         brancher.reset();
     }
 
-    /**
-     * Load the map from file
-     * 
-     * @param loadFromFile
-     * 
-     * @return
-     */
-    private static OpMultimap loadKeyAccessList(boolean loadFromFile) {
-        OpMultimap list;
-        if(loadFromFile) {
-            try {
-                FileInputStream fin = new FileInputStream(KEY_ACCESS_LIST_FILE);
-                ObjectInputStream ois = new ObjectInputStream(fin);
-                list = (OpMultimap) ois.readObject();
-                ois.close();
-                log.info("key access list file loaded");
-                return list;
-            } catch(Exception e) {
-                log.info("No KeyAccessList file founded");
-            }
-        }
-        return new OpMultimap();
-    }
-
     public void getStart(ByteArray key, SRD srd) {
         opStart(OpType.Get, key, srd);
     }
@@ -368,6 +364,168 @@ public class DBProxy {
      */
     public HashMap<ByteString, ArrayList<Op>> getAccessList(List<ByteString> keysList, long baseRid) {
         return keyAccessLists.getAccessList(keysList, baseRid);
+    }
+
+    public void measureMemoryFootPrint() {
+        Footprint footPrint = ObjectGraphMeasurer.measure(keyAccessLists);
+        long memory = MemoryMeasurer.measureBytes(keyAccessLists);
+        System.out.println("\n \n \n \n /************** MEMORY SUMMARY ******************\\");
+        System.out.println("Total: \n" + "    " + footPrint);
+        System.out.println("     memory" + memory + " bytes");
+        System.out.println("------");
+        Enumeration<ByteArray> list = keyAccessLists.getKeySet();
+        long opListSize = 0;
+        long commitListSize = 0;
+        long counter = 0;
+        long opListEntries = 0;
+        long commitListEntries = 0;
+
+        while(list.hasMoreElements()) {
+            counter++;
+            ByteArray key = list.nextElement();
+            OpMultimapEntry entry = keyAccessLists.get(key);
+
+            // System.out.println(ObjectGraphMeasurer.measure(entry.getOperationList()));
+            // System.out.println(ObjectGraphMeasurer.measure(entry.getCommitList()));
+            ArrayList<Op> opList = entry.getOperationList();
+            opListSize += MemoryMeasurer.measureBytes(opList);
+            opListEntries += opList.size();
+
+            CommitList commitList = entry.getCommitList();
+            commitListSize += MemoryMeasurer.measureBytes(commitList);
+            commitListEntries += commitList.size();
+        }
+
+        System.out.println("Number of database keys: " + counter);
+        System.out.println("Total opList: " + opListSize + " bytes");
+        System.out.println("Total commitList: " + commitListSize + " bytes");
+        System.out.println("Entries in opList: " + opListEntries);
+        System.out.println("Entries in commitList: " + commitListEntries);
+        System.out.println("/********************************\\ \n \n \n \n ");
+
+        log.info("Saving key access list....");
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((brancher == null) ? 0 : brancher.hashCode());
+        result = prime * result + (debugging ? 1231 : 1237);
+        result = prime * result + ((keyAccessLists == null) ? 0 : keyAccessLists.hashCode());
+        result = prime * result
+                 + ((newRequestsScheduler == null) ? 0 : newRequestsScheduler.hashCode());
+        result = prime * result + ((redoScheduler == null) ? 0 : redoScheduler.hashCode());
+        result = prime * result + ((restrainLocker == null) ? 0 : restrainLocker.hashCode());
+        result = prime * result + ((restrainScheduler == null) ? 0 : restrainScheduler.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj)
+            return true;
+        if(obj == null)
+            return false;
+        if(getClass() != obj.getClass())
+            return false;
+        DBProxy other = (DBProxy) obj;
+        if(brancher == null) {
+            if(other.brancher != null)
+                return false;
+        } else if(!brancher.equals(other.brancher))
+            return false;
+        if(debugging != other.debugging)
+            return false;
+        if(keyAccessLists == null) {
+            if(other.keyAccessLists != null)
+                return false;
+        } else if(!keyAccessLists.equals(other.keyAccessLists))
+            return false;
+        if(newRequestsScheduler == null) {
+            if(other.newRequestsScheduler != null)
+                return false;
+        } else if(!newRequestsScheduler.equals(other.newRequestsScheduler))
+            return false;
+        if(redoScheduler == null) {
+            if(other.redoScheduler != null)
+                return false;
+        } else if(!redoScheduler.equals(other.redoScheduler))
+            return false;
+        if(restrainScheduler == null) {
+            if(other.restrainScheduler != null)
+                return false;
+        } else if(!restrainScheduler.equals(other.restrainScheduler))
+            return false;
+        return true;
+    }
+
+    private static InetSocketAddress getLocalAddress() {
+        try {
+            return new InetSocketAddress(getAddress(), 11200);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return new InetSocketAddress("localhost", 11200);
+    }
+
+    public static String getAddress() throws Exception {
+        // 3 cases: only 127.0 , only a non 127 or various
+        List<String> validIp = new ArrayList<String>();
+
+        Pattern pattern = Pattern.compile("\\d*\\.\\d*\\.\\d*\\.\\d*");
+
+        Enumeration<NetworkInterface> n = NetworkInterface.getNetworkInterfaces();
+        for(; n.hasMoreElements();) {
+            NetworkInterface e = n.nextElement();
+
+            Enumeration<InetAddress> a = e.getInetAddresses();
+            for(; a.hasMoreElements();) {
+                String addr = a.nextElement().getHostAddress();
+                Matcher m = pattern.matcher(addr);
+                if(m.matches()) {
+                    validIp.add(addr);
+                }
+
+            }
+        }
+        switch(validIp.size()) {
+            case 0:
+                throw new Exception("No ip v4 founded");
+            case 1:
+                return validIp.get(0);
+            case 2:
+                validIp.remove("127.0.0.1");
+                return validIp.get(0);
+
+        }
+        // various interfaces/ips
+        validIp.remove("127.0.0.1");
+
+        String localIp = null;
+        boolean oneLocalIp = true;
+        for(String ip: validIp) {
+            if(ip.startsWith("192.168.1.")) {
+                if(localIp != null) {
+                    oneLocalIp = false;
+                }
+                localIp = ip;
+            }
+        }
+
+        if(oneLocalIp) {
+            return localIp;
+        }
+        // choose one ip
+        System.out.println("Select interface: ");
+        for(int i = 0; i < validIp.size(); i++) {
+            System.out.println(i + ")" + validIp.get(i));
+        }
+        Scanner s = new Scanner(System.in);
+        int option = s.nextInt();
+        s.close();
+        return validIp.get(option);
+
     }
 
 }

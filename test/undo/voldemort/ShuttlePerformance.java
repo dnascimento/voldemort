@@ -56,7 +56,7 @@ public class ShuttlePerformance extends Thread {
             ByteArray key = new ByteArray(keyText.getBytes());
 
             // generate srd
-            SRD srd = new SRD(System.currentTimeMillis(), BRANCH, false);
+            SRD srd = new SRD(getTimeStamp(), BRANCH, false);
 
             // switch to operation
             if(random.nextBoolean()) {
@@ -69,4 +69,7 @@ public class ShuttlePerformance extends Thread {
         }
     }
 
+    private static long getTimeStamp() {
+        return System.currentTimeMillis() / 1000;
+    }
 }

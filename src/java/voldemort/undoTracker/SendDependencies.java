@@ -14,9 +14,9 @@ import java.util.List;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import undo.proto.ToManagerProto;
-import undo.proto.ToManagerProto.MsgToManager;
-import undo.proto.ToManagerProto.TrackMsg;
+import pt.inesc.undo.proto.ToManagerProto;
+import pt.inesc.undo.proto.ToManagerProto.MsgToManager;
+import pt.inesc.undo.proto.ToManagerProto.TrackMsg;
 import voldemort.undoTracker.map.OpMultimap;
 import voldemort.undoTracker.map.UpdateDependenciesMap;
 
@@ -27,7 +27,8 @@ public class SendDependencies extends Thread {
     private final Logger log = Logger.getLogger(SendDependencies.class.getName());
 
     private OpMultimap trackLocalAccess;
-    private long REFRESH_PERIOD = 100;
+    // check dependencies only ever 10sec
+    private long REFRESH_PERIOD = 10000;
     Socket socket = new Socket();
 
     public SendDependencies(OpMultimap trackLocalAccess) {

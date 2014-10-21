@@ -7,6 +7,8 @@
 
 package voldemort.undoTracker.schedulers;
 
+import java.io.Serializable;
+
 import voldemort.undoTracker.SRD;
 import voldemort.undoTracker.branching.BranchPath;
 import voldemort.undoTracker.map.Op;
@@ -18,7 +20,9 @@ import voldemort.utils.ByteArray;
  * @author darionascimento
  * 
  */
-public class CommitScheduler extends AccessSchedule {
+public class CommitScheduler extends AccessSchedule implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private OpMultimap keyAccessLists;
 
@@ -70,6 +74,23 @@ public class CommitScheduler extends AccessSchedule {
     @Override
     public void deleteEnd(ByteArray key, SRD srd, BranchPath path) {
         keyAccessLists.endWriteAccess(key);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj)
+            return true;
+        if(obj == null)
+            return false;
+        if(getClass() != obj.getClass())
+            return false;
+        CommitScheduler other = (CommitScheduler) obj;
+        if(keyAccessLists == null) {
+            if(other.keyAccessLists != null)
+                return false;
+        } else if(!keyAccessLists.equals(other.keyAccessLists))
+            return false;
+        return true;
     }
 
 }

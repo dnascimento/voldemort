@@ -87,6 +87,7 @@ public class RedoIterator {
         } else {
             waiting.add(op);
             log.info("Op " + op + " go sleep");
+            log.info(this.toString());
             return false;
         }
 

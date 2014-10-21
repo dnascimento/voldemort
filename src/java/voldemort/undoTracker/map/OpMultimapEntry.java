@@ -265,7 +265,6 @@ public class OpMultimapEntry implements Serializable {
         while(!it.operationIsAllowed(op)) {
             if(debugging) {
                 log.info("Operation locked " + srd.rid);
-                log.info(it.toString());
             }
             try {
                 this.wait();
@@ -286,7 +285,7 @@ public class OpMultimapEntry implements Serializable {
     public synchronized void endRedoOp(OpType type, SRD srd, BranchPath path) {
         RedoIterator it = getOrNewRedoIterator(srd.branch, path.current.sts);
         Op op = new Op(srd.rid, type);
-        // log.info("Op end: " + type + " " + srd.rid);
+        log.info("Op end: " + type + " " + srd.rid);
 
         if(it.endOp(op)) {
             // log.info("Waking the threads of key: " +

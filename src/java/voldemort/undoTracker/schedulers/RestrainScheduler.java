@@ -7,6 +7,9 @@
 
 package voldemort.undoTracker.schedulers;
 
+import java.io.Serializable;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.apache.log4j.Logger;
 
 import voldemort.undoTracker.SRD;
@@ -21,14 +24,16 @@ import voldemort.utils.ByteArray;
  * @author darionascimento
  * 
  */
-public class RestrainScheduler extends AccessSchedule {
+public class RestrainScheduler extends AccessSchedule implements Serializable {
 
-    private final Logger log = Logger.getLogger(RestrainScheduler.class.getName());
+    private static final long serialVersionUID = 1L;
+
+    private final transient Logger log = Logger.getLogger(RestrainScheduler.class.getName());
 
     OpMultimap archive;
-    private Object flag;
+    private ReentrantLock flag;
 
-    public RestrainScheduler(OpMultimap archive, Object restrainLocker) {
+    public RestrainScheduler(OpMultimap archive, ReentrantLock restrainLocker) {
         super();
         this.archive = archive;
         this.flag = restrainLocker;
@@ -102,4 +107,22 @@ public class RestrainScheduler extends AccessSchedule {
         // }
         return null;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj)
+            return true;
+        if(obj == null)
+            return false;
+        if(getClass() != obj.getClass())
+            return false;
+        RestrainScheduler other = (RestrainScheduler) obj;
+        if(archive == null) {
+            if(other.archive != null)
+                return false;
+        } else if(!archive.equals(other.archive))
+            return false;
+        return true;
+    }
+
 }

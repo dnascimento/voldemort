@@ -7,14 +7,17 @@
 
 package voldemort.undoTracker.branching;
 
+import java.io.Serializable;
+
 import org.apache.log4j.Logger;
 
 import voldemort.VoldemortException;
 import voldemort.undoTracker.map.StsBranchPair;
 
-public class BranchController {
+public class BranchController implements Serializable {
 
-    private static final Logger log = Logger.getLogger(BranchController.class.getName());
+    private static final long serialVersionUID = 1L;
+    transient private static final Logger log = Logger.getLogger(BranchController.class.getName());
     public static final long INIT_COMMIT = 0L;
     public static final short INIT_BRANCH = 0;
 
@@ -88,6 +91,37 @@ public class BranchController {
         StsBranchPair baseBranch = new StsBranchPair(INIT_COMMIT, INIT_BRANCH);
         current = new BranchPath(baseBranch, baseBranch);
         redo = null;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((current == null) ? 0 : current.hashCode());
+        result = prime * result + ((redo == null) ? 0 : redo.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj)
+            return true;
+        if(obj == null)
+            return false;
+        if(getClass() != obj.getClass())
+            return false;
+        BranchController other = (BranchController) obj;
+        if(current == null) {
+            if(other.current != null)
+                return false;
+        } else if(!current.equals(other.current))
+            return false;
+        if(redo == null) {
+            if(other.redo != null)
+                return false;
+        } else if(!redo.equals(other.redo))
+            return false;
+        return true;
     }
 
 }

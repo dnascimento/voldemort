@@ -46,12 +46,11 @@
 	<classpathentry kind="lib" path="public-lib/jna.jar"/>
 	<classpathentry kind="lib" path="public-lib/joda-time-1.6.jar"/>
 	<classpathentry kind="lib" path="public-lib/jopt-simple-4.6.jar"/>
-	<classpathentry kind="lib" path="public-lib/junit-4.6.jar"/>
+	<classpathentry kind="lib" path="public-lib/junit-4.6.jar" sourcepath="/Users/darionascimento/.m2/repository/junit/junit/4.6/junit-4.6-sources.jar"/>
 	<classpathentry kind="lib" path="public-lib/krati-0.3.6.jar"/>
 	<classpathentry kind="lib" path="public-lib/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="public-lib/mail-1.4.1.jar"/>
 	<classpathentry kind="lib" path="public-lib/mockito-all-1.8.5.jar"/>
-	<classpathentry kind="lib" path="public-lib/netty-3.5.8.Final.jar"/>
 	<classpathentry kind="lib" path="public-lib/paranamer-2.1.jar"/>
 	<classpathentry kind="lib" path="public-lib/pegasus-common-1.15.18.jar"/>
 	<classpathentry kind="lib" path="public-lib/r2-1.15.18.jar"/>
@@ -74,5 +73,6 @@
 	<classpathentry kind="lib" path="public-lib/guava-16.0.1.jar"/>
 	<classpathentry kind="lib" path="public-lib/protobuf-java-2.5.0.jar"/>
 	<classpathentry kind="lib" path="public-lib/object-explorer.jar"/>
+	<classpathentry kind="lib" path="public-lib/netty-3.9.0.Final.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

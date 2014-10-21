@@ -64,4 +64,9 @@ public class Op implements Serializable {
     public OpType toType() {
         return OpType.values()[type];
     }
+
+    @Override
+    public String toString() {
+        return "Op [rid=" + rid + ", type=" + type + "]";
+    }
 }

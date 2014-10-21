@@ -26,6 +26,7 @@ import voldemort.store.ErrorCodeMapper;
 import voldemort.store.Store;
 import voldemort.undoTracker.DBProxy;
 import voldemort.undoTracker.SRD;
+import voldemort.undoTracker.UndoLoad;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
@@ -40,7 +41,7 @@ import com.google.protobuf.Message;
  */
 public class ProtoBuffRequestHandler extends AbstractRequestHandler {
 
-    public static DBProxy undoStub = new DBProxy();
+    public static final DBProxy undoStub = UndoLoad.init();
 
     public ProtoBuffRequestHandler(ErrorCodeMapper errorMapper, StoreRepository storeRepository) {
         super(errorMapper, storeRepository);

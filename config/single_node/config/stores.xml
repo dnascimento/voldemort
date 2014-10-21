@@ -3,7 +3,7 @@
     <name>questionStore</name>
     <persistence>bdb</persistence>
     <description>Question Store</description>
-    <routing>client</routing>
+    <routing>server</routing>
     <replication-factor>1</replication-factor>
     <required-reads>1</required-reads>
     <required-writes>1</required-writes>
@@ -20,7 +20,7 @@
     <name>answerStore</name>
     <persistence>bdb</persistence>
     <description>answerStore Store</description>
-    <routing>client</routing>
+    <routing>server</routing>
     <replication-factor>1</replication-factor>
     <required-reads>1</required-reads>
     <required-writes>1</required-writes>
@@ -37,7 +37,7 @@
     <name>commentStore</name>
     <persistence>bdb</persistence>
     <description>Comment Store</description>
-    <routing>client</routing>
+    <routing>server</routing>
     <replication-factor>1</replication-factor>
     <required-reads>1</required-reads>
     <required-writes>1</required-writes>
@@ -53,7 +53,7 @@
    <name>index</name>
    <persistence>bdb</persistence>
    <description>Index Store</description>
-   <routing>client</routing>
+   <routing>server</routing>
    <replication-factor>1</replication-factor>
    <required-reads>1</required-reads>
    <required-writes>1</required-writes>
@@ -70,7 +70,7 @@
   <persistence>bdb</persistence>
   <description>Dario Store</description>
   <owners>dfrnascimento@gmail.com</owners>
-  <routing>client</routing>
+  <routing>server</routing>
   <replication-factor>1</replication-factor>
   <required-reads>1</required-reads>
   <required-writes>1</required-writes>

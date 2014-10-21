@@ -2618,11 +2618,11 @@ public final class VProto {
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
-    undo.proto.ToManagerProto.SRD getSrd();
+    pt.inesc.undo.proto.ToManagerProto.SRD getSrd();
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
-    undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder();
+    pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder();
   }
   /**
    * Protobuf type {@code voldemort.KeyedVersions}
@@ -2689,11 +2689,11 @@ public final class VProto {
               break;
             }
             case 26: {
-              undo.proto.ToManagerProto.SRD.Builder subBuilder = null;
+              pt.inesc.undo.proto.ToManagerProto.SRD.Builder subBuilder = null;
               if (((bitField0_ & 0x00000002) == 0x00000002)) {
                 subBuilder = srd_.toBuilder();
               }
-              srd_ = input.readMessage(undo.proto.ToManagerProto.SRD.PARSER, extensionRegistry);
+              srd_ = input.readMessage(pt.inesc.undo.proto.ToManagerProto.SRD.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(srd_);
                 srd_ = subBuilder.buildPartial();
@@ -2798,7 +2798,7 @@ public final class VProto {
 
     // optional .voldemort.SRD srd = 3;
     public static final int SRD_FIELD_NUMBER = 3;
-    private undo.proto.ToManagerProto.SRD srd_;
+    private pt.inesc.undo.proto.ToManagerProto.SRD srd_;
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
@@ -2808,20 +2808,20 @@ public final class VProto {
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
-    public undo.proto.ToManagerProto.SRD getSrd() {
+    public pt.inesc.undo.proto.ToManagerProto.SRD getSrd() {
       return srd_;
     }
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
-    public undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
+    public pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
       return srd_;
     }
 
     private void initFields() {
       key_ = com.google.protobuf.ByteString.EMPTY;
       versions_ = java.util.Collections.emptyList();
-      srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+      srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -3002,7 +3002,7 @@ public final class VProto {
           versionsBuilder_.clear();
         }
         if (srdBuilder_ == null) {
-          srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+          srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
         } else {
           srdBuilder_.clear();
         }
@@ -3418,9 +3418,9 @@ public final class VProto {
       }
 
       // optional .voldemort.SRD srd = 3;
-      private undo.proto.ToManagerProto.SRD srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+      private pt.inesc.undo.proto.ToManagerProto.SRD srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder> srdBuilder_;
+          pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder> srdBuilder_;
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
@@ -3430,7 +3430,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public undo.proto.ToManagerProto.SRD getSrd() {
+      public pt.inesc.undo.proto.ToManagerProto.SRD getSrd() {
         if (srdBuilder_ == null) {
           return srd_;
         } else {
@@ -3440,7 +3440,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public Builder setSrd(undo.proto.ToManagerProto.SRD value) {
+      public Builder setSrd(pt.inesc.undo.proto.ToManagerProto.SRD value) {
         if (srdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -3457,7 +3457,7 @@ public final class VProto {
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
       public Builder setSrd(
-          undo.proto.ToManagerProto.SRD.Builder builderForValue) {
+          pt.inesc.undo.proto.ToManagerProto.SRD.Builder builderForValue) {
         if (srdBuilder_ == null) {
           srd_ = builderForValue.build();
           onChanged();
@@ -3470,12 +3470,12 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public Builder mergeSrd(undo.proto.ToManagerProto.SRD value) {
+      public Builder mergeSrd(pt.inesc.undo.proto.ToManagerProto.SRD value) {
         if (srdBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004) &&
-              srd_ != undo.proto.ToManagerProto.SRD.getDefaultInstance()) {
+              srd_ != pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance()) {
             srd_ =
-              undo.proto.ToManagerProto.SRD.newBuilder(srd_).mergeFrom(value).buildPartial();
+              pt.inesc.undo.proto.ToManagerProto.SRD.newBuilder(srd_).mergeFrom(value).buildPartial();
           } else {
             srd_ = value;
           }
@@ -3491,7 +3491,7 @@ public final class VProto {
        */
       public Builder clearSrd() {
         if (srdBuilder_ == null) {
-          srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+          srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
           onChanged();
         } else {
           srdBuilder_.clear();
@@ -3502,7 +3502,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public undo.proto.ToManagerProto.SRD.Builder getSrdBuilder() {
+      public pt.inesc.undo.proto.ToManagerProto.SRD.Builder getSrdBuilder() {
         bitField0_ |= 0x00000004;
         onChanged();
         return getSrdFieldBuilder().getBuilder();
@@ -3510,7 +3510,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
+      public pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
         if (srdBuilder_ != null) {
           return srdBuilder_.getMessageOrBuilder();
         } else {
@@ -3521,11 +3521,11 @@ public final class VProto {
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder> 
+          pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder> 
           getSrdFieldBuilder() {
         if (srdBuilder_ == null) {
           srdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder>(
+              pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder>(
                   srd_,
                   getParentForChildren(),
                   isClean());
@@ -3576,11 +3576,11 @@ public final class VProto {
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
-    undo.proto.ToManagerProto.SRD getSrd();
+    pt.inesc.undo.proto.ToManagerProto.SRD getSrd();
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
-    undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder();
+    pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder();
   }
   /**
    * Protobuf type {@code voldemort.GetRequest}
@@ -3644,11 +3644,11 @@ public final class VProto {
               break;
             }
             case 26: {
-              undo.proto.ToManagerProto.SRD.Builder subBuilder = null;
+              pt.inesc.undo.proto.ToManagerProto.SRD.Builder subBuilder = null;
               if (((bitField0_ & 0x00000004) == 0x00000004)) {
                 subBuilder = srd_.toBuilder();
               }
-              srd_ = input.readMessage(undo.proto.ToManagerProto.SRD.PARSER, extensionRegistry);
+              srd_ = input.readMessage(pt.inesc.undo.proto.ToManagerProto.SRD.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(srd_);
                 srd_ = subBuilder.buildPartial();
@@ -3730,7 +3730,7 @@ public final class VProto {
 
     // optional .voldemort.SRD srd = 3;
     public static final int SRD_FIELD_NUMBER = 3;
-    private undo.proto.ToManagerProto.SRD srd_;
+    private pt.inesc.undo.proto.ToManagerProto.SRD srd_;
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
@@ -3740,20 +3740,20 @@ public final class VProto {
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
-    public undo.proto.ToManagerProto.SRD getSrd() {
+    public pt.inesc.undo.proto.ToManagerProto.SRD getSrd() {
       return srd_;
     }
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
-    public undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
+    public pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
       return srd_;
     }
 
     private void initFields() {
       key_ = com.google.protobuf.ByteString.EMPTY;
       transforms_ = com.google.protobuf.ByteString.EMPTY;
-      srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+      srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -3919,7 +3919,7 @@ public final class VProto {
         transforms_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000002);
         if (srdBuilder_ == null) {
-          srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+          srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
         } else {
           srdBuilder_.clear();
         }
@@ -4093,9 +4093,9 @@ public final class VProto {
       }
 
       // optional .voldemort.SRD srd = 3;
-      private undo.proto.ToManagerProto.SRD srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+      private pt.inesc.undo.proto.ToManagerProto.SRD srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder> srdBuilder_;
+          pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder> srdBuilder_;
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
@@ -4105,7 +4105,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public undo.proto.ToManagerProto.SRD getSrd() {
+      public pt.inesc.undo.proto.ToManagerProto.SRD getSrd() {
         if (srdBuilder_ == null) {
           return srd_;
         } else {
@@ -4115,7 +4115,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public Builder setSrd(undo.proto.ToManagerProto.SRD value) {
+      public Builder setSrd(pt.inesc.undo.proto.ToManagerProto.SRD value) {
         if (srdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -4132,7 +4132,7 @@ public final class VProto {
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
       public Builder setSrd(
-          undo.proto.ToManagerProto.SRD.Builder builderForValue) {
+          pt.inesc.undo.proto.ToManagerProto.SRD.Builder builderForValue) {
         if (srdBuilder_ == null) {
           srd_ = builderForValue.build();
           onChanged();
@@ -4145,12 +4145,12 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public Builder mergeSrd(undo.proto.ToManagerProto.SRD value) {
+      public Builder mergeSrd(pt.inesc.undo.proto.ToManagerProto.SRD value) {
         if (srdBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004) &&
-              srd_ != undo.proto.ToManagerProto.SRD.getDefaultInstance()) {
+              srd_ != pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance()) {
             srd_ =
-              undo.proto.ToManagerProto.SRD.newBuilder(srd_).mergeFrom(value).buildPartial();
+              pt.inesc.undo.proto.ToManagerProto.SRD.newBuilder(srd_).mergeFrom(value).buildPartial();
           } else {
             srd_ = value;
           }
@@ -4166,7 +4166,7 @@ public final class VProto {
        */
       public Builder clearSrd() {
         if (srdBuilder_ == null) {
-          srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+          srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
           onChanged();
         } else {
           srdBuilder_.clear();
@@ -4177,7 +4177,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public undo.proto.ToManagerProto.SRD.Builder getSrdBuilder() {
+      public pt.inesc.undo.proto.ToManagerProto.SRD.Builder getSrdBuilder() {
         bitField0_ |= 0x00000004;
         onChanged();
         return getSrdFieldBuilder().getBuilder();
@@ -4185,7 +4185,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
+      public pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
         if (srdBuilder_ != null) {
           return srdBuilder_.getMessageOrBuilder();
         } else {
@@ -4196,11 +4196,11 @@ public final class VProto {
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder> 
+          pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder> 
           getSrdFieldBuilder() {
         if (srdBuilder_ == null) {
           srdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder>(
+              pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder>(
                   srd_,
                   getParentForChildren(),
                   isClean());
@@ -4270,11 +4270,11 @@ public final class VProto {
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
-    undo.proto.ToManagerProto.SRD getSrd();
+    pt.inesc.undo.proto.ToManagerProto.SRD getSrd();
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
-    undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder();
+    pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder();
   }
   /**
    * Protobuf type {@code voldemort.GetResponse}
@@ -4349,11 +4349,11 @@ public final class VProto {
               break;
             }
             case 26: {
-              undo.proto.ToManagerProto.SRD.Builder subBuilder = null;
+              pt.inesc.undo.proto.ToManagerProto.SRD.Builder subBuilder = null;
               if (((bitField0_ & 0x00000002) == 0x00000002)) {
                 subBuilder = srd_.toBuilder();
               }
-              srd_ = input.readMessage(undo.proto.ToManagerProto.SRD.PARSER, extensionRegistry);
+              srd_ = input.readMessage(pt.inesc.undo.proto.ToManagerProto.SRD.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(srd_);
                 srd_ = subBuilder.buildPartial();
@@ -4464,7 +4464,7 @@ public final class VProto {
 
     // optional .voldemort.SRD srd = 3;
     public static final int SRD_FIELD_NUMBER = 3;
-    private undo.proto.ToManagerProto.SRD srd_;
+    private pt.inesc.undo.proto.ToManagerProto.SRD srd_;
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
@@ -4474,20 +4474,20 @@ public final class VProto {
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
-    public undo.proto.ToManagerProto.SRD getSrd() {
+    public pt.inesc.undo.proto.ToManagerProto.SRD getSrd() {
       return srd_;
     }
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
-    public undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
+    public pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
       return srd_;
     }
 
     private void initFields() {
       versioned_ = java.util.Collections.emptyList();
       error_ = voldemort.client.protocol.pb.VProto.Error.getDefaultInstance();
-      srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+      srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -4675,7 +4675,7 @@ public final class VProto {
         }
         bitField0_ = (bitField0_ & ~0x00000002);
         if (srdBuilder_ == null) {
-          srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+          srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
         } else {
           srdBuilder_.clear();
         }
@@ -5178,9 +5178,9 @@ public final class VProto {
       }
 
       // optional .voldemort.SRD srd = 3;
-      private undo.proto.ToManagerProto.SRD srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+      private pt.inesc.undo.proto.ToManagerProto.SRD srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder> srdBuilder_;
+          pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder> srdBuilder_;
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
@@ -5190,7 +5190,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public undo.proto.ToManagerProto.SRD getSrd() {
+      public pt.inesc.undo.proto.ToManagerProto.SRD getSrd() {
         if (srdBuilder_ == null) {
           return srd_;
         } else {
@@ -5200,7 +5200,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public Builder setSrd(undo.proto.ToManagerProto.SRD value) {
+      public Builder setSrd(pt.inesc.undo.proto.ToManagerProto.SRD value) {
         if (srdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -5217,7 +5217,7 @@ public final class VProto {
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
       public Builder setSrd(
-          undo.proto.ToManagerProto.SRD.Builder builderForValue) {
+          pt.inesc.undo.proto.ToManagerProto.SRD.Builder builderForValue) {
         if (srdBuilder_ == null) {
           srd_ = builderForValue.build();
           onChanged();
@@ -5230,12 +5230,12 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public Builder mergeSrd(undo.proto.ToManagerProto.SRD value) {
+      public Builder mergeSrd(pt.inesc.undo.proto.ToManagerProto.SRD value) {
         if (srdBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004) &&
-              srd_ != undo.proto.ToManagerProto.SRD.getDefaultInstance()) {
+              srd_ != pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance()) {
             srd_ =
-              undo.proto.ToManagerProto.SRD.newBuilder(srd_).mergeFrom(value).buildPartial();
+              pt.inesc.undo.proto.ToManagerProto.SRD.newBuilder(srd_).mergeFrom(value).buildPartial();
           } else {
             srd_ = value;
           }
@@ -5251,7 +5251,7 @@ public final class VProto {
        */
       public Builder clearSrd() {
         if (srdBuilder_ == null) {
-          srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+          srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
           onChanged();
         } else {
           srdBuilder_.clear();
@@ -5262,7 +5262,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public undo.proto.ToManagerProto.SRD.Builder getSrdBuilder() {
+      public pt.inesc.undo.proto.ToManagerProto.SRD.Builder getSrdBuilder() {
         bitField0_ |= 0x00000004;
         onChanged();
         return getSrdFieldBuilder().getBuilder();
@@ -5270,7 +5270,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
+      public pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
         if (srdBuilder_ != null) {
           return srdBuilder_.getMessageOrBuilder();
         } else {
@@ -5281,11 +5281,11 @@ public final class VProto {
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder> 
+          pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder> 
           getSrdFieldBuilder() {
         if (srdBuilder_ == null) {
           srdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder>(
+              pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder>(
                   srd_,
                   getParentForChildren(),
                   isClean());
@@ -5355,11 +5355,11 @@ public final class VProto {
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
-    undo.proto.ToManagerProto.SRD getSrd();
+    pt.inesc.undo.proto.ToManagerProto.SRD getSrd();
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
-    undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder();
+    pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder();
   }
   /**
    * Protobuf type {@code voldemort.GetVersionResponse}
@@ -5434,11 +5434,11 @@ public final class VProto {
               break;
             }
             case 26: {
-              undo.proto.ToManagerProto.SRD.Builder subBuilder = null;
+              pt.inesc.undo.proto.ToManagerProto.SRD.Builder subBuilder = null;
               if (((bitField0_ & 0x00000002) == 0x00000002)) {
                 subBuilder = srd_.toBuilder();
               }
-              srd_ = input.readMessage(undo.proto.ToManagerProto.SRD.PARSER, extensionRegistry);
+              srd_ = input.readMessage(pt.inesc.undo.proto.ToManagerProto.SRD.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(srd_);
                 srd_ = subBuilder.buildPartial();
@@ -5549,7 +5549,7 @@ public final class VProto {
 
     // optional .voldemort.SRD srd = 3;
     public static final int SRD_FIELD_NUMBER = 3;
-    private undo.proto.ToManagerProto.SRD srd_;
+    private pt.inesc.undo.proto.ToManagerProto.SRD srd_;
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
@@ -5559,20 +5559,20 @@ public final class VProto {
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
-    public undo.proto.ToManagerProto.SRD getSrd() {
+    public pt.inesc.undo.proto.ToManagerProto.SRD getSrd() {
       return srd_;
     }
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
-    public undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
+    public pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
       return srd_;
     }
 
     private void initFields() {
       versions_ = java.util.Collections.emptyList();
       error_ = voldemort.client.protocol.pb.VProto.Error.getDefaultInstance();
-      srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+      srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -5760,7 +5760,7 @@ public final class VProto {
         }
         bitField0_ = (bitField0_ & ~0x00000002);
         if (srdBuilder_ == null) {
-          srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+          srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
         } else {
           srdBuilder_.clear();
         }
@@ -6263,9 +6263,9 @@ public final class VProto {
       }
 
       // optional .voldemort.SRD srd = 3;
-      private undo.proto.ToManagerProto.SRD srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+      private pt.inesc.undo.proto.ToManagerProto.SRD srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder> srdBuilder_;
+          pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder> srdBuilder_;
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
@@ -6275,7 +6275,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public undo.proto.ToManagerProto.SRD getSrd() {
+      public pt.inesc.undo.proto.ToManagerProto.SRD getSrd() {
         if (srdBuilder_ == null) {
           return srd_;
         } else {
@@ -6285,7 +6285,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public Builder setSrd(undo.proto.ToManagerProto.SRD value) {
+      public Builder setSrd(pt.inesc.undo.proto.ToManagerProto.SRD value) {
         if (srdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -6302,7 +6302,7 @@ public final class VProto {
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
       public Builder setSrd(
-          undo.proto.ToManagerProto.SRD.Builder builderForValue) {
+          pt.inesc.undo.proto.ToManagerProto.SRD.Builder builderForValue) {
         if (srdBuilder_ == null) {
           srd_ = builderForValue.build();
           onChanged();
@@ -6315,12 +6315,12 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public Builder mergeSrd(undo.proto.ToManagerProto.SRD value) {
+      public Builder mergeSrd(pt.inesc.undo.proto.ToManagerProto.SRD value) {
         if (srdBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004) &&
-              srd_ != undo.proto.ToManagerProto.SRD.getDefaultInstance()) {
+              srd_ != pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance()) {
             srd_ =
-              undo.proto.ToManagerProto.SRD.newBuilder(srd_).mergeFrom(value).buildPartial();
+              pt.inesc.undo.proto.ToManagerProto.SRD.newBuilder(srd_).mergeFrom(value).buildPartial();
           } else {
             srd_ = value;
           }
@@ -6336,7 +6336,7 @@ public final class VProto {
        */
       public Builder clearSrd() {
         if (srdBuilder_ == null) {
-          srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+          srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
           onChanged();
         } else {
           srdBuilder_.clear();
@@ -6347,7 +6347,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public undo.proto.ToManagerProto.SRD.Builder getSrdBuilder() {
+      public pt.inesc.undo.proto.ToManagerProto.SRD.Builder getSrdBuilder() {
         bitField0_ |= 0x00000004;
         onChanged();
         return getSrdFieldBuilder().getBuilder();
@@ -6355,7 +6355,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
+      public pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
         if (srdBuilder_ != null) {
           return srdBuilder_.getMessageOrBuilder();
         } else {
@@ -6366,11 +6366,11 @@ public final class VProto {
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder> 
+          pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder> 
           getSrdFieldBuilder() {
         if (srdBuilder_ == null) {
           srdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder>(
+              pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder>(
                   srd_,
                   getParentForChildren(),
                   isClean());
@@ -6440,11 +6440,11 @@ public final class VProto {
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
-    undo.proto.ToManagerProto.SRD getSrd();
+    pt.inesc.undo.proto.ToManagerProto.SRD getSrd();
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
-    undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder();
+    pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder();
   }
   /**
    * Protobuf type {@code voldemort.GetAllRequest}
@@ -6514,11 +6514,11 @@ public final class VProto {
               break;
             }
             case 26: {
-              undo.proto.ToManagerProto.SRD.Builder subBuilder = null;
+              pt.inesc.undo.proto.ToManagerProto.SRD.Builder subBuilder = null;
               if (((bitField0_ & 0x00000001) == 0x00000001)) {
                 subBuilder = srd_.toBuilder();
               }
-              srd_ = input.readMessage(undo.proto.ToManagerProto.SRD.PARSER, extensionRegistry);
+              srd_ = input.readMessage(pt.inesc.undo.proto.ToManagerProto.SRD.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(srd_);
                 srd_ = subBuilder.buildPartial();
@@ -7132,7 +7132,7 @@ public final class VProto {
 
     // optional .voldemort.SRD srd = 3;
     public static final int SRD_FIELD_NUMBER = 3;
-    private undo.proto.ToManagerProto.SRD srd_;
+    private pt.inesc.undo.proto.ToManagerProto.SRD srd_;
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
@@ -7142,20 +7142,20 @@ public final class VProto {
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
-    public undo.proto.ToManagerProto.SRD getSrd() {
+    public pt.inesc.undo.proto.ToManagerProto.SRD getSrd() {
       return srd_;
     }
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
-    public undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
+    public pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
       return srd_;
     }
 
     private void initFields() {
       keys_ = java.util.Collections.emptyList();
       transforms_ = java.util.Collections.emptyList();
-      srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+      srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -7337,7 +7337,7 @@ public final class VProto {
           transformsBuilder_.clear();
         }
         if (srdBuilder_ == null) {
-          srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+          srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
         } else {
           srdBuilder_.clear();
         }
@@ -7793,9 +7793,9 @@ public final class VProto {
       }
 
       // optional .voldemort.SRD srd = 3;
-      private undo.proto.ToManagerProto.SRD srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+      private pt.inesc.undo.proto.ToManagerProto.SRD srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder> srdBuilder_;
+          pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder> srdBuilder_;
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
@@ -7805,7 +7805,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public undo.proto.ToManagerProto.SRD getSrd() {
+      public pt.inesc.undo.proto.ToManagerProto.SRD getSrd() {
         if (srdBuilder_ == null) {
           return srd_;
         } else {
@@ -7815,7 +7815,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public Builder setSrd(undo.proto.ToManagerProto.SRD value) {
+      public Builder setSrd(pt.inesc.undo.proto.ToManagerProto.SRD value) {
         if (srdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -7832,7 +7832,7 @@ public final class VProto {
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
       public Builder setSrd(
-          undo.proto.ToManagerProto.SRD.Builder builderForValue) {
+          pt.inesc.undo.proto.ToManagerProto.SRD.Builder builderForValue) {
         if (srdBuilder_ == null) {
           srd_ = builderForValue.build();
           onChanged();
@@ -7845,12 +7845,12 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public Builder mergeSrd(undo.proto.ToManagerProto.SRD value) {
+      public Builder mergeSrd(pt.inesc.undo.proto.ToManagerProto.SRD value) {
         if (srdBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004) &&
-              srd_ != undo.proto.ToManagerProto.SRD.getDefaultInstance()) {
+              srd_ != pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance()) {
             srd_ =
-              undo.proto.ToManagerProto.SRD.newBuilder(srd_).mergeFrom(value).buildPartial();
+              pt.inesc.undo.proto.ToManagerProto.SRD.newBuilder(srd_).mergeFrom(value).buildPartial();
           } else {
             srd_ = value;
           }
@@ -7866,7 +7866,7 @@ public final class VProto {
        */
       public Builder clearSrd() {
         if (srdBuilder_ == null) {
-          srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+          srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
           onChanged();
         } else {
           srdBuilder_.clear();
@@ -7877,7 +7877,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public undo.proto.ToManagerProto.SRD.Builder getSrdBuilder() {
+      public pt.inesc.undo.proto.ToManagerProto.SRD.Builder getSrdBuilder() {
         bitField0_ |= 0x00000004;
         onChanged();
         return getSrdFieldBuilder().getBuilder();
@@ -7885,7 +7885,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
+      public pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
         if (srdBuilder_ != null) {
           return srdBuilder_.getMessageOrBuilder();
         } else {
@@ -7896,11 +7896,11 @@ public final class VProto {
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder> 
+          pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder> 
           getSrdFieldBuilder() {
         if (srdBuilder_ == null) {
           srdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder>(
+              pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder>(
                   srd_,
                   getParentForChildren(),
                   isClean());
@@ -8858,11 +8858,11 @@ public final class VProto {
     /**
      * <code>optional .voldemort.SRD srd = 4;</code>
      */
-    undo.proto.ToManagerProto.SRD getSrd();
+    pt.inesc.undo.proto.ToManagerProto.SRD getSrd();
     /**
      * <code>optional .voldemort.SRD srd = 4;</code>
      */
-    undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder();
+    pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder();
   }
   /**
    * Protobuf type {@code voldemort.PutRequest}
@@ -8939,11 +8939,11 @@ public final class VProto {
               break;
             }
             case 34: {
-              undo.proto.ToManagerProto.SRD.Builder subBuilder = null;
+              pt.inesc.undo.proto.ToManagerProto.SRD.Builder subBuilder = null;
               if (((bitField0_ & 0x00000008) == 0x00000008)) {
                 subBuilder = srd_.toBuilder();
               }
-              srd_ = input.readMessage(undo.proto.ToManagerProto.SRD.PARSER, extensionRegistry);
+              srd_ = input.readMessage(pt.inesc.undo.proto.ToManagerProto.SRD.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(srd_);
                 srd_ = subBuilder.buildPartial();
@@ -9047,7 +9047,7 @@ public final class VProto {
 
     // optional .voldemort.SRD srd = 4;
     public static final int SRD_FIELD_NUMBER = 4;
-    private undo.proto.ToManagerProto.SRD srd_;
+    private pt.inesc.undo.proto.ToManagerProto.SRD srd_;
     /**
      * <code>optional .voldemort.SRD srd = 4;</code>
      */
@@ -9057,13 +9057,13 @@ public final class VProto {
     /**
      * <code>optional .voldemort.SRD srd = 4;</code>
      */
-    public undo.proto.ToManagerProto.SRD getSrd() {
+    public pt.inesc.undo.proto.ToManagerProto.SRD getSrd() {
       return srd_;
     }
     /**
      * <code>optional .voldemort.SRD srd = 4;</code>
      */
-    public undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
+    public pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
       return srd_;
     }
 
@@ -9071,7 +9071,7 @@ public final class VProto {
       key_ = com.google.protobuf.ByteString.EMPTY;
       versioned_ = voldemort.client.protocol.pb.VProto.Versioned.getDefaultInstance();
       transforms_ = com.google.protobuf.ByteString.EMPTY;
-      srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+      srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -9263,7 +9263,7 @@ public final class VProto {
         transforms_ = com.google.protobuf.ByteString.EMPTY;
         bitField0_ = (bitField0_ & ~0x00000004);
         if (srdBuilder_ == null) {
-          srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+          srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
         } else {
           srdBuilder_.clear();
         }
@@ -9577,9 +9577,9 @@ public final class VProto {
       }
 
       // optional .voldemort.SRD srd = 4;
-      private undo.proto.ToManagerProto.SRD srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+      private pt.inesc.undo.proto.ToManagerProto.SRD srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder> srdBuilder_;
+          pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder> srdBuilder_;
       /**
        * <code>optional .voldemort.SRD srd = 4;</code>
        */
@@ -9589,7 +9589,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 4;</code>
        */
-      public undo.proto.ToManagerProto.SRD getSrd() {
+      public pt.inesc.undo.proto.ToManagerProto.SRD getSrd() {
         if (srdBuilder_ == null) {
           return srd_;
         } else {
@@ -9599,7 +9599,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 4;</code>
        */
-      public Builder setSrd(undo.proto.ToManagerProto.SRD value) {
+      public Builder setSrd(pt.inesc.undo.proto.ToManagerProto.SRD value) {
         if (srdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -9616,7 +9616,7 @@ public final class VProto {
        * <code>optional .voldemort.SRD srd = 4;</code>
        */
       public Builder setSrd(
-          undo.proto.ToManagerProto.SRD.Builder builderForValue) {
+          pt.inesc.undo.proto.ToManagerProto.SRD.Builder builderForValue) {
         if (srdBuilder_ == null) {
           srd_ = builderForValue.build();
           onChanged();
@@ -9629,12 +9629,12 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 4;</code>
        */
-      public Builder mergeSrd(undo.proto.ToManagerProto.SRD value) {
+      public Builder mergeSrd(pt.inesc.undo.proto.ToManagerProto.SRD value) {
         if (srdBuilder_ == null) {
           if (((bitField0_ & 0x00000008) == 0x00000008) &&
-              srd_ != undo.proto.ToManagerProto.SRD.getDefaultInstance()) {
+              srd_ != pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance()) {
             srd_ =
-              undo.proto.ToManagerProto.SRD.newBuilder(srd_).mergeFrom(value).buildPartial();
+              pt.inesc.undo.proto.ToManagerProto.SRD.newBuilder(srd_).mergeFrom(value).buildPartial();
           } else {
             srd_ = value;
           }
@@ -9650,7 +9650,7 @@ public final class VProto {
        */
       public Builder clearSrd() {
         if (srdBuilder_ == null) {
-          srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+          srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
           onChanged();
         } else {
           srdBuilder_.clear();
@@ -9661,7 +9661,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 4;</code>
        */
-      public undo.proto.ToManagerProto.SRD.Builder getSrdBuilder() {
+      public pt.inesc.undo.proto.ToManagerProto.SRD.Builder getSrdBuilder() {
         bitField0_ |= 0x00000008;
         onChanged();
         return getSrdFieldBuilder().getBuilder();
@@ -9669,7 +9669,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 4;</code>
        */
-      public undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
+      public pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
         if (srdBuilder_ != null) {
           return srdBuilder_.getMessageOrBuilder();
         } else {
@@ -9680,11 +9680,11 @@ public final class VProto {
        * <code>optional .voldemort.SRD srd = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder> 
+          pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder> 
           getSrdFieldBuilder() {
         if (srdBuilder_ == null) {
           srdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder>(
+              pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder>(
                   srd_,
                   getParentForChildren(),
                   isClean());
@@ -10258,11 +10258,11 @@ public final class VProto {
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
-    undo.proto.ToManagerProto.SRD getSrd();
+    pt.inesc.undo.proto.ToManagerProto.SRD getSrd();
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
-    undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder();
+    pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder();
   }
   /**
    * Protobuf type {@code voldemort.DeleteRequest}
@@ -10334,11 +10334,11 @@ public final class VProto {
               break;
             }
             case 26: {
-              undo.proto.ToManagerProto.SRD.Builder subBuilder = null;
+              pt.inesc.undo.proto.ToManagerProto.SRD.Builder subBuilder = null;
               if (((bitField0_ & 0x00000004) == 0x00000004)) {
                 subBuilder = srd_.toBuilder();
               }
-              srd_ = input.readMessage(undo.proto.ToManagerProto.SRD.PARSER, extensionRegistry);
+              srd_ = input.readMessage(pt.inesc.undo.proto.ToManagerProto.SRD.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(srd_);
                 srd_ = subBuilder.buildPartial();
@@ -10426,7 +10426,7 @@ public final class VProto {
 
     // optional .voldemort.SRD srd = 3;
     public static final int SRD_FIELD_NUMBER = 3;
-    private undo.proto.ToManagerProto.SRD srd_;
+    private pt.inesc.undo.proto.ToManagerProto.SRD srd_;
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
@@ -10436,20 +10436,20 @@ public final class VProto {
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
-    public undo.proto.ToManagerProto.SRD getSrd() {
+    public pt.inesc.undo.proto.ToManagerProto.SRD getSrd() {
       return srd_;
     }
     /**
      * <code>optional .voldemort.SRD srd = 3;</code>
      */
-    public undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
+    public pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
       return srd_;
     }
 
     private void initFields() {
       key_ = com.google.protobuf.ByteString.EMPTY;
       version_ = voldemort.client.protocol.pb.VProto.VectorClock.getDefaultInstance();
-      srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+      srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -10632,7 +10632,7 @@ public final class VProto {
         }
         bitField0_ = (bitField0_ & ~0x00000002);
         if (srdBuilder_ == null) {
-          srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+          srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
         } else {
           srdBuilder_.clear();
         }
@@ -10903,9 +10903,9 @@ public final class VProto {
       }
 
       // optional .voldemort.SRD srd = 3;
-      private undo.proto.ToManagerProto.SRD srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+      private pt.inesc.undo.proto.ToManagerProto.SRD srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder> srdBuilder_;
+          pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder> srdBuilder_;
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
@@ -10915,7 +10915,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public undo.proto.ToManagerProto.SRD getSrd() {
+      public pt.inesc.undo.proto.ToManagerProto.SRD getSrd() {
         if (srdBuilder_ == null) {
           return srd_;
         } else {
@@ -10925,7 +10925,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public Builder setSrd(undo.proto.ToManagerProto.SRD value) {
+      public Builder setSrd(pt.inesc.undo.proto.ToManagerProto.SRD value) {
         if (srdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -10942,7 +10942,7 @@ public final class VProto {
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
       public Builder setSrd(
-          undo.proto.ToManagerProto.SRD.Builder builderForValue) {
+          pt.inesc.undo.proto.ToManagerProto.SRD.Builder builderForValue) {
         if (srdBuilder_ == null) {
           srd_ = builderForValue.build();
           onChanged();
@@ -10955,12 +10955,12 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public Builder mergeSrd(undo.proto.ToManagerProto.SRD value) {
+      public Builder mergeSrd(pt.inesc.undo.proto.ToManagerProto.SRD value) {
         if (srdBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004) &&
-              srd_ != undo.proto.ToManagerProto.SRD.getDefaultInstance()) {
+              srd_ != pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance()) {
             srd_ =
-              undo.proto.ToManagerProto.SRD.newBuilder(srd_).mergeFrom(value).buildPartial();
+              pt.inesc.undo.proto.ToManagerProto.SRD.newBuilder(srd_).mergeFrom(value).buildPartial();
           } else {
             srd_ = value;
           }
@@ -10976,7 +10976,7 @@ public final class VProto {
        */
       public Builder clearSrd() {
         if (srdBuilder_ == null) {
-          srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+          srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
           onChanged();
         } else {
           srdBuilder_.clear();
@@ -10987,7 +10987,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public undo.proto.ToManagerProto.SRD.Builder getSrdBuilder() {
+      public pt.inesc.undo.proto.ToManagerProto.SRD.Builder getSrdBuilder() {
         bitField0_ |= 0x00000004;
         onChanged();
         return getSrdFieldBuilder().getBuilder();
@@ -10995,7 +10995,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
-      public undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
+      public pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
         if (srdBuilder_ != null) {
           return srdBuilder_.getMessageOrBuilder();
         } else {
@@ -11006,11 +11006,11 @@ public final class VProto {
        * <code>optional .voldemort.SRD srd = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder> 
+          pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder> 
           getSrdFieldBuilder() {
         if (srdBuilder_ == null) {
           srdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder>(
+              pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder>(
                   srd_,
                   getParentForChildren(),
                   isClean());
@@ -11663,11 +11663,11 @@ public final class VProto {
     /**
      * <code>optional .voldemort.SRD srd = 2;</code>
      */
-    undo.proto.ToManagerProto.SRD getSrd();
+    pt.inesc.undo.proto.ToManagerProto.SRD getSrd();
     /**
      * <code>optional .voldemort.SRD srd = 2;</code>
      */
-    undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder();
+    pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder();
   }
   /**
    * Protobuf type {@code voldemort.UnlockRequest}
@@ -11729,11 +11729,11 @@ public final class VProto {
               break;
             }
             case 18: {
-              undo.proto.ToManagerProto.SRD.Builder subBuilder = null;
+              pt.inesc.undo.proto.ToManagerProto.SRD.Builder subBuilder = null;
               if (((bitField0_ & 0x00000001) == 0x00000001)) {
                 subBuilder = srd_.toBuilder();
               }
-              srd_ = input.readMessage(undo.proto.ToManagerProto.SRD.PARSER, extensionRegistry);
+              srd_ = input.readMessage(pt.inesc.undo.proto.ToManagerProto.SRD.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(srd_);
                 srd_ = subBuilder.buildPartial();
@@ -11809,7 +11809,7 @@ public final class VProto {
 
     // optional .voldemort.SRD srd = 2;
     public static final int SRD_FIELD_NUMBER = 2;
-    private undo.proto.ToManagerProto.SRD srd_;
+    private pt.inesc.undo.proto.ToManagerProto.SRD srd_;
     /**
      * <code>optional .voldemort.SRD srd = 2;</code>
      */
@@ -11819,19 +11819,19 @@ public final class VProto {
     /**
      * <code>optional .voldemort.SRD srd = 2;</code>
      */
-    public undo.proto.ToManagerProto.SRD getSrd() {
+    public pt.inesc.undo.proto.ToManagerProto.SRD getSrd() {
       return srd_;
     }
     /**
      * <code>optional .voldemort.SRD srd = 2;</code>
      */
-    public undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
+    public pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
       return srd_;
     }
 
     private void initFields() {
       key_ = java.util.Collections.emptyList();
-      srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+      srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -11993,7 +11993,7 @@ public final class VProto {
         key_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
         if (srdBuilder_ == null) {
-          srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+          srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
         } else {
           srdBuilder_.clear();
         }
@@ -12168,9 +12168,9 @@ public final class VProto {
       }
 
       // optional .voldemort.SRD srd = 2;
-      private undo.proto.ToManagerProto.SRD srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+      private pt.inesc.undo.proto.ToManagerProto.SRD srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder> srdBuilder_;
+          pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder> srdBuilder_;
       /**
        * <code>optional .voldemort.SRD srd = 2;</code>
        */
@@ -12180,7 +12180,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 2;</code>
        */
-      public undo.proto.ToManagerProto.SRD getSrd() {
+      public pt.inesc.undo.proto.ToManagerProto.SRD getSrd() {
         if (srdBuilder_ == null) {
           return srd_;
         } else {
@@ -12190,7 +12190,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 2;</code>
        */
-      public Builder setSrd(undo.proto.ToManagerProto.SRD value) {
+      public Builder setSrd(pt.inesc.undo.proto.ToManagerProto.SRD value) {
         if (srdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -12207,7 +12207,7 @@ public final class VProto {
        * <code>optional .voldemort.SRD srd = 2;</code>
        */
       public Builder setSrd(
-          undo.proto.ToManagerProto.SRD.Builder builderForValue) {
+          pt.inesc.undo.proto.ToManagerProto.SRD.Builder builderForValue) {
         if (srdBuilder_ == null) {
           srd_ = builderForValue.build();
           onChanged();
@@ -12220,12 +12220,12 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 2;</code>
        */
-      public Builder mergeSrd(undo.proto.ToManagerProto.SRD value) {
+      public Builder mergeSrd(pt.inesc.undo.proto.ToManagerProto.SRD value) {
         if (srdBuilder_ == null) {
           if (((bitField0_ & 0x00000002) == 0x00000002) &&
-              srd_ != undo.proto.ToManagerProto.SRD.getDefaultInstance()) {
+              srd_ != pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance()) {
             srd_ =
-              undo.proto.ToManagerProto.SRD.newBuilder(srd_).mergeFrom(value).buildPartial();
+              pt.inesc.undo.proto.ToManagerProto.SRD.newBuilder(srd_).mergeFrom(value).buildPartial();
           } else {
             srd_ = value;
           }
@@ -12241,7 +12241,7 @@ public final class VProto {
        */
       public Builder clearSrd() {
         if (srdBuilder_ == null) {
-          srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+          srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
           onChanged();
         } else {
           srdBuilder_.clear();
@@ -12252,7 +12252,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 2;</code>
        */
-      public undo.proto.ToManagerProto.SRD.Builder getSrdBuilder() {
+      public pt.inesc.undo.proto.ToManagerProto.SRD.Builder getSrdBuilder() {
         bitField0_ |= 0x00000002;
         onChanged();
         return getSrdFieldBuilder().getBuilder();
@@ -12260,7 +12260,7 @@ public final class VProto {
       /**
        * <code>optional .voldemort.SRD srd = 2;</code>
        */
-      public undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
+      public pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
         if (srdBuilder_ != null) {
           return srdBuilder_.getMessageOrBuilder();
         } else {
@@ -12271,11 +12271,11 @@ public final class VProto {
        * <code>optional .voldemort.SRD srd = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder> 
+          pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder> 
           getSrdFieldBuilder() {
         if (srdBuilder_ == null) {
           srdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder>(
+              pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder>(
                   srd_,
                   getParentForChildren(),
                   isClean());
@@ -13695,11 +13695,11 @@ public final class VProto {
     /**
      * <code>required .voldemort.SRD srd = 1;</code>
      */
-    undo.proto.ToManagerProto.SRD getSrd();
+    pt.inesc.undo.proto.ToManagerProto.SRD getSrd();
     /**
      * <code>required .voldemort.SRD srd = 1;</code>
      */
-    undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder();
+    pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder();
 
     // required bytes data = 2;
     /**
@@ -13763,11 +13763,11 @@ public final class VProto {
               break;
             }
             case 10: {
-              undo.proto.ToManagerProto.SRD.Builder subBuilder = null;
+              pt.inesc.undo.proto.ToManagerProto.SRD.Builder subBuilder = null;
               if (((bitField0_ & 0x00000001) == 0x00000001)) {
                 subBuilder = srd_.toBuilder();
               }
-              srd_ = input.readMessage(undo.proto.ToManagerProto.SRD.PARSER, extensionRegistry);
+              srd_ = input.readMessage(pt.inesc.undo.proto.ToManagerProto.SRD.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(srd_);
                 srd_ = subBuilder.buildPartial();
@@ -13822,7 +13822,7 @@ public final class VProto {
     private int bitField0_;
     // required .voldemort.SRD srd = 1;
     public static final int SRD_FIELD_NUMBER = 1;
-    private undo.proto.ToManagerProto.SRD srd_;
+    private pt.inesc.undo.proto.ToManagerProto.SRD srd_;
     /**
      * <code>required .voldemort.SRD srd = 1;</code>
      */
@@ -13832,13 +13832,13 @@ public final class VProto {
     /**
      * <code>required .voldemort.SRD srd = 1;</code>
      */
-    public undo.proto.ToManagerProto.SRD getSrd() {
+    public pt.inesc.undo.proto.ToManagerProto.SRD getSrd() {
       return srd_;
     }
     /**
      * <code>required .voldemort.SRD srd = 1;</code>
      */
-    public undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
+    public pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
       return srd_;
     }
 
@@ -13859,7 +13859,7 @@ public final class VProto {
     }
 
     private void initFields() {
-      srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+      srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
       data_ = com.google.protobuf.ByteString.EMPTY;
     }
     private byte memoizedIsInitialized = -1;
@@ -14023,7 +14023,7 @@ public final class VProto {
       public Builder clear() {
         super.clear();
         if (srdBuilder_ == null) {
-          srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+          srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
         } else {
           srdBuilder_.clear();
         }
@@ -14128,9 +14128,9 @@ public final class VProto {
       private int bitField0_;
 
       // required .voldemort.SRD srd = 1;
-      private undo.proto.ToManagerProto.SRD srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+      private pt.inesc.undo.proto.ToManagerProto.SRD srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder> srdBuilder_;
+          pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder> srdBuilder_;
       /**
        * <code>required .voldemort.SRD srd = 1;</code>
        */
@@ -14140,7 +14140,7 @@ public final class VProto {
       /**
        * <code>required .voldemort.SRD srd = 1;</code>
        */
-      public undo.proto.ToManagerProto.SRD getSrd() {
+      public pt.inesc.undo.proto.ToManagerProto.SRD getSrd() {
         if (srdBuilder_ == null) {
           return srd_;
         } else {
@@ -14150,7 +14150,7 @@ public final class VProto {
       /**
        * <code>required .voldemort.SRD srd = 1;</code>
        */
-      public Builder setSrd(undo.proto.ToManagerProto.SRD value) {
+      public Builder setSrd(pt.inesc.undo.proto.ToManagerProto.SRD value) {
         if (srdBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -14167,7 +14167,7 @@ public final class VProto {
        * <code>required .voldemort.SRD srd = 1;</code>
        */
       public Builder setSrd(
-          undo.proto.ToManagerProto.SRD.Builder builderForValue) {
+          pt.inesc.undo.proto.ToManagerProto.SRD.Builder builderForValue) {
         if (srdBuilder_ == null) {
           srd_ = builderForValue.build();
           onChanged();
@@ -14180,12 +14180,12 @@ public final class VProto {
       /**
        * <code>required .voldemort.SRD srd = 1;</code>
        */
-      public Builder mergeSrd(undo.proto.ToManagerProto.SRD value) {
+      public Builder mergeSrd(pt.inesc.undo.proto.ToManagerProto.SRD value) {
         if (srdBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              srd_ != undo.proto.ToManagerProto.SRD.getDefaultInstance()) {
+              srd_ != pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance()) {
             srd_ =
-              undo.proto.ToManagerProto.SRD.newBuilder(srd_).mergeFrom(value).buildPartial();
+              pt.inesc.undo.proto.ToManagerProto.SRD.newBuilder(srd_).mergeFrom(value).buildPartial();
           } else {
             srd_ = value;
           }
@@ -14201,7 +14201,7 @@ public final class VProto {
        */
       public Builder clearSrd() {
         if (srdBuilder_ == null) {
-          srd_ = undo.proto.ToManagerProto.SRD.getDefaultInstance();
+          srd_ = pt.inesc.undo.proto.ToManagerProto.SRD.getDefaultInstance();
           onChanged();
         } else {
           srdBuilder_.clear();
@@ -14212,7 +14212,7 @@ public final class VProto {
       /**
        * <code>required .voldemort.SRD srd = 1;</code>
        */
-      public undo.proto.ToManagerProto.SRD.Builder getSrdBuilder() {
+      public pt.inesc.undo.proto.ToManagerProto.SRD.Builder getSrdBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getSrdFieldBuilder().getBuilder();
@@ -14220,7 +14220,7 @@ public final class VProto {
       /**
        * <code>required .voldemort.SRD srd = 1;</code>
        */
-      public undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
+      public pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder getSrdOrBuilder() {
         if (srdBuilder_ != null) {
           return srdBuilder_.getMessageOrBuilder();
         } else {
@@ -14231,11 +14231,11 @@ public final class VProto {
        * <code>required .voldemort.SRD srd = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder> 
+          pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder> 
           getSrdFieldBuilder() {
         if (srdBuilder_ == null) {
           srdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              undo.proto.ToManagerProto.SRD, undo.proto.ToManagerProto.SRD.Builder, undo.proto.ToManagerProto.SRDOrBuilder>(
+              pt.inesc.undo.proto.ToManagerProto.SRD, pt.inesc.undo.proto.ToManagerProto.SRD.Builder, pt.inesc.undo.proto.ToManagerProto.SRDOrBuilder>(
                   srd_,
                   getParentForChildren(),
                   isClean());
@@ -16326,7 +16326,7 @@ public final class VProto {
     com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-          undo.proto.ToManagerProto.getDescriptor(),
+          pt.inesc.undo.proto.ToManagerProto.getDescriptor(),
         }, assigner);
   }
 

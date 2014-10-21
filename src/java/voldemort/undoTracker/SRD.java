@@ -7,7 +7,7 @@
 
 package voldemort.undoTracker;
 
-import undo.proto.ToManagerProto;
+import pt.inesc.undo.proto.ToManagerProto;
 import voldemort.utils.ByteArray;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -40,7 +40,7 @@ public class SRD {
         this(rid, 0, false, false);
     }
 
-    public SRD(undo.proto.ToManagerProto.SRD srd) {
+    public SRD(ToManagerProto.SRD srd) {
         this(srd.getRid(), srd.getBranch(), srd.getRestrain(), srd.getRedo());
     }
 
