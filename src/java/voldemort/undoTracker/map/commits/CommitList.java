@@ -103,25 +103,15 @@ public class CommitList implements Serializable {
 
     /**
      * Try to find the redoBranch and redoBaseCommit
-     * otherwise, use one previous to the redoBaseCommit master
+     * otherwise, use one previous to the redoBaseCommit master.
+     * Get the latest if same commit and same branch or the biggest smaller of
+     * the previous branch
      * 
      * @param sts: commit used to start the new branch
      * @param branch: the redo branch
      * @return
      */
     public synchronized StsBranchPair redoRead(BranchPath path) {
-        return getRedoRead(path);
-    }
-
-    /**
-     * Get the latest if same commit and same branch or the biggest smaller of
-     * the previous branch
-     * 
-     * @param path
-     * @param sts
-     * @return
-     */
-    private StsBranchPair getRedoRead(BranchPath path) {
         // TODO list is sorted?
         Iterator<StsBranchPair> i = list.descendingIterator();
         while(i.hasNext()) {

@@ -121,8 +121,9 @@ public abstract class SelectorManagerWorker implements Runnable {
                         + e.getMessage());
             close();
         } catch(Throwable t) {
-            if(logger.isEnabledFor(Level.ERROR))
+            if(logger.isEnabledFor(Level.ERROR)) {
                 logger.error(t.getMessage(), t);
+            }
 
             close();
         }

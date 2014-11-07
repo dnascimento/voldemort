@@ -8,6 +8,7 @@ import java.util.Iterator;
 import org.apache.log4j.Logger;
 
 import voldemort.VoldemortException;
+import voldemort.utils.ByteArray;
 
 public class RedoIterator {
 
@@ -31,7 +32,7 @@ public class RedoIterator {
     /**
      * Allowed operations which are sleeping
      */
-    private final ArrayList<Op> waiting = new ArrayList<Op>();
+    private final HashSet<Op> waiting = new HashSet<Op>();
 
     /**
      * Operations to ignore (different execution), the request was processed
@@ -72,22 +73,29 @@ public class RedoIterator {
      * @param op
      * @return true if allowed to execute, false if must go sleep
      */
-    public boolean operationIsAllowed(Op op) {
+    public boolean operationIsAllowed(Op op, ByteArray key) {
         // If no operation allowed or executing, fetch next
-        while(allowed.isEmpty() && executing.isEmpty()) {
-            fetchNextAllowed();
+        try {
+            while(allowed.isEmpty() && executing.isEmpty()) {
+                fetchNextAllowed();
+            }
+        } catch(Exception e) {
+            // the list is over
+            log.warn(e.getMessage());
+            return true;
         }
 
         if(allowed.remove(op)) {
-            if(waiting.remove(op))
-                log.info("Op " + op + " was sleeping");
+            if(waiting.remove(op)) {
+                // log.info(ByteArray.toAscii(key) + ": " + "Op " + op +
+                // " was sleeping");
+            }
             executing.add(op);
-            log.info("Op " + op + " allowed to exec");
             return true;
         } else {
             waiting.add(op);
-            log.info("Op " + op + " go sleep");
-            log.info(this.toString());
+            log.info(ByteArray.toAscii(key) + ": " + "Op " + op + " go sleep, waiting for: "
+                     + allowed);
             return false;
         }
 
@@ -104,16 +112,17 @@ public class RedoIterator {
         }
 
         log.info("Fetch more operations");
-        // is next a write?
-        if(!fullList.get(nextPosition).isGet()) {
-            allowed.add(fullList.get(nextPosition++));
-            return;
-        }
-        // add all the reads
-        while(nextPosition < fullList.size()) {
-            if(!fullList.get(nextPosition).isGet()) {
-                break;
+        // is next a read?
+        if(fullList.get(nextPosition).isGetOrGetVersion()) {
+            // add all the reads
+            while(nextPosition < fullList.size()) {
+                Op n = fullList.get(nextPosition);
+                if(!n.isGetOrGetVersion()) {
+                    break;
+                }
+                allowed.add(fullList.get(nextPosition++));
             }
+        } else {
             allowed.add(fullList.get(nextPosition++));
         }
         // remove the ignored operations
@@ -157,12 +166,14 @@ public class RedoIterator {
      * @return true if the thread should wake other sleeping threads
      */
     public boolean ignore(long rid) {
-        // executed, jump the executing list
+        // remove from the allowed operations
         Iterator<Op> it = allowed.listIterator();
         while(it.hasNext()) {
             if(it.next().rid == rid)
                 it.remove();
         }
+
+        // add to ignoring list
         ignoring.add(rid);
 
         return !waiting.isEmpty();

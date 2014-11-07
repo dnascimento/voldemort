@@ -37,7 +37,7 @@ public class RedoScheduler extends AccessSchedule implements Serializable {
      */
     @Override
     public StsBranchPair getStart(ByteArray key, SRD srd, BranchPath path) {
-        return archive.get(key).redoRead(srd, path);
+        return archive.get(key).redoRead(OpType.Get, srd, path);
     }
 
     /*
@@ -72,8 +72,14 @@ public class RedoScheduler extends AccessSchedule implements Serializable {
     }
 
     @Override
-    public StsBranchPair getVersionStart(ByteArray clone, SRD srd, BranchPath path) {
-        return new StsBranchPair(path.current.sts, srd.branch);
+    void getVersionEnd(ByteArray key, SRD srd, BranchPath path) {
+        archive.get(key).endRedoOp(OpType.GetVersion, srd, path);
+    }
+
+    @Override
+    public StsBranchPair getVersionStart(ByteArray key, SRD srd, BranchPath path) {
+        return archive.get(key).redoRead(OpType.GetVersion, srd, path);
+
     }
 
     public boolean ignore(ByteArray key, SRD srd, BranchPath path) {

@@ -128,8 +128,10 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
             for(Version version: versions)
                 response.addVersions(ProtoUtils.encodeClock(version));
         } catch(VoldemortException e) {
+            System.err.println(e);
             response.setError(ProtoUtils.encodeError(getErrorMapper(), e));
         }
+        undoStub.getVersionEnd(key, srd);
         return response.build();
     }
 

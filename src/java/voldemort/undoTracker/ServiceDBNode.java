@@ -98,6 +98,11 @@ public class ServiceDBNode extends Thread {
             ToManagerProto.AckMsg.newBuilder().build().writeDelimitedTo(s.getOutputStream());
             s.getOutputStream().flush();
         }
+        if(cmd.hasShowMap()) {
+            String debug = stub.keyAccessLists.debugExecutionList();
+            System.out.println(debug);
+        }
+
         if(cmd.hasResetDependencies()) {
             stub.resetDependencies();
         }

@@ -92,6 +92,16 @@ public final class FromManagerProto {
      * <code>optional bool showStats = 7;</code>
      */
     boolean getShowStats();
+
+    // optional bool showMap = 8;
+    /**
+     * <code>optional bool showMap = 8;</code>
+     */
+    boolean hasShowMap();
+    /**
+     * <code>optional bool showMap = 8;</code>
+     */
+    boolean getShowMap();
   }
   /**
    * Protobuf type {@code voldemort.ToDataNode}
@@ -221,6 +231,11 @@ public final class FromManagerProto {
             case 56: {
               bitField0_ |= 0x00000010;
               showStats_ = input.readBool();
+              break;
+            }
+            case 64: {
+              bitField0_ |= 0x00000020;
+              showMap_ = input.readBool();
               break;
             }
           }
@@ -955,6 +970,22 @@ public final class FromManagerProto {
       return showStats_;
     }
 
+    // optional bool showMap = 8;
+    public static final int SHOWMAP_FIELD_NUMBER = 8;
+    private boolean showMap_;
+    /**
+     * <code>optional bool showMap = 8;</code>
+     */
+    public boolean hasShowMap() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    /**
+     * <code>optional bool showMap = 8;</code>
+     */
+    public boolean getShowMap() {
+      return showMap_;
+    }
+
     private void initFields() {
       newCommit_ = 0L;
       resetDependencies_ = false;
@@ -963,6 +994,7 @@ public final class FromManagerProto {
       pathCommit_ = java.util.Collections.emptyList();
       entryAccessesMsg_ = pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.getDefaultInstance();
       showStats_ = false;
+      showMap_ = false;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -1002,6 +1034,9 @@ public final class FromManagerProto {
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         output.writeBool(7, showStats_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeBool(8, showMap_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -1049,6 +1084,10 @@ public final class FromManagerProto {
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(7, showStats_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(8, showMap_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1189,6 +1228,8 @@ public final class FromManagerProto {
         bitField0_ = (bitField0_ & ~0x00000020);
         showStats_ = false;
         bitField0_ = (bitField0_ & ~0x00000040);
+        showMap_ = false;
+        bitField0_ = (bitField0_ & ~0x00000080);
         return this;
       }
 
@@ -1251,6 +1292,10 @@ public final class FromManagerProto {
           to_bitField0_ |= 0x00000010;
         }
         result.showStats_ = showStats_;
+        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        result.showMap_ = showMap_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1301,6 +1346,9 @@ public final class FromManagerProto {
         }
         if (other.hasShowStats()) {
           setShowStats(other.getShowStats());
+        }
+        if (other.hasShowMap()) {
+          setShowMap(other.getShowMap());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -1712,6 +1760,39 @@ public final class FromManagerProto {
       public Builder clearShowStats() {
         bitField0_ = (bitField0_ & ~0x00000040);
         showStats_ = false;
+        onChanged();
+        return this;
+      }
+
+      // optional bool showMap = 8;
+      private boolean showMap_ ;
+      /**
+       * <code>optional bool showMap = 8;</code>
+       */
+      public boolean hasShowMap() {
+        return ((bitField0_ & 0x00000080) == 0x00000080);
+      }
+      /**
+       * <code>optional bool showMap = 8;</code>
+       */
+      public boolean getShowMap() {
+        return showMap_;
+      }
+      /**
+       * <code>optional bool showMap = 8;</code>
+       */
+      public Builder setShowMap(boolean value) {
+        bitField0_ |= 0x00000080;
+        showMap_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool showMap = 8;</code>
+       */
+      public Builder clearShowMap() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        showMap_ = false;
         onChanged();
         return this;
       }
@@ -3478,20 +3559,20 @@ public final class FromManagerProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\022from-manager.proto\022\tvoldemort\"\374\001\n\nToDa" +
+      "\n\022from-manager.proto\022\tvoldemort\"\215\002\n\nToDa" +
       "taNode\022\021\n\tnewCommit\030\001 \001(\003\022\031\n\021resetDepend" +
       "encies\030\002 \001(\010\022\020\n\010redoOver\030\003 \001(\010\022\022\n\npathBr" +
       "anch\030\004 \003(\005\022\022\n\npathCommit\030\005 \003(\003\022@\n\020entryA" +
       "ccessesMsg\030\006 \001(\0132&.voldemort.ToDataNode." +
-      "EntryAccessesMsg\022\021\n\tshowStats\030\007 \001(\010\0321\n\020E" +
-      "ntryAccessesMsg\022\014\n\004keys\030\001 \003(\014\022\017\n\007baseRid" +
-      "\030\002 \002(\003\"r\n\010ExecList\022\013\n\003rid\030\001 \003(\003\022\016\n\006branc" +
-      "h\030\002 \002(\005\022\r\n\005start\030\003 \002(\010\022\022\n\nreplayMode\030\004 \002" +
-      "(\t\022\022\n\ntargetHost\030\005 \002(\t\022\022\n\ntargetPort\030\006 \002",
-      "(\005\"P\n\010ProxyMsg\022\016\n\006branch\030\001 \001(\005\022\020\n\010restra" +
-      "in\030\002 \001(\010\022\022\n\ntimeTravel\030\003 \001(\003\022\016\n\006commit\030\004" +
-      " \001(\003B)\n\023pt.inesc.undo.protoB\020FromManager" +
-      "ProtoH\001"
+      "EntryAccessesMsg\022\021\n\tshowStats\030\007 \001(\010\022\017\n\007s" +
+      "howMap\030\010 \001(\010\0321\n\020EntryAccessesMsg\022\014\n\004keys" +
+      "\030\001 \003(\014\022\017\n\007baseRid\030\002 \002(\003\"r\n\010ExecList\022\013\n\003r" +
+      "id\030\001 \003(\003\022\016\n\006branch\030\002 \002(\005\022\r\n\005start\030\003 \002(\010\022" +
+      "\022\n\nreplayMode\030\004 \002(\t\022\022\n\ntargetHost\030\005 \002(\t\022",
+      "\022\n\ntargetPort\030\006 \002(\005\"P\n\010ProxyMsg\022\016\n\006branc" +
+      "h\030\001 \001(\005\022\020\n\010restrain\030\002 \001(\010\022\022\n\ntimeTravel\030" +
+      "\003 \001(\003\022\016\n\006commit\030\004 \001(\003B)\n\023pt.inesc.undo.p" +
+      "rotoB\020FromManagerProtoH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -3503,7 +3584,7 @@ public final class FromManagerProto {
           internal_static_voldemort_ToDataNode_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_ToDataNode_descriptor,
-              new java.lang.String[] { "NewCommit", "ResetDependencies", "RedoOver", "PathBranch", "PathCommit", "EntryAccessesMsg", "ShowStats", });
+              new java.lang.String[] { "NewCommit", "ResetDependencies", "RedoOver", "PathBranch", "PathCommit", "EntryAccessesMsg", "ShowStats", "ShowMap", });
           internal_static_voldemort_ToDataNode_EntryAccessesMsg_descriptor =
             internal_static_voldemort_ToDataNode_descriptor.getNestedTypes().get(0);
           internal_static_voldemort_ToDataNode_EntryAccessesMsg_fieldAccessorTable = new

@@ -49,6 +49,9 @@ public class RestrainScheduler extends AccessSchedule implements Serializable {
     public void deleteEnd(ByteArray key, SRD srd, BranchPath path) {}
 
     @Override
+    void getVersionEnd(ByteArray key, SRD srd, BranchPath path) {}
+
+    @Override
     public StsBranchPair getStart(ByteArray key, SRD srd, BranchPath path) {
         OpMultimapEntry l = archive.get(key);
         // if(l.isReplayingInBranch(path.current.branch)) {

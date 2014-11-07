@@ -28,6 +28,7 @@ import pt.inesc.undo.proto.ToManagerProto;
 import voldemort.client.protocol.RequestFormat;
 import voldemort.client.protocol.pb.VProto.DeleteResponse;
 import voldemort.client.protocol.pb.VProto.GetAllResponse;
+import voldemort.client.protocol.pb.VProto.GetRequest;
 import voldemort.client.protocol.pb.VProto.GetResponse;
 import voldemort.client.protocol.pb.VProto.GetVersionResponse;
 import voldemort.client.protocol.pb.VProto.KeyStatus;
@@ -112,6 +113,7 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
         VProto.GetRequest.Builder get = VProto.GetRequest.newBuilder();
         get.setKey(ByteString.copyFrom(key.get()));
         get.setSrd(srdProto);
+
         // Track the key access by client
         srd.addAccessedKey(key, storeName, SRD.OpType.Get);
 
@@ -151,6 +153,11 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                    SRD srd) throws IOException {
         StoreUtils.assertValidKeys(keys);
         ToManagerProto.SRD srdProto = srd.toProto();
+
+        // Track the key access by client
+        for(ByteArray key: keys) {
+            srd.addAccessedKey(key, storeName, SRD.OpType.Get);
+        }
 
         VProto.GetAllRequest.Builder req = VProto.GetAllRequest.newBuilder();
         req.setSrd(srdProto);
@@ -205,6 +212,7 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                 SRD srd) throws IOException {
         StoreUtils.assertValidKey(key);
         ToManagerProto.SRD srdProto = srd.toProto();
+
         // Track the key access by client
         srd.addAccessedKey(key, storeName, SRD.OpType.Put);
 
@@ -269,6 +277,12 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                        SRD srd) throws IOException {
         StoreUtils.assertValidKey(key);
         ToManagerProto.SRD srdProto = srd.toProto();
+        GetRequest.Builder getVersion = VProto.GetRequest.newBuilder();
+        getVersion.setKey(ByteString.copyFrom(key.get()));
+        getVersion.setSrd(srdProto);
+
+        // Track the key access by client
+        srd.addAccessedKey(key, storeName, SRD.OpType.GetVersion);
 
         ProtoUtils.writeMessage(output,
                                 VProto.VoldemortRequest.newBuilder()
@@ -276,9 +290,7 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                                        .setStore(storeName)
                                                        .setShouldRoute(routingType.equals(RequestRoutingType.ROUTED))
                                                        .setRequestRouteType(routingType.getRoutingTypeCode())
-                                                       .setGet(VProto.GetRequest.newBuilder()
-                                                                                .setSrd(srdProto)
-                                                                                .setKey(ByteString.copyFrom(key.get())))
+                                                       .setGet(getVersion)
                                                        .build());
     }
 

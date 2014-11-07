@@ -26,6 +26,8 @@ public abstract class AccessSchedule {
 
     abstract void getEnd(ByteArray key, SRD srd, BranchPath path);
 
+    abstract void getVersionEnd(ByteArray key, SRD srd, BranchPath path);
+
     abstract void putEnd(ByteArray key, SRD srd, BranchPath path);
 
     abstract void deleteEnd(ByteArray key, SRD srd, BranchPath path);
@@ -41,8 +43,11 @@ public abstract class AccessSchedule {
             case Put:
                 putEnd(key, srd, path);
                 break;
+            case GetVersion:
+                getVersionEnd(key, srd, path);
+                break;
             default:
-                throw new VoldemortException("Unknown operation");
+                throw new VoldemortException("Unknown operation: ");
         }
     }
 

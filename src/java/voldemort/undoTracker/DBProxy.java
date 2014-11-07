@@ -89,11 +89,11 @@ public class DBProxy implements Serializable {
      */
     public DBProxy() {
         DOMConfigurator.configure("log4j.xml");
-        LogManager.getRootLogger().setLevel(Level.DEBUG);
+        LogManager.getRootLogger().setLevel(Level.WARN);
         log.setLevel(Level.DEBUG);
         debugging = false;
 
-        log.info("New DBUndo stub");
+        log.info("New DBUndo stub at host" + MY_ADDRESS);
         this.keyAccessLists = new OpMultimap();
 
         redoScheduler = new RedoScheduler(keyAccessLists);
@@ -115,23 +115,15 @@ public class DBProxy implements Serializable {
             }
             return;
         }
+
         StringBuilder sb = new StringBuilder();
-
-        synchronized(this) {
-            System.out.println("LOCK");
-            try {
-                this.wait();
-            } catch(InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
+        // System.out.println("-> " + op + " " + ByteArray.toAscii(key) + " - "
+        // + srd);
         Path p = brancher.getPath(srd.branch);
         BranchPath path = p.path;
         StsBranchPair access;
         if(p.isRedo) {
             // use redo branch
-            debugging = true;
             if(debugging) {
                 sb.append(" -> REDO: ");
                 log.info("Redo Start: " + op + " " + hexStringToAscii(key) + " " + srd);
@@ -139,7 +131,6 @@ public class DBProxy implements Serializable {
             access = redoScheduler.opStart(op, key.shadow(), srd, path);
         } else {
             if(srd.restrain) {
-                debugging = true;
                 if(debugging) {
                     System.out.println(" -> RESTRAIN: ");
                 }
@@ -175,14 +166,13 @@ public class DBProxy implements Serializable {
             Path p = brancher.getPath(srd.branch);
             BranchPath path = p.path;
             removeKeyVersion(key);
+            log.info("Op end: " + op + " " + hexStringToAscii(key) + " " + srd);
             if(p.isRedo) {
+                redoScheduler.opEnd(op, key.shadow(), srd, path);
+            } else {
                 if(srd.restrain) {
                     restrainScheduler.opEnd(op, key.shadow(), srd, path);
-                    newRequestsScheduler.opEnd(op, key.shadow(), srd, path);
-                } else {
-                    redoScheduler.opEnd(op, key.shadow(), srd, path);
                 }
-            } else {
                 newRequestsScheduler.opEnd(op, key.shadow(), srd, path);
             }
         }
@@ -200,18 +190,18 @@ public class DBProxy implements Serializable {
             throws VoldemortException {
         HashMap<ByteArray, Boolean> result = new HashMap<ByteArray, Boolean>();
         Path p = brancher.getPath(srd.branch);
-
         if(p.isRedo) {
             for(ByteArray key: keys) {
+                log.info("unlock: " + ByteArray.toAscii(key) + "  - > " + srd);
                 boolean status = redoScheduler.ignore(key.shadow(), srd, p.path);
                 result.put(key, status);
             }
         } else {
-            log.error("Unlocking in the wrong branch");
+            log.error("Unlocking in the wrong branch: " + srd);
             for(ByteArray key: keys) {
                 result.put(key, false);
             }
-            throw new VoldemortException("Unlocking in the wrong branch");
+            throw new VoldemortException("Unlocking in the wrong branch: " + srd);
         }
         if(debugging) {
             StringBuilder sb = new StringBuilder();
@@ -314,7 +304,7 @@ public class DBProxy implements Serializable {
         return bb.getLong();
     }
 
-    public void removeKeyVersion(ByteArray key) {
+    public static void removeKeyVersion(ByteArray key) {
         byte[] kb = key.get();
 
         byte[] longBytes = Arrays.copyOfRange(kb, 0, kb.length - 10);
@@ -353,6 +343,10 @@ public class DBProxy implements Serializable {
 
     public void getVersion(ByteArray key, SRD srd) {
         opStart(OpType.GetVersion, key, srd);
+    }
+
+    public void getVersionEnd(ByteArray key, SRD srd) {
+        opEnd(OpType.GetVersion, key, srd);
     }
 
     /**
@@ -462,10 +456,13 @@ public class DBProxy implements Serializable {
 
     private static InetSocketAddress getLocalAddress() {
         try {
-            return new InetSocketAddress(getAddress(), 11200);
+            String address = getAddress();
+            System.out.println("Staring service on address:" + address);
+            return new InetSocketAddress(address, 11200);
         } catch(Exception e) {
             e.printStackTrace();
         }
+        System.out.println("Staring service on address: localhost");
         return new InetSocketAddress("localhost", 11200);
     }
 
@@ -505,7 +502,7 @@ public class DBProxy implements Serializable {
         String localIp = null;
         boolean oneLocalIp = true;
         for(String ip: validIp) {
-            if(ip.startsWith("192.168.1.")) {
+            if(ip.startsWith("192.168.")) {
                 if(localIp != null) {
                     oneLocalIp = false;
                 }
@@ -513,7 +510,7 @@ public class DBProxy implements Serializable {
             }
         }
 
-        if(oneLocalIp) {
+        if(localIp != null && oneLocalIp) {
             return localIp;
         }
         // choose one ip
@@ -525,7 +522,6 @@ public class DBProxy implements Serializable {
         int option = s.nextInt();
         s.close();
         return validIp.get(option);
-
     }
 
 }

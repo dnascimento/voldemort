@@ -80,6 +80,7 @@ public class OpMultimap implements Serializable {
 
     public StsBranchPair getVersionToPut(ByteArray key, SRD srd, BranchPath current) {
         OpMultimapEntry entry = get(key);
+        entry.lockRead();
         return entry.getVersionToPut(srd, current);
     }
 
@@ -109,10 +110,13 @@ public class OpMultimap implements Serializable {
     public OpMultimapEntry get(ByteArray key) {
         OpMultimapEntry entry = map.get(key);
         if(entry == null) {
-            entry = map.putIfAbsent(key, new OpMultimapEntry());
+            entry = map.putIfAbsent(key, new OpMultimapEntry(key));
             log.debug("Creating new entry");
             if(entry == null) {
                 entry = map.get(key);
+            }
+            if(!entry.getKey().equals(key)) {
+                throw new RuntimeException("Get key but entry is different");
             }
         }
         return entry;
@@ -196,6 +200,7 @@ public class OpMultimap implements Serializable {
     public String debugExecutionList() {
         StringBuilder sb = new StringBuilder();
         for(Entry<ByteArray, OpMultimapEntry> entry: map.entrySet()) {
+            sb.append(ByteArray.toAscii(entry.getKey()));
             sb.append(entry.getValue().debugExecutionList() + "\n");
         }
         return sb.toString();

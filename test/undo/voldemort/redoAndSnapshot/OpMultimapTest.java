@@ -84,11 +84,11 @@ public class OpMultimapTest extends Thread {
         // ///////////// redo ///////////////////////
         map.get(key).ignore(new SRD(1001L, 1, false), path);
 
-        map.get(key).redoRead(new SRD(1000L, 1, false), path);
+        map.get(key).redoRead(OpType.Get, new SRD(1000L, 1, false), path);
         execution.add(new Op(1000L, OpType.Get));
         map.get(key).endRedoOp(OpType.Get, new SRD(1000L, 1, false), path);
 
-        map.get(key).redoRead(new SRD(1002L, 1, false), path);
+        map.get(key).redoRead(OpType.Get, new SRD(1002L, 1, false), path);
         execution.add(new Op(1002L, OpType.Get));
         map.get(key).endRedoOp(OpType.Get, new SRD(1002L, 1, false), path);
 
@@ -122,11 +122,11 @@ public class OpMultimapTest extends Thread {
         ignoreRud = new SRD(1001L, 1, false);
         this.start();
 
-        map.get(key).redoRead(new SRD(1000L, 1, false), path);
+        map.get(key).redoRead(OpType.Get, new SRD(1000L, 1, false), path);
         execution.add(new Op(1000L, OpType.Get));
         map.get(key).endRedoOp(OpType.Get, new SRD(1000L, 1, false), path);
 
-        map.get(key).redoRead(new SRD(1002L, 1, false), path);
+        map.get(key).redoRead(OpType.Get, new SRD(1002L, 1, false), path);
         execution.add(new Op(1002L, OpType.Get));
         map.get(key).endRedoOp(OpType.Get, new SRD(1002L, 1, false), path);
 
@@ -162,11 +162,11 @@ public class OpMultimapTest extends Thread {
         delayedOp = new Op(1003, OpType.Put);
         this.start();
 
-        map.get(key).redoRead(new SRD(1000L, 1, false), path);
+        map.get(key).redoRead(OpType.Get, new SRD(1000L, 1, false), path);
         execution.add(new Op(1000L, OpType.Get));
         map.get(key).endRedoOp(OpType.Get, new SRD(1000L, 1, false), path);
 
-        map.get(key).redoRead(new SRD(1002L, 1, false), path);
+        map.get(key).redoRead(OpType.Get, new SRD(1002L, 1, false), path);
         execution.add(new Op(1002L, OpType.Get));
         map.get(key).endRedoOp(OpType.Get, new SRD(1002L, 1, false), path);
 
@@ -176,7 +176,7 @@ public class OpMultimapTest extends Thread {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        map.get(key).redoRead(new SRD(1001L, 1, false), path);
+        map.get(key).redoRead(OpType.Get, new SRD(1001L, 1, false), path);
         execution.add(new Op(1001L, OpType.Get));
         map.get(key).endRedoOp(OpType.Get, new SRD(1001L, 1, false), path);
 
@@ -212,7 +212,7 @@ public class OpMultimapTest extends Thread {
 
         // ///////////// redo ///////////////////////
 
-        map.get(key).redoRead(new SRD(1405007701228L, 1, false), path);
+        map.get(key).redoRead(OpType.Get, new SRD(1405007701228L, 1, false), path);
         execution.add(new Op(1405007701228L, OpType.Get));
         map.get(key).endRedoOp(OpType.Get, new SRD(1405007701228L, 1, false), path);
 
@@ -220,7 +220,7 @@ public class OpMultimapTest extends Thread {
         execution.add(new Op(1405007701228L, OpType.Put));
         map.get(key).endRedoOp(OpType.Put, new SRD(1405007701228L, 1, false), path);
 
-        map.get(key).redoRead(new SRD(1405007701752L, 1, false), path);
+        map.get(key).redoRead(OpType.Get, new SRD(1405007701752L, 1, false), path);
         execution.add(new Op(1405007701752L, OpType.Get));
         map.get(key).endRedoOp(OpType.Get, new SRD(1405007701752L, 1, false), path);
 
@@ -245,7 +245,7 @@ public class OpMultimapTest extends Thread {
         }
 
         if(delayedOp.isGet()) {
-            map.get(key).redoRead(new SRD(delayedOp.rid, 1, false), path);
+            map.get(key).redoRead(OpType.Get, new SRD(delayedOp.rid, 1, false), path);
             execution.add(new Op(delayedOp.rid, delayedOp.toType()));
             map.get(key).endRedoOp(delayedOp.toType(), new SRD(delayedOp.rid, 1, false), path);
         } else {

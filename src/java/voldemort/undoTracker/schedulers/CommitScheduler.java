@@ -77,6 +77,11 @@ public class CommitScheduler extends AccessSchedule implements Serializable {
     }
 
     @Override
+    void getVersionEnd(ByteArray key, SRD srd, BranchPath path) {
+        keyAccessLists.endReadAccess(key);
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if(this == obj)
             return true;

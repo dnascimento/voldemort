@@ -23,7 +23,8 @@ public class SRD {
     public enum OpType {
         Put,
         Delete,
-        Get;
+        Get,
+        GetVersion;
     }
 
     public final long rid;
@@ -61,6 +62,7 @@ public class SRD {
                                  .setBranch(branch)
                                  .setRid(rid)
                                  .setRestrain(restrain)
+                                 .setRedo(redo)
                                  .build();
     }
 

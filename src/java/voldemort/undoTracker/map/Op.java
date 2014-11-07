@@ -61,12 +61,20 @@ public class Op implements Serializable {
         return type == OpType.Get.ordinal();
     }
 
+    public boolean isGetVersion() {
+        return type == OpType.GetVersion.ordinal();
+    }
+
     public OpType toType() {
         return OpType.values()[type];
     }
 
     @Override
     public String toString() {
-        return "Op [rid=" + rid + ", type=" + type + "]";
+        return "Op [rid=" + rid + ", type=" + toType() + "]";
+    }
+
+    public boolean isGetOrGetVersion() {
+        return isGet() || isGetVersion();
     }
 }
