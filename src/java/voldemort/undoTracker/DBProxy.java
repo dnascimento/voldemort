@@ -166,7 +166,9 @@ public class DBProxy implements Serializable {
             Path p = brancher.getPath(srd.branch);
             BranchPath path = p.path;
             removeKeyVersion(key);
-            log.info("Op end: " + op + " " + hexStringToAscii(key) + " " + srd);
+            if(debugging) {
+                log.info("Op end: " + op + " " + hexStringToAscii(key) + " " + srd);
+            }
             if(p.isRedo) {
                 redoScheduler.opEnd(op, key.shadow(), srd, path);
             } else {
