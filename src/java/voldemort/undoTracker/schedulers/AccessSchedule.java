@@ -11,10 +11,17 @@ import voldemort.VoldemortException;
 import voldemort.undoTracker.SRD;
 import voldemort.undoTracker.branching.BranchPath;
 import voldemort.undoTracker.map.Op.OpType;
+import voldemort.undoTracker.map.OpMultimap;
 import voldemort.undoTracker.map.StsBranchPair;
 import voldemort.utils.ByteArray;
 
 public abstract class AccessSchedule {
+
+    protected final OpMultimap keyOperationsMultimap;
+
+    public AccessSchedule(OpMultimap keyOperationsMultimap) {
+        this.keyOperationsMultimap = keyOperationsMultimap;
+    }
 
     abstract StsBranchPair getStart(ByteArray key, SRD srd, BranchPath current);
 

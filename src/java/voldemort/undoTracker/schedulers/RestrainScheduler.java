@@ -15,7 +15,6 @@ import org.apache.log4j.Logger;
 import voldemort.undoTracker.SRD;
 import voldemort.undoTracker.branching.BranchPath;
 import voldemort.undoTracker.map.OpMultimap;
-import voldemort.undoTracker.map.OpMultimapEntry;
 import voldemort.undoTracker.map.StsBranchPair;
 import voldemort.utils.ByteArray;
 
@@ -30,12 +29,10 @@ public class RestrainScheduler extends AccessSchedule implements Serializable {
 
     private final transient Logger log = Logger.getLogger(RestrainScheduler.class.getName());
 
-    OpMultimap archive;
     private ReentrantLock flag;
 
-    public RestrainScheduler(OpMultimap archive, ReentrantLock restrainLocker) {
-        super();
-        this.archive = archive;
+    public RestrainScheduler(OpMultimap keyOperationsMultimap, ReentrantLock restrainLocker) {
+        super(keyOperationsMultimap);
         this.flag = restrainLocker;
     }
 
@@ -53,7 +50,7 @@ public class RestrainScheduler extends AccessSchedule implements Serializable {
 
     @Override
     public StsBranchPair getStart(ByteArray key, SRD srd, BranchPath path) {
-        OpMultimapEntry l = archive.get(key);
+        // OpMultimapEntry l = keyOperationsMultimap.get(key);
         // if(l.isReplayingInBranch(path.current.branch)) {
         synchronized(flag) {
             try {
@@ -68,7 +65,7 @@ public class RestrainScheduler extends AccessSchedule implements Serializable {
 
     @Override
     public StsBranchPair putStart(ByteArray key, SRD srd, BranchPath path) {
-        // OpMultimapEntry l = archive.get(key);
+        // OpMultimapEntry l = keyOperationsMultimap.get(key);
         // if(l.isReplayingInBranch(path.current.branch)) {
         synchronized(flag) {
             try {
@@ -83,7 +80,7 @@ public class RestrainScheduler extends AccessSchedule implements Serializable {
 
     @Override
     public StsBranchPair deleteStart(ByteArray key, SRD srd, BranchPath path) {
-        // OpMultimapEntry l = archive.get(key);
+        // OpMultimapEntry l = keyOperationsMultimap.get(key);
         // if(l.isReplayingInBranch(path.current.branch)) {
         synchronized(flag) {
             try {
@@ -98,7 +95,7 @@ public class RestrainScheduler extends AccessSchedule implements Serializable {
 
     @Override
     public StsBranchPair getVersionStart(ByteArray key, SRD srd, BranchPath path) {
-        // OpMultimapEntry l = archive.get(key);
+        // OpMultimapEntry l = keyOperationsMultimap.get(key);
         // if(l.isReplayingInBranch(path.current.branch)) {
         synchronized(flag) {
             try {
@@ -120,10 +117,10 @@ public class RestrainScheduler extends AccessSchedule implements Serializable {
         if(getClass() != obj.getClass())
             return false;
         RestrainScheduler other = (RestrainScheduler) obj;
-        if(archive == null) {
-            if(other.archive != null)
+        if(keyOperationsMultimap == null) {
+            if(other.keyOperationsMultimap != null)
                 return false;
-        } else if(!archive.equals(other.archive))
+        } else if(!keyOperationsMultimap.equals(other.keyOperationsMultimap))
             return false;
         return true;
     }

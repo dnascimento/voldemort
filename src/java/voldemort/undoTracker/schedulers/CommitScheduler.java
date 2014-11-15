@@ -24,13 +24,11 @@ public class CommitScheduler extends AccessSchedule implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private OpMultimap keyAccessLists;
-
     /**
      * Each request handler has a UndoStub instance
      */
-    public CommitScheduler(OpMultimap keyAccessLists) {
-        this.keyAccessLists = keyAccessLists;
+    public CommitScheduler(OpMultimap keyOperationsMultimap) {
+        super(keyOperationsMultimap);
     }
 
     /**
@@ -43,42 +41,42 @@ public class CommitScheduler extends AccessSchedule implements Serializable {
      */
     @Override
     public StsBranchPair getStart(ByteArray key, SRD srd, BranchPath current) {
-        return keyAccessLists.trackReadAccess(key, srd, current);
+        return keyOperationsMultimap.trackReadAccess(key, srd, current);
     }
 
     @Override
     public StsBranchPair putStart(ByteArray key, SRD srd, BranchPath path) {
-        return keyAccessLists.trackWriteAccess(key, Op.OpType.Put, srd, path);
+        return keyOperationsMultimap.trackWriteAccess(key, Op.OpType.Put, srd, path);
     }
 
     @Override
     public StsBranchPair deleteStart(ByteArray key, SRD srd, BranchPath path) {
-        return keyAccessLists.trackWriteAccess(key, Op.OpType.Delete, srd, path);
+        return keyOperationsMultimap.trackWriteAccess(key, Op.OpType.Delete, srd, path);
     }
 
     @Override
     public StsBranchPair getVersionStart(ByteArray key, SRD srd, BranchPath current) {
-        return keyAccessLists.getVersionToPut(key, srd, current);
+        return keyOperationsMultimap.getVersionToPut(key, srd, current);
     }
 
     @Override
     public void getEnd(ByteArray key, SRD srd, BranchPath path) {
-        keyAccessLists.endReadAccess(key);
+        keyOperationsMultimap.endReadAccess(key);
     }
 
     @Override
     public void putEnd(ByteArray key, SRD srd, BranchPath path) {
-        keyAccessLists.endWriteAccess(key);
+        keyOperationsMultimap.endWriteAccess(key);
     }
 
     @Override
     public void deleteEnd(ByteArray key, SRD srd, BranchPath path) {
-        keyAccessLists.endWriteAccess(key);
+        keyOperationsMultimap.endWriteAccess(key);
     }
 
     @Override
     void getVersionEnd(ByteArray key, SRD srd, BranchPath path) {
-        keyAccessLists.endReadAccess(key);
+        keyOperationsMultimap.endReadAccess(key);
     }
 
     @Override
@@ -90,12 +88,12 @@ public class CommitScheduler extends AccessSchedule implements Serializable {
         if(getClass() != obj.getClass())
             return false;
         CommitScheduler other = (CommitScheduler) obj;
-        if(keyAccessLists == null) {
-            if(other.keyAccessLists != null)
+        if(keyOperationsMultimap == null) {
+            if(other.keyOperationsMultimap != null)
                 return false;
-        } else if(!keyAccessLists.equals(other.keyAccessLists))
+        } else if(!keyOperationsMultimap.equals(other.keyOperationsMultimap))
             return false;
         return true;
-    }
+    } 
 
 }

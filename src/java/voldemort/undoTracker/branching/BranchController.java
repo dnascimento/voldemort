@@ -65,6 +65,7 @@ public class BranchController implements Serializable {
      * @param redoPath
      */
     public synchronized void newRedo(BranchPath redoPath) {
+        log.info("New redo: " + redoPath);
         redo = redoPath;
     }
 
@@ -90,6 +91,7 @@ public class BranchController implements Serializable {
     public void reset() {
         StsBranchPair baseBranch = new StsBranchPair(INIT_COMMIT, INIT_BRANCH);
         current = new BranchPath(baseBranch, baseBranch);
+        log.info("RESET");
         redo = null;
     }
 

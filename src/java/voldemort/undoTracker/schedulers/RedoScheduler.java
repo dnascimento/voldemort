@@ -25,11 +25,8 @@ public class RedoScheduler extends AccessSchedule implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    OpMultimap archive;
-
-    public RedoScheduler(OpMultimap archive) {
-        super();
-        this.archive = archive;
+    public RedoScheduler(OpMultimap keyOperationsMultimap) {
+        super(keyOperationsMultimap);
     }
 
     /*
@@ -37,7 +34,7 @@ public class RedoScheduler extends AccessSchedule implements Serializable {
      */
     @Override
     public StsBranchPair getStart(ByteArray key, SRD srd, BranchPath path) {
-        return archive.get(key).redoRead(OpType.Get, srd, path);
+        return keyOperationsMultimap.get(key).redoRead(OpType.Get, srd, path);
     }
 
     /*
@@ -45,7 +42,7 @@ public class RedoScheduler extends AccessSchedule implements Serializable {
      */
     @Override
     public StsBranchPair putStart(ByteArray key, SRD srd, BranchPath path) {
-        return archive.get(key).redoWrite(OpType.Put, srd, path);
+        return keyOperationsMultimap.get(key).redoWrite(OpType.Put, srd, path);
     }
 
     /*
@@ -53,37 +50,37 @@ public class RedoScheduler extends AccessSchedule implements Serializable {
      */
     @Override
     public StsBranchPair deleteStart(ByteArray key, SRD srd, BranchPath path) {
-        return archive.get(key).redoWrite(OpType.Delete, srd, path);
+        return keyOperationsMultimap.get(key).redoWrite(OpType.Delete, srd, path);
     }
 
     @Override
     public void getEnd(ByteArray key, SRD srd, BranchPath path) {
-        archive.get(key).endRedoOp(OpType.Get, srd, path);
+        keyOperationsMultimap.get(key).endRedoOp(OpType.Get, srd, path);
     }
 
     @Override
     public void putEnd(ByteArray key, SRD srd, BranchPath path) {
-        archive.get(key).endRedoOp(OpType.Put, srd, path);
+        keyOperationsMultimap.get(key).endRedoOp(OpType.Put, srd, path);
     }
 
     @Override
     public void deleteEnd(ByteArray key, SRD srd, BranchPath path) {
-        archive.get(key).endRedoOp(OpType.Delete, srd, path);
+        keyOperationsMultimap.get(key).endRedoOp(OpType.Delete, srd, path);
     }
 
     @Override
     void getVersionEnd(ByteArray key, SRD srd, BranchPath path) {
-        archive.get(key).endRedoOp(OpType.GetVersion, srd, path);
+        keyOperationsMultimap.get(key).endRedoOp(OpType.GetVersion, srd, path);
     }
 
     @Override
     public StsBranchPair getVersionStart(ByteArray key, SRD srd, BranchPath path) {
-        return archive.get(key).redoRead(OpType.GetVersion, srd, path);
+        return keyOperationsMultimap.get(key).redoRead(OpType.GetVersion, srd, path);
 
     }
 
     public boolean ignore(ByteArray key, SRD srd, BranchPath path) {
-        return archive.get(key).ignore(srd, path);
+        return keyOperationsMultimap.get(key).ignore(srd, path);
     }
 
     @Override
@@ -95,10 +92,10 @@ public class RedoScheduler extends AccessSchedule implements Serializable {
         if(getClass() != obj.getClass())
             return false;
         RedoScheduler other = (RedoScheduler) obj;
-        if(archive == null) {
-            if(other.archive != null)
+        if(keyOperationsMultimap == null) {
+            if(other.keyOperationsMultimap != null)
                 return false;
-        } else if(!archive.equals(other.archive))
+        } else if(!keyOperationsMultimap.equals(other.keyOperationsMultimap))
             return false;
         return true;
     }

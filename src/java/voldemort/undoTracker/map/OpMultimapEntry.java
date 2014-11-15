@@ -208,7 +208,8 @@ public class OpMultimapEntry implements Serializable {
     public synchronized StsBranchPair trackReadAccess(SRD srd, BranchPath path) {
         Op op = new Op(srd.rid, OpType.Get);
         list.add(op);
-        System.out.println("track read: " + ByteArray.toAscii(key) + " : " + srd);
+        // System.out.println("track read: " + ByteArray.toAscii(key) + " : " +
+        // srd);
 
         /* If rid < commit timestamp, read only old values */
         if(srd.rid < path.current.sts) {
@@ -234,7 +235,8 @@ public class OpMultimapEntry implements Serializable {
         // only a single thread accesses this method
         Op op = new Op(srd.rid, type);
         list.add(op);
-        System.out.println("track write: " + ByteArray.toAscii(key) + " : " + srd);
+        // System.out.println("track write: " + ByteArray.toAscii(key) + " : " +
+        // srd);
 
         /* If rid < commit timestamp, write only old values */
         if(srd.rid < path.current.sts) {
