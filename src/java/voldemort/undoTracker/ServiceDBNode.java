@@ -28,7 +28,7 @@ import pt.inesc.undo.proto.ToManagerProto.NodeRegistryMsg;
 import pt.inesc.undo.proto.ToManagerProto.NodeRegistryMsg.NodeGroup;
 import voldemort.undoTracker.branching.BranchPath;
 import voldemort.undoTracker.map.Op;
-import voldemort.undoTracker.map.StsBranchPair;
+import voldemort.undoTracker.map.VersionShuttle;
 
 import com.google.protobuf.ByteString;
 
@@ -93,21 +93,21 @@ public class ServiceDBNode extends Thread {
 
     private void processRequest(Socket s) throws IOException {
         ToDataNode cmd = FromManagerProto.ToDataNode.parseDelimitedFrom(s.getInputStream());
-        if(cmd.hasNewCommit()) {
-            stub.scheduleNewCommit(cmd.getNewCommit());
+        if(cmd.hasNewSnapshot()) {
+            stub.scheduleNewSnapshot(cmd.getNewSnapshot());
             ToManagerProto.AckMsg.newBuilder().build().writeDelimitedTo(s.getOutputStream());
             s.getOutputStream().flush();
         }
         if(cmd.hasShowMap()) {
-            String debug = stub.keyAccessLists.debugExecutionList();
+            String debug = stub.keyMap.debugExecutionList();
             System.out.println(debug);
         }
 
         if(cmd.hasResetDependencies()) {
             stub.resetDependencies();
         }
-        if(cmd.hasRedoOver()) {
-            stub.redoOver();
+        if(cmd.hasReplayOver()) {
+            stub.replayOver();
         }
 
         if(cmd.hasShowStats()) {
@@ -133,18 +133,18 @@ public class ServiceDBNode extends Thread {
             s.getOutputStream().flush();
         }
 
-        if(cmd.getPathBranchCount() != 0 && cmd.getPathCommitCount() != 0) {
+        if(cmd.getPathBranchCount() != 0 && cmd.getPathSnapshotCount() != 0) {
             // Retrieve 2 sorted list from most recent to oldest
             // Message sent before start the replay
-            Iterator<Long> itCommits = cmd.getPathCommitList().iterator();
+            Iterator<Long> itSnapshots = cmd.getPathSnapshotList().iterator();
             Iterator<Integer> itBranches = cmd.getPathBranchList().iterator();
-            HashSet<StsBranchPair> path = new HashSet<StsBranchPair>();
-            StsBranchPair current = new StsBranchPair(cmd.getPathCommit(0), cmd.getPathBranch(0));
-            while(itCommits.hasNext()) {
-                path.add(new StsBranchPair(itCommits.next(), itBranches.next()));
+            HashSet<VersionShuttle> path = new HashSet<VersionShuttle>();
+            VersionShuttle current = new VersionShuttle(cmd.getPathSnapshot(0), cmd.getPathBranch(0));
+            while(itSnapshots.hasNext()) {
+                path.add(new VersionShuttle(itSnapshots.next(), itBranches.next()));
             }
             BranchPath branchPath = new BranchPath(current, path);
-            stub.newRedo(branchPath);
+            stub.newReplay(branchPath);
             ToManagerProto.AckMsg.newBuilder().build().writeDelimitedTo(s.getOutputStream());
             s.getOutputStream().flush();
         }

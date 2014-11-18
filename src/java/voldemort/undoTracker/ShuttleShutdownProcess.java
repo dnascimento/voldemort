@@ -5,17 +5,24 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-public class SaveKeyAccess extends Thread {
+/**
+ * This class is a Shutdown hook, which is invoked when the database node is
+ * terminated. It backups the metadata store and/or shows the statistics
+ * 
+ * @author darionascimento
+ * 
+ */
+public class ShuttleShutdownProcess extends Thread {
 
     private DBProxy undostub;
     private String dbProxyFile;
     private boolean showStatisticsAtEnd;
     private boolean saveGraphAtEnd;
 
-    public SaveKeyAccess(boolean showStatisticsAtEnd,
-                         boolean saveGraphAtEnd,
-                         DBProxy undostub,
-                         String dbProxyFile) {
+    public ShuttleShutdownProcess(boolean showStatisticsAtEnd,
+                                  boolean saveGraphAtEnd,
+                                  DBProxy undostub,
+                                  String dbProxyFile) {
         this.undostub = undostub;
         this.showStatisticsAtEnd = showStatisticsAtEnd;
         this.saveGraphAtEnd = saveGraphAtEnd;

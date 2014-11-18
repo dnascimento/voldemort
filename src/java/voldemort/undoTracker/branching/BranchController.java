@@ -12,7 +12,7 @@ import java.io.Serializable;
 import org.apache.log4j.Logger;
 
 import voldemort.VoldemortException;
-import voldemort.undoTracker.map.StsBranchPair;
+import voldemort.undoTracker.map.VersionShuttle;
 
 public class BranchController implements Serializable {
 
@@ -22,21 +22,21 @@ public class BranchController implements Serializable {
     public static final short INIT_BRANCH = 0;
 
     BranchPath current;
-    BranchPath redo;
+    BranchPath replay;
 
     public BranchController() {
-        StsBranchPair baseBranch = new StsBranchPair(INIT_COMMIT, INIT_BRANCH);
+        VersionShuttle baseBranch = new VersionShuttle(INIT_COMMIT, INIT_BRANCH);
         current = new BranchPath(baseBranch, baseBranch);
-        redo = null;
+        replay = null;
     }
 
     /**
-     * Invoked by manger to start a new commit in future, in the current branch
+     * Invoked by manger to start a new snapshot in future, in the current branch
      * 
      * @param newRid
      */
-    public void newCommit(long newCommit) {
-        StsBranchPair newPair = new StsBranchPair(newCommit, current.current.branch);
+    public void newSnapshot(long newSnapshot) {
+        VersionShuttle newPair = new VersionShuttle(newSnapshot, current.current.branch);
         // TODO may cause problem if some thread is checking the path
         current.path.add(newPair);
         current.current = newPair;
@@ -51,22 +51,28 @@ public class BranchController implements Serializable {
         return current;
     }
 
-    public void redoOver() {
-        current = redo;
+    /**
+     * Make the replay branch become the current branch
+     * 
+     * @return the new current branch
+     */
+    public short replayOver() {
+        current = replay;
         // TODO may cause problem if some thread is checking the path
-        redo = null;
+        replay = null;
         log.info("restrain phase is over, new branch is:" + current.current.branch
-                 + " based on commit: " + current.current.sts);
+                 + " based on snapshot: " + current.current.sid);
+        return current.current.branch;
     }
 
     /**
      * Invoked by the manager before starting the recovery process
      * 
-     * @param redoPath
+     * @param replayPath
      */
-    public synchronized void newRedo(BranchPath redoPath) {
-        log.info("New redo: " + redoPath);
-        redo = redoPath;
+    public synchronized void newReplay(BranchPath replayPath) {
+        log.info("New replay: " + replayPath);
+        replay = replayPath;
     }
 
     /**
@@ -80,19 +86,19 @@ public class BranchController implements Serializable {
             return new Path(current, false);
         }
 
-        if(redo != null && redo.current.branch == branch) {
-            return new Path(redo, true);
+        if(replay != null && replay.current.branch == branch) {
+            return new Path(replay, true);
         }
 
         log.error("getPath: branch not present: " + branch);
-        throw new VoldemortException("isRedo: branch not present: " + branch);
+        throw new VoldemortException("isReplay: branch not present: " + branch);
     }
 
     public void reset() {
-        StsBranchPair baseBranch = new StsBranchPair(INIT_COMMIT, INIT_BRANCH);
+        VersionShuttle baseBranch = new VersionShuttle(INIT_COMMIT, INIT_BRANCH);
         current = new BranchPath(baseBranch, baseBranch);
         log.info("RESET");
-        redo = null;
+        replay = null;
     }
 
     @Override
@@ -100,7 +106,7 @@ public class BranchController implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((current == null) ? 0 : current.hashCode());
-        result = prime * result + ((redo == null) ? 0 : redo.hashCode());
+        result = prime * result + ((replay == null) ? 0 : replay.hashCode());
         return result;
     }
 
@@ -118,10 +124,10 @@ public class BranchController implements Serializable {
                 return false;
         } else if(!current.equals(other.current))
             return false;
-        if(redo == null) {
-            if(other.redo != null)
+        if(replay == null) {
+            if(other.replay != null)
                 return false;
-        } else if(!redo.equals(other.redo))
+        } else if(!replay.equals(other.replay))
             return false;
         return true;
     }

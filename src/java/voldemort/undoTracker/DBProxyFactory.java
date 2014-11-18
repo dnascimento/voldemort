@@ -5,12 +5,18 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.util.Properties;
 
-public class UndoLoad {
+/**
+ * Create and configure the DBProxy instance
+ * 
+ * @author darionascimento
+ * 
+ */
+public class DBProxyFactory {
 
     static final String DB_PROXY_FILE = "dbProxy.obj";
     private static final String PROPERTIES_FILE = "undo.properties";
 
-    public static DBProxy init() {
+    public static DBProxy build() {
         Properties props = readPropertiesSaveGraph();
 
         DBProxy undoStub;
@@ -23,10 +29,10 @@ public class UndoLoad {
         boolean showStatisticsAtEnd = props.getProperty("showGraphStatisticsAtExit").equals("true");
         boolean saveGraphAtEnd = props.getProperty("saveGraph").equals("true");
         if(showStatisticsAtEnd | saveGraphAtEnd) {
-            Runtime.getRuntime().addShutdownHook(new SaveKeyAccess(showStatisticsAtEnd,
-                                                                   saveGraphAtEnd,
-                                                                   undoStub,
-                                                                   DB_PROXY_FILE));
+            Runtime.getRuntime().addShutdownHook(new ShuttleShutdownProcess(showStatisticsAtEnd,
+                                                                            saveGraphAtEnd,
+                                                                            undoStub,
+                                                                            DB_PROXY_FILE));
         }
         return undoStub;
     }

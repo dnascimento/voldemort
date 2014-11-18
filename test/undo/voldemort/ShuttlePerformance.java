@@ -5,6 +5,7 @@ import java.util.Random;
 import voldemort.undoTracker.DBProxy;
 import voldemort.undoTracker.SRD;
 import voldemort.undoTracker.branching.BranchController;
+import voldemort.undoTracker.map.Op.OpType;
 import voldemort.utils.ByteArray;
 
 public class ShuttlePerformance extends Thread {
@@ -60,11 +61,11 @@ public class ShuttlePerformance extends Thread {
 
             // switch to operation
             if(random.nextBoolean()) {
-                proxy.getStart(key, srd);
-                proxy.getEnd(key, srd);
+                proxy.startOperation(OpType.Get, key, srd);
+                proxy.endOperation(OpType.Get, key, srd);
             } else {
-                proxy.putStart(key, srd);
-                proxy.putEnd(key, srd);
+                proxy.startOperation(OpType.Put, key, srd);
+                proxy.endOperation(OpType.Put, key, srd);
             }
         }
     }

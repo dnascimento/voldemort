@@ -10,9 +10,9 @@ import org.apache.log4j.Logger;
 import voldemort.VoldemortException;
 import voldemort.utils.ByteArray;
 
-public class RedoIterator {
+public class ReplayIterator {
 
-    private transient static final Logger log = Logger.getLogger(OpMultimap.class.getName());
+    private transient static final Logger log = Logger.getLogger(KeyMap.class.getName());
 
     /**
      * A reference to the full execution list
@@ -45,16 +45,19 @@ public class RedoIterator {
     private int nextPosition = 0;
 
     /**
-     * Each branch has an iterator = an execution of redo
+     * Each branch has an iterator = an execution of replay
      */
     private final short branch;
 
     /**
-     * The snapshot which the redo is based on
+     * The snapshot which the replay is based on
      */
     private long baseRid;
 
-    public RedoIterator(short branch, long baseRid, ArrayList<Op> list) {
+    // TODO replace the array list of OperationList for a linked list and
+    // iterate. No need to be an array, the array is slower than the linked
+    // list.
+    public ReplayIterator(short branch, long baseRid, ArrayList<Op> list) {
         this.branch = branch;
         this.fullList = list;
         this.baseRid = baseRid;
@@ -113,11 +116,11 @@ public class RedoIterator {
 
         log.info("Fetch more operations");
         // is next a read?
-        if(fullList.get(nextPosition).isGetOrGetVersion()) {
+        if(fullList.get(nextPosition).isRead()) {
             // add all the reads
             while(nextPosition < fullList.size()) {
                 Op n = fullList.get(nextPosition);
-                if(!n.isGetOrGetVersion()) {
+                if(!n.isRead()) {
                     break;
                 }
                 allowed.add(fullList.get(nextPosition++));
@@ -182,7 +185,7 @@ public class RedoIterator {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("RedoIterator [fullList=");
+        sb.append("ReplayIterator [fullList=");
         sb.append(Arrays.toString(fullList.toArray()));
         sb.append("\n nextPosition=" + nextPosition + " baseRid=" + baseRid);
         sb.append("\n allowed=");

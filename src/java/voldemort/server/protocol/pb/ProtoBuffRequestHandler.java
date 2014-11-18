@@ -25,8 +25,9 @@ import voldemort.server.protocol.StreamRequestHandler;
 import voldemort.store.ErrorCodeMapper;
 import voldemort.store.Store;
 import voldemort.undoTracker.DBProxy;
+import voldemort.undoTracker.DBProxyFactory;
 import voldemort.undoTracker.SRD;
-import voldemort.undoTracker.UndoLoad;
+import voldemort.undoTracker.map.Op.OpType;
 import voldemort.utils.ByteArray;
 import voldemort.versioning.Version;
 import voldemort.versioning.Versioned;
@@ -41,7 +42,7 @@ import com.google.protobuf.Message;
  */
 public class ProtoBuffRequestHandler extends AbstractRequestHandler {
 
-    public static final DBProxy undoStub = UndoLoad.init();
+    public static final DBProxy undoStub = DBProxyFactory.build();
 
     public ProtoBuffRequestHandler(ErrorCodeMapper errorMapper, StoreRepository storeRepository) {
         super(errorMapper, storeRepository);
@@ -104,7 +105,7 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
 
         try {
             // TODO deveria ter em conta a store
-            Map<ByteArray, Boolean> status = undoStub.unlockKey(keys, srd);
+            Map<ByteArray, Boolean> status = undoStub.unlockKeys(keys, srd);
             for(Entry<ByteArray, Boolean> s: status.entrySet()) {
                 KeyStatus.Builder b = KeyStatus.newBuilder()
                                                .setKey(ProtoUtils.encodeBytes(s.getKey()))
@@ -122,7 +123,7 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
         VProto.GetVersionResponse.Builder response = VProto.GetVersionResponse.newBuilder();
         ByteArray key = ProtoUtils.decodeBytes(request.getKey());
         SRD srd = new SRD(request.getSrd());
-        undoStub.getVersion(key, srd);
+        undoStub.startOperation(OpType.GetVersion, key, srd);
         try {
             List<Version> versions = store.getVersions(key, srd);
             for(Version version: versions)
@@ -131,7 +132,7 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
             System.err.println(e);
             response.setError(ProtoUtils.encodeError(getErrorMapper(), e));
         }
-        undoStub.getVersionEnd(key, srd);
+        undoStub.endOperation(OpType.GetVersion, key, srd);
         return response.build();
     }
 
@@ -149,7 +150,7 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
         VProto.GetResponse.Builder response = VProto.GetResponse.newBuilder();
         ByteArray key = ProtoUtils.decodeBytes(request.getKey());
         SRD srd = new SRD(request.getSrd());
-        undoStub.getStart(key, srd);
+        undoStub.startOperation(OpType.Get, key, srd);
 
         try {
             List<Versioned<byte[]>> values = store.get(key,
@@ -162,7 +163,7 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
         } catch(VoldemortException e) {
             response.setError(ProtoUtils.encodeError(getErrorMapper(), e));
         }
-        undoStub.getEnd(key, srd);
+        undoStub.endOperation(OpType.Get, key, srd);
         return response.build();
     }
 
@@ -207,7 +208,7 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
         VProto.PutResponse.Builder response = VProto.PutResponse.newBuilder();
         ByteArray key = ProtoUtils.decodeBytes(request.getKey());
         SRD srd = new SRD(request.getSrd());
-        undoStub.putStart(key, srd);
+        undoStub.startOperation(OpType.Put, key, srd);
 
         try {
             Versioned<byte[]> value = ProtoUtils.decodeVersioned(request.getVersioned());
@@ -221,7 +222,7 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
             e.printStackTrace();
             response.setError(ProtoUtils.encodeError(getErrorMapper(), e));
         }
-        undoStub.putEnd(key, srd);
+        undoStub.endOperation(OpType.Put, key, srd);
         return response.build();
     }
 
@@ -230,7 +231,7 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
         VProto.DeleteResponse.Builder response = VProto.DeleteResponse.newBuilder();
         ByteArray key = ProtoUtils.decodeBytes(request.getKey());
         SRD srd = new SRD(request.getSrd());
-        undoStub.deleteStart(key, srd);
+        undoStub.startOperation(OpType.Delete, key, srd);
 
         try {
             boolean success = store.delete(key, ProtoUtils.decodeClock(request.getVersion()), srd);
@@ -240,7 +241,7 @@ public class ProtoBuffRequestHandler extends AbstractRequestHandler {
             response.setError(ProtoUtils.encodeError(getErrorMapper(), e));
         }
 
-        undoStub.deleteEnd(key, srd);
+        undoStub.endOperation(OpType.Delete, key, srd);
         return response.build();
     }
 

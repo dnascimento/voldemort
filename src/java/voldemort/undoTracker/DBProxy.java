@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,15 +39,14 @@ import voldemort.VoldemortException;
 import voldemort.undoTracker.branching.BranchController;
 import voldemort.undoTracker.branching.BranchPath;
 import voldemort.undoTracker.branching.Path;
+import voldemort.undoTracker.map.KeyMap;
+import voldemort.undoTracker.map.KeyMapEntry;
 import voldemort.undoTracker.map.Op;
 import voldemort.undoTracker.map.Op.OpType;
-import voldemort.undoTracker.map.OpMultimap;
-import voldemort.undoTracker.map.OpMultimapEntry;
-import voldemort.undoTracker.map.StsBranchPair;
-import voldemort.undoTracker.map.commits.CommitList;
-import voldemort.undoTracker.schedulers.CommitScheduler;
-import voldemort.undoTracker.schedulers.RedoScheduler;
-import voldemort.undoTracker.schedulers.RestrainScheduler;
+import voldemort.undoTracker.map.VersionList;
+import voldemort.undoTracker.map.VersionShuttle;
+import voldemort.undoTracker.schedulers.NewScheduler;
+import voldemort.undoTracker.schedulers.ReplayScheduler;
 import voldemort.utils.ByteArray;
 
 import com.google.protobuf.ByteString;
@@ -68,13 +66,12 @@ public class DBProxy implements Serializable {
 
     transient private static final Logger log = Logger.getLogger(DBProxy.class.getName());
 
-    ReentrantLock restrainLocker = new ReentrantLock();
     BranchController brancher = new BranchController();
+    RestrainLocker restrainLocker = new RestrainLocker();
 
-    RedoScheduler redoScheduler;
-    CommitScheduler newRequestsScheduler;
-    OpMultimap keyAccessLists;
-    RestrainScheduler restrainScheduler;
+    ReplayScheduler replayScheduler;
+    NewScheduler newScheduler;
+    KeyMap keyMap;
 
     private boolean debugging;
 
@@ -94,13 +91,12 @@ public class DBProxy implements Serializable {
         debugging = false;
 
         log.info("New DBUndo stub at host" + MY_ADDRESS);
-        this.keyAccessLists = new OpMultimap();
+        this.keyMap = new KeyMap();
 
-        redoScheduler = new RedoScheduler(keyAccessLists);
-        newRequestsScheduler = new CommitScheduler(keyAccessLists);
-        restrainScheduler = new RestrainScheduler(keyAccessLists, restrainLocker);
+        replayScheduler = new ReplayScheduler(keyMap);
+        newScheduler = new NewScheduler(this, keyMap);
 
-        new SendDependencies(keyAccessLists).start();
+        new SendDependencies(keyMap).start();
         try {
             new ServiceDBNode(this).start();
         } catch(IOException e) {
@@ -108,45 +104,30 @@ public class DBProxy implements Serializable {
         }
     }
 
-    private void opStart(OpType op, ByteArray key, SRD srd) {
+    public void startOperation(OpType op, ByteArray key, SRD srd) {
         if(srd.rid == 0) {
             if(debugging) {
-                log.info(op + " " + hexStringToAscii(key) + " with srd: " + srd);
+                log.info(op + " " + hexStringToAscii(key) + " " + srd);
             }
             return;
         }
-
         StringBuilder sb = new StringBuilder();
-        // System.out.println("-> " + op + " " + ByteArray.toAscii(key) + " - "
-        // + srd);
         Path p = brancher.getPath(srd.branch);
-        BranchPath path = p.path;
-        StsBranchPair access;
-        if(p.isRedo) {
-            // use redo branch
+        VersionShuttle version;
+        if(p.isReplay) {
+            // use replay branch
             if(debugging) {
-                sb.append(" -> REDO: ");
-                log.info("Redo Start: " + op + " " + hexStringToAscii(key) + " " + srd);
+                sb.append(" -> Replay: ");
+                log.info("Replay Start: " + op + " " + hexStringToAscii(key) + " " + srd);
             }
-            access = redoScheduler.opStart(op, key.shadow(), srd, path);
+            version = replayScheduler.startOperation(op, key.shadow(), srd, p.path);
         } else {
-            if(srd.restrain) {
-                if(debugging) {
-                    System.out.println(" -> RESTRAIN: ");
-                }
-                // new request but may need to wait to avoid dirty reads
-                restrainScheduler.opStart(op, key.shadow(), srd, path);
-                path = brancher.getCurrent();
-                srd.branch = path.current.branch; // update the branch
-            }
             if(debugging) {
                 sb.append(" -> DO: ");
             }
-            // Read old/common branch, may create a new commit - for new
-            // requests
-            access = newRequestsScheduler.opStart(op, key.shadow(), srd, path);
+            version = newScheduler.startOperation(op, key.shadow(), srd, p.path);
         }
-        modifyKey(key, access.branch, access.sts);
+        modifyKey(key, version.branch, version.sid);
         if(debugging) {
             sb.append(srd.rid);
             sb.append(" : ");
@@ -154,14 +135,14 @@ public class DBProxy implements Serializable {
             sb.append(" key: ");
             sb.append(hexStringToAscii(key));
             sb.append(" branch: ");
-            sb.append(access.branch);
-            sb.append(" commit: ");
-            sb.append(access.sts);
+            sb.append(version.branch);
+            sb.append(" snapshot: ");
+            sb.append(version.sid);
             log.info(sb.toString());
         }
     }
 
-    public void opEnd(OpType op, ByteArray key, SRD srd) {
+    public void endOperation(OpType op, ByteArray key, SRD srd) {
         if(srd.rid != 0) {
             Path p = brancher.getPath(srd.branch);
             BranchPath path = p.path;
@@ -169,34 +150,31 @@ public class DBProxy implements Serializable {
             if(debugging) {
                 log.info("Op end: " + op + " " + hexStringToAscii(key) + " " + srd);
             }
-            if(p.isRedo) {
-                redoScheduler.opEnd(op, key.shadow(), srd, path);
+            if(p.isReplay) {
+                replayScheduler.endOperation(op, key.shadow(), srd, path);
             } else {
-                if(srd.restrain) {
-                    restrainScheduler.opEnd(op, key.shadow(), srd, path);
-                }
-                newRequestsScheduler.opEnd(op, key.shadow(), srd, path);
+                newScheduler.endOperation(op, key.shadow(), srd, path);
             }
         }
     }
 
     /**
-     * Unlock operation to simulate the redo of these keys operations
+     * Unlock operation to simulate the replay of these keys operations
      * 
      * @param keys
      * @param srd
      * @return
      * @throws VoldemortException
      */
-    public Map<ByteArray, Boolean> unlockKey(List<ByteArray> keys, SRD srd)
+    public Map<ByteArray, Boolean> unlockKeys(List<ByteArray> keys, SRD srd)
             throws VoldemortException {
         HashMap<ByteArray, Boolean> result = new HashMap<ByteArray, Boolean>();
         Path p = brancher.getPath(srd.branch);
-        if(p.isRedo) {
+        if(p.isReplay) {
             for(ByteArray key: keys) {
                 log.info("unlock: " + ByteArray.toAscii(key) + "  - > " + srd);
-                boolean status = redoScheduler.ignore(key.shadow(), srd, p.path);
-                result.put(key, status);
+                replayScheduler.ignore(key.shadow(), srd, p.path);
+                result.put(key, true);
             }
         } else {
             log.error("Unlocking in the wrong branch: " + srd);
@@ -220,40 +198,49 @@ public class DBProxy implements Serializable {
     }
 
     /**
-     * Invoked by manager to start a new commit, in the current branch
+     * Blocks the thread until the restrain end.
+     * Invoked by threads that process requests
+     * 
+     * @return
+     */
+    public BranchPath restrain(short branch) {
+        restrainLocker.restrainRequest(branch);
+        return brancher.getCurrent();
+    }
+
+    /**
+     * Invoked by manager to start a new snapshot, in the current branch
      * 
      * @param newRid
      */
-    public void scheduleNewCommit(long newRid) {
+    public void scheduleNewSnapshot(long newRid) {
         String dateString = new SimpleDateFormat("H:m:S").format(new Date(newRid));
-        log.info("Commit scheduled with rid: " + newRid + " at " + dateString);
-        brancher.newCommit(newRid);
+        log.info("Snapshot scheduled with rid: " + newRid + " at " + dateString);
+        brancher.newSnapshot(newRid);
     }
 
     /**
      * Invoked by the manager before starting the replay
      * 
-     * @param redoPath
+     * @param replayPath
      */
-    public void newRedo(BranchPath redoPath) {
-        log.info("New redo with path: " + redoPath);
-        brancher.newRedo(redoPath);
+    public void newReplay(BranchPath replayPath) {
+        log.info("New replay with path: " + replayPath);
+        brancher.newReplay(replayPath);
     }
 
     /**
-     * Redo is over
+     * Replay is over
      * 
      * @param s
      * 
      * @param branch
-     * @param sts
+     * @param sid
      */
-    public void redoOver() {
-        brancher.redoOver();
+    public void replayOver() {
+        short newCurrentBranch = brancher.replayOver();
         // execute all pendent requests
-        synchronized(restrainLocker) {
-            restrainLocker.notifyAll();
-        }
+        restrainLocker.replayOver(newCurrentBranch);
     }
 
     public static String hexStringToAscii(ByteArray key) {
@@ -270,10 +257,10 @@ public class DBProxy implements Serializable {
      * 8bytes - sts
      * 
      * @param key
-     * @param sts
+     * @param sid
      * @param branch
      */
-    public static ByteArray modifyKey(ByteArray key, short branch, long commit) {
+    public static ByteArray modifyKey(ByteArray key, short branch, long snapshot) {
         byte[] oldKey = key.get();
         byte[] newKey = new byte[oldKey.length + 10];
         int i = 0;
@@ -284,19 +271,19 @@ public class DBProxy implements Serializable {
         newKey[i++] = (byte) (branch >> 8);
         newKey[i++] = (byte) (branch);
 
-        newKey[i++] = (byte) (commit >> 56);
-        newKey[i++] = (byte) (commit >> 48);
-        newKey[i++] = (byte) (commit >> 40);
-        newKey[i++] = (byte) (commit >> 32);
-        newKey[i++] = (byte) (commit >> 24);
-        newKey[i++] = (byte) (commit >> 16);
-        newKey[i++] = (byte) (commit >> 8);
-        newKey[i++] = (byte) (commit);
+        newKey[i++] = (byte) (snapshot >> 56);
+        newKey[i++] = (byte) (snapshot >> 48);
+        newKey[i++] = (byte) (snapshot >> 40);
+        newKey[i++] = (byte) (snapshot >> 32);
+        newKey[i++] = (byte) (snapshot >> 24);
+        newKey[i++] = (byte) (snapshot >> 16);
+        newKey[i++] = (byte) (snapshot >> 8);
+        newKey[i++] = (byte) (snapshot);
         key.set(newKey);
         return key;
     }
 
-    public long getKeyCommit(ByteArray key) {
+    public long getKeySnapshot(ByteArray key) {
         byte[] kb = key.get();
         if(kb.length < 8) {
             return -1;
@@ -315,40 +302,8 @@ public class DBProxy implements Serializable {
 
     public void resetDependencies() {
         log.info("Reset dependency map");
-        keyAccessLists.clear();
+        keyMap.clear();
         brancher.reset();
-    }
-
-    public void getStart(ByteArray key, SRD srd) {
-        opStart(OpType.Get, key, srd);
-    }
-
-    public void getEnd(ByteArray key, SRD srd) {
-        opEnd(OpType.Get, key, srd);
-    }
-
-    public void putStart(ByteArray key, SRD srd) {
-        opStart(OpType.Put, key, srd);
-    }
-
-    public void putEnd(ByteArray key, SRD srd) {
-        opEnd(OpType.Put, key, srd);
-    }
-
-    public void deleteStart(ByteArray key, SRD srd) {
-        opStart(OpType.Delete, key, srd);
-    }
-
-    public void deleteEnd(ByteArray key, SRD srd) {
-        opEnd(OpType.Delete, key, srd);
-    }
-
-    public void getVersion(ByteArray key, SRD srd) {
-        opStart(OpType.GetVersion, key, srd);
-    }
-
-    public void getVersionEnd(ByteArray key, SRD srd) {
-        opEnd(OpType.GetVersion, key, srd);
     }
 
     /**
@@ -359,101 +314,47 @@ public class DBProxy implements Serializable {
      * @return
      */
     public HashMap<ByteString, ArrayList<Op>> getAccessList(List<ByteString> keysList, long baseRid) {
-        return keyAccessLists.getAccessList(keysList, baseRid);
+        return keyMap.getOperationList(keysList, baseRid);
     }
 
     public void measureMemoryFootPrint() {
-        Footprint footPrint = ObjectGraphMeasurer.measure(keyAccessLists);
-        long memory = MemoryMeasurer.measureBytes(keyAccessLists);
+        Footprint footPrint = ObjectGraphMeasurer.measure(keyMap);
+        long memory = MemoryMeasurer.measureBytes(keyMap);
         System.out.println("\n \n \n \n /************** MEMORY SUMMARY ******************\\");
         System.out.println("Total: \n" + "    " + footPrint);
         System.out.println("     memory" + memory + " bytes");
         System.out.println("------");
-        Enumeration<ByteArray> list = keyAccessLists.getKeySet();
+        Enumeration<ByteArray> list = keyMap.getKeySet();
         long opListSize = 0;
-        long commitListSize = 0;
+        long snapshotListSize = 0;
         long counter = 0;
         long opListEntries = 0;
-        long commitListEntries = 0;
+        long snapshotListEntries = 0;
 
         while(list.hasMoreElements()) {
             counter++;
             ByteArray key = list.nextElement();
-            OpMultimapEntry entry = keyAccessLists.get(key);
+            KeyMapEntry entry = keyMap.get(key);
 
             // System.out.println(ObjectGraphMeasurer.measure(entry.getOperationList()));
-            // System.out.println(ObjectGraphMeasurer.measure(entry.getCommitList()));
-            ArrayList<Op> opList = entry.getOperationList();
+            // System.out.println(ObjectGraphMeasurer.measure(entry.getSnapshotList()));
+            ArrayList<Op> opList = entry.operationList;
             opListSize += MemoryMeasurer.measureBytes(opList);
             opListEntries += opList.size();
 
-            CommitList commitList = entry.getCommitList();
-            commitListSize += MemoryMeasurer.measureBytes(commitList);
-            commitListEntries += commitList.size();
+            VersionList snapshotList = entry.versionList;
+            snapshotListSize += MemoryMeasurer.measureBytes(snapshotList);
+            snapshotListEntries += snapshotList.size();
         }
 
         System.out.println("Number of database keys: " + counter);
         System.out.println("Total opList: " + opListSize + " bytes");
-        System.out.println("Total commitList: " + commitListSize + " bytes");
+        System.out.println("Total snapshotList: " + snapshotListSize + " bytes");
         System.out.println("Entries in opList: " + opListEntries);
-        System.out.println("Entries in commitList: " + commitListEntries);
+        System.out.println("Entries in snapshotList: " + snapshotListEntries);
         System.out.println("/********************************\\ \n \n \n \n ");
 
         log.info("Saving key access list....");
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((brancher == null) ? 0 : brancher.hashCode());
-        result = prime * result + (debugging ? 1231 : 1237);
-        result = prime * result + ((keyAccessLists == null) ? 0 : keyAccessLists.hashCode());
-        result = prime * result
-                 + ((newRequestsScheduler == null) ? 0 : newRequestsScheduler.hashCode());
-        result = prime * result + ((redoScheduler == null) ? 0 : redoScheduler.hashCode());
-        result = prime * result + ((restrainLocker == null) ? 0 : restrainLocker.hashCode());
-        result = prime * result + ((restrainScheduler == null) ? 0 : restrainScheduler.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if(this == obj)
-            return true;
-        if(obj == null)
-            return false;
-        if(getClass() != obj.getClass())
-            return false;
-        DBProxy other = (DBProxy) obj;
-        if(brancher == null) {
-            if(other.brancher != null)
-                return false;
-        } else if(!brancher.equals(other.brancher))
-            return false;
-        if(debugging != other.debugging)
-            return false;
-        if(keyAccessLists == null) {
-            if(other.keyAccessLists != null)
-                return false;
-        } else if(!keyAccessLists.equals(other.keyAccessLists))
-            return false;
-        if(newRequestsScheduler == null) {
-            if(other.newRequestsScheduler != null)
-                return false;
-        } else if(!newRequestsScheduler.equals(other.newRequestsScheduler))
-            return false;
-        if(redoScheduler == null) {
-            if(other.redoScheduler != null)
-                return false;
-        } else if(!redoScheduler.equals(other.redoScheduler))
-            return false;
-        if(restrainScheduler == null) {
-            if(other.restrainScheduler != null)
-                return false;
-        } else if(!restrainScheduler.equals(other.restrainScheduler))
-            return false;
-        return true;
     }
 
     private static InetSocketAddress getLocalAddress() {

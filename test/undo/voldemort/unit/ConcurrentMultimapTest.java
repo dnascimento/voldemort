@@ -9,7 +9,7 @@ import org.junit.Test;
 import voldemort.undoTracker.DBProxy;
 import voldemort.undoTracker.map.Op;
 import voldemort.undoTracker.map.Op.OpType;
-import voldemort.undoTracker.map.OpMultimap;
+import voldemort.undoTracker.map.KeyMap;
 import voldemort.undoTracker.map.UpdateDependenciesMap;
 import voldemort.utils.ByteArray;
 
@@ -25,12 +25,12 @@ public class ConcurrentMultimapTest {
 
     class TestThread extends Thread {
 
-        OpMultimap map;
+        KeyMap map;
         private final long nPuts;
         private final long nExtract;
         private final int keySpace;
 
-        public TestThread(OpMultimap map2, long nPuts, long nExtract, int keySpace) {
+        public TestThread(KeyMap map2, long nPuts, long nExtract, int keySpace) {
             super();
             this.map = map2;
             this.nPuts = nPuts;
@@ -61,7 +61,7 @@ public class ConcurrentMultimapTest {
         long N_OPS = 40;
         long N_EXTRACT = 1;
         int KEY_SPACE = 200;
-        OpMultimap map = new OpMultimap();
+        KeyMap map = new KeyMap();
         Thread[] threads = new Thread[N_THREADS];
         for(int i = 0; i < N_THREADS; i++) {
             threads[i] = new TestThread(map, N_OPS, N_EXTRACT, KEY_SPACE);
@@ -92,7 +92,7 @@ public class ConcurrentMultimapTest {
         ByteArray k1 = new ByteArray("key1".getBytes());
         ByteArray k2 = k1.clone();
         stub.modifyKey(k1, (short) 0, 0L);
-        OpMultimap map = new OpMultimap();
+        KeyMap map = new KeyMap();
         // TODO fix test map.put(k1, new Op(20L, OpType.Delete));
         assertEquals(map.get(k1).size(), 1);
 

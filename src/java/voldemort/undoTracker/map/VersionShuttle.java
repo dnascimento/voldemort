@@ -9,20 +9,20 @@ package voldemort.undoTracker.map;
 
 import java.io.Serializable;
 
-public class StsBranchPair implements Serializable, Comparable<StsBranchPair> {
+public class VersionShuttle implements Serializable, Comparable<VersionShuttle> {
 
     private transient static final long serialVersionUID = 1L;
 
-    public long sts;
+    public long sid;
     public short branch;
 
-    public StsBranchPair(long sts, int branch) {
+    public VersionShuttle(long sts, int branch) {
         this(sts, (short) branch);
     }
 
-    public StsBranchPair(long sts, short branch) {
+    public VersionShuttle(long sid, short branch) {
         super();
-        this.sts = sts;
+        this.sid = sid;
         this.branch = branch;
     }
 
@@ -31,13 +31,13 @@ public class StsBranchPair implements Serializable, Comparable<StsBranchPair> {
         final int prime = 31;
         int result = 1;
         result = prime * result + branch;
-        result = prime * result + (int) (sts ^ (sts >>> 32));
+        result = prime * result + (int) (sid ^ (sid >>> 32));
         return result;
     }
 
     @Override
     public String toString() {
-        return "[sts=" + sts + ", branch=" + branch + "]";
+        return "[sts=" + sid + ", branch=" + branch + "]";
     }
 
     @Override
@@ -48,20 +48,20 @@ public class StsBranchPair implements Serializable, Comparable<StsBranchPair> {
             return false;
         if(getClass() != obj.getClass())
             return false;
-        StsBranchPair other = (StsBranchPair) obj;
+        VersionShuttle other = (VersionShuttle) obj;
         if(branch != other.branch)
             return false;
-        if(sts != other.sts)
+        if(sid != other.sid)
             return false;
         return true;
     }
 
     @Override
-    public int compareTo(StsBranchPair o) {
+    public int compareTo(VersionShuttle o) {
         if(o.branch != branch) {
             return branch - o.branch;
         }
-        return (int) (sts - o.sts);
+        return (int) (sid - o.sid);
     }
 
 }

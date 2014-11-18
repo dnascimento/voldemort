@@ -5,8 +5,8 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import voldemort.undoTracker.DBProxy;
-import voldemort.undoTracker.SaveKeyAccess;
-import voldemort.undoTracker.UndoLoad;
+import voldemort.undoTracker.ShuttleShutdownProcess;
+import voldemort.undoTracker.DBProxyFactory;
 
 public class SaveDBProxyTest {
 
@@ -15,9 +15,9 @@ public class SaveDBProxyTest {
     @Test
     public void testSave() {
         DBProxy proxy = new DBProxy();
-        SaveKeyAccess saver = new SaveKeyAccess(true, true, proxy, OUTPUT_FILE);
+        ShuttleShutdownProcess saver = new ShuttleShutdownProcess(true, true, proxy, OUTPUT_FILE);
         saver.save();
-        DBProxy proxyFromFile = UndoLoad.loadDBProxyFromFile(OUTPUT_FILE);
+        DBProxy proxyFromFile = DBProxyFactory.loadDBProxyFromFile(OUTPUT_FILE);
         Assert.assertEquals(proxy, proxyFromFile);
     }
 }

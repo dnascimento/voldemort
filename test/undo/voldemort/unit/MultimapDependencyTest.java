@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 import org.junit.Test;
 
-import voldemort.undoTracker.map.OpMultimap;
+import voldemort.undoTracker.map.KeyMap;
 import voldemort.undoTracker.map.UpdateDependenciesMap;
 import voldemort.undoTracker.map.UpdateDependenciesMap.WrapperLong;
 import voldemort.utils.ByteArray;
@@ -21,7 +21,7 @@ public class MultimapDependencyTest {
      */
     @Test
     public void multimapDependencyTest() {
-        OpMultimap map = new OpMultimap();
+        KeyMap map = new KeyMap();
         // TODO fix test map.put(k1, new Op(1, OpType.Put));
         // TODO fix test map.put(k1, new Op(2, OpType.Get));
         // TODO fix test map.put(k1, new Op(3, OpType.Get));

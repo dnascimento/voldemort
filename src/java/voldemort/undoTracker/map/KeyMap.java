@@ -17,89 +17,29 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.log4j.Logger;
 
 import voldemort.undoTracker.DBProxy;
-import voldemort.undoTracker.SRD;
-import voldemort.undoTracker.branching.BranchPath;
-import voldemort.undoTracker.map.Op.OpType;
 import voldemort.utils.ByteArray;
 
 import com.google.protobuf.ByteString;
 
 /**
  * A HashMap where same items are append to a list and each entry has a
- * read/write locker to schedule the access
+ * read/write locker to schedule the operation
  * 
  * @author darionascimento
  * 
  */
-public class OpMultimap implements Serializable {
+public class KeyMap implements Serializable {
 
     private transient static final long serialVersionUID = 1L;
-    private transient static final Logger log = Logger.getLogger(OpMultimap.class.getName());
+    private transient static final Logger log = Logger.getLogger(KeyMap.class.getName());
 
     /**
      * Each entry of this map represents the metadata of a data entry of
      * voldemort
      */
-    private ConcurrentHashMap<ByteArray, OpMultimapEntry> map = new ConcurrentHashMap<ByteArray, OpMultimapEntry>(2000,
-                                                                                                                  (float) 0.75,
-                                                                                                                  25);
-
-    // //////////// Access Control ////////
-    /**
-     * Access tracking
-     * 
-     * @param key
-     * @param type
-     * @param srd
-     * @param current
-     * @return
-     */
-    public StsBranchPair trackReadAccess(ByteArray key, SRD srd, BranchPath current) {
-        OpMultimapEntry entry = get(key);
-        entry.lockRead();
-        return entry.trackReadAccess(srd, current);
-    }
-
-    public StsBranchPair trackWriteAccess(ByteArray key, OpType writeType, SRD srd, BranchPath path) {
-        OpMultimapEntry entry = get(key);
-        entry.lockWrite();
-        return entry.trackWriteAccess(writeType, srd, path);
-    }
-
-    public void endReadAccess(ByteArray key) {
-        OpMultimapEntry l = get(key);
-        assert (l != null);
-        l.unlockRead();
-    }
-
-    public void endWriteAccess(ByteArray key) {
-        OpMultimapEntry l = get(key);
-        assert (l != null);
-        l.unlockWrite();
-    }
-
-    public StsBranchPair getVersionToPut(ByteArray key, SRD srd, BranchPath current) {
-        OpMultimapEntry entry = get(key);
-        entry.lockRead();
-        return entry.getVersionToPut(srd, current);
-    }
-
-    // // Map Management ////
-
-    /**
-     * Get last write action in a specific key
-     * 
-     * @param key
-     * @return
-     */
-    public Op getLastWrite(ByteArray key) {
-        OpMultimapEntry l = map.get(key);
-        Op op = null;
-        if(l != null) {
-            op = l.getLastWrite();
-        }
-        return op;
-    }
+    private ConcurrentHashMap<ByteArray, KeyMapEntry> map = new ConcurrentHashMap<ByteArray, KeyMapEntry>(2000,
+                                                                                                          (float) 0.75,
+                                                                                                          25);
 
     /**
      * Get the entry and create if it do not exists
@@ -107,15 +47,15 @@ public class OpMultimap implements Serializable {
      * @param key
      * @return
      */
-    public OpMultimapEntry get(ByteArray key) {
-        OpMultimapEntry entry = map.get(key);
+    public KeyMapEntry get(ByteArray key) {
+        KeyMapEntry entry = map.get(key);
         if(entry == null) {
-            entry = map.putIfAbsent(key, new OpMultimapEntry(key));
+            entry = map.putIfAbsent(key, new KeyMapEntry(key));
             log.debug("Creating new entry");
             if(entry == null) {
                 entry = map.get(key);
             }
-            if(!entry.getKey().equals(key)) {
+            if(!entry.key.equals(key)) {
                 throw new RuntimeException("Get key but entry is different");
             }
         }
@@ -123,18 +63,19 @@ public class OpMultimap implements Serializable {
     }
 
     /**
-     * Get the access list of a specific key for selective replay, required by
-     * the manager
+     * Get the operation list of a specific key for selective replay, required
+     * by the manager
      * 
      * @param keysList
      * @param baseRid
      * @return
      */
-    public HashMap<ByteString, ArrayList<Op>> getAccessList(List<ByteString> keysList, long baseRid) {
+    public HashMap<ByteString, ArrayList<Op>> getOperationList(List<ByteString> keysList,
+                                                               long baseRid) {
         HashMap<ByteString, ArrayList<Op>> result = new HashMap<ByteString, ArrayList<Op>>();
         for(ByteString key: keysList) {
-            OpMultimapEntry entry = get(new ByteArray(key.toByteArray()));
-            ArrayList<Op> operations = entry.getAccesses(baseRid);
+            KeyMapEntry entry = get(new ByteArray(key.toByteArray()));
+            ArrayList<Op> operations = entry.getOperationsAfterTheRid(baseRid);
             result.put(key, operations);
         }
         return result;
@@ -158,7 +99,7 @@ public class OpMultimap implements Serializable {
         Enumeration<ByteArray> keySet = getKeySet();
         while(keySet.hasMoreElements()) {
             ByteArray key = keySet.nextElement();
-            OpMultimapEntry entry = map.get(key);
+            KeyMapEntry entry = map.get(key);
             try {
                 newDeps += entry.updateDependencies(dependenciesPerRid);
             } catch(Exception e) {
@@ -180,7 +121,7 @@ public class OpMultimap implements Serializable {
             return false;
         if(getClass() != obj.getClass())
             return false;
-        OpMultimap other = (OpMultimap) obj;
+        KeyMap other = (KeyMap) obj;
         if(map == null) {
             if(other.map != null)
                 return false;
@@ -199,11 +140,26 @@ public class OpMultimap implements Serializable {
 
     public String debugExecutionList() {
         StringBuilder sb = new StringBuilder();
-        for(Entry<ByteArray, OpMultimapEntry> entry: map.entrySet()) {
+        for(Entry<ByteArray, KeyMapEntry> entry: map.entrySet()) {
             sb.append(ByteArray.toAscii(entry.getKey()));
-            sb.append(entry.getValue().debugExecutionList() + "\n");
+            sb.append(entry.getValue().operationListToString() + "\n");
         }
         return sb.toString();
     }
+
+    /**
+     * Get last write action in a specific key
+     * 
+     * @param key
+     * @return
+     */
+    // public Op getLastWrite(ByteArray key) {
+    // OpMultimapEntry l = map.get(key);
+    // Op op = null;
+    // if(l != null) {
+    // op = l.getLastWrite();
+    // }
+    // return op;
+    // }
 
 }

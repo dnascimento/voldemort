@@ -21,6 +21,14 @@ public class Op implements Serializable {
         Get,
         GetVersion,
         UNLOCK;
+
+        public boolean isWrite() {
+            return this.equals(Put) || this.equals(Delete);
+        }
+
+        public boolean isRead() {
+            return this.equals(Get) || this.equals(GetVersion);
+        }
     }
 
     public long rid;
@@ -57,6 +65,14 @@ public class Op implements Serializable {
         return true;
     }
 
+    public boolean isWrite() {
+        return toType().isWrite();
+    }
+
+    public boolean isRead() {
+        return toType().isRead();
+    }
+
     public boolean isGet() {
         return type == OpType.Get.ordinal();
     }
@@ -74,7 +90,4 @@ public class Op implements Serializable {
         return "Op [rid=" + rid + ", type=" + toType() + "]";
     }
 
-    public boolean isGetOrGetVersion() {
-        return isGet() || isGetVersion();
-    }
 }

@@ -1,4 +1,4 @@
-package voldemort.redoAndSnapshot;
+package voldemort.replayAndSnapshot;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -14,16 +14,16 @@ import voldemort.undoTracker.DBProxy;
 import voldemort.undoTracker.SRD;
 import voldemort.undoTracker.branching.BranchController;
 import voldemort.undoTracker.branching.BranchPath;
+import voldemort.undoTracker.map.KeyMap;
+import voldemort.undoTracker.map.KeyMapEntry;
 import voldemort.undoTracker.map.Op;
 import voldemort.undoTracker.map.Op.OpType;
-import voldemort.undoTracker.map.OpMultimap;
-import voldemort.undoTracker.map.OpMultimapEntry;
-import voldemort.undoTracker.map.StsBranchPair;
+import voldemort.undoTracker.map.VersionShuttle;
 import voldemort.utils.ByteArray;
 
-public class RedoTest {
+public class ReplayTest {
 
-    OpMultimap db = new OpMultimap();
+    KeyMap db = new KeyMap();
 
     ByteArray k1 = new ByteArray("key1".getBytes());
 
@@ -72,8 +72,8 @@ public class RedoTest {
      * @throws InterruptedException
      */
     @Test
-    public void redoIsolated() throws InterruptedException {
-        System.out.println("----- Start test: Redo Isolated -------");
+    public void replayIsolated() throws InterruptedException {
+        System.out.println("----- Start test: Replay Isolated -------");
 
         stub = new DBProxy();
 
@@ -82,25 +82,25 @@ public class RedoTest {
         ByteArray kOriginalBranch = stub.modifyKey(k1.clone(), branch, currentCommit);
         System.out.println(db.get(kOriginalBranch));
 
-        System.out.println("--------- Prepare redo -------------");
+        System.out.println("--------- Prepare replay -------------");
         assertEquals(order.size(), db.get(kOriginalBranch).size());
-        OpMultimap dbOriginal = db;
-        db = new OpMultimap();
+        KeyMap dbOriginal = db;
+        db = new KeyMap();
 
-        System.out.println("--------- Start redo -------------");
-        // create new branch to start the redo
+        System.out.println("--------- Start replay -------------");
+        // create new branch to start the replay
         branch = 1;
-        BranchPath redoPath = new BranchPath(new StsBranchPair(0L, 1),
-                                             new StsBranchPair(0L, 0),
-                                             new StsBranchPair(0L, 1));
-        stub.newRedo(redoPath);
+        BranchPath replayPath = new BranchPath(new VersionShuttle(0L, 1),
+                                               new VersionShuttle(0L, 0),
+                                               new VersionShuttle(0L, 1));
+        stub.newReplay(replayPath);
 
         execOperations(true);
 
         // Check result: same order in re-execution
-        ArrayList<Op> originalEntry = dbOriginal.get(kOriginalBranch).getAll();
+        ArrayList<Op> originalEntry = dbOriginal.get(kOriginalBranch).operationList;
         ByteArray kNewBranch = stub.modifyKey(k1.clone(), branch, currentCommit);
-        ArrayList<Op> newEntry = db.get(kNewBranch).getAll();
+        ArrayList<Op> newEntry = db.get(kNewBranch).operationList;
         for(int i = 0; i < originalEntry.size(); i++) {
             assertEquals(originalEntry.get(i).type, newEntry.get(i).type);
         }
@@ -111,28 +111,28 @@ public class RedoTest {
         System.out.println("----- Start test: Restrain -------");
 
         stub = new DBProxy();
-        BranchPath redoPath = new BranchPath(new StsBranchPair(0L, 1),
-                                             new StsBranchPair(0L, 0),
-                                             new StsBranchPair(0L, 1));
-        stub.newRedo(redoPath);
+        BranchPath replayPath = new BranchPath(new VersionShuttle(0L, 1),
+                                               new VersionShuttle(0L, 0),
+                                               new VersionShuttle(0L, 1));
+        stub.newReplay(replayPath);
 
         new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(1, 0, false)).exec();
 
         new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(2, 0, false)).exec();
         new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(3, 0, false)).exec();
 
-        // redo
+        // replay
         new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(1, 1, false)).exec();
 
         new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(4, 0, false)).exec();
 
-        // redo
+        // replay
         new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(2, 1, false)).exec();
         new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(3, 1, false)).exec();
 
         new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(5, 0, false)).exec();
 
-        // redo
+        // replay
         new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(4, 1, false)).exec();
 
         new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(6, 0, false)).exec();
@@ -149,16 +149,16 @@ public class RedoTest {
 
         new ExecOpT(k1.clone(), OpType.Put, stub, db, new SRD(6, 1, false)).exec();
 
-        stub.redoOver();
+        stub.replayOver();
 
         t1.join();
         t2.join();
         ByteArray k1Branch2Snaphost0 = stub.modifyKey(k1.clone(), (short) 1, 0);
         // the restrain operations should be in the branch 2
-        OpMultimapEntry entryNewBranch = db.get(k1Branch2Snaphost0);
+        KeyMapEntry entryNewBranch = db.get(k1Branch2Snaphost0);
         assertTrue(entryNewBranch != null);
         System.out.println(entryNewBranch);
-        assertEquals(8, entryNewBranch.getAll().size());
+        assertEquals(8, entryNewBranch.operationList.size());
     }
 
     void execOperations(boolean parallel) throws InterruptedException {

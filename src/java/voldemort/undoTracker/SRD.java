@@ -31,7 +31,7 @@ public class SRD {
     public short branch;
     public final boolean restrain;
     public ArrayListMultimap<ByteArray, KeyAccess> accessedKeys;
-    public final boolean redo;
+    public final boolean replay;
 
     public SRD() {
         this(0L, 0, false, false);
@@ -42,18 +42,18 @@ public class SRD {
     }
 
     public SRD(ToManagerProto.SRD srd) {
-        this(srd.getRid(), srd.getBranch(), srd.getRestrain(), srd.getRedo());
+        this(srd.getRid(), srd.getBranch(), srd.getRestrain(), srd.getReplay());
     }
 
     public SRD(long rid, int branch, boolean restrain) {
         this(rid, branch, restrain, false);
     }
 
-    public SRD(long rid, int branch, boolean restrain, boolean redo) {
+    public SRD(long rid, int branch, boolean restrain, boolean replay) {
         this.rid = rid;
         this.branch = (short) branch;
         this.restrain = restrain;
-        this.redo = redo;
+        this.replay = replay;
         this.accessedKeys = null;
     }
 
@@ -62,7 +62,7 @@ public class SRD {
                                  .setBranch(branch)
                                  .setRid(rid)
                                  .setRestrain(restrain)
-                                 .setRedo(redo)
+                                 .setReplay(replay)
                                  .build();
     }
 
@@ -87,7 +87,7 @@ public class SRD {
 
     @Override
     public String toString() {
-        return "[rid=" + rid + ", b=" + branch + ", r=" + restrain + ",redo=" + redo + "]";
+        return "[rid=" + rid + ", b=" + branch + ", r=" + restrain + ",replay=" + replay + "]";
     }
 
 }

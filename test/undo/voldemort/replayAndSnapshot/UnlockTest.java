@@ -1,4 +1,4 @@
-package voldemort.redoAndSnapshot;
+package voldemort.replayAndSnapshot;
 
 import static org.junit.Assert.assertEquals;
 
@@ -13,15 +13,15 @@ import voldemort.undoTracker.DBProxy;
 import voldemort.undoTracker.SRD;
 import voldemort.undoTracker.branching.BranchController;
 import voldemort.undoTracker.branching.BranchPath;
+import voldemort.undoTracker.map.KeyMap;
 import voldemort.undoTracker.map.Op;
 import voldemort.undoTracker.map.Op.OpType;
-import voldemort.undoTracker.map.OpMultimap;
-import voldemort.undoTracker.map.StsBranchPair;
+import voldemort.undoTracker.map.VersionShuttle;
 import voldemort.utils.ByteArray;
 
 public class UnlockTest {
 
-    OpMultimap db = new OpMultimap();
+    KeyMap db = new KeyMap();
 
     ByteArray k1 = new ByteArray("key1".getBytes());
 
@@ -59,7 +59,7 @@ public class UnlockTest {
      * @throws InterruptedException
      */
     @Test
-    public void redoIsolated() throws InterruptedException {
+    public void replayIsolated() throws InterruptedException {
         System.out.println("----- Start test: Unlock Test -------");
 
         execOperations(false);
@@ -67,18 +67,18 @@ public class UnlockTest {
         ByteArray kOriginalBranch = stub.modifyKey(k1.clone(), branch, currentCommit);
         System.out.println(db.get(kOriginalBranch));
 
-        System.out.println("--------- Prepare redo -------------");
+        System.out.println("--------- Prepare replay -------------");
         assertEquals(tList.size(), db.get(kOriginalBranch).size());
-        OpMultimap dbOriginal = db;
-        db = new OpMultimap();
+        KeyMap dbOriginal = db;
+        db = new KeyMap();
 
-        System.out.println("--------- Start redo -------------");
-        // create new branch to start the redo
+        System.out.println("--------- Start replay -------------");
+        // create new branch to start the replay
         branch = 1;
-        BranchPath redoPath = new BranchPath(new StsBranchPair(0L, 1),
-                                             new StsBranchPair(0L, 0),
-                                             new StsBranchPair(0L, 1));
-        stub.newRedo(redoPath);
+        BranchPath replayPath = new BranchPath(new VersionShuttle(0L, 1),
+                                               new VersionShuttle(0L, 0),
+                                               new VersionShuttle(0L, 1));
+        stub.newReplay(replayPath);
 
         tList = new ArrayList<Thread>();
         int i = 1;
@@ -102,11 +102,11 @@ public class UnlockTest {
 
         execOperations(true);
 
-        System.out.println("--------- Redo over, compare now -------------");
+        System.out.println("--------- Replay over, compare now -------------");
         // Check result: same order in re-execution
-        ArrayList<Op> originalEntry = dbOriginal.get(kOriginalBranch).getAll();
+        ArrayList<Op> originalEntry = dbOriginal.get(kOriginalBranch).operationList;
         ByteArray kNewBranch = stub.modifyKey(k1.clone(), branch, currentCommit);
-        ArrayList<Op> newEntry = db.get(kNewBranch).getAll();
+        ArrayList<Op> newEntry = db.get(kNewBranch).operationList;
         int k = 0;
         List<Integer> unlocked = Arrays.asList(4, 6);
         for(i = 0; i < newEntry.size(); i++) {

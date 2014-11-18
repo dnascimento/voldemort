@@ -3,12 +3,12 @@ package voldemort.undoTracker.branching;
 public class Path {
 
     public BranchPath path;
-    public boolean isRedo;
+    public boolean isReplay;
 
-    public Path(BranchPath path, boolean redo) {
+    public Path(BranchPath path, boolean replay) {
         super();
         this.path = path;
-        this.isRedo = redo;
+        this.isReplay = replay;
     }
 
 }

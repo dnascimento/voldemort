@@ -6,29 +6,29 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 
-import voldemort.undoTracker.map.StsBranchPair;
+import voldemort.undoTracker.map.VersionShuttle;
 
 public class BranchPath implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public StsBranchPair current;
-    public HashSet<StsBranchPair> path;
+    public VersionShuttle current;
+    public HashSet<VersionShuttle> path;
 
-    public BranchPath(StsBranchPair current, HashSet<StsBranchPair> path) {
+    public BranchPath(VersionShuttle current, HashSet<VersionShuttle> path) {
         super();
         this.current = current;
         this.path = path;
     }
 
-    public BranchPath(StsBranchPair current, StsBranchPair... pathEntries) {
+    public BranchPath(VersionShuttle current, VersionShuttle... pathEntries) {
         this.current = current;
-        this.path = new HashSet<StsBranchPair>();
+        this.path = new HashSet<VersionShuttle>();
         path.addAll(Arrays.asList(pathEntries));
     }
 
     public void getPathOrdered() {
-        ArrayList<StsBranchPair> list = new ArrayList<StsBranchPair>(path);
+        ArrayList<VersionShuttle> list = new ArrayList<VersionShuttle>(path);
         Collections.sort(list);
     }
 
