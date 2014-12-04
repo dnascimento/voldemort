@@ -14,7 +14,7 @@ public class ShuttlePerformance extends Thread {
     static DBProxy proxy = new DBProxy();
     static final int KEY_RANGE = 10;
     static final int TOTAL_REQUESTS = 2000000;
-    static final short BRANCH = BranchController.INIT_BRANCH;
+    static final short BRANCH = BranchController.ROOT_BRANCH;
 
     int id;
 

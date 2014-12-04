@@ -7,9 +7,9 @@ import java.util.Random;
 import org.junit.Test;
 
 import voldemort.undoTracker.DBProxy;
+import voldemort.undoTracker.map.KeyMap;
 import voldemort.undoTracker.map.Op;
 import voldemort.undoTracker.map.Op.OpType;
-import voldemort.undoTracker.map.KeyMap;
 import voldemort.undoTracker.map.UpdateDependenciesMap;
 import voldemort.utils.ByteArray;
 
@@ -88,24 +88,23 @@ public class ConcurrentMultimapTest {
     @Test
     public void putGet() {
         // TODO check
-        DBProxy stub = new DBProxy();
         ByteArray k1 = new ByteArray("key1".getBytes());
         ByteArray k2 = k1.clone();
-        stub.modifyKey(k1, (short) 0, 0L);
+        DBProxy.modifyKey(k1, 0L);
         KeyMap map = new KeyMap();
         // TODO fix test map.put(k1, new Op(20L, OpType.Delete));
-        assertEquals(map.get(k1).size(), 1);
+        assertEquals(map.get(k1).countOperations(), 1);
 
         // put 2
         // TODO fix test map.put(k1, new Op(21L, OpType.Get));
-        assertEquals(map.get(k1).size(), 2);
+        assertEquals(map.get(k1).countOperations(), 2);
 
         assertEquals(map.get(k2), null);
-        stub.modifyKey(k2, (short) 0, 0L);
-        assertEquals(map.get(k2).size(), 2);
+        DBProxy.modifyKey(k2, 0L);
+        assertEquals(map.get(k2).countOperations(), 2);
 
         // TODO fix test map.put(k1, new Op(21L, OpType.Get));
-        assertEquals(map.get(k2).size(), 3);
+        assertEquals(map.get(k2).countOperations(), 3);
 
     }
 }

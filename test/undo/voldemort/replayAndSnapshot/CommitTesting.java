@@ -9,8 +9,8 @@ import voldemort.utils.ByteArray;
 public class CommitTesting {
 
     ByteArray k1 = new ByteArray("key1".getBytes());
-    short branch = BranchController.INIT_BRANCH;
-    long init_commit = BranchController.INIT_COMMIT;
+    short branch = BranchController.ROOT_BRANCH;
+    long init_commit = BranchController.ROOT_SNAPSHOT;
     private boolean contained = false;
 
     /**

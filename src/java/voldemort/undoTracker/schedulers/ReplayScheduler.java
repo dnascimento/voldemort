@@ -46,11 +46,9 @@ public class ReplayScheduler extends OperationSchedule implements Serializable {
         Op op = new Op(srd.rid, type);
         KeyMapEntry entry = keyOperationsMultimap.get(key);
 
-        long baseSnapshot = path.current.sid;
-
         synchronized(entry) {
             // log.debug("replay:" + op + ByteArray.toAscii(key) + srd);
-            ReplayIterator it = entry.getOrNewReplayIterator(srd.branch, baseSnapshot);
+            ReplayIterator it = entry.getOrNewReplayIterator(path);
             while(!it.operationIsAllowed(op, key)) {
                 try {
                     entry.wait();
@@ -79,7 +77,7 @@ public class ReplayScheduler extends OperationSchedule implements Serializable {
         KeyMapEntry entry = keyOperationsMultimap.get(key);
 
         synchronized(entry) {
-            ReplayIterator it = entry.getOrNewReplayIterator(srd.branch, path.current.sid);
+            ReplayIterator it = entry.getOrNewReplayIterator(path);
             Op op = new Op(srd.rid, type);
             // log.error(ByteArray.toAscii(key) + ": end: " + type + " " +
             // srd.rid);
@@ -100,7 +98,7 @@ public class ReplayScheduler extends OperationSchedule implements Serializable {
         KeyMapEntry entry = keyOperationsMultimap.get(key);
 
         synchronized(entry) {
-            ReplayIterator it = entry.getOrNewReplayIterator(srd.branch, path.current.sid);
+            ReplayIterator it = entry.getOrNewReplayIterator(path);
             if(it.ignore(srd.rid)) {
                 // log.info("Ignore key: " + ByteArray.toAscii(key));
                 entry.notifyAll();

@@ -42,7 +42,7 @@ public class SRD {
     }
 
     public SRD(ToManagerProto.MsgToManager.SRD srd) {
-        this(srd.getRid(), srd.getBranch(), srd.getRestrain(), srd.getReplay());
+        this(srd.getRid(), srd.getBranch(), srd.getRestrain());
     }
 
     public SRD(long rid, int branch, boolean restrain) {
@@ -59,11 +59,10 @@ public class SRD {
 
     public ToManagerProto.MsgToManager.SRD toProto() {
         return ToManagerProto.MsgToManager.SRD.newBuilder()
-                                 .setBranch(branch)
-                                 .setRid(rid)
-                                 .setRestrain(restrain)
-                                 .setReplay(replay)
-                                 .build();
+                                              .setBranch(branch)
+                                              .setRid(rid)
+                                              .setRestrain(restrain)
+                                              .build();
     }
 
     public void addAccessedKey(ByteArray key, String storeName, OpType type) {

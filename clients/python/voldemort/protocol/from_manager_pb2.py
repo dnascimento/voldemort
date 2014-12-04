@@ -13,7 +13,7 @@ from google.protobuf import descriptor_pb2
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='from-manager.proto',
   package='voldemort',
-  serialized_pb='\n\x12\x66rom-manager.proto\x12\tvoldemort\"\x93\x02\n\nToDataNode\x12\x13\n\x0bnewSnapshot\x18\x01 \x01(\x03\x12\x19\n\x11resetDependencies\x18\x02 \x01(\x08\x12\x12\n\nreplayOver\x18\x03 \x01(\x08\x12\x12\n\npathBranch\x18\x04 \x03(\x05\x12\x14\n\x0cpathSnapshot\x18\x05 \x03(\x03\x12@\n\x10\x65ntryAccessesMsg\x18\x06 \x01(\x0b\x32&.voldemort.ToDataNode.EntryAccessesMsg\x12\x11\n\tshowStats\x18\x07 \x01(\x08\x12\x0f\n\x07showMap\x18\x08 \x01(\x08\x1a\x31\n\x10\x45ntryAccessesMsg\x12\x0c\n\x04keys\x18\x01 \x03(\x0c\x12\x0f\n\x07\x62\x61seRid\x18\x02 \x02(\x03\"r\n\x08\x45xecList\x12\x0b\n\x03rid\x18\x01 \x03(\x03\x12\x0e\n\x06\x62ranch\x18\x02 \x02(\x05\x12\r\n\x05start\x18\x03 \x02(\x08\x12\x12\n\nreplayMode\x18\x04 \x02(\t\x12\x12\n\ntargetHost\x18\x05 \x02(\t\x12\x12\n\ntargetPort\x18\x06 \x02(\x05\"R\n\x08ProxyMsg\x12\x0e\n\x06\x62ranch\x18\x01 \x01(\x05\x12\x10\n\x08restrain\x18\x02 \x01(\x08\x12\x12\n\ntimeTravel\x18\x03 \x01(\x03\x12\x10\n\x08snapshot\x18\x04 \x01(\x03\x42)\n\x13pt.inesc.undo.protoB\x10\x46romManagerProtoH\x01')
+  serialized_pb='\n\x12\x66rom-manager.proto\x12\tvoldemort\"\xe6\x02\n\nToDataNode\x12\x13\n\x0bnewSnapshot\x18\x01 \x01(\x03\x12\x19\n\x11resetDependencies\x18\x02 \x01(\x08\x12\x12\n\nreplayOver\x18\x03 \x01(\x08\x12\x34\n\nbranchPath\x18\x04 \x01(\x0b\x32 .voldemort.ToDataNode.BranchPath\x12@\n\x10\x65ntryAccessesMsg\x18\x05 \x01(\x0b\x32&.voldemort.ToDataNode.EntryAccessesMsg\x12\x11\n\tshowStats\x18\x06 \x01(\x08\x12\x0f\n\x07showMap\x18\x07 \x01(\x08\x1a\x31\n\x10\x45ntryAccessesMsg\x12\x0c\n\x04keys\x18\x01 \x03(\x0c\x12\x0f\n\x07\x62\x61seRid\x18\x02 \x02(\x03\x1a\x45\n\nBranchPath\x12\x0e\n\x06\x62ranch\x18\x01 \x02(\x05\x12\x15\n\rlatestVersion\x18\x02 \x02(\x03\x12\x10\n\x08versions\x18\x03 \x03(\x03\"r\n\x08\x45xecList\x12\x0b\n\x03rid\x18\x01 \x03(\x03\x12\x0e\n\x06\x62ranch\x18\x02 \x02(\x05\x12\r\n\x05start\x18\x03 \x02(\x08\x12\x12\n\nreplayMode\x18\x04 \x02(\t\x12\x12\n\ntargetHost\x18\x05 \x02(\t\x12\x12\n\ntargetPort\x18\x06 \x02(\x05\"@\n\x08ProxyMsg\x12\x0e\n\x06\x62ranch\x18\x01 \x01(\x05\x12\x10\n\x08restrain\x18\x02 \x01(\x08\x12\x12\n\ntimeTravel\x18\x03 \x01(\x03\x42)\n\x13pt.inesc.undo.protoB\x10\x46romManagerProtoH\x01')
 
 
 
@@ -48,8 +48,49 @@ _TODATANODE_ENTRYACCESSESMSG = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=260,
-  serialized_end=309,
+  serialized_start=272,
+  serialized_end=321,
+)
+
+_TODATANODE_BRANCHPATH = _descriptor.Descriptor(
+  name='BranchPath',
+  full_name='voldemort.ToDataNode.BranchPath',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='branch', full_name='voldemort.ToDataNode.BranchPath.branch', index=0,
+      number=1, type=5, cpp_type=1, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='latestVersion', full_name='voldemort.ToDataNode.BranchPath.latestVersion', index=1,
+      number=2, type=3, cpp_type=2, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='versions', full_name='voldemort.ToDataNode.BranchPath.versions', index=2,
+      number=3, type=3, cpp_type=2, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  extension_ranges=[],
+  serialized_start=323,
+  serialized_end=392,
 )
 
 _TODATANODE = _descriptor.Descriptor(
@@ -81,36 +122,29 @@ _TODATANODE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='pathBranch', full_name='voldemort.ToDataNode.pathBranch', index=3,
-      number=4, type=5, cpp_type=1, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    _descriptor.FieldDescriptor(
-      name='pathSnapshot', full_name='voldemort.ToDataNode.pathSnapshot', index=4,
-      number=5, type=3, cpp_type=2, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
-    _descriptor.FieldDescriptor(
-      name='entryAccessesMsg', full_name='voldemort.ToDataNode.entryAccessesMsg', index=5,
-      number=6, type=11, cpp_type=10, label=1,
+      name='branchPath', full_name='voldemort.ToDataNode.branchPath', index=3,
+      number=4, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='showStats', full_name='voldemort.ToDataNode.showStats', index=6,
-      number=7, type=8, cpp_type=7, label=1,
+      name='entryAccessesMsg', full_name='voldemort.ToDataNode.entryAccessesMsg', index=4,
+      number=5, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='showStats', full_name='voldemort.ToDataNode.showStats', index=5,
+      number=6, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='showMap', full_name='voldemort.ToDataNode.showMap', index=7,
-      number=8, type=8, cpp_type=7, label=1,
+      name='showMap', full_name='voldemort.ToDataNode.showMap', index=6,
+      number=7, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -118,14 +152,14 @@ _TODATANODE = _descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[_TODATANODE_ENTRYACCESSESMSG, ],
+  nested_types=[_TODATANODE_ENTRYACCESSESMSG, _TODATANODE_BRANCHPATH, ],
   enum_types=[
   ],
   options=None,
   is_extendable=False,
   extension_ranges=[],
   serialized_start=34,
-  serialized_end=309,
+  serialized_end=392,
 )
 
 
@@ -187,8 +221,8 @@ _EXECLIST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=311,
-  serialized_end=425,
+  serialized_start=394,
+  serialized_end=508,
 )
 
 
@@ -220,13 +254,6 @@ _PROXYMSG = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
-    _descriptor.FieldDescriptor(
-      name='snapshot', full_name='voldemort.ProxyMsg.snapshot', index=3,
-      number=4, type=3, cpp_type=2, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
   ],
   extensions=[
   ],
@@ -236,11 +263,13 @@ _PROXYMSG = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=427,
-  serialized_end=509,
+  serialized_start=510,
+  serialized_end=574,
 )
 
 _TODATANODE_ENTRYACCESSESMSG.containing_type = _TODATANODE;
+_TODATANODE_BRANCHPATH.containing_type = _TODATANODE;
+_TODATANODE.fields_by_name['branchPath'].message_type = _TODATANODE_BRANCHPATH
 _TODATANODE.fields_by_name['entryAccessesMsg'].message_type = _TODATANODE_ENTRYACCESSESMSG
 DESCRIPTOR.message_types_by_name['ToDataNode'] = _TODATANODE
 DESCRIPTOR.message_types_by_name['ExecList'] = _EXECLIST
@@ -254,6 +283,12 @@ class ToDataNode(_message.Message):
     DESCRIPTOR = _TODATANODE_ENTRYACCESSESMSG
 
     # @@protoc_insertion_point(class_scope:voldemort.ToDataNode.EntryAccessesMsg)
+
+  class BranchPath(_message.Message):
+    __metaclass__ = _reflection.GeneratedProtocolMessageType
+    DESCRIPTOR = _TODATANODE_BRANCHPATH
+
+    # @@protoc_insertion_point(class_scope:voldemort.ToDataNode.BranchPath)
   DESCRIPTOR = _TODATANODE
 
   # @@protoc_insertion_point(class_scope:voldemort.ToDataNode)

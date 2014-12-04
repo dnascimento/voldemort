@@ -23,7 +23,7 @@ public class VersionList implements Serializable {
 
     public VersionList() {
         list = new LinkedList<VersionShuttle>();
-        list.add(new VersionShuttle(BranchController.INIT_COMMIT, BranchController.INIT_BRANCH));
+        list.add(new VersionShuttle(BranchController.ROOT_SNAPSHOT));
     }
 
     /**
@@ -33,20 +33,20 @@ public class VersionList implements Serializable {
      * @param sts: season timestamp:
      * @return season timestamp of latest version which value is lower than sts
      */
-    public VersionShuttle getBiggestSmallerSnapshot(BranchPath c, long snapshot) {
+    public VersionShuttle getLastestVersionPreviousToSnapshot(BranchPath path, long snapshot) {
         // try to access the latest first
-        VersionShuttle last = list.getLast();
-        if(c.path.contains(last) && last.sid < snapshot) {
-            return last;
+        VersionShuttle latestVersion = list.getLast();
+        if(path.versions.contains(latestVersion) && latestVersion.sid < snapshot) {
+            return latestVersion;
         }
 
         // cache miss
         Iterator<VersionShuttle> i = list.descendingIterator();
         while(i.hasNext()) {
-            VersionShuttle e = i.next();
-            if(c.path.contains(e)) {
-                if(e.sid < snapshot) {
-                    return e;
+            VersionShuttle v = i.next();
+            if(path.versions.contains(v)) {
+                if(v.sid < snapshot) {
+                    return v;
                 }
             }
         }
@@ -58,21 +58,22 @@ public class VersionList implements Serializable {
     /**
      * To read the most recent version and branch
      * 
-     * @param current
+     * @param currentPath
      * @return
      */
-    public VersionShuttle getLatest(BranchPath path) {
+    public VersionShuttle getLatestVersionInPath(BranchPath path) {
         // try to access the latest first
         VersionShuttle last = list.getLast();
-        if(path.path.contains(last)) {
+        if(path.versions.contains(last)) {
             return last;
         }
 
         // cache miss: search
         Iterator<VersionShuttle> i = list.descendingIterator();
+        VersionShuttle e;
         while(i.hasNext()) {
-            VersionShuttle e = i.next();
-            if(path.path.contains(e))
+            e = i.next();
+            if(path.versions.contains(e))
                 return e;
         }
         log.error("getLatest: empty");
@@ -83,45 +84,29 @@ public class VersionList implements Serializable {
      * New snapshot. Invoked by normal requests
      * 
      * @param sts
-     * @param branch
      * @return
      */
-    public VersionShuttle addNewSnapshot(long sts, short branch) {
-        // TODO TALVEZ TENHA DE VERIFICAR SE NAO EXISTE UM SNAPSHOT DO MESMO
-        // BRANCH MAIOR
-        VersionShuttle obj = new VersionShuttle(sts, branch);
+    public VersionShuttle addNewVersion(long version) {
+        VersionShuttle obj = new VersionShuttle(version);
         list.addLast(obj);
         return obj;
     }
 
     /**
-     * Try to find the replayBranch and replayBaseSnapshot
-     * otherwise, use one previous to the replayBaseSnapshot master.
-     * Get the latest if same snapshot and same branch or the biggest smaller of
-     * the previous branch
+     * Try to find the latest version in the path to read
      * 
      * @param sts: snapshot used to start the new branch
-     * @param branch: the replay branch
-     * @return
+     * @return the version to read
      */
     public synchronized VersionShuttle replayRead(BranchPath path) {
-        // TODO list is sorted?
-        Iterator<VersionShuttle> i = list.descendingIterator();
-        while(i.hasNext()) {
-            VersionShuttle e = i.next();
-            if(e.branch == path.current.branch && e.sid == path.current.sid) {
-                // already written by the replay
-                return e;
-            }
-            if(path.path.contains(e)) {
-                if(e.sid < path.current.sid) {
-                    // the latest smaller than the base replay
-                    return e;
-                }
-            }
+        try {
+            VersionShuttle latest = getLatestVersionInPath(path);
+            return latest;
+        } catch(VoldemortException e) {
+            log.info(e);
+            // it will try to access and fail
+            return new VersionShuttle(path.latestVersion.sid);
         }
-        // it will try to access and fail, no problem
-        return new VersionShuttle(path.current.sid, path.current.branch);
     }
 
     /**
@@ -132,12 +117,10 @@ public class VersionList implements Serializable {
      * @return
      */
     public synchronized VersionShuttle replayWrite(BranchPath path) {
-        VersionShuttle latest = getLatest(path);
-
-        // if latest version is not the replay version, then add it
-        if(latest.branch != path.current.branch || latest.sid != path.current.sid) {
-            latest = new VersionShuttle(path.current.sid, path.current.branch);
-            list.add(latest);
+        VersionShuttle latest = getLatestVersionInPath(path);
+        // if the item does not have the latest version, create it
+        if(latest.sid != path.latestVersion.sid) {
+            return addNewVersion(path.latestVersion.sid);
         }
         return latest;
     }

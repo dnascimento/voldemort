@@ -8,6 +8,7 @@ import java.util.Iterator;
 import org.apache.log4j.Logger;
 
 import voldemort.VoldemortException;
+import voldemort.undoTracker.branching.BranchPath;
 import voldemort.utils.ByteArray;
 
 public class ReplayIterator {
@@ -52,18 +53,18 @@ public class ReplayIterator {
     /**
      * The snapshot which the replay is based on
      */
-    private long baseRid;
+    private long forkedVersion;
 
     // TODO replace the array list of OperationList for a linked list and
     // iterate. No need to be an array, the array is slower than the linked
     // list.
-    public ReplayIterator(short branch, long baseRid, ArrayList<Op> list) {
-        this.branch = branch;
+    public ReplayIterator(BranchPath branchPath, ArrayList<Op> list) {
+        this.branch = branchPath.branch;
         this.fullList = list;
-        this.baseRid = baseRid;
+        this.forkedVersion = branchPath.forkedVersion.sid;
 
         for(nextPosition = 0; nextPosition < list.size(); nextPosition++) {
-            if(list.get(nextPosition).rid >= baseRid)
+            if(list.get(nextPosition).rid >= forkedVersion)
                 break;
         }
     }
@@ -139,7 +140,7 @@ public class ReplayIterator {
         Iterator<Op> it = allowed.listIterator();
         while(it.hasNext()) {
             Long rid = new Long(it.next().rid);
-            if(rid < baseRid || ignoring.contains(rid)) {
+            if(rid < forkedVersion || ignoring.contains(rid)) {
                 it.remove();
                 continue;
             }
@@ -187,7 +188,7 @@ public class ReplayIterator {
         StringBuilder sb = new StringBuilder();
         sb.append("ReplayIterator [fullList=");
         sb.append(Arrays.toString(fullList.toArray()));
-        sb.append("\n nextPosition=" + nextPosition + " baseRid=" + baseRid);
+        sb.append("\n nextPosition=" + nextPosition + " baseRid=" + forkedVersion);
         sb.append("\n allowed=");
         sb.append(Arrays.toString(allowed.toArray()));
         sb.append("\n executing=");

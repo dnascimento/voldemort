@@ -12,34 +12,30 @@ import java.io.Serializable;
 import org.apache.log4j.Logger;
 
 import voldemort.VoldemortException;
-import voldemort.undoTracker.map.VersionShuttle;
 
 public class BranchController implements Serializable {
 
     private static final long serialVersionUID = 1L;
     transient private static final Logger log = Logger.getLogger(BranchController.class.getName());
-    public static final long INIT_COMMIT = 0L;
-    public static final short INIT_BRANCH = 0;
+    public static final long ROOT_SNAPSHOT = 0L;
+    public static final short ROOT_BRANCH = 0;
 
-    BranchPath current;
-    BranchPath replay;
+    BranchPath currentPath;
+    BranchPath replayPath;
 
     public BranchController() {
-        VersionShuttle baseBranch = new VersionShuttle(INIT_COMMIT, INIT_BRANCH);
-        current = new BranchPath(baseBranch, baseBranch);
-        replay = null;
+        currentPath = new BranchPath(ROOT_BRANCH, ROOT_SNAPSHOT);
+        replayPath = null;
     }
 
     /**
-     * Invoked by manger to start a new snapshot in future, in the current branch
+     * Invoked by manger to start a new snapshot in future, in the current
+     * branch
      * 
      * @param newRid
      */
     public void newSnapshot(long newSnapshot) {
-        VersionShuttle newPair = new VersionShuttle(newSnapshot, current.current.branch);
-        // TODO may cause problem if some thread is checking the path
-        current.path.add(newPair);
-        current.current = newPair;
+        currentPath.newSnapshot(newSnapshot);
     }
 
     /**
@@ -48,7 +44,7 @@ public class BranchController implements Serializable {
      * @return
      */
     public BranchPath getCurrent() {
-        return current;
+        return currentPath;
     }
 
     /**
@@ -57,12 +53,12 @@ public class BranchController implements Serializable {
      * @return the new current branch
      */
     public short replayOver() {
-        current = replay;
+        currentPath = replayPath;
         // TODO may cause problem if some thread is checking the path
-        replay = null;
-        log.info("restrain phase is over, new branch is:" + current.current.branch
-                 + " based on snapshot: " + current.current.sid);
-        return current.current.branch;
+        replayPath = null;
+        log.info("restrain phase is over, new branch is:" + currentPath.branch
+                 + " based on snapshot: " + currentPath.latestVersion.sid);
+        return currentPath.branch;
     }
 
     /**
@@ -72,7 +68,7 @@ public class BranchController implements Serializable {
      */
     public synchronized void newReplay(BranchPath replayPath) {
         log.info("New replay: " + replayPath);
-        replay = replayPath;
+        this.replayPath = replayPath;
     }
 
     /**
@@ -82,12 +78,12 @@ public class BranchController implements Serializable {
      * @return the path of this branch and if is replay or not
      */
     public Path getPath(short branch) {
-        if(current.current.branch == branch) {
-            return new Path(current, false);
+        if(currentPath.branch == branch) {
+            return new Path(currentPath, false);
         }
-
-        if(replay != null && replay.current.branch == branch) {
-            return new Path(replay, true);
+        // if the replayPath exists and have same branch
+        if(replayPath != null && replayPath.branch == branch) {
+            return new Path(replayPath, true);
         }
 
         log.error("getPath: branch not present: " + branch);
@@ -95,18 +91,17 @@ public class BranchController implements Serializable {
     }
 
     public void reset() {
-        VersionShuttle baseBranch = new VersionShuttle(INIT_COMMIT, INIT_BRANCH);
-        current = new BranchPath(baseBranch, baseBranch);
+        currentPath = new BranchPath(ROOT_BRANCH, ROOT_SNAPSHOT);
         log.info("RESET");
-        replay = null;
+        replayPath = null;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((current == null) ? 0 : current.hashCode());
-        result = prime * result + ((replay == null) ? 0 : replay.hashCode());
+        result = prime * result + ((currentPath == null) ? 0 : currentPath.hashCode());
+        result = prime * result + ((replayPath == null) ? 0 : replayPath.hashCode());
         return result;
     }
 
@@ -119,15 +114,15 @@ public class BranchController implements Serializable {
         if(getClass() != obj.getClass())
             return false;
         BranchController other = (BranchController) obj;
-        if(current == null) {
-            if(other.current != null)
+        if(currentPath == null) {
+            if(other.currentPath != null)
                 return false;
-        } else if(!current.equals(other.current))
+        } else if(!currentPath.equals(other.currentPath))
             return false;
-        if(replay == null) {
-            if(other.replay != null)
+        if(replayPath == null) {
+            if(other.replayPath != null)
                 return false;
-        } else if(!replay.equals(other.replay))
+        } else if(!replayPath.equals(other.replayPath))
             return false;
         return true;
     }

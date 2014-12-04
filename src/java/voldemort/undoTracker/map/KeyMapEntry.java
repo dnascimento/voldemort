@@ -13,6 +13,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.log4j.Logger;
 
+import voldemort.undoTracker.branching.BranchPath;
 import voldemort.utils.ByteArray;
 
 /**
@@ -156,9 +157,9 @@ public class KeyMapEntry implements Serializable {
      * @param baseRid
      * @return
      */
-    public ReplayIterator getOrNewReplayIterator(short branch, long baseRid) {
-        if(iterator == null || iterator.getBranch() != branch) {
-            iterator = new ReplayIterator(branch, baseRid, operationList);
+    public ReplayIterator getOrNewReplayIterator(BranchPath branchPath) {
+        if(iterator == null || iterator.getBranch() != branchPath.branch) {
+            iterator = new ReplayIterator(branchPath, operationList);
         }
         return iterator;
     }
@@ -204,7 +205,7 @@ public class KeyMapEntry implements Serializable {
         return true;
     }
 
-    public synchronized int size() {
+    public synchronized int countOperations() {
         return operationList.size();
     }
 

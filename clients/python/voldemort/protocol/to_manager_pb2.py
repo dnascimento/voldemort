@@ -13,7 +13,7 @@ from google.protobuf import descriptor_pb2
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='to-manager.proto',
   package='voldemort',
-  serialized_pb='\n\x10to-manager.proto\x12\tvoldemort\"\xb0\x07\n\x0cMsgToManager\x12\x32\n\x08trackMsg\x18\x01 \x01(\x0b\x32 .voldemort.MsgToManager.TrackMsg\x12\x38\n\x0bstartEndMsg\x18\x02 \x01(\x0b\x32#.voldemort.MsgToManager.StartEndMsg\x12<\n\x12trackMsgFromClient\x18\x03 \x01(\x0b\x32 .voldemort.MsgToManager.TrackMsg\x12=\n\x0cnodeRegistry\x18\x04 \x01(\x0b\x32\'.voldemort.MsgToManager.NodeRegistryMsg\x12+\n\x03\x61\x63k\x18\x05 \x01(\x0b\x32\x1e.voldemort.MsgToManager.AckMsg\x12@\n\x0f\x65ntryAccessList\x18\x06 \x03(\x0b\x32\'.voldemort.MsgToManager.EntryAccessList\x12\x32\n\x08\x61\x63kProxy\x18\x07 \x01(\x0b\x32 .voldemort.MsgToManager.AckProxy\x1a+\n\x0f\x45ntryAccessList\x12\x0b\n\x03key\x18\x01 \x02(\x0c\x12\x0b\n\x03rid\x18\x02 \x03(\x03\x1aM\n\x08TrackMsg\x12\x31\n\x05\x65ntry\x18\x01 \x03(\x0b\x32\".voldemort.MsgToManager.TrackEntry\x12\x0e\n\x06nodeId\x18\x02 \x01(\t\x1a-\n\nTrackEntry\x12\x0b\n\x03rid\x18\x01 \x02(\x03\x12\x12\n\ndependency\x18\x02 \x03(\x03\x1a\x1b\n\x0bStartEndMsg\x12\x0c\n\x04\x64\x61ta\x18\x01 \x03(\x03\x1a\x44\n\x03SRD\x12\x0b\n\x03rid\x18\x01 \x01(\x03\x12\x0e\n\x06\x62ranch\x18\x02 \x01(\x05\x12\x10\n\x08restrain\x18\x03 \x01(\x08\x12\x0e\n\x06replay\x18\x04 \x01(\x08\x1a;\n\x06\x41\x63kMsg\x12\x0c\n\x04port\x18\x01 \x01(\x05\x12\x10\n\x08hostname\x18\x02 \x01(\t\x12\x11\n\texception\x18\x03 \x03(\t\x1a\x1d\n\x08\x41\x63kProxy\x12\x11\n\tcurrentId\x18\x01 \x02(\x03\x1a\xa7\x01\n\x0fNodeRegistryMsg\x12@\n\x05group\x18\x01 \x02(\x0e\x32\x31.voldemort.MsgToManager.NodeRegistryMsg.NodeGroup\x12\x0c\n\x04port\x18\x02 \x02(\x05\x12\x10\n\x08hostname\x18\x03 \x02(\t\"2\n\tNodeGroup\x12\t\n\x05PROXY\x10\x01\x12\x0b\n\x07\x44\x42_NODE\x10\x02\x12\r\n\tREDO_NODE\x10\x03\x42\'\n\x13pt.inesc.undo.protoB\x0eToManagerProtoH\x01')
+  serialized_pb='\n\x10to-manager.proto\x12\tvoldemort\"\xa0\x07\n\x0cMsgToManager\x12\x32\n\x08trackMsg\x18\x01 \x01(\x0b\x32 .voldemort.MsgToManager.TrackMsg\x12\x38\n\x0bstartEndMsg\x18\x02 \x01(\x0b\x32#.voldemort.MsgToManager.StartEndMsg\x12<\n\x12trackMsgFromClient\x18\x03 \x01(\x0b\x32 .voldemort.MsgToManager.TrackMsg\x12=\n\x0cnodeRegistry\x18\x04 \x01(\x0b\x32\'.voldemort.MsgToManager.NodeRegistryMsg\x12+\n\x03\x61\x63k\x18\x05 \x01(\x0b\x32\x1e.voldemort.MsgToManager.AckMsg\x12@\n\x0f\x65ntryAccessList\x18\x06 \x03(\x0b\x32\'.voldemort.MsgToManager.EntryAccessList\x12\x32\n\x08\x61\x63kProxy\x18\x07 \x01(\x0b\x32 .voldemort.MsgToManager.AckProxy\x1a+\n\x0f\x45ntryAccessList\x12\x0b\n\x03key\x18\x01 \x02(\x0c\x12\x0b\n\x03rid\x18\x02 \x03(\x03\x1aM\n\x08TrackMsg\x12\x31\n\x05\x65ntry\x18\x01 \x03(\x0b\x32\".voldemort.MsgToManager.TrackEntry\x12\x0e\n\x06nodeId\x18\x02 \x01(\t\x1a-\n\nTrackEntry\x12\x0b\n\x03rid\x18\x01 \x02(\x03\x12\x12\n\ndependency\x18\x02 \x03(\x03\x1a\x1b\n\x0bStartEndMsg\x12\x0c\n\x04\x64\x61ta\x18\x01 \x03(\x03\x1a\x34\n\x03SRD\x12\x0b\n\x03rid\x18\x01 \x01(\x03\x12\x0e\n\x06\x62ranch\x18\x02 \x01(\x05\x12\x10\n\x08restrain\x18\x03 \x01(\x08\x1a;\n\x06\x41\x63kMsg\x12\x0c\n\x04port\x18\x01 \x01(\x05\x12\x10\n\x08hostname\x18\x02 \x01(\t\x12\x11\n\texception\x18\x03 \x03(\t\x1a\x1d\n\x08\x41\x63kProxy\x12\x11\n\tcurrentId\x18\x01 \x02(\x03\x1a\xa7\x01\n\x0fNodeRegistryMsg\x12@\n\x05group\x18\x01 \x02(\x0e\x32\x31.voldemort.MsgToManager.NodeRegistryMsg.NodeGroup\x12\x0c\n\x04port\x18\x02 \x02(\x05\x12\x10\n\x08hostname\x18\x03 \x02(\t\"2\n\tNodeGroup\x12\t\n\x05PROXY\x10\x01\x12\x0b\n\x07\x44\x42_NODE\x10\x02\x12\r\n\tREDO_NODE\x10\x03\x42\'\n\x13pt.inesc.undo.protoB\x0eToManagerProtoH\x01')
 
 
 
@@ -38,8 +38,8 @@ _MSGTOMANAGER_NODEREGISTRYMSG_NODEGROUP = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=926,
-  serialized_end=976,
+  serialized_start=910,
+  serialized_end=960,
 )
 
 
@@ -200,13 +200,6 @@ _MSGTOMANAGER_SRD = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
-    _descriptor.FieldDescriptor(
-      name='replay', full_name='voldemort.MsgToManager.SRD.replay', index=3,
-      number=4, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      options=None),
   ],
   extensions=[
   ],
@@ -217,7 +210,7 @@ _MSGTOMANAGER_SRD = _descriptor.Descriptor(
   is_extendable=False,
   extension_ranges=[],
   serialized_start=646,
-  serialized_end=714,
+  serialized_end=698,
 )
 
 _MSGTOMANAGER_ACKMSG = _descriptor.Descriptor(
@@ -257,8 +250,8 @@ _MSGTOMANAGER_ACKMSG = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=716,
-  serialized_end=775,
+  serialized_start=700,
+  serialized_end=759,
 )
 
 _MSGTOMANAGER_ACKPROXY = _descriptor.Descriptor(
@@ -284,8 +277,8 @@ _MSGTOMANAGER_ACKPROXY = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=777,
-  serialized_end=806,
+  serialized_start=761,
+  serialized_end=790,
 )
 
 _MSGTOMANAGER_NODEREGISTRYMSG = _descriptor.Descriptor(
@@ -326,8 +319,8 @@ _MSGTOMANAGER_NODEREGISTRYMSG = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=809,
-  serialized_end=976,
+  serialized_start=793,
+  serialized_end=960,
 )
 
 _MSGTOMANAGER = _descriptor.Descriptor(
@@ -396,7 +389,7 @@ _MSGTOMANAGER = _descriptor.Descriptor(
   is_extendable=False,
   extension_ranges=[],
   serialized_start=32,
-  serialized_end=976,
+  serialized_end=960,
 )
 
 _MSGTOMANAGER_ENTRYACCESSLIST.containing_type = _MSGTOMANAGER;

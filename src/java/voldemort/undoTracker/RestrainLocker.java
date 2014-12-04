@@ -25,7 +25,7 @@ public class RestrainLocker implements Serializable {
     /**
      * Sets the branch that will restrain (the current branch.
      */
-    short branch = BranchController.INIT_BRANCH;
+    short branch = BranchController.ROOT_BRANCH;
 
     /**
      * Set the new branch to lock

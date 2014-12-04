@@ -65,12 +65,14 @@ public class DBProxy implements Serializable {
 
     transient private static final Logger log = Logger.getLogger(DBProxy.class.getName());
 
+    private static final int VERSION_SIZE = 8;
+
     BranchController brancher = new BranchController();
     RestrainLocker restrainLocker = new RestrainLocker();
 
     ReplayScheduler replayScheduler;
     NewScheduler newScheduler;
-    KeyMap keyMap;
+    public KeyMap keyMap;
 
     private boolean debugging;
 
@@ -126,7 +128,7 @@ public class DBProxy implements Serializable {
             }
             version = newScheduler.startOperation(op, key.shadow(), srd, p.path);
         }
-        modifyKey(key, version.branch, version.sid);
+        modifyKey(key, version.sid);
         if(debugging) {
             sb.append(srd.rid);
             sb.append(" : ");
@@ -134,7 +136,7 @@ public class DBProxy implements Serializable {
             sb.append(" key: ");
             sb.append(hexStringToAscii(key));
             sb.append(" branch: ");
-            sb.append(version.branch);
+            sb.append(srd.branch);
             sb.append(" snapshot: ");
             sb.append(version.sid);
             log.info(sb.toString());
@@ -257,27 +259,23 @@ public class DBProxy implements Serializable {
      * 
      * @param key
      * @param sid
-     * @param branch
      */
-    public static ByteArray modifyKey(ByteArray key, short branch, long snapshot) {
+    public static ByteArray modifyKey(ByteArray key, long versionId) {
         byte[] oldKey = key.get();
-        byte[] newKey = new byte[oldKey.length + 10];
+        byte[] newKey = new byte[oldKey.length + VERSION_SIZE];
         int i = 0;
         for(i = 0; i < oldKey.length; i++) {
             newKey[i] = oldKey[i];
         }
 
-        newKey[i++] = (byte) (branch >> 8);
-        newKey[i++] = (byte) (branch);
-
-        newKey[i++] = (byte) (snapshot >> 56);
-        newKey[i++] = (byte) (snapshot >> 48);
-        newKey[i++] = (byte) (snapshot >> 40);
-        newKey[i++] = (byte) (snapshot >> 32);
-        newKey[i++] = (byte) (snapshot >> 24);
-        newKey[i++] = (byte) (snapshot >> 16);
-        newKey[i++] = (byte) (snapshot >> 8);
-        newKey[i++] = (byte) (snapshot);
+        newKey[i++] = (byte) (versionId >> 56);
+        newKey[i++] = (byte) (versionId >> 48);
+        newKey[i++] = (byte) (versionId >> 40);
+        newKey[i++] = (byte) (versionId >> 32);
+        newKey[i++] = (byte) (versionId >> 24);
+        newKey[i++] = (byte) (versionId >> 16);
+        newKey[i++] = (byte) (versionId >> 8);
+        newKey[i++] = (byte) (versionId);
         key.set(newKey);
         return key;
     }
@@ -287,7 +285,7 @@ public class DBProxy implements Serializable {
         if(kb.length < 8) {
             return -1;
         }
-        byte[] longBytes = Arrays.copyOfRange(kb, kb.length - 8, kb.length);
+        byte[] longBytes = Arrays.copyOfRange(kb, kb.length - VERSION_SIZE, kb.length);
         ByteBuffer bb = ByteBuffer.wrap(longBytes);
         return bb.getLong();
     }
@@ -295,7 +293,7 @@ public class DBProxy implements Serializable {
     public static void removeKeyVersion(ByteArray key) {
         byte[] kb = key.get();
 
-        byte[] longBytes = Arrays.copyOfRange(kb, 0, kb.length - 10);
+        byte[] longBytes = Arrays.copyOfRange(kb, 0, kb.length - VERSION_SIZE);
         key.set(longBytes);
     }
 

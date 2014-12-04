@@ -56,7 +56,7 @@ public class NewScheduler extends OperationSchedule implements Serializable {
             // OpMultimapEntry l = keyOperationsMultimap.get(key);
             // if(l.isReplayingInBranch(path.current.branch)) {
             path = dbProxy.restrain(srd.branch);
-            srd.branch = path.current.branch; // update the branchPath
+            srd.branch = path.branch; // update the branchPath
             // }
         }
 
@@ -69,26 +69,25 @@ public class NewScheduler extends OperationSchedule implements Serializable {
             entry.valueLocker.readLock().lock();
         }
 
-        // Track the access
+        // Log new incoming operation
         synchronized(entry) {
-            // only a single thread accesses this method
             Op op = new Op(srd.rid, type);
             entry.operationList.add(op);
             // log.debug("new:" + op + ByteArray.toAscii(key) + srd);
 
             /* If rid < snapshot timestamp, write only old values */
-            if(srd.rid < path.current.sid) {
+            if(srd.rid < path.latestVersion.sid) {
                 // write only old values
-                return entry.versionList.getBiggestSmallerSnapshot(path, srd.rid);
+                return entry.versionList.getLastestVersionPreviousToSnapshot(path, srd.rid);
             } else {
                 // read the most recent
-                VersionShuttle latest = entry.versionList.getLatest(path);
+                VersionShuttle latest = entry.versionList.getLatestVersionInPath(path);
                 if(type.isRead()) {
                     return latest;
                 }
-                // write in the current snapshot and branch
-                if(path.current.sid > latest.sid || path.current.branch > latest.branch) {
-                    return entry.versionList.addNewSnapshot(path.current.sid, srd.branch);
+                // write in the current version
+                if(path.latestVersion.sid > latest.sid) {
+                    return entry.versionList.addNewVersion(path.latestVersion.sid);
                 }
                 return latest;
             }

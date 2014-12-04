@@ -13,7 +13,6 @@ public class ModifyKey {
 
     private static final double MULTIPLICATION_FACTOR = getMultiplicationFactor();
     private static final int TIMESTAMP_SIZE = 16;
-    private static final int MAX_BRANCH_SIZE = 5;
     private static long lastTime;
 
     @Test
@@ -21,8 +20,7 @@ public class ModifyKey {
         ByteArray originalKey = new ByteArray("vamos".getBytes());
         ByteArray key = originalKey.clone();
         Long ts = getTimestamp();
-        Short branch = 20;
-        DBProxy.modifyKey(key, (short) branch, ts);
+        DBProxy.modifyKey(key, ts);
         DBProxy.removeKeyVersion(key);
         Assert.assertTrue(Arrays.equals(originalKey.get(), key.get()));
     }

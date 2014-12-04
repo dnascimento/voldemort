@@ -70,7 +70,7 @@
 	<classpathentry kind="lib" path="private-lib/libthrift-0.5.0.jar"/>
 	<classpathentry kind="lib" path="private-lib/tehuti-0.5.jar"/>
 	<classpathentry kind="lib" path="private-lib/tusk-0.0.2.jar"/>
-	<classpathentry kind="lib" path="public-lib/guava-16.0.1.jar"/>
+	<classpathentry kind="lib" path="public-lib/guava-16.0.1.jar" sourcepath="/Users/darionascimento/.m2/repository/com/google/guava/guava/16.0.1/guava-16.0.1-sources.jar"/>
 	<classpathentry kind="lib" path="public-lib/protobuf-java-2.5.0.jar"/>
 	<classpathentry kind="lib" path="public-lib/object-explorer.jar"/>
 	<classpathentry kind="lib" path="public-lib/netty-3.9.0.Final.jar"/>

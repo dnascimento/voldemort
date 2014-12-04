@@ -2786,16 +2786,6 @@ public final class ToManagerProto {
        * <code>optional bool restrain = 3;</code>
        */
       boolean getRestrain();
-
-      // optional bool replay = 4;
-      /**
-       * <code>optional bool replay = 4;</code>
-       */
-      boolean hasReplay();
-      /**
-       * <code>optional bool replay = 4;</code>
-       */
-      boolean getReplay();
     }
     /**
      * Protobuf type {@code voldemort.MsgToManager.SRD}
@@ -2861,11 +2851,6 @@ public final class ToManagerProto {
               case 24: {
                 bitField0_ |= 0x00000004;
                 restrain_ = input.readBool();
-                break;
-              }
-              case 32: {
-                bitField0_ |= 0x00000008;
-                replay_ = input.readBool();
                 break;
               }
             }
@@ -2956,27 +2941,10 @@ public final class ToManagerProto {
         return restrain_;
       }
 
-      // optional bool replay = 4;
-      public static final int REPLAY_FIELD_NUMBER = 4;
-      private boolean replay_;
-      /**
-       * <code>optional bool replay = 4;</code>
-       */
-      public boolean hasReplay() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional bool replay = 4;</code>
-       */
-      public boolean getReplay() {
-        return replay_;
-      }
-
       private void initFields() {
         rid_ = 0L;
         branch_ = 0;
         restrain_ = false;
-        replay_ = false;
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
@@ -2999,9 +2967,6 @@ public final class ToManagerProto {
         if (((bitField0_ & 0x00000004) == 0x00000004)) {
           output.writeBool(3, restrain_);
         }
-        if (((bitField0_ & 0x00000008) == 0x00000008)) {
-          output.writeBool(4, replay_);
-        }
         getUnknownFields().writeTo(output);
       }
 
@@ -3022,10 +2987,6 @@ public final class ToManagerProto {
         if (((bitField0_ & 0x00000004) == 0x00000004)) {
           size += com.google.protobuf.CodedOutputStream
             .computeBoolSize(3, restrain_);
-        }
-        if (((bitField0_ & 0x00000008) == 0x00000008)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeBoolSize(4, replay_);
         }
         size += getUnknownFields().getSerializedSize();
         memoizedSerializedSize = size;
@@ -3149,8 +3110,6 @@ public final class ToManagerProto {
           bitField0_ = (bitField0_ & ~0x00000002);
           restrain_ = false;
           bitField0_ = (bitField0_ & ~0x00000004);
-          replay_ = false;
-          bitField0_ = (bitField0_ & ~0x00000008);
           return this;
         }
 
@@ -3191,10 +3150,6 @@ public final class ToManagerProto {
             to_bitField0_ |= 0x00000004;
           }
           result.restrain_ = restrain_;
-          if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-            to_bitField0_ |= 0x00000008;
-          }
-          result.replay_ = replay_;
           result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
@@ -3219,9 +3174,6 @@ public final class ToManagerProto {
           }
           if (other.hasRestrain()) {
             setRestrain(other.getRestrain());
-          }
-          if (other.hasReplay()) {
-            setReplay(other.getReplay());
           }
           this.mergeUnknownFields(other.getUnknownFields());
           return this;
@@ -3345,39 +3297,6 @@ public final class ToManagerProto {
         public Builder clearRestrain() {
           bitField0_ = (bitField0_ & ~0x00000004);
           restrain_ = false;
-          onChanged();
-          return this;
-        }
-
-        // optional bool replay = 4;
-        private boolean replay_ ;
-        /**
-         * <code>optional bool replay = 4;</code>
-         */
-        public boolean hasReplay() {
-          return ((bitField0_ & 0x00000008) == 0x00000008);
-        }
-        /**
-         * <code>optional bool replay = 4;</code>
-         */
-        public boolean getReplay() {
-          return replay_;
-        }
-        /**
-         * <code>optional bool replay = 4;</code>
-         */
-        public Builder setReplay(boolean value) {
-          bitField0_ |= 0x00000008;
-          replay_ = value;
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>optional bool replay = 4;</code>
-         */
-        public Builder clearReplay() {
-          bitField0_ = (bitField0_ & ~0x00000008);
-          replay_ = false;
           onChanged();
           return this;
         }
@@ -6959,7 +6878,7 @@ public final class ToManagerProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\020to-manager.proto\022\tvoldemort\"\260\007\n\014MsgToM" +
+      "\n\020to-manager.proto\022\tvoldemort\"\240\007\n\014MsgToM" +
       "anager\0222\n\010trackMsg\030\001 \001(\0132 .voldemort.Msg" +
       "ToManager.TrackMsg\0228\n\013startEndMsg\030\002 \001(\0132" +
       "#.voldemort.MsgToManager.StartEndMsg\022<\n\022" +
@@ -6975,16 +6894,16 @@ public final class ToManagerProto {
       "oldemort.MsgToManager.TrackEntry\022\016\n\006node" +
       "Id\030\002 \001(\t\032-\n\nTrackEntry\022\013\n\003rid\030\001 \002(\003\022\022\n\nd" +
       "ependency\030\002 \003(\003\032\033\n\013StartEndMsg\022\014\n\004data\030\001" +
-      " \003(\003\032D\n\003SRD\022\013\n\003rid\030\001 \001(\003\022\016\n\006branch\030\002 \001(\005" +
-      "\022\020\n\010restrain\030\003 \001(\010\022\016\n\006replay\030\004 \001(\010\032;\n\006Ac" +
-      "kMsg\022\014\n\004port\030\001 \001(\005\022\020\n\010hostname\030\002 \001(\t\022\021\n\t" +
-      "exception\030\003 \003(\t\032\035\n\010AckProxy\022\021\n\tcurrentId",
-      "\030\001 \002(\003\032\247\001\n\017NodeRegistryMsg\022@\n\005group\030\001 \002(" +
-      "\01621.voldemort.MsgToManager.NodeRegistryM" +
-      "sg.NodeGroup\022\014\n\004port\030\002 \002(\005\022\020\n\010hostname\030\003" +
-      " \002(\t\"2\n\tNodeGroup\022\t\n\005PROXY\020\001\022\013\n\007DB_NODE\020" +
-      "\002\022\r\n\tREDO_NODE\020\003B\'\n\023pt.inesc.undo.protoB" +
-      "\016ToManagerProtoH\001"
+      " \003(\003\0324\n\003SRD\022\013\n\003rid\030\001 \001(\003\022\016\n\006branch\030\002 \001(\005" +
+      "\022\020\n\010restrain\030\003 \001(\010\032;\n\006AckMsg\022\014\n\004port\030\001 \001" +
+      "(\005\022\020\n\010hostname\030\002 \001(\t\022\021\n\texception\030\003 \003(\t\032" +
+      "\035\n\010AckProxy\022\021\n\tcurrentId\030\001 \002(\003\032\247\001\n\017NodeR",
+      "egistryMsg\022@\n\005group\030\001 \002(\01621.voldemort.Ms" +
+      "gToManager.NodeRegistryMsg.NodeGroup\022\014\n\004" +
+      "port\030\002 \002(\005\022\020\n\010hostname\030\003 \002(\t\"2\n\tNodeGrou" +
+      "p\022\t\n\005PROXY\020\001\022\013\n\007DB_NODE\020\002\022\r\n\tREDO_NODE\020\003" +
+      "B\'\n\023pt.inesc.undo.protoB\016ToManagerProtoH" +
+      "\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -7026,7 +6945,7 @@ public final class ToManagerProto {
           internal_static_voldemort_MsgToManager_SRD_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_MsgToManager_SRD_descriptor,
-              new java.lang.String[] { "Rid", "Branch", "Restrain", "Replay", });
+              new java.lang.String[] { "Rid", "Branch", "Restrain", });
           internal_static_voldemort_MsgToManager_AckMsg_descriptor =
             internal_static_voldemort_MsgToManager_descriptor.getNestedTypes().get(5);
           internal_static_voldemort_MsgToManager_AckMsg_fieldAccessorTable = new

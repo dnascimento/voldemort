@@ -43,7 +43,6 @@ message MsgToManager{
 		optional int64 rid = 1;
 		optional int32 branch = 2;
 		optional bool restrain = 3;
-		optional bool replay = 4;
 	}
 
 	//From Replay Nodes

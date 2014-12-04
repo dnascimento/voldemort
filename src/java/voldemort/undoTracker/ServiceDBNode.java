@@ -13,8 +13,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
@@ -28,7 +26,6 @@ import pt.inesc.undo.proto.ToManagerProto.MsgToManager.NodeRegistryMsg;
 import pt.inesc.undo.proto.ToManagerProto.MsgToManager.NodeRegistryMsg.NodeGroup;
 import voldemort.undoTracker.branching.BranchPath;
 import voldemort.undoTracker.map.Op;
-import voldemort.undoTracker.map.VersionShuttle;
 
 import com.google.protobuf.ByteString;
 
@@ -135,18 +132,14 @@ public class ServiceDBNode extends Thread {
             s.getOutputStream().flush();
         }
 
-        if(cmd.getPathBranchCount() != 0 && cmd.getPathSnapshotCount() != 0) {
-            // Retrieve 2 sorted list from most recent to oldest
-            // Message sent before start the replay
-            Iterator<Long> itSnapshots = cmd.getPathSnapshotList().iterator();
-            Iterator<Integer> itBranches = cmd.getPathBranchList().iterator();
-            HashSet<VersionShuttle> path = new HashSet<VersionShuttle>();
-            VersionShuttle current = new VersionShuttle(cmd.getPathSnapshot(0),
-                                                        cmd.getPathBranch(0));
-            while(itSnapshots.hasNext()) {
-                path.add(new VersionShuttle(itSnapshots.next(), itBranches.next()));
-            }
-            BranchPath branchPath = new BranchPath(current, path);
+        if(cmd.hasBranchPath()) {
+            // BranchPath of the branch in which the requests will be replated
+            ToDataNode.BranchPath branchPathMsg = cmd.getBranchPath();
+
+            BranchPath branchPath = new BranchPath((short) branchPathMsg.getBranch(),
+                                                   branchPathMsg.getLatestVersion(),
+                                                   branchPathMsg.getVersionsList());
+
             stub.newReplay(branchPath);
             ToManagerProto.MsgToManager.AckMsg.newBuilder()
                                               .build()

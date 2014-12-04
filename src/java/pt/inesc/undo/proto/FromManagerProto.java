@@ -41,65 +41,51 @@ public final class FromManagerProto {
      */
     boolean getReplayOver();
 
-    // repeated int32 pathBranch = 4;
+    // optional .voldemort.ToDataNode.BranchPath branchPath = 4;
     /**
-     * <code>repeated int32 pathBranch = 4;</code>
+     * <code>optional .voldemort.ToDataNode.BranchPath branchPath = 4;</code>
      */
-    java.util.List<java.lang.Integer> getPathBranchList();
+    boolean hasBranchPath();
     /**
-     * <code>repeated int32 pathBranch = 4;</code>
+     * <code>optional .voldemort.ToDataNode.BranchPath branchPath = 4;</code>
      */
-    int getPathBranchCount();
+    pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath getBranchPath();
     /**
-     * <code>repeated int32 pathBranch = 4;</code>
+     * <code>optional .voldemort.ToDataNode.BranchPath branchPath = 4;</code>
      */
-    int getPathBranch(int index);
+    pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPathOrBuilder getBranchPathOrBuilder();
 
-    // repeated int64 pathSnapshot = 5;
+    // optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 5;
     /**
-     * <code>repeated int64 pathSnapshot = 5;</code>
-     */
-    java.util.List<java.lang.Long> getPathSnapshotList();
-    /**
-     * <code>repeated int64 pathSnapshot = 5;</code>
-     */
-    int getPathSnapshotCount();
-    /**
-     * <code>repeated int64 pathSnapshot = 5;</code>
-     */
-    long getPathSnapshot(int index);
-
-    // optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;
-    /**
-     * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+     * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 5;</code>
      */
     boolean hasEntryAccessesMsg();
     /**
-     * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+     * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 5;</code>
      */
     pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg getEntryAccessesMsg();
     /**
-     * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+     * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 5;</code>
      */
     pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsgOrBuilder getEntryAccessesMsgOrBuilder();
 
-    // optional bool showStats = 7;
+    // optional bool showStats = 6;
     /**
-     * <code>optional bool showStats = 7;</code>
+     * <code>optional bool showStats = 6;</code>
      */
     boolean hasShowStats();
     /**
-     * <code>optional bool showStats = 7;</code>
+     * <code>optional bool showStats = 6;</code>
      */
     boolean getShowStats();
 
-    // optional bool showMap = 8;
+    // optional bool showMap = 7;
     /**
-     * <code>optional bool showMap = 8;</code>
+     * <code>optional bool showMap = 7;</code>
      */
     boolean hasShowMap();
     /**
-     * <code>optional bool showMap = 8;</code>
+     * <code>optional bool showMap = 7;</code>
      */
     boolean getShowMap();
   }
@@ -173,51 +159,22 @@ public final class FromManagerProto {
               replayOver_ = input.readBool();
               break;
             }
-            case 32: {
-              if (!((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
-                pathBranch_ = new java.util.ArrayList<java.lang.Integer>();
-                mutable_bitField0_ |= 0x00000008;
-              }
-              pathBranch_.add(input.readInt32());
-              break;
-            }
             case 34: {
-              int length = input.readRawVarint32();
-              int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00000008) == 0x00000008) && input.getBytesUntilLimit() > 0) {
-                pathBranch_ = new java.util.ArrayList<java.lang.Integer>();
-                mutable_bitField0_ |= 0x00000008;
+              pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000008) == 0x00000008)) {
+                subBuilder = branchPath_.toBuilder();
               }
-              while (input.getBytesUntilLimit() > 0) {
-                pathBranch_.add(input.readInt32());
+              branchPath_ = input.readMessage(pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(branchPath_);
+                branchPath_ = subBuilder.buildPartial();
               }
-              input.popLimit(limit);
-              break;
-            }
-            case 40: {
-              if (!((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
-                pathSnapshot_ = new java.util.ArrayList<java.lang.Long>();
-                mutable_bitField0_ |= 0x00000010;
-              }
-              pathSnapshot_.add(input.readInt64());
+              bitField0_ |= 0x00000008;
               break;
             }
             case 42: {
-              int length = input.readRawVarint32();
-              int limit = input.pushLimit(length);
-              if (!((mutable_bitField0_ & 0x00000010) == 0x00000010) && input.getBytesUntilLimit() > 0) {
-                pathSnapshot_ = new java.util.ArrayList<java.lang.Long>();
-                mutable_bitField0_ |= 0x00000010;
-              }
-              while (input.getBytesUntilLimit() > 0) {
-                pathSnapshot_.add(input.readInt64());
-              }
-              input.popLimit(limit);
-              break;
-            }
-            case 50: {
               pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000008) == 0x00000008)) {
+              if (((bitField0_ & 0x00000010) == 0x00000010)) {
                 subBuilder = entryAccessesMsg_.toBuilder();
               }
               entryAccessesMsg_ = input.readMessage(pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.PARSER, extensionRegistry);
@@ -225,16 +182,16 @@ public final class FromManagerProto {
                 subBuilder.mergeFrom(entryAccessesMsg_);
                 entryAccessesMsg_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000008;
+              bitField0_ |= 0x00000010;
               break;
             }
-            case 56: {
-              bitField0_ |= 0x00000010;
+            case 48: {
+              bitField0_ |= 0x00000020;
               showStats_ = input.readBool();
               break;
             }
-            case 64: {
-              bitField0_ |= 0x00000020;
+            case 56: {
+              bitField0_ |= 0x00000040;
               showMap_ = input.readBool();
               break;
             }
@@ -246,12 +203,6 @@ public final class FromManagerProto {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
-          pathBranch_ = java.util.Collections.unmodifiableList(pathBranch_);
-        }
-        if (((mutable_bitField0_ & 0x00000010) == 0x00000010)) {
-          pathSnapshot_ = java.util.Collections.unmodifiableList(pathSnapshot_);
-        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -837,6 +788,656 @@ public final class FromManagerProto {
       // @@protoc_insertion_point(class_scope:voldemort.ToDataNode.EntryAccessesMsg)
     }
 
+    public interface BranchPathOrBuilder
+        extends com.google.protobuf.MessageOrBuilder {
+
+      // required int32 branch = 1;
+      /**
+       * <code>required int32 branch = 1;</code>
+       */
+      boolean hasBranch();
+      /**
+       * <code>required int32 branch = 1;</code>
+       */
+      int getBranch();
+
+      // required int64 latestVersion = 2;
+      /**
+       * <code>required int64 latestVersion = 2;</code>
+       */
+      boolean hasLatestVersion();
+      /**
+       * <code>required int64 latestVersion = 2;</code>
+       */
+      long getLatestVersion();
+
+      // repeated int64 versions = 3;
+      /**
+       * <code>repeated int64 versions = 3;</code>
+       */
+      java.util.List<java.lang.Long> getVersionsList();
+      /**
+       * <code>repeated int64 versions = 3;</code>
+       */
+      int getVersionsCount();
+      /**
+       * <code>repeated int64 versions = 3;</code>
+       */
+      long getVersions(int index);
+    }
+    /**
+     * Protobuf type {@code voldemort.ToDataNode.BranchPath}
+     */
+    public static final class BranchPath extends
+        com.google.protobuf.GeneratedMessage
+        implements BranchPathOrBuilder {
+      // Use BranchPath.newBuilder() to construct.
+      private BranchPath(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+        super(builder);
+        this.unknownFields = builder.getUnknownFields();
+      }
+      private BranchPath(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+      private static final BranchPath defaultInstance;
+      public static BranchPath getDefaultInstance() {
+        return defaultInstance;
+      }
+
+      public BranchPath getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+
+      private final com.google.protobuf.UnknownFieldSet unknownFields;
+      @java.lang.Override
+      public final com.google.protobuf.UnknownFieldSet
+          getUnknownFields() {
+        return this.unknownFields;
+      }
+      private BranchPath(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        initFields();
+        int mutable_bitField0_ = 0;
+        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+            com.google.protobuf.UnknownFieldSet.newBuilder();
+        try {
+          boolean done = false;
+          while (!done) {
+            int tag = input.readTag();
+            switch (tag) {
+              case 0:
+                done = true;
+                break;
+              default: {
+                if (!parseUnknownField(input, unknownFields,
+                                       extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
+              case 8: {
+                bitField0_ |= 0x00000001;
+                branch_ = input.readInt32();
+                break;
+              }
+              case 16: {
+                bitField0_ |= 0x00000002;
+                latestVersion_ = input.readInt64();
+                break;
+              }
+              case 24: {
+                if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+                  versions_ = new java.util.ArrayList<java.lang.Long>();
+                  mutable_bitField0_ |= 0x00000004;
+                }
+                versions_.add(input.readInt64());
+                break;
+              }
+              case 26: {
+                int length = input.readRawVarint32();
+                int limit = input.pushLimit(length);
+                if (!((mutable_bitField0_ & 0x00000004) == 0x00000004) && input.getBytesUntilLimit() > 0) {
+                  versions_ = new java.util.ArrayList<java.lang.Long>();
+                  mutable_bitField0_ |= 0x00000004;
+                }
+                while (input.getBytesUntilLimit() > 0) {
+                  versions_.add(input.readInt64());
+                }
+                input.popLimit(limit);
+                break;
+              }
+            }
+          }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this);
+        } finally {
+          if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+            versions_ = java.util.Collections.unmodifiableList(versions_);
+          }
+          this.unknownFields = unknownFields.build();
+          makeExtensionsImmutable();
+        }
+      }
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return pt.inesc.undo.proto.FromManagerProto.internal_static_voldemort_ToDataNode_BranchPath_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return pt.inesc.undo.proto.FromManagerProto.internal_static_voldemort_ToDataNode_BranchPath_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath.class, pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath.Builder.class);
+      }
+
+      public static com.google.protobuf.Parser<BranchPath> PARSER =
+          new com.google.protobuf.AbstractParser<BranchPath>() {
+        public BranchPath parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new BranchPath(input, extensionRegistry);
+        }
+      };
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<BranchPath> getParserForType() {
+        return PARSER;
+      }
+
+      private int bitField0_;
+      // required int32 branch = 1;
+      public static final int BRANCH_FIELD_NUMBER = 1;
+      private int branch_;
+      /**
+       * <code>required int32 branch = 1;</code>
+       */
+      public boolean hasBranch() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required int32 branch = 1;</code>
+       */
+      public int getBranch() {
+        return branch_;
+      }
+
+      // required int64 latestVersion = 2;
+      public static final int LATESTVERSION_FIELD_NUMBER = 2;
+      private long latestVersion_;
+      /**
+       * <code>required int64 latestVersion = 2;</code>
+       */
+      public boolean hasLatestVersion() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required int64 latestVersion = 2;</code>
+       */
+      public long getLatestVersion() {
+        return latestVersion_;
+      }
+
+      // repeated int64 versions = 3;
+      public static final int VERSIONS_FIELD_NUMBER = 3;
+      private java.util.List<java.lang.Long> versions_;
+      /**
+       * <code>repeated int64 versions = 3;</code>
+       */
+      public java.util.List<java.lang.Long>
+          getVersionsList() {
+        return versions_;
+      }
+      /**
+       * <code>repeated int64 versions = 3;</code>
+       */
+      public int getVersionsCount() {
+        return versions_.size();
+      }
+      /**
+       * <code>repeated int64 versions = 3;</code>
+       */
+      public long getVersions(int index) {
+        return versions_.get(index);
+      }
+
+      private void initFields() {
+        branch_ = 0;
+        latestVersion_ = 0L;
+        versions_ = java.util.Collections.emptyList();
+      }
+      private byte memoizedIsInitialized = -1;
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized != -1) return isInitialized == 1;
+
+        if (!hasBranch()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        if (!hasLatestVersion()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        getSerializedSize();
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          output.writeInt32(1, branch_);
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          output.writeInt64(2, latestVersion_);
+        }
+        for (int i = 0; i < versions_.size(); i++) {
+          output.writeInt64(3, versions_.get(i));
+        }
+        getUnknownFields().writeTo(output);
+      }
+
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt32Size(1, branch_);
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeInt64Size(2, latestVersion_);
+        }
+        {
+          int dataSize = 0;
+          for (int i = 0; i < versions_.size(); i++) {
+            dataSize += com.google.protobuf.CodedOutputStream
+              .computeInt64SizeNoTag(versions_.get(i));
+          }
+          size += dataSize;
+          size += 1 * getVersionsList().size();
+        }
+        size += getUnknownFields().getSerializedSize();
+        memoizedSerializedSize = size;
+        return size;
+      }
+
+      private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
+        return super.writeReplace();
+      }
+
+      public static pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+      public static pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input);
+      }
+      public static pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      }
+      public static pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+
+      @java.lang.Override
+      protected Builder newBuilderForType(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        Builder builder = new Builder(parent);
+        return builder;
+      }
+      /**
+       * Protobuf type {@code voldemort.ToDataNode.BranchPath}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessage.Builder<Builder>
+         implements pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPathOrBuilder {
+        public static final com.google.protobuf.Descriptors.Descriptor
+            getDescriptor() {
+          return pt.inesc.undo.proto.FromManagerProto.internal_static_voldemort_ToDataNode_BranchPath_descriptor;
+        }
+
+        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+            internalGetFieldAccessorTable() {
+          return pt.inesc.undo.proto.FromManagerProto.internal_static_voldemort_ToDataNode_BranchPath_fieldAccessorTable
+              .ensureFieldAccessorsInitialized(
+                  pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath.class, pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath.Builder.class);
+        }
+
+        // Construct using pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private Builder(
+            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          super(parent);
+          maybeForceBuilderInitialization();
+        }
+        private void maybeForceBuilderInitialization() {
+          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          }
+        }
+        private static Builder create() {
+          return new Builder();
+        }
+
+        public Builder clear() {
+          super.clear();
+          branch_ = 0;
+          bitField0_ = (bitField0_ & ~0x00000001);
+          latestVersion_ = 0L;
+          bitField0_ = (bitField0_ & ~0x00000002);
+          versions_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+          return this;
+        }
+
+        public Builder clone() {
+          return create().mergeFrom(buildPartial());
+        }
+
+        public com.google.protobuf.Descriptors.Descriptor
+            getDescriptorForType() {
+          return pt.inesc.undo.proto.FromManagerProto.internal_static_voldemort_ToDataNode_BranchPath_descriptor;
+        }
+
+        public pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath getDefaultInstanceForType() {
+          return pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath.getDefaultInstance();
+        }
+
+        public pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath build() {
+          pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        public pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath buildPartial() {
+          pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath result = new pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath(this);
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+            to_bitField0_ |= 0x00000001;
+          }
+          result.branch_ = branch_;
+          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+            to_bitField0_ |= 0x00000002;
+          }
+          result.latestVersion_ = latestVersion_;
+          if (((bitField0_ & 0x00000004) == 0x00000004)) {
+            versions_ = java.util.Collections.unmodifiableList(versions_);
+            bitField0_ = (bitField0_ & ~0x00000004);
+          }
+          result.versions_ = versions_;
+          result.bitField0_ = to_bitField0_;
+          onBuilt();
+          return result;
+        }
+
+        public Builder mergeFrom(com.google.protobuf.Message other) {
+          if (other instanceof pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath) {
+            return mergeFrom((pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath)other);
+          } else {
+            super.mergeFrom(other);
+            return this;
+          }
+        }
+
+        public Builder mergeFrom(pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath other) {
+          if (other == pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath.getDefaultInstance()) return this;
+          if (other.hasBranch()) {
+            setBranch(other.getBranch());
+          }
+          if (other.hasLatestVersion()) {
+            setLatestVersion(other.getLatestVersion());
+          }
+          if (!other.versions_.isEmpty()) {
+            if (versions_.isEmpty()) {
+              versions_ = other.versions_;
+              bitField0_ = (bitField0_ & ~0x00000004);
+            } else {
+              ensureVersionsIsMutable();
+              versions_.addAll(other.versions_);
+            }
+            onChanged();
+          }
+          this.mergeUnknownFields(other.getUnknownFields());
+          return this;
+        }
+
+        public final boolean isInitialized() {
+          if (!hasBranch()) {
+            
+            return false;
+          }
+          if (!hasLatestVersion()) {
+            
+            return false;
+          }
+          return true;
+        }
+
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath) e.getUnfinishedMessage();
+            throw e;
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+        private int bitField0_;
+
+        // required int32 branch = 1;
+        private int branch_ ;
+        /**
+         * <code>required int32 branch = 1;</code>
+         */
+        public boolean hasBranch() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+        /**
+         * <code>required int32 branch = 1;</code>
+         */
+        public int getBranch() {
+          return branch_;
+        }
+        /**
+         * <code>required int32 branch = 1;</code>
+         */
+        public Builder setBranch(int value) {
+          bitField0_ |= 0x00000001;
+          branch_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required int32 branch = 1;</code>
+         */
+        public Builder clearBranch() {
+          bitField0_ = (bitField0_ & ~0x00000001);
+          branch_ = 0;
+          onChanged();
+          return this;
+        }
+
+        // required int64 latestVersion = 2;
+        private long latestVersion_ ;
+        /**
+         * <code>required int64 latestVersion = 2;</code>
+         */
+        public boolean hasLatestVersion() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+        /**
+         * <code>required int64 latestVersion = 2;</code>
+         */
+        public long getLatestVersion() {
+          return latestVersion_;
+        }
+        /**
+         * <code>required int64 latestVersion = 2;</code>
+         */
+        public Builder setLatestVersion(long value) {
+          bitField0_ |= 0x00000002;
+          latestVersion_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>required int64 latestVersion = 2;</code>
+         */
+        public Builder clearLatestVersion() {
+          bitField0_ = (bitField0_ & ~0x00000002);
+          latestVersion_ = 0L;
+          onChanged();
+          return this;
+        }
+
+        // repeated int64 versions = 3;
+        private java.util.List<java.lang.Long> versions_ = java.util.Collections.emptyList();
+        private void ensureVersionsIsMutable() {
+          if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+            versions_ = new java.util.ArrayList<java.lang.Long>(versions_);
+            bitField0_ |= 0x00000004;
+           }
+        }
+        /**
+         * <code>repeated int64 versions = 3;</code>
+         */
+        public java.util.List<java.lang.Long>
+            getVersionsList() {
+          return java.util.Collections.unmodifiableList(versions_);
+        }
+        /**
+         * <code>repeated int64 versions = 3;</code>
+         */
+        public int getVersionsCount() {
+          return versions_.size();
+        }
+        /**
+         * <code>repeated int64 versions = 3;</code>
+         */
+        public long getVersions(int index) {
+          return versions_.get(index);
+        }
+        /**
+         * <code>repeated int64 versions = 3;</code>
+         */
+        public Builder setVersions(
+            int index, long value) {
+          ensureVersionsIsMutable();
+          versions_.set(index, value);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated int64 versions = 3;</code>
+         */
+        public Builder addVersions(long value) {
+          ensureVersionsIsMutable();
+          versions_.add(value);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated int64 versions = 3;</code>
+         */
+        public Builder addAllVersions(
+            java.lang.Iterable<? extends java.lang.Long> values) {
+          ensureVersionsIsMutable();
+          super.addAll(values, versions_);
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>repeated int64 versions = 3;</code>
+         */
+        public Builder clearVersions() {
+          versions_ = java.util.Collections.emptyList();
+          bitField0_ = (bitField0_ & ~0x00000004);
+          onChanged();
+          return this;
+        }
+
+        // @@protoc_insertion_point(builder_scope:voldemort.ToDataNode.BranchPath)
+      }
+
+      static {
+        defaultInstance = new BranchPath(true);
+        defaultInstance.initFields();
+      }
+
+      // @@protoc_insertion_point(class_scope:voldemort.ToDataNode.BranchPath)
+    }
+
     private int bitField0_;
     // optional int64 newSnapshot = 1;
     public static final int NEWSNAPSHOT_FIELD_NUMBER = 1;
@@ -886,101 +1487,77 @@ public final class FromManagerProto {
       return replayOver_;
     }
 
-    // repeated int32 pathBranch = 4;
-    public static final int PATHBRANCH_FIELD_NUMBER = 4;
-    private java.util.List<java.lang.Integer> pathBranch_;
+    // optional .voldemort.ToDataNode.BranchPath branchPath = 4;
+    public static final int BRANCHPATH_FIELD_NUMBER = 4;
+    private pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath branchPath_;
     /**
-     * <code>repeated int32 pathBranch = 4;</code>
+     * <code>optional .voldemort.ToDataNode.BranchPath branchPath = 4;</code>
      */
-    public java.util.List<java.lang.Integer>
-        getPathBranchList() {
-      return pathBranch_;
-    }
-    /**
-     * <code>repeated int32 pathBranch = 4;</code>
-     */
-    public int getPathBranchCount() {
-      return pathBranch_.size();
-    }
-    /**
-     * <code>repeated int32 pathBranch = 4;</code>
-     */
-    public int getPathBranch(int index) {
-      return pathBranch_.get(index);
-    }
-
-    // repeated int64 pathSnapshot = 5;
-    public static final int PATHSNAPSHOT_FIELD_NUMBER = 5;
-    private java.util.List<java.lang.Long> pathSnapshot_;
-    /**
-     * <code>repeated int64 pathSnapshot = 5;</code>
-     */
-    public java.util.List<java.lang.Long>
-        getPathSnapshotList() {
-      return pathSnapshot_;
-    }
-    /**
-     * <code>repeated int64 pathSnapshot = 5;</code>
-     */
-    public int getPathSnapshotCount() {
-      return pathSnapshot_.size();
-    }
-    /**
-     * <code>repeated int64 pathSnapshot = 5;</code>
-     */
-    public long getPathSnapshot(int index) {
-      return pathSnapshot_.get(index);
-    }
-
-    // optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;
-    public static final int ENTRYACCESSESMSG_FIELD_NUMBER = 6;
-    private pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg entryAccessesMsg_;
-    /**
-     * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
-     */
-    public boolean hasEntryAccessesMsg() {
+    public boolean hasBranchPath() {
       return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
-     * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+     * <code>optional .voldemort.ToDataNode.BranchPath branchPath = 4;</code>
+     */
+    public pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath getBranchPath() {
+      return branchPath_;
+    }
+    /**
+     * <code>optional .voldemort.ToDataNode.BranchPath branchPath = 4;</code>
+     */
+    public pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPathOrBuilder getBranchPathOrBuilder() {
+      return branchPath_;
+    }
+
+    // optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 5;
+    public static final int ENTRYACCESSESMSG_FIELD_NUMBER = 5;
+    private pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg entryAccessesMsg_;
+    /**
+     * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 5;</code>
+     */
+    public boolean hasEntryAccessesMsg() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    /**
+     * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 5;</code>
      */
     public pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg getEntryAccessesMsg() {
       return entryAccessesMsg_;
     }
     /**
-     * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+     * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 5;</code>
      */
     public pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsgOrBuilder getEntryAccessesMsgOrBuilder() {
       return entryAccessesMsg_;
     }
 
-    // optional bool showStats = 7;
-    public static final int SHOWSTATS_FIELD_NUMBER = 7;
+    // optional bool showStats = 6;
+    public static final int SHOWSTATS_FIELD_NUMBER = 6;
     private boolean showStats_;
     /**
-     * <code>optional bool showStats = 7;</code>
+     * <code>optional bool showStats = 6;</code>
      */
     public boolean hasShowStats() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
+      return ((bitField0_ & 0x00000020) == 0x00000020);
     }
     /**
-     * <code>optional bool showStats = 7;</code>
+     * <code>optional bool showStats = 6;</code>
      */
     public boolean getShowStats() {
       return showStats_;
     }
 
-    // optional bool showMap = 8;
-    public static final int SHOWMAP_FIELD_NUMBER = 8;
+    // optional bool showMap = 7;
+    public static final int SHOWMAP_FIELD_NUMBER = 7;
     private boolean showMap_;
     /**
-     * <code>optional bool showMap = 8;</code>
+     * <code>optional bool showMap = 7;</code>
      */
     public boolean hasShowMap() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
+      return ((bitField0_ & 0x00000040) == 0x00000040);
     }
     /**
-     * <code>optional bool showMap = 8;</code>
+     * <code>optional bool showMap = 7;</code>
      */
     public boolean getShowMap() {
       return showMap_;
@@ -990,8 +1567,7 @@ public final class FromManagerProto {
       newSnapshot_ = 0L;
       resetDependencies_ = false;
       replayOver_ = false;
-      pathBranch_ = java.util.Collections.emptyList();
-      pathSnapshot_ = java.util.Collections.emptyList();
+      branchPath_ = pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath.getDefaultInstance();
       entryAccessesMsg_ = pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.getDefaultInstance();
       showStats_ = false;
       showMap_ = false;
@@ -1001,6 +1577,12 @@ public final class FromManagerProto {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
 
+      if (hasBranchPath()) {
+        if (!getBranchPath().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       if (hasEntryAccessesMsg()) {
         if (!getEntryAccessesMsg().isInitialized()) {
           memoizedIsInitialized = 0;
@@ -1023,20 +1605,17 @@ public final class FromManagerProto {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeBool(3, replayOver_);
       }
-      for (int i = 0; i < pathBranch_.size(); i++) {
-        output.writeInt32(4, pathBranch_.get(i));
-      }
-      for (int i = 0; i < pathSnapshot_.size(); i++) {
-        output.writeInt64(5, pathSnapshot_.get(i));
-      }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeMessage(6, entryAccessesMsg_);
+        output.writeMessage(4, branchPath_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeBool(7, showStats_);
+        output.writeMessage(5, entryAccessesMsg_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeBool(8, showMap_);
+        output.writeBool(6, showStats_);
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        output.writeBool(7, showMap_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -1059,35 +1638,21 @@ public final class FromManagerProto {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(3, replayOver_);
       }
-      {
-        int dataSize = 0;
-        for (int i = 0; i < pathBranch_.size(); i++) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeInt32SizeNoTag(pathBranch_.get(i));
-        }
-        size += dataSize;
-        size += 1 * getPathBranchList().size();
-      }
-      {
-        int dataSize = 0;
-        for (int i = 0; i < pathSnapshot_.size(); i++) {
-          dataSize += com.google.protobuf.CodedOutputStream
-            .computeInt64SizeNoTag(pathSnapshot_.get(i));
-        }
-        size += dataSize;
-        size += 1 * getPathSnapshotList().size();
-      }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(6, entryAccessesMsg_);
+          .computeMessageSize(4, branchPath_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(7, showStats_);
+          .computeMessageSize(5, entryAccessesMsg_);
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(8, showMap_);
+          .computeBoolSize(6, showStats_);
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(7, showMap_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1201,6 +1766,7 @@ public final class FromManagerProto {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getBranchPathFieldBuilder();
           getEntryAccessesMsgFieldBuilder();
         }
       }
@@ -1216,20 +1782,22 @@ public final class FromManagerProto {
         bitField0_ = (bitField0_ & ~0x00000002);
         replayOver_ = false;
         bitField0_ = (bitField0_ & ~0x00000004);
-        pathBranch_ = java.util.Collections.emptyList();
+        if (branchPathBuilder_ == null) {
+          branchPath_ = pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath.getDefaultInstance();
+        } else {
+          branchPathBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000008);
-        pathSnapshot_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000010);
         if (entryAccessesMsgBuilder_ == null) {
           entryAccessesMsg_ = pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.getDefaultInstance();
         } else {
           entryAccessesMsgBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000020);
+        bitField0_ = (bitField0_ & ~0x00000010);
         showStats_ = false;
-        bitField0_ = (bitField0_ & ~0x00000040);
+        bitField0_ = (bitField0_ & ~0x00000020);
         showMap_ = false;
-        bitField0_ = (bitField0_ & ~0x00000080);
+        bitField0_ = (bitField0_ & ~0x00000040);
         return this;
       }
 
@@ -1270,30 +1838,28 @@ public final class FromManagerProto {
           to_bitField0_ |= 0x00000004;
         }
         result.replayOver_ = replayOver_;
-        if (((bitField0_ & 0x00000008) == 0x00000008)) {
-          pathBranch_ = java.util.Collections.unmodifiableList(pathBranch_);
-          bitField0_ = (bitField0_ & ~0x00000008);
-        }
-        result.pathBranch_ = pathBranch_;
-        if (((bitField0_ & 0x00000010) == 0x00000010)) {
-          pathSnapshot_ = java.util.Collections.unmodifiableList(pathSnapshot_);
-          bitField0_ = (bitField0_ & ~0x00000010);
-        }
-        result.pathSnapshot_ = pathSnapshot_;
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
           to_bitField0_ |= 0x00000008;
+        }
+        if (branchPathBuilder_ == null) {
+          result.branchPath_ = branchPath_;
+        } else {
+          result.branchPath_ = branchPathBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
         }
         if (entryAccessesMsgBuilder_ == null) {
           result.entryAccessesMsg_ = entryAccessesMsg_;
         } else {
           result.entryAccessesMsg_ = entryAccessesMsgBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000010;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
         }
         result.showStats_ = showStats_;
-        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
-          to_bitField0_ |= 0x00000020;
+        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+          to_bitField0_ |= 0x00000040;
         }
         result.showMap_ = showMap_;
         result.bitField0_ = to_bitField0_;
@@ -1321,25 +1887,8 @@ public final class FromManagerProto {
         if (other.hasReplayOver()) {
           setReplayOver(other.getReplayOver());
         }
-        if (!other.pathBranch_.isEmpty()) {
-          if (pathBranch_.isEmpty()) {
-            pathBranch_ = other.pathBranch_;
-            bitField0_ = (bitField0_ & ~0x00000008);
-          } else {
-            ensurePathBranchIsMutable();
-            pathBranch_.addAll(other.pathBranch_);
-          }
-          onChanged();
-        }
-        if (!other.pathSnapshot_.isEmpty()) {
-          if (pathSnapshot_.isEmpty()) {
-            pathSnapshot_ = other.pathSnapshot_;
-            bitField0_ = (bitField0_ & ~0x00000010);
-          } else {
-            ensurePathSnapshotIsMutable();
-            pathSnapshot_.addAll(other.pathSnapshot_);
-          }
-          onChanged();
+        if (other.hasBranchPath()) {
+          mergeBranchPath(other.getBranchPath());
         }
         if (other.hasEntryAccessesMsg()) {
           mergeEntryAccessesMsg(other.getEntryAccessesMsg());
@@ -1355,6 +1904,12 @@ public final class FromManagerProto {
       }
 
       public final boolean isInitialized() {
+        if (hasBranchPath()) {
+          if (!getBranchPath().isInitialized()) {
+            
+            return false;
+          }
+        }
         if (hasEntryAccessesMsg()) {
           if (!getEntryAccessesMsg().isInitialized()) {
             
@@ -1482,150 +2037,135 @@ public final class FromManagerProto {
         return this;
       }
 
-      // repeated int32 pathBranch = 4;
-      private java.util.List<java.lang.Integer> pathBranch_ = java.util.Collections.emptyList();
-      private void ensurePathBranchIsMutable() {
-        if (!((bitField0_ & 0x00000008) == 0x00000008)) {
-          pathBranch_ = new java.util.ArrayList<java.lang.Integer>(pathBranch_);
-          bitField0_ |= 0x00000008;
-         }
+      // optional .voldemort.ToDataNode.BranchPath branchPath = 4;
+      private pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath branchPath_ = pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath, pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath.Builder, pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPathOrBuilder> branchPathBuilder_;
+      /**
+       * <code>optional .voldemort.ToDataNode.BranchPath branchPath = 4;</code>
+       */
+      public boolean hasBranchPath() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
-       * <code>repeated int32 pathBranch = 4;</code>
+       * <code>optional .voldemort.ToDataNode.BranchPath branchPath = 4;</code>
        */
-      public java.util.List<java.lang.Integer>
-          getPathBranchList() {
-        return java.util.Collections.unmodifiableList(pathBranch_);
+      public pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath getBranchPath() {
+        if (branchPathBuilder_ == null) {
+          return branchPath_;
+        } else {
+          return branchPathBuilder_.getMessage();
+        }
       }
       /**
-       * <code>repeated int32 pathBranch = 4;</code>
+       * <code>optional .voldemort.ToDataNode.BranchPath branchPath = 4;</code>
        */
-      public int getPathBranchCount() {
-        return pathBranch_.size();
-      }
-      /**
-       * <code>repeated int32 pathBranch = 4;</code>
-       */
-      public int getPathBranch(int index) {
-        return pathBranch_.get(index);
-      }
-      /**
-       * <code>repeated int32 pathBranch = 4;</code>
-       */
-      public Builder setPathBranch(
-          int index, int value) {
-        ensurePathBranchIsMutable();
-        pathBranch_.set(index, value);
-        onChanged();
+      public Builder setBranchPath(pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath value) {
+        if (branchPathBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          branchPath_ = value;
+          onChanged();
+        } else {
+          branchPathBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000008;
         return this;
       }
       /**
-       * <code>repeated int32 pathBranch = 4;</code>
+       * <code>optional .voldemort.ToDataNode.BranchPath branchPath = 4;</code>
        */
-      public Builder addPathBranch(int value) {
-        ensurePathBranchIsMutable();
-        pathBranch_.add(value);
-        onChanged();
+      public Builder setBranchPath(
+          pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath.Builder builderForValue) {
+        if (branchPathBuilder_ == null) {
+          branchPath_ = builderForValue.build();
+          onChanged();
+        } else {
+          branchPathBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000008;
         return this;
       }
       /**
-       * <code>repeated int32 pathBranch = 4;</code>
+       * <code>optional .voldemort.ToDataNode.BranchPath branchPath = 4;</code>
        */
-      public Builder addAllPathBranch(
-          java.lang.Iterable<? extends java.lang.Integer> values) {
-        ensurePathBranchIsMutable();
-        super.addAll(values, pathBranch_);
-        onChanged();
+      public Builder mergeBranchPath(pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath value) {
+        if (branchPathBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) == 0x00000008) &&
+              branchPath_ != pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath.getDefaultInstance()) {
+            branchPath_ =
+              pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath.newBuilder(branchPath_).mergeFrom(value).buildPartial();
+          } else {
+            branchPath_ = value;
+          }
+          onChanged();
+        } else {
+          branchPathBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000008;
         return this;
       }
       /**
-       * <code>repeated int32 pathBranch = 4;</code>
+       * <code>optional .voldemort.ToDataNode.BranchPath branchPath = 4;</code>
        */
-      public Builder clearPathBranch() {
-        pathBranch_ = java.util.Collections.emptyList();
+      public Builder clearBranchPath() {
+        if (branchPathBuilder_ == null) {
+          branchPath_ = pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath.getDefaultInstance();
+          onChanged();
+        } else {
+          branchPathBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000008);
-        onChanged();
         return this;
+      }
+      /**
+       * <code>optional .voldemort.ToDataNode.BranchPath branchPath = 4;</code>
+       */
+      public pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath.Builder getBranchPathBuilder() {
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return getBranchPathFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .voldemort.ToDataNode.BranchPath branchPath = 4;</code>
+       */
+      public pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPathOrBuilder getBranchPathOrBuilder() {
+        if (branchPathBuilder_ != null) {
+          return branchPathBuilder_.getMessageOrBuilder();
+        } else {
+          return branchPath_;
+        }
+      }
+      /**
+       * <code>optional .voldemort.ToDataNode.BranchPath branchPath = 4;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath, pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath.Builder, pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPathOrBuilder> 
+          getBranchPathFieldBuilder() {
+        if (branchPathBuilder_ == null) {
+          branchPathBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath, pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPath.Builder, pt.inesc.undo.proto.FromManagerProto.ToDataNode.BranchPathOrBuilder>(
+                  branchPath_,
+                  getParentForChildren(),
+                  isClean());
+          branchPath_ = null;
+        }
+        return branchPathBuilder_;
       }
 
-      // repeated int64 pathSnapshot = 5;
-      private java.util.List<java.lang.Long> pathSnapshot_ = java.util.Collections.emptyList();
-      private void ensurePathSnapshotIsMutable() {
-        if (!((bitField0_ & 0x00000010) == 0x00000010)) {
-          pathSnapshot_ = new java.util.ArrayList<java.lang.Long>(pathSnapshot_);
-          bitField0_ |= 0x00000010;
-         }
-      }
-      /**
-       * <code>repeated int64 pathSnapshot = 5;</code>
-       */
-      public java.util.List<java.lang.Long>
-          getPathSnapshotList() {
-        return java.util.Collections.unmodifiableList(pathSnapshot_);
-      }
-      /**
-       * <code>repeated int64 pathSnapshot = 5;</code>
-       */
-      public int getPathSnapshotCount() {
-        return pathSnapshot_.size();
-      }
-      /**
-       * <code>repeated int64 pathSnapshot = 5;</code>
-       */
-      public long getPathSnapshot(int index) {
-        return pathSnapshot_.get(index);
-      }
-      /**
-       * <code>repeated int64 pathSnapshot = 5;</code>
-       */
-      public Builder setPathSnapshot(
-          int index, long value) {
-        ensurePathSnapshotIsMutable();
-        pathSnapshot_.set(index, value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated int64 pathSnapshot = 5;</code>
-       */
-      public Builder addPathSnapshot(long value) {
-        ensurePathSnapshotIsMutable();
-        pathSnapshot_.add(value);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated int64 pathSnapshot = 5;</code>
-       */
-      public Builder addAllPathSnapshot(
-          java.lang.Iterable<? extends java.lang.Long> values) {
-        ensurePathSnapshotIsMutable();
-        super.addAll(values, pathSnapshot_);
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>repeated int64 pathSnapshot = 5;</code>
-       */
-      public Builder clearPathSnapshot() {
-        pathSnapshot_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000010);
-        onChanged();
-        return this;
-      }
-
-      // optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;
+      // optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 5;
       private pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg entryAccessesMsg_ = pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
           pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg, pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.Builder, pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsgOrBuilder> entryAccessesMsgBuilder_;
       /**
-       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 5;</code>
        */
       public boolean hasEntryAccessesMsg() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
+        return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
-       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 5;</code>
        */
       public pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg getEntryAccessesMsg() {
         if (entryAccessesMsgBuilder_ == null) {
@@ -1635,7 +2175,7 @@ public final class FromManagerProto {
         }
       }
       /**
-       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 5;</code>
        */
       public Builder setEntryAccessesMsg(pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg value) {
         if (entryAccessesMsgBuilder_ == null) {
@@ -1647,11 +2187,11 @@ public final class FromManagerProto {
         } else {
           entryAccessesMsgBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000010;
         return this;
       }
       /**
-       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 5;</code>
        */
       public Builder setEntryAccessesMsg(
           pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.Builder builderForValue) {
@@ -1661,15 +2201,15 @@ public final class FromManagerProto {
         } else {
           entryAccessesMsgBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000010;
         return this;
       }
       /**
-       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 5;</code>
        */
       public Builder mergeEntryAccessesMsg(pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg value) {
         if (entryAccessesMsgBuilder_ == null) {
-          if (((bitField0_ & 0x00000020) == 0x00000020) &&
+          if (((bitField0_ & 0x00000010) == 0x00000010) &&
               entryAccessesMsg_ != pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.getDefaultInstance()) {
             entryAccessesMsg_ =
               pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.newBuilder(entryAccessesMsg_).mergeFrom(value).buildPartial();
@@ -1680,11 +2220,11 @@ public final class FromManagerProto {
         } else {
           entryAccessesMsgBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000010;
         return this;
       }
       /**
-       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 5;</code>
        */
       public Builder clearEntryAccessesMsg() {
         if (entryAccessesMsgBuilder_ == null) {
@@ -1693,19 +2233,19 @@ public final class FromManagerProto {
         } else {
           entryAccessesMsgBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000020);
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
       /**
-       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 5;</code>
        */
       public pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.Builder getEntryAccessesMsgBuilder() {
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000010;
         onChanged();
         return getEntryAccessesMsgFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 5;</code>
        */
       public pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsgOrBuilder getEntryAccessesMsgOrBuilder() {
         if (entryAccessesMsgBuilder_ != null) {
@@ -1715,7 +2255,7 @@ public final class FromManagerProto {
         }
       }
       /**
-       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 6;</code>
+       * <code>optional .voldemort.ToDataNode.EntryAccessesMsg entryAccessesMsg = 5;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg, pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsg.Builder, pt.inesc.undo.proto.FromManagerProto.ToDataNode.EntryAccessesMsgOrBuilder> 
@@ -1731,67 +2271,67 @@ public final class FromManagerProto {
         return entryAccessesMsgBuilder_;
       }
 
-      // optional bool showStats = 7;
+      // optional bool showStats = 6;
       private boolean showStats_ ;
       /**
-       * <code>optional bool showStats = 7;</code>
+       * <code>optional bool showStats = 6;</code>
        */
       public boolean hasShowStats() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
+        return ((bitField0_ & 0x00000020) == 0x00000020);
       }
       /**
-       * <code>optional bool showStats = 7;</code>
+       * <code>optional bool showStats = 6;</code>
        */
       public boolean getShowStats() {
         return showStats_;
       }
       /**
-       * <code>optional bool showStats = 7;</code>
+       * <code>optional bool showStats = 6;</code>
        */
       public Builder setShowStats(boolean value) {
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000020;
         showStats_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional bool showStats = 7;</code>
+       * <code>optional bool showStats = 6;</code>
        */
       public Builder clearShowStats() {
-        bitField0_ = (bitField0_ & ~0x00000040);
+        bitField0_ = (bitField0_ & ~0x00000020);
         showStats_ = false;
         onChanged();
         return this;
       }
 
-      // optional bool showMap = 8;
+      // optional bool showMap = 7;
       private boolean showMap_ ;
       /**
-       * <code>optional bool showMap = 8;</code>
+       * <code>optional bool showMap = 7;</code>
        */
       public boolean hasShowMap() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
+        return ((bitField0_ & 0x00000040) == 0x00000040);
       }
       /**
-       * <code>optional bool showMap = 8;</code>
+       * <code>optional bool showMap = 7;</code>
        */
       public boolean getShowMap() {
         return showMap_;
       }
       /**
-       * <code>optional bool showMap = 8;</code>
+       * <code>optional bool showMap = 7;</code>
        */
       public Builder setShowMap(boolean value) {
-        bitField0_ |= 0x00000080;
+        bitField0_ |= 0x00000040;
         showMap_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional bool showMap = 8;</code>
+       * <code>optional bool showMap = 7;</code>
        */
       public Builder clearShowMap() {
-        bitField0_ = (bitField0_ & ~0x00000080);
+        bitField0_ = (bitField0_ & ~0x00000040);
         showMap_ = false;
         onChanged();
         return this;
@@ -2915,16 +3455,6 @@ public final class FromManagerProto {
      * <code>optional int64 timeTravel = 3;</code>
      */
     long getTimeTravel();
-
-    // optional int64 snapshot = 4;
-    /**
-     * <code>optional int64 snapshot = 4;</code>
-     */
-    boolean hasSnapshot();
-    /**
-     * <code>optional int64 snapshot = 4;</code>
-     */
-    long getSnapshot();
   }
   /**
    * Protobuf type {@code voldemort.ProxyMsg}
@@ -2994,11 +3524,6 @@ public final class FromManagerProto {
             case 24: {
               bitField0_ |= 0x00000004;
               timeTravel_ = input.readInt64();
-              break;
-            }
-            case 32: {
-              bitField0_ |= 0x00000008;
-              snapshot_ = input.readInt64();
               break;
             }
           }
@@ -3089,27 +3614,10 @@ public final class FromManagerProto {
       return timeTravel_;
     }
 
-    // optional int64 snapshot = 4;
-    public static final int SNAPSHOT_FIELD_NUMBER = 4;
-    private long snapshot_;
-    /**
-     * <code>optional int64 snapshot = 4;</code>
-     */
-    public boolean hasSnapshot() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>optional int64 snapshot = 4;</code>
-     */
-    public long getSnapshot() {
-      return snapshot_;
-    }
-
     private void initFields() {
       branch_ = 0;
       restrain_ = false;
       timeTravel_ = 0L;
-      snapshot_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -3132,9 +3640,6 @@ public final class FromManagerProto {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeInt64(3, timeTravel_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeInt64(4, snapshot_);
-      }
       getUnknownFields().writeTo(output);
     }
 
@@ -3155,10 +3660,6 @@ public final class FromManagerProto {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(3, timeTravel_);
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(4, snapshot_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -3286,8 +3787,6 @@ public final class FromManagerProto {
         bitField0_ = (bitField0_ & ~0x00000002);
         timeTravel_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000004);
-        snapshot_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -3328,10 +3827,6 @@ public final class FromManagerProto {
           to_bitField0_ |= 0x00000004;
         }
         result.timeTravel_ = timeTravel_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
-        result.snapshot_ = snapshot_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -3356,9 +3851,6 @@ public final class FromManagerProto {
         }
         if (other.hasTimeTravel()) {
           setTimeTravel(other.getTimeTravel());
-        }
-        if (other.hasSnapshot()) {
-          setSnapshot(other.getSnapshot());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -3486,39 +3978,6 @@ public final class FromManagerProto {
         return this;
       }
 
-      // optional int64 snapshot = 4;
-      private long snapshot_ ;
-      /**
-       * <code>optional int64 snapshot = 4;</code>
-       */
-      public boolean hasSnapshot() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional int64 snapshot = 4;</code>
-       */
-      public long getSnapshot() {
-        return snapshot_;
-      }
-      /**
-       * <code>optional int64 snapshot = 4;</code>
-       */
-      public Builder setSnapshot(long value) {
-        bitField0_ |= 0x00000008;
-        snapshot_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int64 snapshot = 4;</code>
-       */
-      public Builder clearSnapshot() {
-        bitField0_ = (bitField0_ & ~0x00000008);
-        snapshot_ = 0L;
-        onChanged();
-        return this;
-      }
-
       // @@protoc_insertion_point(builder_scope:voldemort.ProxyMsg)
     }
 
@@ -3541,6 +4000,11 @@ public final class FromManagerProto {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_voldemort_ToDataNode_EntryAccessesMsg_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_voldemort_ToDataNode_BranchPath_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_voldemort_ToDataNode_BranchPath_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_voldemort_ExecList_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -3559,20 +4023,22 @@ public final class FromManagerProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\022from-manager.proto\022\tvoldemort\"\223\002\n\nToDa" +
+      "\n\022from-manager.proto\022\tvoldemort\"\346\002\n\nToDa" +
       "taNode\022\023\n\013newSnapshot\030\001 \001(\003\022\031\n\021resetDepe" +
-      "ndencies\030\002 \001(\010\022\022\n\nreplayOver\030\003 \001(\010\022\022\n\npa" +
-      "thBranch\030\004 \003(\005\022\024\n\014pathSnapshot\030\005 \003(\003\022@\n\020" +
-      "entryAccessesMsg\030\006 \001(\0132&.voldemort.ToDat" +
-      "aNode.EntryAccessesMsg\022\021\n\tshowStats\030\007 \001(" +
-      "\010\022\017\n\007showMap\030\010 \001(\010\0321\n\020EntryAccessesMsg\022\014" +
-      "\n\004keys\030\001 \003(\014\022\017\n\007baseRid\030\002 \002(\003\"r\n\010ExecLis" +
-      "t\022\013\n\003rid\030\001 \003(\003\022\016\n\006branch\030\002 \002(\005\022\r\n\005start\030" +
-      "\003 \002(\010\022\022\n\nreplayMode\030\004 \002(\t\022\022\n\ntargetHost\030",
-      "\005 \002(\t\022\022\n\ntargetPort\030\006 \002(\005\"R\n\010ProxyMsg\022\016\n" +
-      "\006branch\030\001 \001(\005\022\020\n\010restrain\030\002 \001(\010\022\022\n\ntimeT" +
-      "ravel\030\003 \001(\003\022\020\n\010snapshot\030\004 \001(\003B)\n\023pt.ines" +
-      "c.undo.protoB\020FromManagerProtoH\001"
+      "ndencies\030\002 \001(\010\022\022\n\nreplayOver\030\003 \001(\010\0224\n\nbr" +
+      "anchPath\030\004 \001(\0132 .voldemort.ToDataNode.Br" +
+      "anchPath\022@\n\020entryAccessesMsg\030\005 \001(\0132&.vol" +
+      "demort.ToDataNode.EntryAccessesMsg\022\021\n\tsh" +
+      "owStats\030\006 \001(\010\022\017\n\007showMap\030\007 \001(\010\0321\n\020EntryA" +
+      "ccessesMsg\022\014\n\004keys\030\001 \003(\014\022\017\n\007baseRid\030\002 \002(" +
+      "\003\032E\n\nBranchPath\022\016\n\006branch\030\001 \002(\005\022\025\n\rlates" +
+      "tVersion\030\002 \002(\003\022\020\n\010versions\030\003 \003(\003\"r\n\010Exec",
+      "List\022\013\n\003rid\030\001 \003(\003\022\016\n\006branch\030\002 \002(\005\022\r\n\005sta" +
+      "rt\030\003 \002(\010\022\022\n\nreplayMode\030\004 \002(\t\022\022\n\ntargetHo" +
+      "st\030\005 \002(\t\022\022\n\ntargetPort\030\006 \002(\005\"@\n\010ProxyMsg" +
+      "\022\016\n\006branch\030\001 \001(\005\022\020\n\010restrain\030\002 \001(\010\022\022\n\nti" +
+      "meTravel\030\003 \001(\003B)\n\023pt.inesc.undo.protoB\020F" +
+      "romManagerProtoH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -3584,13 +4050,19 @@ public final class FromManagerProto {
           internal_static_voldemort_ToDataNode_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_ToDataNode_descriptor,
-              new java.lang.String[] { "NewSnapshot", "ResetDependencies", "ReplayOver", "PathBranch", "PathSnapshot", "EntryAccessesMsg", "ShowStats", "ShowMap", });
+              new java.lang.String[] { "NewSnapshot", "ResetDependencies", "ReplayOver", "BranchPath", "EntryAccessesMsg", "ShowStats", "ShowMap", });
           internal_static_voldemort_ToDataNode_EntryAccessesMsg_descriptor =
             internal_static_voldemort_ToDataNode_descriptor.getNestedTypes().get(0);
           internal_static_voldemort_ToDataNode_EntryAccessesMsg_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_ToDataNode_EntryAccessesMsg_descriptor,
               new java.lang.String[] { "Keys", "BaseRid", });
+          internal_static_voldemort_ToDataNode_BranchPath_descriptor =
+            internal_static_voldemort_ToDataNode_descriptor.getNestedTypes().get(1);
+          internal_static_voldemort_ToDataNode_BranchPath_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_voldemort_ToDataNode_BranchPath_descriptor,
+              new java.lang.String[] { "Branch", "LatestVersion", "Versions", });
           internal_static_voldemort_ExecList_descriptor =
             getDescriptor().getMessageTypes().get(1);
           internal_static_voldemort_ExecList_fieldAccessorTable = new
@@ -3602,7 +4074,7 @@ public final class FromManagerProto {
           internal_static_voldemort_ProxyMsg_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_voldemort_ProxyMsg_descriptor,
-              new java.lang.String[] { "Branch", "Restrain", "TimeTravel", "Snapshot", });
+              new java.lang.String[] { "Branch", "Restrain", "TimeTravel", });
           return null;
         }
       };
