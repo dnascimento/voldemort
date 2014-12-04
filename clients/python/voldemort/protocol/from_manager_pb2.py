@@ -13,7 +13,7 @@ from google.protobuf import descriptor_pb2
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='from-manager.proto',
   package='voldemort',
-  serialized_pb='\n\x12\x66rom-manager.proto\x12\tvoldemort\"\x91\x02\n\nToDataNode\x12\x13\n\x0bnewSnapshot\x18\x01 \x01(\x03\x12\x19\n\x11resetDependencies\x18\x02 \x01(\x08\x12\x10\n\x08redoOver\x18\x03 \x01(\x08\x12\x12\n\npathBranch\x18\x04 \x03(\x05\x12\x14\n\x0cpathSnapshot\x18\x05 \x03(\x03\x12@\n\x10\x65ntryAccessesMsg\x18\x06 \x01(\x0b\x32&.voldemort.ToDataNode.EntryAccessesMsg\x12\x11\n\tshowStats\x18\x07 \x01(\x08\x12\x0f\n\x07showMap\x18\x08 \x01(\x08\x1a\x31\n\x10\x45ntryAccessesMsg\x12\x0c\n\x04keys\x18\x01 \x03(\x0c\x12\x0f\n\x07\x62\x61seRid\x18\x02 \x02(\x03\"r\n\x08\x45xecList\x12\x0b\n\x03rid\x18\x01 \x03(\x03\x12\x0e\n\x06\x62ranch\x18\x02 \x02(\x05\x12\r\n\x05start\x18\x03 \x02(\x08\x12\x12\n\nreplayMode\x18\x04 \x02(\t\x12\x12\n\ntargetHost\x18\x05 \x02(\t\x12\x12\n\ntargetPort\x18\x06 \x02(\x05\"R\n\x08ProxyMsg\x12\x0e\n\x06\x62ranch\x18\x01 \x01(\x05\x12\x10\n\x08restrain\x18\x02 \x01(\x08\x12\x12\n\ntimeTravel\x18\x03 \x01(\x03\x12\x10\n\x08snapshot\x18\x04 \x01(\x03\x42)\n\x13pt.inesc.undo.protoB\x10\x46romManagerProtoH\x01')
+  serialized_pb='\n\x12\x66rom-manager.proto\x12\tvoldemort\"\x93\x02\n\nToDataNode\x12\x13\n\x0bnewSnapshot\x18\x01 \x01(\x03\x12\x19\n\x11resetDependencies\x18\x02 \x01(\x08\x12\x12\n\nreplayOver\x18\x03 \x01(\x08\x12\x12\n\npathBranch\x18\x04 \x03(\x05\x12\x14\n\x0cpathSnapshot\x18\x05 \x03(\x03\x12@\n\x10\x65ntryAccessesMsg\x18\x06 \x01(\x0b\x32&.voldemort.ToDataNode.EntryAccessesMsg\x12\x11\n\tshowStats\x18\x07 \x01(\x08\x12\x0f\n\x07showMap\x18\x08 \x01(\x08\x1a\x31\n\x10\x45ntryAccessesMsg\x12\x0c\n\x04keys\x18\x01 \x03(\x0c\x12\x0f\n\x07\x62\x61seRid\x18\x02 \x02(\x03\"r\n\x08\x45xecList\x12\x0b\n\x03rid\x18\x01 \x03(\x03\x12\x0e\n\x06\x62ranch\x18\x02 \x02(\x05\x12\r\n\x05start\x18\x03 \x02(\x08\x12\x12\n\nreplayMode\x18\x04 \x02(\t\x12\x12\n\ntargetHost\x18\x05 \x02(\t\x12\x12\n\ntargetPort\x18\x06 \x02(\x05\"R\n\x08ProxyMsg\x12\x0e\n\x06\x62ranch\x18\x01 \x01(\x05\x12\x10\n\x08restrain\x18\x02 \x01(\x08\x12\x12\n\ntimeTravel\x18\x03 \x01(\x03\x12\x10\n\x08snapshot\x18\x04 \x01(\x03\x42)\n\x13pt.inesc.undo.protoB\x10\x46romManagerProtoH\x01')
 
 
 
@@ -48,8 +48,8 @@ _TODATANODE_ENTRYACCESSESMSG = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=258,
-  serialized_end=307,
+  serialized_start=260,
+  serialized_end=309,
 )
 
 _TODATANODE = _descriptor.Descriptor(
@@ -74,7 +74,7 @@ _TODATANODE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='redoOver', full_name='voldemort.ToDataNode.redoOver', index=2,
+      name='replayOver', full_name='voldemort.ToDataNode.replayOver', index=2,
       number=3, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
@@ -125,7 +125,7 @@ _TODATANODE = _descriptor.Descriptor(
   is_extendable=False,
   extension_ranges=[],
   serialized_start=34,
-  serialized_end=307,
+  serialized_end=309,
 )
 
 
@@ -187,8 +187,8 @@ _EXECLIST = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=309,
-  serialized_end=423,
+  serialized_start=311,
+  serialized_end=425,
 )
 
 
@@ -236,8 +236,8 @@ _PROXYMSG = _descriptor.Descriptor(
   options=None,
   is_extendable=False,
   extension_ranges=[],
-  serialized_start=425,
-  serialized_end=507,
+  serialized_start=427,
+  serialized_end=509,
 )
 
 _TODATANODE_ENTRYACCESSESMSG.containing_type = _TODATANODE;

@@ -43,7 +43,6 @@ import voldemort.undoTracker.map.KeyMap;
 import voldemort.undoTracker.map.KeyMapEntry;
 import voldemort.undoTracker.map.Op;
 import voldemort.undoTracker.map.Op.OpType;
-import voldemort.undoTracker.map.VersionList;
 import voldemort.undoTracker.map.VersionShuttle;
 import voldemort.undoTracker.schedulers.NewScheduler;
 import voldemort.undoTracker.schedulers.ReplayScheduler;
@@ -319,39 +318,59 @@ public class DBProxy implements Serializable {
 
     public void measureMemoryFootPrint() {
         Footprint footPrint = ObjectGraphMeasurer.measure(keyMap);
-        long memory = MemoryMeasurer.measureBytes(keyMap);
         System.out.println("\n \n \n \n /************** MEMORY SUMMARY ******************\\");
         System.out.println("Total: \n" + "    " + footPrint);
-        System.out.println("     memory" + memory + " bytes");
+        footPrint = null;
+        long memory = MemoryMeasurer.measureBytes(keyMap);
+        System.out.println("     memory: " + memory + " bytes");
         System.out.println("------");
         Enumeration<ByteArray> list = keyMap.getKeySet();
-        long opListSize = 0;
-        long snapshotListSize = 0;
-        long counter = 0;
-        long opListEntries = 0;
-        long snapshotListEntries = 0;
+        long operationListTotalBytes = 0;
+        long versionListTotalBytes = 0;
+        long totalKeys = 0;
+
+        long operationListTotalLength = 0;
+        long versionListTotalLength = 0;
 
         while(list.hasMoreElements()) {
-            counter++;
             ByteArray key = list.nextElement();
+            System.out.println("------ item: " + hexStringToAscii(key) + " ----");
+            totalKeys++;
             KeyMapEntry entry = keyMap.get(key);
+            // qualitative
+            Footprint footprintOperationList = ObjectGraphMeasurer.measure(entry.operationList);
+            System.out.println(footprintOperationList);
+            footprintOperationList = null;
 
-            // System.out.println(ObjectGraphMeasurer.measure(entry.getOperationList()));
-            // System.out.println(ObjectGraphMeasurer.measure(entry.getSnapshotList()));
-            ArrayList<Op> opList = entry.operationList;
-            opListSize += MemoryMeasurer.measureBytes(opList);
-            opListEntries += opList.size();
+            Footprint footpringVersionList = ObjectGraphMeasurer.measure(entry.versionList);
+            System.out.println(footpringVersionList);
+            footpringVersionList = null;
 
-            VersionList snapshotList = entry.versionList;
-            snapshotListSize += MemoryMeasurer.measureBytes(snapshotList);
-            snapshotListEntries += snapshotList.size();
+            // quantitative
+            long operationListBytes = MemoryMeasurer.measureBytes(entry.operationList);
+            System.out.println("Operation List Bytes: " + operationListBytes);
+            operationListTotalBytes += operationListBytes;
+
+            long versionListBytes = MemoryMeasurer.measureBytes(entry.versionList);
+            System.out.println("Version List Bytes: " + versionListBytes);
+            versionListTotalBytes += versionListBytes;
+
+            int operationListLength = entry.operationList.size();
+            System.out.println("Operation List Length: " + operationListLength);
+            operationListTotalLength += operationListLength;
+
+            int versionListLength = entry.versionList.size();
+            System.out.println("Version List Length: " + versionListLength);
+            versionListTotalLength += versionListLength;
         }
-
-        System.out.println("Number of database keys: " + counter);
-        System.out.println("Total opList: " + opListSize + " bytes");
-        System.out.println("Total snapshotList: " + snapshotListSize + " bytes");
-        System.out.println("Entries in opList: " + opListEntries);
-        System.out.println("Entries in snapshotList: " + snapshotListEntries);
+        System.out.println("*********** Summary ***********");
+        System.out.println("Number of database keys: " + totalKeys);
+        System.out.println("Entries in opList: " + operationListTotalLength);
+        System.out.println("Total opList (bytes): " + operationListTotalBytes);
+        System.out.println("Entries in version list: " + versionListTotalLength);
+        System.out.println("Total version list (bytes): " + versionListTotalBytes);
+        System.out.println("------ Foot print all ------");
+        System.out.println(ObjectGraphMeasurer.measure(keyMap));
         System.out.println("/********************************\\ \n \n \n \n ");
 
         log.info("Saving key access list....");

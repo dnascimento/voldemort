@@ -22,10 +22,10 @@ import org.apache.log4j.Logger;
 import pt.inesc.undo.proto.FromManagerProto;
 import pt.inesc.undo.proto.FromManagerProto.ToDataNode;
 import pt.inesc.undo.proto.ToManagerProto;
-import pt.inesc.undo.proto.ToManagerProto.EntryAccessList;
 import pt.inesc.undo.proto.ToManagerProto.MsgToManager;
-import pt.inesc.undo.proto.ToManagerProto.NodeRegistryMsg;
-import pt.inesc.undo.proto.ToManagerProto.NodeRegistryMsg.NodeGroup;
+import pt.inesc.undo.proto.ToManagerProto.MsgToManager.EntryAccessList;
+import pt.inesc.undo.proto.ToManagerProto.MsgToManager.NodeRegistryMsg;
+import pt.inesc.undo.proto.ToManagerProto.MsgToManager.NodeRegistryMsg.NodeGroup;
 import voldemort.undoTracker.branching.BranchPath;
 import voldemort.undoTracker.map.Op;
 import voldemort.undoTracker.map.VersionShuttle;
@@ -55,11 +55,11 @@ public class ServiceDBNode extends Thread {
         Socket s = new Socket();
         try {
             s.connect(DBProxy.MANAGER_ADDRESS);
-            NodeRegistryMsg c = ToManagerProto.NodeRegistryMsg.newBuilder()
-                                                              .setHostname(DBProxy.MY_ADDRESS.getHostName())
-                                                              .setPort(DBProxy.MY_ADDRESS.getPort())
-                                                              .setGroup(NodeGroup.DB_NODE)
-                                                              .build();
+            NodeRegistryMsg c = ToManagerProto.MsgToManager.NodeRegistryMsg.newBuilder()
+                                                                           .setHostname(DBProxy.MY_ADDRESS.getHostName())
+                                                                           .setPort(DBProxy.MY_ADDRESS.getPort())
+                                                                           .setGroup(NodeGroup.DB_NODE)
+                                                                           .build();
             ToManagerProto.MsgToManager.newBuilder()
                                        .setNodeRegistry(c)
                                        .build()
@@ -95,7 +95,9 @@ public class ServiceDBNode extends Thread {
         ToDataNode cmd = FromManagerProto.ToDataNode.parseDelimitedFrom(s.getInputStream());
         if(cmd.hasNewSnapshot()) {
             stub.scheduleNewSnapshot(cmd.getNewSnapshot());
-            ToManagerProto.AckMsg.newBuilder().build().writeDelimitedTo(s.getOutputStream());
+            ToManagerProto.MsgToManager.AckMsg.newBuilder()
+                                              .build()
+                                              .writeDelimitedTo(s.getOutputStream());
             s.getOutputStream().flush();
         }
         if(cmd.hasShowMap()) {
@@ -139,13 +141,16 @@ public class ServiceDBNode extends Thread {
             Iterator<Long> itSnapshots = cmd.getPathSnapshotList().iterator();
             Iterator<Integer> itBranches = cmd.getPathBranchList().iterator();
             HashSet<VersionShuttle> path = new HashSet<VersionShuttle>();
-            VersionShuttle current = new VersionShuttle(cmd.getPathSnapshot(0), cmd.getPathBranch(0));
+            VersionShuttle current = new VersionShuttle(cmd.getPathSnapshot(0),
+                                                        cmd.getPathBranch(0));
             while(itSnapshots.hasNext()) {
                 path.add(new VersionShuttle(itSnapshots.next(), itBranches.next()));
             }
             BranchPath branchPath = new BranchPath(current, path);
             stub.newReplay(branchPath);
-            ToManagerProto.AckMsg.newBuilder().build().writeDelimitedTo(s.getOutputStream());
+            ToManagerProto.MsgToManager.AckMsg.newBuilder()
+                                              .build()
+                                              .writeDelimitedTo(s.getOutputStream());
             s.getOutputStream().flush();
         }
         s.close();

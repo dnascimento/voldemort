@@ -1,5 +1,7 @@
 package voldemort.undoTracker;
 
+import java.io.Serializable;
+
 import org.apache.log4j.Logger;
 
 import voldemort.undoTracker.branching.BranchController;
@@ -16,8 +18,9 @@ import voldemort.undoTracker.map.KeyMap;
  * @author darionascimento
  * 
  */
-public class RestrainLocker {
+public class RestrainLocker implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private transient static final Logger log = Logger.getLogger(KeyMap.class.getName());
     /**
      * Sets the branch that will restrain (the current branch.

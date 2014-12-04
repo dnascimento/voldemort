@@ -67,7 +67,7 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                    VectorClock version,
                                    RequestRoutingType routingType,
                                    SRD srd) throws IOException {
-        ToManagerProto.SRD srdProto = srd.toProto();
+        ToManagerProto.MsgToManager.SRD srdProto = srd.toProto();
         StoreUtils.assertValidKey(key);
 
         // Track the key access by client
@@ -108,7 +108,7 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                 RequestRoutingType routingType,
                                 SRD srd) throws IOException {
         StoreUtils.assertValidKey(key);
-        ToManagerProto.SRD srdProto = srd.toProto();
+        ToManagerProto.MsgToManager.SRD srdProto = srd.toProto();
 
         VProto.GetRequest.Builder get = VProto.GetRequest.newBuilder();
         get.setKey(ByteString.copyFrom(key.get()));
@@ -152,7 +152,7 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                    RequestRoutingType routingType,
                                    SRD srd) throws IOException {
         StoreUtils.assertValidKeys(keys);
-        ToManagerProto.SRD srdProto = srd.toProto();
+        ToManagerProto.MsgToManager.SRD srdProto = srd.toProto();
 
         // Track the key access by client
         for(ByteArray key: keys) {
@@ -211,7 +211,7 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                 RequestRoutingType routingType,
                                 SRD srd) throws IOException {
         StoreUtils.assertValidKey(key);
-        ToManagerProto.SRD srdProto = srd.toProto();
+        ToManagerProto.MsgToManager.SRD srdProto = srd.toProto();
 
         // Track the key access by client
         srd.addAccessedKey(key, storeName, SRD.OpType.Put);
@@ -276,7 +276,7 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                        RequestRoutingType routingType,
                                        SRD srd) throws IOException {
         StoreUtils.assertValidKey(key);
-        ToManagerProto.SRD srdProto = srd.toProto();
+        ToManagerProto.MsgToManager.SRD srdProto = srd.toProto();
         GetRequest.Builder getVersion = VProto.GetRequest.newBuilder();
         getVersion.setKey(ByteString.copyFrom(key.get()));
         getVersion.setSrd(srdProto);
@@ -306,7 +306,7 @@ public class ProtoBuffClientRequestFormat implements RequestFormat {
                                    RequestRoutingType routingType,
                                    SRD srd) throws IOException {
         System.out.println("writeUnlock" + srd);
-        ToManagerProto.SRD srdProto = srd.toProto();
+        ToManagerProto.MsgToManager.SRD srdProto = srd.toProto();
         VProto.UnlockRequest.Builder unlock = VProto.UnlockRequest.newBuilder();
 
         for(ByteArray key: keys) {

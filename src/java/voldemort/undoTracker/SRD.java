@@ -41,7 +41,7 @@ public class SRD {
         this(rid, 0, false, false);
     }
 
-    public SRD(ToManagerProto.SRD srd) {
+    public SRD(ToManagerProto.MsgToManager.SRD srd) {
         this(srd.getRid(), srd.getBranch(), srd.getRestrain(), srd.getReplay());
     }
 
@@ -57,8 +57,8 @@ public class SRD {
         this.accessedKeys = null;
     }
 
-    public ToManagerProto.SRD toProto() {
-        return ToManagerProto.SRD.newBuilder()
+    public ToManagerProto.MsgToManager.SRD toProto() {
+        return ToManagerProto.MsgToManager.SRD.newBuilder()
                                  .setBranch(branch)
                                  .setRid(rid)
                                  .setRestrain(restrain)

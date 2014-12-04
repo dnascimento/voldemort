@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 
 import pt.inesc.undo.proto.ToManagerProto;
 import pt.inesc.undo.proto.ToManagerProto.MsgToManager;
-import pt.inesc.undo.proto.ToManagerProto.TrackMsg;
+import pt.inesc.undo.proto.ToManagerProto.MsgToManager.TrackMsg;
 import voldemort.undoTracker.map.KeyMap;
 import voldemort.undoTracker.map.UpdateDependenciesMap;
 
@@ -28,7 +28,7 @@ public class SendDependencies extends Thread {
 
     private KeyMap trackLocalAccess;
     // check dependencies only ever 10sec
-    private long REFRESH_PERIOD = 10000;
+    public static final long REFRESH_PERIOD = 10000;
     Socket socket = new Socket();
 
     public SendDependencies(KeyMap trackLocalAccess) {

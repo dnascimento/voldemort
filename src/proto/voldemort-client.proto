@@ -34,25 +34,25 @@ message Error {
 message KeyedVersions {
   required bytes key = 1;
   repeated Versioned versions = 2;
-  optional SRD srd = 3;
+  optional MsgToManager.SRD srd = 3;
 }
 
 message GetRequest {
   optional bytes key = 1;
   optional bytes transforms = 2;
-  optional SRD srd = 3;
+  optional MsgToManager.SRD srd = 3;
 }
 
 message GetResponse {
   repeated Versioned versioned = 1;
   optional Error error = 2;
-  optional SRD srd = 3;
+  optional MsgToManager.SRD srd = 3;
 }
 
 message GetVersionResponse {
   repeated VectorClock versions = 1;
   optional Error error = 2;
-  optional SRD srd = 3;
+  optional MsgToManager.SRD srd = 3;
 }
 
 message GetAllRequest {
@@ -63,7 +63,7 @@ message GetAllRequest {
     required bytes transform = 2;
   }
   repeated GetAllTransform transforms = 2;
-  optional SRD srd = 3;
+  optional MsgToManager.SRD srd = 3;
 }
 
 message GetAllResponse {
@@ -75,7 +75,7 @@ message PutRequest {
   required bytes key = 1;
   required Versioned versioned = 2;
   optional bytes transforms = 3;
-  optional SRD srd = 4;
+  optional MsgToManager.SRD srd = 4;
 }
 
 message PutResponse {
@@ -85,7 +85,7 @@ message PutResponse {
 message DeleteRequest {
   required bytes key = 1;
   required VectorClock version = 2;
-  optional SRD srd = 3;
+  optional MsgToManager.SRD srd = 3;
 }
 
 message DeleteResponse {
@@ -95,7 +95,7 @@ message DeleteResponse {
 
 message UnlockRequest {
   repeated bytes key = 1;
-  optional SRD srd = 2;
+  optional MsgToManager.SRD srd = 2;
 }
 
 message KeyStatus{
@@ -119,7 +119,7 @@ enum RequestType {
 }
 
 message Container{
-  required SRD srd = 1;
+  required MsgToManager.SRD srd = 1;
   required bytes data = 2;
 }
 

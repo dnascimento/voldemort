@@ -35,23 +35,6 @@ public class ReplayScheduler extends OperationSchedule implements Serializable {
         super(keyOperationsMultimap);
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if(this == obj)
-            return true;
-        if(obj == null)
-            return false;
-        if(getClass() != obj.getClass())
-            return false;
-        ReplayScheduler other = (ReplayScheduler) obj;
-        if(keyOperationsMultimap == null) {
-            if(other.keyOperationsMultimap != null)
-                return false;
-        } else if(!keyOperationsMultimap.equals(other.keyOperationsMultimap))
-            return false;
-        return true;
-    }
-
     /*
      * reads are perform in new branch or the base snapshot branch.
      * writes are perform in new branch
@@ -70,7 +53,7 @@ public class ReplayScheduler extends OperationSchedule implements Serializable {
             ReplayIterator it = entry.getOrNewReplayIterator(srd.branch, baseSnapshot);
             while(!it.operationIsAllowed(op, key)) {
                 try {
-                    this.wait();
+                    entry.wait();
                 } catch(InterruptedException e) {
                     log.error(e);
                 }
@@ -102,7 +85,7 @@ public class ReplayScheduler extends OperationSchedule implements Serializable {
             // srd.rid);
 
             if(it.endOp(op)) {
-                this.notifyAll();
+                entry.notifyAll();
             }
         }
     }
@@ -120,7 +103,7 @@ public class ReplayScheduler extends OperationSchedule implements Serializable {
             ReplayIterator it = entry.getOrNewReplayIterator(srd.branch, path.current.sid);
             if(it.ignore(srd.rid)) {
                 // log.info("Ignore key: " + ByteArray.toAscii(key));
-                this.notifyAll();
+                entry.notifyAll();
             }
         }
     }
